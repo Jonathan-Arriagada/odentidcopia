@@ -19,7 +19,6 @@ const Show = () => {
         setClients(
             data.docs.map ( (doc) => ( {...doc.data(),id:doc.id}))
         )
-        console.log(clients)
     }
 
     const deleteClient = async (id) => {
@@ -37,7 +36,7 @@ const Show = () => {
         <div className='row'>
             <div className='col'>
                 <div className='d-grid gap-2'>
-                    <Link to="/create" className='btn btn-secondary- mt-2 mb-2' >Create</Link>
+                    <Link to="/create" className='btn btn-secondary mt-2 mb-2' >Agregar cliente</Link>
                 </div>
                 <table className='table table-dark table-hover'>
                     <thead>
@@ -52,9 +51,9 @@ const Show = () => {
                     <tbody>
                         {clients.map( (client) => (
                             <tr key={client.id}>
-                                <td> {client.Nombre} </td>
-                                <td> {client.Apellido} </td>
-                                <td> {client.IDC} </td>
+                                <td> {client.nombre} </td>
+                                <td> {client.apellido} </td>
+                                <td> {client.idc} </td>
                                 <td>
                                     <Link to={`/edit/${client.id}`} className="btn btn-success m-1"> <i className="fa-regular fa-pen-to-square"></i> </Link>
                                     <button onClick={ () => {deleteClient(client.id)}} className="btn btn-danger"> <i className="fa-solid fa-trash-can"></i> </button>
