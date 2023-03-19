@@ -1,0 +1,108 @@
+.login-page{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-top: 100px;
+    background: linear-gradient(45deg, #2BB1FF,#15FF00);
+    width: 400px;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    padding: 60px 80px;
+    
+}
+
+.login-page::before {
+    position: absolute;
+    content: "";
+    height: calc(100% - 3px);
+    width: calc(100% - 3px);
+    background-color: #ffffff;
+    border-radius: 9px;
+}
+
+
+.login-page .logo{
+    position: absolute;
+    width: 300px;
+    height: 40px;
+    top: 50px;
+}
+
+.login-page .title {
+    position: relative;
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+    background: linear-gradient(45deg, #2BB1FF,#15FF00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.login-page form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 30px;
+}
+
+.login-page form .username,
+.login-page form .password{
+    position: relative;
+}
+
+.login-page form input{
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    padding: 20px 10px 3px;
+    border-bottom: 1px solid #2BB1FF;
+    color: rgba(255,255,255, 0.548);
+
+}
+
+.login-page form input:focus {
+    outline: none;
+}
+
+.login-page form label {
+    position: absolute;
+    font-size: 13px;
+    top: 18px;
+    left: 3px;
+    color: #000;
+    transition: 0.2s ease;
+}
+
+
+.login-page form input:focus ~ label,
+.login-page form input:valid ~ label {
+    top: 0;
+    color:#2BB1FF;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.login-page form button {
+    background-color: #2BB1FF;
+    border: none;
+    border-radius: 3px;
+    margin-top: 20px;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+}
+
+button:active{
+    scale: 0.98;
+}
