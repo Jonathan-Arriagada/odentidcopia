@@ -26,7 +26,6 @@ const Login = () => {
 
             <img className="logo" src={logo} alt="Odentid"/>
 
-            <h2 className='title'>Iniciar Sesión</h2>
             <form onSubmit={submit}>
                 
                 <div className="email">
@@ -42,7 +41,7 @@ const Login = () => {
                 <button type="submit">Iniciar Sesión</button>
             </form>
         </div>
-    )
-}
+    );
+};
 
 export default Login;

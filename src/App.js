@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
-  const [LoggedIn, setLoggedIn] = useState(false)
+  const [LoggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -22,19 +22,17 @@ function App() {
   });
   return (
     <div className="App">
-      {LoggedIn ? (
-        <>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Show />} />
-              <Route path="/create" element={<Create />} />
-              <Route path="/edit/:id" element={<Edit />} />
-            </Routes>
-          </BrowserRouter>
-        </>
-      ) : (
-        <Login />
-      )}
+      <BrowserRouter>
+        {LoggedIn ? (
+          <Routes>
+            <Route path="/" element={<Show />} />
+            <Route path="/create" element={<Create />} />
+            <Route path="/edit/:id" element={<Edit />} />
+          </Routes>
+        ) : (
+          <Login />
+        )}
+      </BrowserRouter>
     </div>
   );
 }
