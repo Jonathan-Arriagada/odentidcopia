@@ -14,7 +14,7 @@ const Create = () => {
     const store = async (e) => {
         e.preventDefault()
         await addDoc( clientsCollection, { nombre: nombre, apellido: apellido, idc: idc } )
-        navigate("/")
+        navigate("/clients")
     }
 
   return (

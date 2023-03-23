@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import './Login.css'
 import logo from '../img/logo-odentid.png'
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig/firebase';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Login = () => {
     const [email,setEmail] = useState("")
@@ -11,14 +13,24 @@ const Login = () => {
 
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState(false);
+    const navigate = useNavigate()
+
+    const {dispatch} = useContext(AuthContext)
 
     const submit = (e) => {
-      signInWithEmailAndPassword(auth(),email,password)
-      .catch((error) => {
-        setError(true)
-        const errorMessage = error.message;
-        setErrorMsg(errorMessage);
-      })
+        e.preventDefault();
+        signInWithEmailAndPassword(auth,email,password)
+        .then((userCredential) => {
+            const user = userCredential.user
+            dispatch({type:"LOGIN", payload:user})
+            navigate("/clients")
+        })
+        .catch((error) => {
+            setError(true)
+            const errorMessage = error.message;
+            setErrorMsg(errorMessage);
+        })
+        
     }
 
     return (
@@ -26,7 +38,6 @@ const Login = () => {
 
             <img className="logo" src={logo} alt="Odentid"/>
 
-            <h2 className='title'>Iniciar Sesión</h2>
             <form onSubmit={submit}>
                 
                 <div className="email">

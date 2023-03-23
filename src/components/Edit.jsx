@@ -16,7 +16,7 @@ const Edit = () => {
         const client = doc(db, "clients", id)
         const data = {nombre: nombre, apellido: apellido, idc: idc}
         await updateDoc( client, data)
-        navigate("/")
+        navigate("/clients")
     }
 
     const getClientById = async (id) => {

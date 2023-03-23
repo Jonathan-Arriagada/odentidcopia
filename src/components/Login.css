@@ -10,8 +10,7 @@
     width: 400px;
     aspect-ratio: 1;
     border-radius: 10px;
-    padding: 60px 80px;
-    
+    padding: 60px 80px;   
 }
 
 .login-page::before {
@@ -31,16 +30,6 @@
     top: 50px;
 }
 
-.login-page .title {
-    position: relative;
-    font-size: 25px;
-    text-align: center;
-    font-weight: bold;
-    background: linear-gradient(45deg, #2BB1FF,#15FF00);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
 
 .login-page form {
     position: relative;
@@ -51,7 +40,7 @@
     margin-top: 30px;
 }
 
-.login-page form .username,
+.login-page form .email,
 .login-page form .password{
     position: relative;
 }
@@ -62,7 +51,7 @@
     background-color: transparent;
     padding: 20px 10px 3px;
     border-bottom: 1px solid #2BB1FF;
-    color: rgba(255,255,255, 0.548);
+    color: rgb(0, 0, 0);
 
 }
 

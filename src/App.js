@@ -1,40 +1,30 @@
 import "./App.css";
 import Show from "./components/Show";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Create";
 import Edit from "./components/Edit";
-import { auth } from "./firebaseConfig/firebase";
 import Login from "./components/Login";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
-  const [LoggedIn, setLoggedIn] = useState(false)
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoggedIn(true);
-      } else {
-        setLoggedIn(false);
-      }
-    });
-  });
+  const {currentUser} = useContext(AuthContext)
+  
+  const RequireAuth = ({children}) => {
+    return currentUser ? children : <Navigate to="/"/>
+  };
+  
+  console.log(currentUser)
   return (
     <div className="App">
-      {LoggedIn ? (
-        <>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Show />} />
-              <Route path="/create" element={<Create />} />
-              <Route path="/edit/:id" element={<Edit />} />
-            </Routes>
-          </BrowserRouter>
-        </>
-      ) : (
-        <Login />
-      )}
+      <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<Login />}/>
+            <Route index path="clients" element={<RequireAuth><Show/></RequireAuth>}/>
+            <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
+            <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
