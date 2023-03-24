@@ -31,6 +31,10 @@ const Show = () => {
     getClients();
   };
 
+  const logout = () => {
+    localStorage.setItem("user",JSON.stringify(null))
+  }
+
 const searcher = (e) => {
     setSearch(e.target.value)
 }
@@ -54,9 +58,14 @@ if(!search){
         <div className="row">
           <div className="col">
             <div className="d-grid gap-2">
-              <Link to="/create" className="btn btn-secondary m-2">
-                Agregar cliente
-              </Link>
+              <div className="d-flex">
+                <Link to="/create" className="btn btn-secondary m-2 w-25">
+                  Agregar cliente
+                </Link>
+                <Link to="/" className="btn btn-danger m-2 w-25" onClick={logout}>
+                  Logout
+                </Link>
+              </div>
                 <input
                   value={search}
                   onChange={searcher}
