@@ -11,6 +11,8 @@ import {
 import { db } from "../firebaseConfig/firebase";
 import { SweetAlert2 } from "sweetalert2-react-content";
 import withReactContent from "sweetalert2-react-content";
+import Navigation from "./Navigation";
+import "./Show.css";
 
 // const mySwal = withReactContent(Swal)
 
@@ -32,28 +34,30 @@ const Show = () => {
   };
 
   const logout = () => {
-    localStorage.setItem("user",JSON.stringify(null))
+    localStorage.setItem("user", JSON.stringify(null));
+  };
+
+  const searcher = (e) => {
+    setSearch(e.target.value);
+  };
+
+  let results = [];
+  if (!search) {
+    results = clients;
+  } else {
+    results = clients.filter(
+      (dato) =>
+        dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
+        dato.idc.toString().includes(search.toString())
+    );
   }
-
-const searcher = (e) => {
-    setSearch(e.target.value)
-}
-
-let results = [] 
-if(!search){
-    results = clients
-}else{
-    results = clients.filter((dato)=> 
-    dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
-    dato.idc.toString().includes(search.toString())
-    )
-}
 
   useEffect(() => {
     getClients();
   }, []);
   return (
-    <>
+    <div className="mainpage">
+      <Navigation />
       <div className="container">
         <div className="row">
           <div className="col">
@@ -62,17 +66,21 @@ if(!search){
                 <Link to="/create" className="btn btn-secondary m-2 w-25">
                   Agregar cliente
                 </Link>
-                <Link to="/" className="btn btn-danger m-2 w-25" onClick={logout}>
+                <Link
+                  to="/"
+                  className="btn btn-danger m-2 w-25"
+                  onClick={logout}
+                >
                   Logout
                 </Link>
               </div>
-                <input
-                  value={search}
-                  onChange={searcher}
-                  type="text"
-                  placeholder="Buscar por Apellido o IDC..."
-                  className="form-control m-2"
-                />
+              <input
+                value={search}
+                onChange={searcher}
+                type="text"
+                placeholder="Buscar por Apellido o IDC..."
+                className="form-control m-2"
+              />
             </div>
             <table className="table table-dark table-hover">
               <thead>
@@ -115,7 +123,7 @@ if(!search){
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
