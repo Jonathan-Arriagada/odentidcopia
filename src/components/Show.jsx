@@ -57,12 +57,17 @@ const searcher = (e) => {
   }, []);
   return (
     <>
+     <div className="mainpage">
+      <Navigation />
       <div className="container">
         <div className="row">
           <div className="col">
             <div className="d-grid gap-2">
               <div className="d-flex">
-                <Link to="/create" className="btn btn-secondary m-2 w-25">
+            <h1>Pacientes</h1>
+            </div>
+              <div className="d-flex">
+                 <Link to="/create" className="btn btn-secondary m-2 w-25">
                   Agregar cliente
                 </Link>
                 <Link to="/" className="btn btn-danger m-2 w-25" onClick={logout}>
@@ -122,8 +127,10 @@ const searcher = (e) => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      </>
   );
 };
+
 
 export default Show;
