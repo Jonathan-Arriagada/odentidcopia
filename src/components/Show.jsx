@@ -11,6 +11,8 @@ import {
 import { db } from "../firebaseConfig/firebase";
 import { SweetAlert2 } from "sweetalert2-react-content";
 import withReactContent from "sweetalert2-react-content";
+import Navigation from "./Navigation";
+import "./Show.css";
 
 // const mySwal = withReactContent(Swal)
 
@@ -31,36 +33,42 @@ const Show = () => {
     getClients();
   };
 
+  const logout = () => {
+    localStorage.setItem("user",JSON.stringify(null))
+  }
+
 const searcher = (e) => {
     setSearch(e.target.value)
 }
 
-let results = [] 
-if(!search){
-    results = clients
-}else{
-    results = clients.filter((dato)=> 
-    dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
-    dato.idc.toString().includes(search.toString())
-    )
-}
+  let results = [];
+  if (!search) {
+    results = clients;
+  } else {
+    results = clients.filter(
+      (dato) =>
+        dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
+        dato.idc.toString().includes(search.toString())
+    );
+  }
 
   useEffect(() => {
     getClients();
   }, []);
   return (
     <>
-    <div className="container d-flex">
-      <h1>Pacientes</h1>
-      </div>
       <div className="container">
         <div className="row">
           <div className="col">
-            <div className="d-flex">
-              <Link to="/create" className="btn btn-primary m-2 text-nowrap">
-                <text>Agregar cliente</text>
-              </Link>
-              <div className="col-3">
+            <div className="d-grid gap-2">
+              <div className="d-flex">
+                <Link to="/create" className="btn btn-secondary m-2 w-25">
+                  Agregar cliente
+                </Link>
+                <Link to="/" className="btn btn-danger m-2 w-25" onClick={logout}>
+                  Logout
+                </Link>
+              </div>
                 <input
                   value={search}
                   onChange={searcher}
@@ -68,9 +76,8 @@ if(!search){
                   placeholder="Buscar por Apellido o IDC..."
                   className="form-control m-2"
                 />
-              </div> 
             </div>
-            <table className="table table-bordered table-dark table-hover">
+            <table className="table table-dark table-hover">
               <thead>
                 <tr >
                   <th>Nombre</th>
@@ -115,7 +122,7 @@ if(!search){
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
