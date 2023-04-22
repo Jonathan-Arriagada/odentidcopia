@@ -31,10 +31,6 @@ const Show = () => {
     getClients();
   };
 
-  const logout = () => {
-    localStorage.setItem("user",JSON.stringify(null))
-  }
-
 const searcher = (e) => {
     setSearch(e.target.value)
 }
@@ -54,18 +50,17 @@ if(!search){
   }, []);
   return (
     <>
+    <div className="container d-flex">
+      <h1>Pacientes</h1>
+      </div>
       <div className="container">
         <div className="row">
           <div className="col">
-            <div className="d-grid gap-2">
-              <div className="d-flex">
-                <Link to="/create" className="btn btn-secondary m-2 w-25">
-                  Agregar cliente
-                </Link>
-                <Link to="/" className="btn btn-danger m-2 w-25" onClick={logout}>
-                  Logout
-                </Link>
-              </div>
+            <div className="d-flex">
+              <Link to="/create" className="btn btn-primary m-2 text-nowrap">
+                <text>Agregar cliente</text>
+              </Link>
+              <div className="col-3">
                 <input
                   value={search}
                   onChange={searcher}
@@ -73,23 +68,28 @@ if(!search){
                   placeholder="Buscar por Apellido o IDC..."
                   className="form-control m-2"
                 />
+              </div> 
             </div>
-            <table className="table table-dark table-hover">
+            <table className="table table-bordered table-dark table-hover">
               <thead>
-                <tr>
+                <tr >
                   <th>Nombre</th>
                   <th>Apellido</th>
                   <th>IDC</th>
+                  <th>Edad</th>
+                  <th>Numero</th>
                   <th>Accion</th>
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className="table-group-divider table-active">
                 {results.map((client) => (
                   <tr key={client.id}>
                     <td> {client.nombre} </td>
                     <td> {client.apellido} </td>
                     <td> {client.idc} </td>
+                    <td> {client.edad} </td>
+                    <td> {client.numero} </td>
                     <td>
                       <Link
                         to={`/edit/${client.id}`}

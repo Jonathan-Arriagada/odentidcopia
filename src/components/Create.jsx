@@ -7,13 +7,15 @@ const Create = () => {
     const [ nombre, setNombre ] = useState("")
     const [ apellido, setApellido ] = useState("")
     const [ idc,setIdc] = useState([])
+    const [ edad, setEdad ] = useState([])
+    const [ numero, setNumero ] = useState([])
     const navigate = useNavigate()
 
   const clientsCollection = collection(db, "clients")  
 
     const store = async (e) => {
         e.preventDefault()
-        await addDoc( clientsCollection, { nombre: nombre, apellido: apellido, idc: idc } )
+        await addDoc( clientsCollection, { nombre: nombre, apellido: apellido, idc: idc, edad: edad, numero: numero } )
         navigate("/clients")
     }
 
@@ -47,6 +49,24 @@ const Create = () => {
                     <input 
                     value={idc}
                     onChange={ (e) => setIdc(e.target.value)}
+                    type="number"
+                    className='form-control'
+                     />
+                </div>
+                <div className='mb-3'>
+                    <label className='form-label'>Edad</label>
+                    <input 
+                    value={edad}
+                    onChange={ (e) => setEdad(e.target.value)}
+                    type="number"
+                    className='form-control'
+                     />
+                </div>
+                <div className='mb-3'>
+                    <label className='form-label'>Numero</label>
+                    <input 
+                    value={numero}
+                    onChange={ (e) => setNumero(e.target.value)}
                     type="number"
                     className='form-control'
                      />

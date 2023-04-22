@@ -7,6 +7,8 @@ const Edit = () => {
     const [ nombre, setNombre ] = useState("")
     const [ apellido, setApellido ] = useState("")
     const [ idc,setIdc] = useState([])
+    const [ edad, setEdad ] = useState([])
+    const [ numero, setNumero ] = useState([])
 
     const navigate = useNavigate()
     const {id} = useParams()
@@ -14,7 +16,7 @@ const Edit = () => {
     const update = async (e) => {
         e.preventDefault()
         const client = doc(db, "clients", id)
-        const data = {nombre: nombre, apellido: apellido, idc: idc}
+        const data = {nombre: nombre, apellido: apellido, idc: idc, edad: edad, numero: numero}
         await updateDoc( client, data)
         navigate("/clients")
     }
@@ -25,8 +27,10 @@ const Edit = () => {
             setNombre(client.data().nombre)
             setApellido(client.data().apellido)
             setIdc(client.data().idc)
+            setEdad(client.data().edad)
+            setNumero(client.data().edad)
         }else{
-            console.log("El producto no existe")
+            console.log("El cliente no existe")
         }
     }
 
@@ -64,6 +68,24 @@ useEffect( () => {
                     <input 
                     value={idc}
                     onChange={ (e) => setIdc(e.target.value)}
+                    type="number"
+                    className='form-control'
+                     />
+                </div>
+                <div className='mb-3'>
+                    <label className='form-label'>Edad</label>
+                    <input 
+                    value={edad}
+                    onChange={ (e) => setEdad(e.target.value)}
+                    type="number"
+                    className='form-control'
+                     />
+                </div>
+                <div className='mb-3'>
+                    <label className='form-label'>Numero</label>
+                    <input 
+                    value={numero}
+                    onChange={ (e) => setNumero(e.target.value)}
                     type="number"
                     className='form-control'
                      />
