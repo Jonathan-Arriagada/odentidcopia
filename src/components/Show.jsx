@@ -22,7 +22,6 @@ const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShow, setModalShow] = React.useState(false);
-  const [modalShowCita, setModalShowCita] = React.useState(false);
 
   const clientsCollection = collection(db, "clients");
 
@@ -81,13 +80,7 @@ const Show = () => {
                   >
                     Logout
                   </Link>
-                  <button
-                          variant="primary"
-                          className="btn btn-danger m-2 w-25"
-                          onClick={() => setModalShowCita(true)}
-                        >
-                          Cita
-                        </button>
+                  
                 </div>
                 <input
                   value={search}
@@ -144,7 +137,7 @@ const Show = () => {
         </div>
       </div>
       <Edit show={modalShow} onHide={() => setModalShow(false)} />
-      <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
+      
     </>
   );
 };

@@ -27,7 +27,7 @@ function CreateCita(props) {
       fecha: fecha,
       comentario: comentario,
     });
-    navigate("/citas");
+    navigate("/agenda");
   };
 
   return (

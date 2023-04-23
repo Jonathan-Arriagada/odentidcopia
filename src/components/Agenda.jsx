@@ -8,10 +8,12 @@ import {
 } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig/firebase";
+import CreateCita from "./CreateCita";
 
 function Citas() {
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");
+  const [modalShowCita, setModalShowCita] = React.useState(false);
 
   const citasCollection = collection(db, "citas");
 
@@ -54,6 +56,13 @@ function Citas() {
               <div className="d-flex">
                 <h1>Citas</h1>
               </div>
+              <button
+                          variant="primary"
+                          className="btn btn-success m-2 w-25"
+                          onClick={() => setModalShowCita(true)}
+                        >
+                          Agregar Cita
+                        </button>
               <input
                 value={search}
                 onChange={searcher}
@@ -104,6 +113,7 @@ function Citas() {
           </div>
         </div>
       </div>
+      <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
     </>
   );
 }

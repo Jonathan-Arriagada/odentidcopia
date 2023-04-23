@@ -7,7 +7,7 @@ import Login from "./components/Login";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import CreateCita from "./components/CreateCita";
-import Citas from "./components/Citas";
+import Agenda from "./components/Agenda";
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -25,7 +25,7 @@ function App() {
             <Route index path="clients" element={<RequireAuth><Show/></RequireAuth>}/>
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
             <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>
-            <Route path="citas" element={<RequireAuth><Citas /></RequireAuth>}/>
+            <Route path="Agenda" element={<RequireAuth><Agenda /></RequireAuth>}/>
         </Routes>
       </BrowserRouter>
     </div>
