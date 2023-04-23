@@ -1,12 +1,16 @@
 import "./Navigation.css";
 import profile from "../img/profile.png"
 import Nav from "./NavIcons/Nav";
-import {FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft} from 'react-icons/fa'
+import {FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed} from 'react-icons/fa'
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Navigation = () => {
     const [nav, setNav] = useState(false);
+
+    const logout = () => {
+        localStorage.setItem("user", JSON.stringify(null));
+      };
 
     return(
         <div className={`navigation ${nav && "active"}`}>
@@ -24,8 +28,9 @@ const Navigation = () => {
             </header>
             <Link to="../clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUser}/></Link>
             <Link to="../agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt}/></Link>
-            <Link to="../tarifario" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar}/></Link>
+            <Link to="../tarifas" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar}/></Link>
             <Link to="../tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaFileMedical}/></Link>
+            <Link to="/" className="text-decoration-none link-light" onClick={logout}><Nav title="Logout" Icon={FaDoorClosed}/></Link>
         </div>
     )
 }

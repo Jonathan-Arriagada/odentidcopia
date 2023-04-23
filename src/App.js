@@ -8,6 +8,8 @@ import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import CreateCita from "./components/CreateCita";
 import Agenda from "./components/Agenda";
+import Tarifario from "./components/Tarifario";
+import CreateTarifa from "./components/CreateTarifa";
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -26,6 +28,8 @@ function App() {
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
             <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>
             <Route path="Agenda" element={<RequireAuth><Agenda /></RequireAuth>}/>
+            <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
+            <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
         </Routes>
       </BrowserRouter>
     </div>

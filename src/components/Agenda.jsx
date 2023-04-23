@@ -9,6 +9,7 @@ import {
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig/firebase";
 import CreateCita from "./CreateCita";
+import Navigation from "./Navigation";
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -49,12 +50,14 @@ function Citas() {
 
   return (
     <>
+        <div className="mainpage">
+        <Navigation />
       <div className="container">
         <div className="row">
           <div className="col">
             <div className="d-grid gap-2">
               <div className="d-flex">
-                <h1>Citas</h1>
+                <h1>Agenda</h1>
               </div>
               <button
                           variant="primary"
@@ -112,6 +115,7 @@ function Citas() {
             </div>
           </div>
         </div>
+      </div>
       </div>
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
     </>

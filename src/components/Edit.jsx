@@ -29,7 +29,7 @@ const Edit = (props) => {
             setApellido(client.data().apellido)
             setIdc(client.data().idc)
             setEdad(client.data().edad)
-            setNumero(client.data().edad)
+            setNumero(client.data().numero)
         }else{
             console.log("El cliente no existe")
         }

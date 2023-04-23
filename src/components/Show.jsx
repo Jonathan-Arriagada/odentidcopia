@@ -14,7 +14,6 @@ import withReactContent from "sweetalert2-react-content";
 import Navigation from "./Navigation";
 import "./Show.css";
 import Edit from "./Edit";
-import CreateCita from "./CreateCita";
 
 // const mySwal = withReactContent(Swal)
 
@@ -34,10 +33,6 @@ const Show = () => {
     const clientDoc = doc(db, "clients", id);
     await deleteDoc(clientDoc);
     getClients();
-  };
-
-  const logout = () => {
-    localStorage.setItem("user", JSON.stringify(null));
   };
 
   const searcher = (e) => {
@@ -73,14 +68,6 @@ const Show = () => {
                   <Link to="/create" className="btn btn-secondary m-2 w-25">
                     Agregar cliente
                   </Link>
-                  <Link
-                    to="/"
-                    className="btn btn-danger m-2 w-25"
-                    onClick={logout}
-                  >
-                    Logout
-                  </Link>
-                  
                 </div>
                 <input
                   value={search}
@@ -137,7 +124,6 @@ const Show = () => {
         </div>
       </div>
       <Edit show={modalShow} onHide={() => setModalShow(false)} />
-      
     </>
   );
 };
