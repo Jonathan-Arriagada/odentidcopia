@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import {
   collection,
   getDocs,
@@ -13,12 +13,14 @@ import { SweetAlert2 } from "sweetalert2-react-content";
 import withReactContent from "sweetalert2-react-content";
 import Navigation from "./Navigation";
 import "./Show.css";
+import Edit from "./Edit";
 
 // const mySwal = withReactContent(Swal)
 
 const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
+  const [modalShow, setModalShow] = React.useState(false);
 
   const clientsCollection = collection(db, "clients");
 
@@ -102,14 +104,8 @@ const searcher = (e) => {
                     <td> {client.idc} </td>
                     <td> {client.edad} </td>
                     <td> {client.numero} </td>
-                    <td>
-                      <Link
-                        to={`/edit/${client.id}`}
-                        className="btn btn-success m-1"
-                      >
-                        {" "}
-                        <i className="fa-regular fa-pen-to-square"></i>{" "}
-                      </Link>
+                    <td> 
+                      <button variant="primary" className='btn btn-success m-1' onClick={() => setModalShow(true)}><i className="fa-regular fa-pen-to-square"></i></button>
                       <button
                         onClick={() => {
                           deleteClient(client.id);
@@ -128,6 +124,10 @@ const searcher = (e) => {
         </div>
       </div>
       </div>
+      <Edit
+      show={modalShow}
+      onHide={() => setModalShow(false)}
+      />
       </>
   );
 };

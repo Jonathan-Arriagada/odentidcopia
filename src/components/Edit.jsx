@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getDoc, updateDoc, doc } from "firebase/firestore"
 import { db } from "../firebaseConfig/firebase"
+import { Modal } from 'react-bootstrap'
 
-const Edit = () => {
-    const [ nombre, setNombre ] = useState("")
-    const [ apellido, setApellido ] = useState("")
-    const [ idc,setIdc] = useState([])
-    const [ edad, setEdad ] = useState([])
-    const [ numero, setNumero ] = useState([])
+const Edit = (props) => {
+    const [nombre, setNombre ] = useState("")
+    const [apellido, setApellido ] = useState("")
+    const [idc,setIdc] = useState([])
+    const [edad, setEdad ] = useState([])
+    const [numero, setNumero ] = useState([])
 
     const navigate = useNavigate()
     const {id} = useParams()
@@ -39,11 +40,21 @@ useEffect( () => {
 }, [])
 
   return (
-    <div className='container'>
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          <h1>Editar Cliente</h1>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      <div className='container'>
         <div className='row'>
             <div className='col'>
-                <h1>Editar Cliente</h1>
-
                 <form onSubmit={update}>
                 <div className='mb-3'>
                     <label className='form-label'>Nombre</label>
@@ -90,13 +101,16 @@ useEffect( () => {
                     className='form-control'
                      />
                 </div>
-                <button type='submit' className='btn btn-primary'>Editar</button>
+                <button type='submit' onClick={props.onHide} className='btn btn-primary'>Editar</button>
                 </form>
             </div>
 
         </div>
 
     </div>
+      </Modal.Body>
+    </Modal>
+    
   )
 }
 
