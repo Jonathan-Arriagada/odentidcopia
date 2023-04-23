@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import {
   collection,
   getDocs,
@@ -14,6 +14,7 @@ import withReactContent from "sweetalert2-react-content";
 import Navigation from "./Navigation";
 import "./Show.css";
 import Edit from "./Edit";
+import CreateCita from "./CreateCita";
 
 // const mySwal = withReactContent(Swal)
 
@@ -21,6 +22,7 @@ const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShow, setModalShow] = React.useState(false);
+  const [modalShowCita, setModalShowCita] = React.useState(false);
 
   const clientsCollection = collection(db, "clients");
 
@@ -79,12 +81,13 @@ const Show = () => {
                   >
                     Logout
                   </Link>
-                  <Link
-                    to="/calendar"
-                    className="btn btn-danger m-2 w-25"
-                  >
-                    Cita
-                  </Link>
+                  <button
+                          variant="primary"
+                          className="btn btn-danger m-2 w-25"
+                          onClick={() => setModalShowCita(true)}
+                        >
+                          Cita
+                        </button>
                 </div>
                 <input
                   value={search}
@@ -115,13 +118,13 @@ const Show = () => {
                       <td> {client.edad} </td>
                       <td> {client.numero} </td>
                       <td>
-                        <Link
-                          to={`/edit/${client.id}`}
-                          className="btn btn-success m-1"
+                        <button
+                          variant="primary"
+                          className="btn btn-success mx-1"
+                          onClick={() => setModalShow(true)}
                         >
-                          {" "}
-                          <i className="fa-regular fa-pen-to-square"></i>{" "}
-                        </Link>
+                          <i className="fa-regular fa-pen-to-square"></i>
+                        </button>
                         <button
                           onClick={() => {
                             deleteClient(client.id);
@@ -140,6 +143,8 @@ const Show = () => {
           </div>
         </div>
       </div>
+      <Edit show={modalShow} onHide={() => setModalShow(false)} />
+      <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
     </>
   );
 };
