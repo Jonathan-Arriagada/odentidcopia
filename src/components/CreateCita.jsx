@@ -28,6 +28,7 @@ function CreateCita(props) {
       comentario: comentario,
     });
     navigate("/agenda");
+    window.location.reload(false)
   };
 
   return (
@@ -119,9 +120,7 @@ function CreateCita(props) {
                     className="form-control"
                   />
                 </div>
-                <button type="submit" onClick={props.onHide} className="btn btn-primary">
-                  Agregar Cita
-                </button>
+                <button type="submit" onClick={props.onHide} className="btn btn-primary">Agregar</button>
               </form>
             </div>
           </div>

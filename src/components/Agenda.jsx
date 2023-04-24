@@ -2,7 +2,6 @@ import React from "react";
 import {
   collection,
   getDocs,
-  getDoc,
   deleteDoc,
   doc,
 } from "firebase/firestore";

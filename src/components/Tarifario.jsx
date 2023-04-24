@@ -3,17 +3,17 @@ import Navigation from "./Navigation";
 import {
   collection,
   getDocs,
-  getDoc,
   deleteDoc,
   doc,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
-import { Link } from "react-router-dom";
+import CreateTarifa from "./CreateTarifa";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
+  const [modalShow, setModalShow] = React.useState(false);
 
   const tarifasCollection = collection(db, "tarifas");
 
@@ -76,12 +76,13 @@ function Tarifario() {
                   <h1>Tarifario</h1>
                 </div>
                 <div className="d-flex">
-                  <Link
-                    to="/CreateTarifa"
-                    className="btn btn-secondary m-2 w-25"
-                  >
-                    Agregar tarifa
-                  </Link>
+                <button
+                          variant="primary"
+                          className="btn btn-success m-2 w-25"
+                          onClick={() => {setModalShow(true)}}
+                        >
+                          Agregar Cita
+                        </button>
                 </div>
                 <input
                   value={search}
@@ -126,6 +127,7 @@ function Tarifario() {
           </div>
         </div>
       </div>
+      <CreateTarifa show={modalShow} onHide={() => setModalShow(false)} />
     </>
   );
 }

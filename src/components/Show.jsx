@@ -1,19 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   collection,
   getDocs,
-  getDoc,
   deleteDoc,
   doc,
 } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
-import { SweetAlert2 } from "sweetalert2-react-content";
-import withReactContent from "sweetalert2-react-content";
 import Navigation from "./Navigation";
 import "./Show.css";
 import Edit from "./Edit";
+import Create from "./Create";
 
 // const mySwal = withReactContent(Swal)
 
@@ -21,6 +18,7 @@ const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShow, setModalShow] = React.useState(false);
+  const [modalShowEdit, setModalShowEdit] = React.useState(false);
   const [order, setOrder] = useState("ASC");
 
   const clientsCollection = collection(db, "clients");
@@ -83,9 +81,13 @@ const Show = () => {
                   <h1>Pacientes</h1>
                 </div>
                 <div className="d-flex">
-                  <Link to="/create" className="btn btn-secondary m-2 w-25">
-                    Agregar cliente
-                  </Link>
+                  <button
+                          variant="primary"
+                          className="btn btn-success mx-1"
+                          onClick={() => setModalShow(true)}
+                        >
+                          Agregar cliente
+                        </button>
                 </div>
                 <input
                   value={search}
@@ -119,7 +121,7 @@ const Show = () => {
                         <button
                           variant="primary"
                           className="btn btn-success mx-1"
-                          onClick={() => setModalShow(true)}
+                          onClick={() => setModalShowEdit(true)}
                         >
                           <i className="fa-regular fa-pen-to-square"></i>
                         </button>
@@ -141,7 +143,8 @@ const Show = () => {
           </div>
         </div>
       </div>
-      <Edit show={modalShow} onHide={() => setModalShow(false)} />
+      <Create show={modalShow} onHide={() => setModalShow(false)} />
+      <Edit clients={clients} show={modalShowEdit} onHide={() => setModalShowEdit(false)} />
     </>
   );
 };

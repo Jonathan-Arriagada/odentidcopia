@@ -20,6 +20,7 @@ const Edit = (props) => {
         const data = {nombre: nombre, apellido: apellido, idc: idc, edad: edad, numero: numero}
         await updateDoc( client, data)
         navigate("/clients")
+        window.location.reload(false)
     }
 
     const getClientById = async (id) => {
@@ -63,7 +64,7 @@ useEffect( () => {
                     onChange={ (e) => setNombre(e.target.value)}
                     type="text"
                     className='form-control'
-                     />
+                    />
                 </div>
                 <div className='mb-3'>
                     <label className='form-label'>Apellido</label>
@@ -81,7 +82,7 @@ useEffect( () => {
                     onChange={ (e) => setIdc(e.target.value)}
                     type="number"
                     className='form-control'
-                     />
+                    />
                 </div>
                 <div className='mb-3'>
                     <label className='form-label'>Edad</label>
@@ -90,7 +91,7 @@ useEffect( () => {
                     onChange={ (e) => setEdad(e.target.value)}
                     type="number"
                     className='form-control'
-                     />
+                    />
                 </div>
                 <div className='mb-3'>
                     <label className='form-label'>Numero</label>
@@ -101,7 +102,7 @@ useEffect( () => {
                     className='form-control'
                      />
                 </div>
-                <button type='submit' onClick={props.onHide} className='btn btn-primary'>Editar</button>
+                <button type="submit" onClick={props.onHide} className="btn btn-primary">Edit</button>
                 </form>
             </div>
 
