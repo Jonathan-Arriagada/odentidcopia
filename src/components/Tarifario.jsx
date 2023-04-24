@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
   const [search, setSearch] = useState("");
+  const [order, setOrder] = useState("ASC");
 
   const tarifasCollection = collection(db, "tarifas");
 
@@ -45,6 +46,24 @@ function Tarifario() {
   useEffect(() => {
     getTarifas();
   }, []);
+
+  const sorting = (col) => {
+    if (order === "ASC"){
+      const sorted = [...tarifas].sort((a,b)=>
+          a[col].toString() > b[col].toString() ? 1 : -1
+      );
+      setTarifas(sorted);
+      setOrder("DSC");
+    }
+    if (order === "DSC"){
+      const sorted = [...tarifas].sort((a,b)=>
+          a[col].toString() < b[col].toString() ? 1 : -1
+      );
+      setTarifas(sorted);
+      setOrder("ASC");
+    }
+  }
+
   return (
     <>
       <div className="mainpage">
@@ -74,7 +93,7 @@ function Tarifario() {
                 <table className="table table-dark table-hover">
                   <thead>
                     <tr>
-                      <th>Codigo</th>
+                      <th onClick={()=>sorting("codigo")}>Codigo</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
                       <th>Accion</th>

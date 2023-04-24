@@ -21,6 +21,7 @@ const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShow, setModalShow] = React.useState(false);
+  const [order, setOrder] = useState("ASC");
 
   const clientsCollection = collection(db, "clients");
 
@@ -48,6 +49,23 @@ const Show = () => {
         dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
         dato.idc.toString().includes(search.toString())
     );
+  }
+
+  const sorting = (col) => {
+    if (order === "ASC"){
+      const sorted = [...clients].sort((a,b)=>
+          a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
+      );
+      setClients(sorted);
+      setOrder("DSC");
+    }
+    if (order === "DSC"){
+      const sorted = [...clients].sort((a,b)=>
+          a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
+      );
+      setClients(sorted);
+      setOrder("ASC");
+    }
   }
 
   useEffect(() => {
@@ -80,8 +98,8 @@ const Show = () => {
               <table className="table table-dark table-hover">
                 <thead>
                   <tr>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
+                    <th onClick={()=>sorting("nombre")}>Nombre</th>
+                    <th onClick={()=>sorting("apellido")}>Apellido</th>
                     <th>IDC</th>
                     <th>Edad</th>
                     <th>Numero</th>
