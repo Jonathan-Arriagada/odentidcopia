@@ -100,8 +100,8 @@ const Show = () => {
               <table className="table table-dark table-hover">
                 <thead>
                   <tr>
-                    <th onClick={()=>sorting("nombre")}>Nombre</th>
                     <th onClick={()=>sorting("apellido")}>Apellido</th>
+                    <th>Nombre</th>
                     <th>IDC</th>
                     <th>Edad</th>
                     <th>Numero</th>
@@ -112,8 +112,8 @@ const Show = () => {
                 <tbody className="table-group-divider table-active">
                   {results.map((client) => (
                     <tr key={client.id}>
-                      <td> {client.nombre} </td>
                       <td> {client.apellido} </td>
+                      <td> {client.nombre} </td>
                       <td> {client.idc} </td>
                       <td> {client.edad} </td>
                       <td> {client.numero} </td>

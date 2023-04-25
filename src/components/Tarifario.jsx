@@ -43,10 +43,6 @@ function Tarifario() {
     );
   }
 
-  useEffect(() => {
-    getTarifas();
-  }, []);
-
   const sorting = (col) => {
     if (order === "ASC"){
       const sorted = [...tarifas].sort((a,b)=>
@@ -63,6 +59,10 @@ function Tarifario() {
       setOrder("ASC");
     }
   }
+
+  useEffect(() => {
+      getTarifas();
+  }, []);
 
   return (
     <>

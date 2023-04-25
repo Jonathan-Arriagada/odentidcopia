@@ -46,19 +46,19 @@ const Create = (props) => {
 
               <form onSubmit={store}>
                 <div className="mb-3">
-                  <label className="form-label">Nombre</label>
+                  <label className="form-label">Apellido</label>
                   <input
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    value={apellido}
+                    onChange={(e) => setApellido(e.target.value)}
                     type="text"
                     className="form-control"
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Apellido</label>
+                <label className="form-label">Nombre</label>
                   <input
-                    value={apellido}
-                    onChange={(e) => setApellido(e.target.value)}
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
                     type="text"
                     className="form-control"
                   />

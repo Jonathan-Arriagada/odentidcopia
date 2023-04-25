@@ -74,9 +74,9 @@ function Citas() {
               />
               <table className="table table-dark table-hover">
                 <thead>
-                  <tr>
-                    <th>Nombre</th>
+                  <tr>                  
                     <th>Apellido</th>
+                    <th>Nombre</th>
                     <th>IDC</th>
                     <th>Edad</th>
                     <th>Numero</th>
@@ -89,8 +89,8 @@ function Citas() {
                 <tbody className="table-group-divider table-active">
                   {results.map((cita) => (
                     <tr key={cita.id}>
-                      <td> {cita.nombre} </td>
                       <td> {cita.apellido} </td>
+                      <td> {cita.nombre} </td>                     
                       <td> {cita.idc} </td>
                       <td> {cita.edad} </td>
                       <td> {cita.numero} </td>
