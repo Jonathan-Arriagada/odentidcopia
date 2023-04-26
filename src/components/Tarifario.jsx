@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Navigation from "./Navigation";
-import {
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
+import "./Show.css";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
@@ -44,24 +40,24 @@ function Tarifario() {
   }
 
   const sorting = (col) => {
-    if (order === "ASC"){
-      const sorted = [...tarifas].sort((a,b)=>
-          a[col].toString() > b[col].toString() ? 1 : -1
+    if (order === "ASC") {
+      const sorted = [...tarifas].sort((a, b) =>
+        a[col].toString() > b[col].toString() ? 1 : -1
       );
       setTarifas(sorted);
       setOrder("DSC");
     }
-    if (order === "DSC"){
-      const sorted = [...tarifas].sort((a,b)=>
-          a[col].toString() < b[col].toString() ? 1 : -1
+    if (order === "DSC") {
+      const sorted = [...tarifas].sort((a, b) =>
+        a[col].toString() < b[col].toString() ? 1 : -1
       );
       setTarifas(sorted);
       setOrder("ASC");
     }
-  }
+  };
 
   useEffect(() => {
-      getTarifas();
+    getTarifas();
   }, []);
 
   return (
@@ -75,33 +71,37 @@ function Tarifario() {
                 <div className="d-flex">
                   <h1>Tarifario</h1>
                 </div>
-                <div className="d-flex">
-                <button
-                          variant="primary"
-                          className="btn btn-success m-2 w-25"
-                          onClick={() => {setModalShow(true)}}
-                        >
-                          Agregar Tarifa
-                        </button>
+                <div className="d-flex justify-content-end">
+                  <input
+                    value={search}
+                    onChange={searcher}
+                    type="text"
+                    placeholder="Buscar por Codigo o Tratamiento..."
+                    className="form-control m-2 w-25"
+                  />
+                  <button
+                    variant="primary"
+                    className="btn-blue m-2"
+                    onClick={() => {
+                      setModalShow(true);
+                    }}
+                  >
+                    Agregar Tarifa
+                  </button>
                 </div>
-                <input
-                  value={search}
-                  onChange={searcher}
-                  type="text"
-                  placeholder="Buscar por Codigo o Tratamiento..."
-                  className="form-control m-2"
-                />
-                <table className="table table-dark table-hover">
+              </div>
+              <section className="table__body">
+                <table>
                   <thead>
                     <tr>
-                      <th onClick={()=>sorting("codigo")}>Código</th>
+                      <th onClick={() => sorting("codigo")}>Código</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
                       <th>Accion</th>
                     </tr>
                   </thead>
 
-                  <tbody className="table-group-divider table-active">
+                  <tbody>
                     {results.map((tarifa) => (
                       <tr key={tarifa.id}>
                         <td> {tarifa.codigo} </td>
@@ -122,7 +122,7 @@ function Tarifario() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </section>
             </div>
           </div>
         </div>

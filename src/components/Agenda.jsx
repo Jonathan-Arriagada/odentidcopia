@@ -1,15 +1,10 @@
 import React from "react";
-import {
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig/firebase";
 import CreateCita from "./CreateCita";
 import Navigation from "./Navigation";
-
+import "./Show.css";
 function Citas() {
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");
@@ -49,73 +44,77 @@ function Citas() {
 
   return (
     <>
-        <div className="mainpage">
+      <div className="mainpage">
         <Navigation />
-      <div className="container">
-        <div className="row">
-          <div className="col">
-            <div className="d-grid gap-2">
-              <div className="d-flex">
-                <h1>Agenda</h1>
-              </div>
-              <button
-                          variant="primary"
-                          className="btn btn-success m-2 w-25"
-                          onClick={() => setModalShowCita(true)}
-                        >
-                          Agregar Cita
-                        </button>
-              <input
-                value={search}
-                onChange={searcher}
-                type="text"
-                placeholder="Buscar por Apellido o IDC..."
-                className="form-control m-2"
-              />
-              <table className="table table-dark table-hover">
-                <thead>
-                  <tr>                  
-                    <th>Apellido</th>
-                    <th>Nombre</th>
-                    <th>IDC</th>
-                    <th>Edad</th>
-                    <th>Numero</th>
-                    <th>Fecha</th>
-                    <th>Comentarios</th>
-                    <th>Accion</th>
-                  </tr>
-                </thead>
+        <div className="container">
+          <div className="row">
+            <div className="col">
+              <div className="d-grid gap-2">
+                <div className="d-flex">
+                  <h1>Agenda</h1>
+                </div>
+                <div className="d-flex justify-content-end">
+                  <input
+                    value={search}
+                    onChange={searcher}
+                    type="text"
+                    placeholder="Buscar por Apellido o IDC..."
+                    className="form-control m-2 w-25"
+                  />
+                  <button
+                    variant="primary"
+                    className="btn-blue m-2"
+                    onClick={() => setModalShowCita(true)}
+                  >
+                    Agregar Cita
+                  </button>
+                </div>
+                </div>
+                <section className="table__body">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Apellido</th>
+                        <th>Nombre</th>
+                        <th>IDC</th>
+                        <th>Edad</th>
+                        <th>Numero</th>
+                        <th>Fecha</th>
+                        <th>Comentarios</th>
+                        <th>Accion</th>
+                      </tr>
+                    </thead>
 
-                <tbody className="table-group-divider table-active">
-                  {results.map((cita) => (
-                    <tr key={cita.id}>
-                      <td> {cita.apellido} </td>
-                      <td> {cita.nombre} </td>                     
-                      <td> {cita.idc} </td>
-                      <td> {cita.edad} </td>
-                      <td> {cita.numero} </td>
-                      <td> {cita.fecha} </td>
-                      <td> {cita.comentario} </td>
-                      <td>
-                        <button
-                          onClick={() => {
-                            deleteCita(cita.id);
-                          }}
-                          className="btn btn-danger"
-                        >
-                          {" "}
-                          <i className="fa-solid fa-trash-can"></i>{" "}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                    <tbody>
+                      {results.map((cita) => (
+                        <tr key={cita.id}>
+                          <td> {cita.apellido} </td>
+                          <td> {cita.nombre} </td>
+                          <td> {cita.idc} </td>
+                          <td> {cita.edad} </td>
+                          <td> {cita.numero} </td>
+                          <td> {cita.fecha} </td>
+                          <td> {cita.comentario} </td>
+                          <td>
+                            <button
+                              onClick={() => {
+                                deleteCita(cita.id);
+                              }}
+                              className="btn btn-danger"
+                            >
+                              {" "}
+                              <i className="fa-solid fa-trash-can"></i>{" "}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </section>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      </div>
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
     </>
   );

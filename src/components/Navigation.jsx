@@ -4,10 +4,13 @@ import Nav from "./NavIcons/Nav";
 import {FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed} from 'react-icons/fa'
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"
+import { useContext } from "react";
+
 
 const Navigation = () => {
     const [nav, setNav] = useState(false);
-
+    const {currentUser} = useContext(AuthContext)
     const logout = () => {
         localStorage.setItem("user", JSON.stringify(null));
       };
@@ -25,6 +28,7 @@ const Navigation = () => {
                     <img src={profile} alt="profile" className="profile-img"/>
                 </div>
                 <span>Odentid</span>
+                <span>{currentUser.email}</span>
             </header>
             <Link to="../clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUser}/></Link>
             <Link to="../agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt}/></Link>

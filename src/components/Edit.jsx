@@ -5,25 +5,28 @@ import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const Edit = (props) => {
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [idc, setIdc] = useState([]);
-  const [edad, setEdad] = useState([]);
-  const [numero, setNumero] = useState([]);
+    const [nombre, setNombre] = useState(props.client.nombre || "");
+    const [apellido, setApellido] = useState(props.client.apellido || "");
+    const [idc, setIdc] = useState(props.client.idc || "");
+    const [edad, setEdad] = useState(props.client.edad || "");
+    const [numero, setNumero] = useState(props.client.numero || "");
 
   const navigate = useNavigate();
 
   const update = async (e) => {
     e.preventDefault();
-    const client = doc(db, "clients", props.id);
-    const data = {
-      nombre: nombre,
-      apellido: apellido,
-      idc: idc,
-      edad: edad,
-      numero: numero,
-    };
-    await updateDoc(client, data);
+    const clientRef = doc(db, "clients", props.id);
+    const clientDoc = await getDoc(clientRef);
+    const clientData = clientDoc.data();
+  
+  const newData = {
+    nombre: nombre || clientData.nombre,
+    apellido: apellido || clientData.apellido,
+    idc: idc || clientData.idc,
+    edad: edad || clientData.edad,
+    numero: numero || clientData.numero,
+  };
+  await updateDoc(clientRef, newData);
     navigate("/clients");
     window.location.reload(false);
   };
@@ -49,7 +52,7 @@ const Edit = (props) => {
                   <label className="form-label">Nombre</label>
                   <input
                     defaultValue={props.client.nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    onChange={(e) => setNombre(e.currentTarget.value)}
                     type="text"
                     className="form-control"
                   />
@@ -58,7 +61,7 @@ const Edit = (props) => {
                   <label className="form-label">Apellido</label>
                   <input
                     defaultValue={props.client.apellido}
-                    onChange={(e) => setApellido(e.target.value)}
+                    onChange={(e) => setApellido(e.currentTarget.value)}
                     type="text"
                     className="form-control"
                   />
@@ -67,7 +70,7 @@ const Edit = (props) => {
                   <label className="form-label">IDC</label>
                   <input
                     defaultValue={props.client.idc}
-                    onChange={(e) => setIdc(e.target.value)}
+                    onChange={(e) => setIdc(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />
@@ -76,7 +79,7 @@ const Edit = (props) => {
                   <label className="form-label">Edad</label>
                   <input
                     defaultValue={props.client.edad}
-                    onChange={(e) => setEdad(e.target.value)}
+                    onChange={(e) => setEdad(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />
@@ -85,15 +88,7 @@ const Edit = (props) => {
                   <label className="form-label">Numero</label>
                   <input
                     defaultValue={props.client.numero}
-                    onChange={(e) => {
-                      if (props.client.numero !== e.target.value) {
-                        setNumero(e.target.value);
-                        console.log(numero + " entró")
-                      } else {
-                        setNumero(props.client.numero);
-                        console.log(numero + " no entro")
-                      }
-                    }}
+                    onChange={(e) => {setNumero(e.currentTarget.value)}}
                     type="number"
                     className="form-control"
                   />
