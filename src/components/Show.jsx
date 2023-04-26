@@ -12,13 +12,11 @@ import "./Show.css";
 import Edit from "./Edit";
 import Create from "./Create";
 
-// const mySwal = withReactContent(Swal)
-
 const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
-  const [modalShow, setModalShow] = React.useState(false);
-  const [modalShowEdit, setModalShowEdit] = React.useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [modalShowEdit, setModalShowEdit] = useState(false);
   const [order, setOrder] = useState("ASC");
 
   const clientsCollection = collection(db, "clients");

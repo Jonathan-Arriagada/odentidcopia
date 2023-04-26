@@ -81,7 +81,7 @@ function Tarifario() {
                           className="btn btn-success m-2 w-25"
                           onClick={() => {setModalShow(true)}}
                         >
-                          Agregar Cita
+                          Agregar Tarifa
                         </button>
                 </div>
                 <input
@@ -94,7 +94,7 @@ function Tarifario() {
                 <table className="table table-dark table-hover">
                   <thead>
                     <tr>
-                      <th onClick={()=>sorting("codigo")}>Codigo</th>
+                      <th onClick={()=>sorting("codigo")}>Código</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
                       <th>Accion</th>

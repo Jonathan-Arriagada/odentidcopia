@@ -102,7 +102,7 @@ useEffect( () => {
                     className='form-control'
                      />
                 </div>
-                <button type="submit" onClick={props.onHide} className="btn btn-primary">Edit</button>
+                <button type="submit" onClick={props.onHide} className="btn btn-primary">Editar</button>
                 </form>
             </div>
 
