@@ -17,9 +17,11 @@ import Create from "./Create";
 const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
-  const [modalShow, setModalShow] = React.useState(false);
-  const [modalShowEdit, setModalShowEdit] = React.useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [modalShowEdit, setModalShowEdit] = useState(false);
   const [order, setOrder] = useState("ASC");
+  const [client,setClient] = useState([]);
+  const [idParam, setIdParam] = useState("");
 
   const clientsCollection = collection(db, "clients");
 
@@ -121,7 +123,7 @@ const Show = () => {
                         <button
                           variant="primary"
                           className="btn btn-success mx-1"
-                          onClick={() => setModalShowEdit(true)}
+                          onClick={() => {setModalShowEdit(true); setClient(client); setIdParam(client.id)}}
                         >
                           <i className="fa-regular fa-pen-to-square"></i>
                         </button>
@@ -137,6 +139,7 @@ const Show = () => {
                       </td>
                     </tr>
                   ))}
+                  
                 </tbody>
               </table>
             </div>
@@ -144,7 +147,7 @@ const Show = () => {
         </div>
       </div>
       <Create show={modalShow} onHide={() => setModalShow(false)} />
-      <Edit clients={clients} show={modalShowEdit} onHide={() => setModalShowEdit(false)} />
+      <Edit id={idParam} client={client} show={modalShowEdit} onHide={() => setModalShowEdit(false)}/>
     </>
   );
 };
