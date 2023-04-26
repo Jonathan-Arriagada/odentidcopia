@@ -12,8 +12,6 @@ import "./Show.css";
 import Edit from "./Edit";
 import Create from "./Create";
 
-// const mySwal = withReactContent(Swal)
-
 const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");

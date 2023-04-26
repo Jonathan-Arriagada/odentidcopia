@@ -10,6 +10,7 @@ import CreateCita from "./components/CreateCita";
 import Agenda from "./components/Agenda";
 import Tarifario from "./components/Tarifario";
 import CreateTarifa from "./components/CreateTarifa";
+import Tratamientos from "./components/Tratamientos";
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -30,6 +31,7 @@ function App() {
             <Route path="Agenda" element={<RequireAuth><Agenda /></RequireAuth>}/>
             <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
+            <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
         </Routes>
       </BrowserRouter>
     </div>

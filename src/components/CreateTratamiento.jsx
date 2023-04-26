@@ -4,30 +4,30 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
-function CreateCita(props) {
-  const [nombre, setNombre] = useState("");
+function CreateTratamiento(props) {
   const [apellido, setApellido] = useState("");
-  const [idc, setIdc] = useState([]);
-  const [edad, setEdad] = useState([]);
-  const [numero, setNumero] = useState([]);
-  const [fecha, setFecha] = useState([]);
-  const [comentario, setComentario] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [tratamiento, setTratamiento] = useState("");
+  const [pieza, setPieza] = useState([]);
+  const [saldo, setSaldo] = useState("");
+  const [estadoPago, setEstadoPago] = useState([]);
+  const [estadoTratamiento, setEstadoTratamiento] = useState("");
   const navigate = useNavigate();
 
-  const citasCollection = collection(db, "citas");
+  const tratamientosCollection = collection(db, "tratamientos");
 
   const store = async (e) => {
     e.preventDefault();
-    await addDoc(citasCollection, {
-      nombre: nombre,
+    await addDoc(tratamientosCollection, {
       apellido: apellido,
-      idc: idc,
-      edad: edad,
-      numero: numero,
-      fecha: fecha,
-      comentario: comentario,
+      nombre: nombre,
+      tratamiento: tratamiento,
+      pieza: pieza,
+      saldo: saldo,
+      estadoPago: estadoPago,
+      estadoTratamiento: estadoTratamiento,
     });
-    navigate("/agenda");
+    navigate("/tratamientos");
     window.location.reload(false)
   };
 
@@ -40,7 +40,7 @@ function CreateCita(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          <h1>Crear Cita</h1>
+          <h1>Crear Tratamiento</h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -67,46 +67,46 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">Tratamiento</label>
                   <input
-                    value={idc}
-                    onChange={(e) => setIdc(e.target.value)}
+                    value={tratamiento}
+                    onChange={(e) => setTratamiento(e.target.value)}
+                    type="text"
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Pieza</label>
+                  <input
+                    value={pieza}
+                    onChange={(e) => setPieza(e.target.value)}
                     type="number"
                     className="form-control"
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Edad</label>
+                  <label className="form-label">Saldo</label>
                   <input
-                    value={edad}
-                    onChange={(e) => setEdad(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Numero</label>
-                  <input
-                    value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    type="number"
+                    value={saldo}
+                    onChange={(e) => setSaldo(e.target.value)}
+                    type="text"
                     className="form-control"
                   />
                 </div>        
                 <div className="mb-1">
-                  <label className="form-label">Fecha</label>
+                  <label className="form-label">Estado del Pago</label>
                   <input
-                    value={fecha}
-                    onChange={(e) => setFecha(e.target.value)}
-                    type="datetime-local"
+                    value={estadoPago}
+                    onChange={(e) => setEstadoPago(e.target.value)}
+                    type="text"
                     className="form-control"
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Comentarios</label>
+                  <label className="form-label">Estado del Tratamiento</label>
                   <input
-                    value={comentario}
-                    onChange={(e) => setComentario(e.target.value)}
+                    value={estadoTratamiento}
+                    onChange={(e) => setEstadoTratamiento(e.target.value)}
                     type="text"
                     className="form-control"
                   />
@@ -121,4 +121,4 @@ function CreateCita(props) {
   );
 }
 
-export default CreateCita;
+export default CreateTratamiento;
