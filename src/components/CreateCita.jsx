@@ -11,7 +11,10 @@ function CreateCita(props) {
   const [edad, setEdad] = useState([]);
   const [numero, setNumero] = useState([]);
   const [fecha, setFecha] = useState([]);
+  const [horaInicio, setHoraInicio] = useState([]);
+  const [horaFin, setHoraFin] = useState([]);
   const [comentario, setComentario] = useState("");
+
   const navigate = useNavigate();
 
   const citasCollection = collection(db, "citas");
@@ -26,6 +29,8 @@ function CreateCita(props) {
       numero: numero,
       fecha: fecha,
       comentario: comentario,
+      horaInicio: horaInicio,
+      horaFin: horaFin,
     });
     navigate("/agenda");
     window.location.reload(false)
@@ -98,7 +103,7 @@ function CreateCita(props) {
                   <input
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
-                    type="datetime-local"
+                    type="date"                             
                     className="form-control"
                   />
                 </div>
@@ -108,6 +113,24 @@ function CreateCita(props) {
                     value={comentario}
                     onChange={(e) => setComentario(e.target.value)}
                     type="text"
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-1">
+                  <label className="form-label">Inicio</label>
+                  <input
+                    value={horaInicio}
+                    onChange={(e) => setHoraInicio(e.target.value)}
+                    type="time"
+                    className="form-control"
+                  />
+                </div>                
+                <div className="mb-1">
+                  <label className="form-label">Fin</label>
+                  <input
+                    value={horaFin}
+                    onChange={(e) => setHoraFin(e.target.value)}
+                    type="time"
                     className="form-control"
                   />
                 </div>

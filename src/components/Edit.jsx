@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
@@ -88,7 +88,7 @@ const Edit = (props) => {
                   <label className="form-label">Numero</label>
                   <input
                     defaultValue={props.client.numero}
-                    onChange={(e) => {setNumero(e.currentTarget.value)}}
+                    onChange={(e) => setNumero(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />
@@ -100,7 +100,7 @@ const Edit = (props) => {
                   }}
                   className="btn btn-primary"
                 >
-                  Edit
+                  Editar
                 </button>
               </form>
             </div>

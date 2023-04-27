@@ -5,10 +5,16 @@ import { db } from "../firebaseConfig/firebase";
 import CreateCita from "./CreateCita";
 import Navigation from "./Navigation";
 import "./Show.css";
+import EditCita from "./EditCita";
+
 function Citas() {
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");
-  const [modalShowCita, setModalShowCita] = React.useState(false);
+  const [modalShowCita, setModalShowCita] = useState(false);
+  const [modalShowEditCita, setModalShowEditCita] = useState(false);
+  const [cita, setCita] = useState([]);
+  const [idParam, setIdParam] = useState("");
+  const [order, setOrder] = useState("ASC");
 
   const citasCollection = collection(db, "citas");
 
@@ -37,6 +43,23 @@ function Citas() {
         dato.idc.toString().includes(search.toString())
     );
   }
+
+  const sorting = (col) => {
+    if (order === "ASC") {
+      const sorted = [...citas].sort((a, b) =>
+        a[col].toString() > b[col].toString() ? 1 : -1
+      );
+      setCitas(sorted);
+      setOrder("DSC");
+    }
+    if (order === "DSC") {
+      const sorted = [...citas].sort((a, b) =>
+        a[col].toString() < b[col].toString() ? 1 : -1
+      );
+      setCitas(sorted);
+      setOrder("ASC");
+    }
+  };
 
   useEffect(() => {
     getCitas();
@@ -74,12 +97,14 @@ function Citas() {
                   <table>
                     <thead>
                       <tr>
+                        <th onClick={() => sorting("fecha")}>Fecha</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
                         <th>Apellido</th>
                         <th>Nombre</th>
                         <th>IDC</th>
-                        <th>Edad</th>
-                        <th>Numero</th>
-                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Numero</th>                        
                         <th>Comentarios</th>
                         <th>Accion</th>
                       </tr>
@@ -88,14 +113,27 @@ function Citas() {
                     <tbody>
                       {results.map((cita) => (
                         <tr key={cita.id}>
+                          <td> {cita.fecha} </td>
+                          <td> {cita.horaInicio} </td>
+                          <td> {cita.horaFin} </td>
                           <td> {cita.apellido} </td>
                           <td> {cita.nombre} </td>
                           <td> {cita.idc} </td>
-                          <td> {cita.edad} </td>
-                          <td> {cita.numero} </td>
-                          <td> {cita.fecha} </td>
+                          <td> {cita.estado} </td>
+                          <td> {cita.numero} </td>                          
                           <td> {cita.comentario} </td>
                           <td>
+                          <button
+                            variant="primary"
+                            className="btn btn-success mx-1"
+                            onClick={() => {
+                              setModalShowEditCita(true);
+                              setCita(cita);
+                              setIdParam(cita.id);
+                            }}
+                          >
+                            <i className="fa-regular fa-pen-to-square"></i>
+                            </button>
                             <button
                               onClick={() => {
                                 deleteCita(cita.id);
@@ -116,6 +154,10 @@ function Citas() {
           </div>
         </div>
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
+      <EditCita    id={idParam}
+        cita={cita}
+        show={modalShowEditCita}
+        onHide={() => setModalShowEditCita(false)} />
     </>
   );
 }
