@@ -6,6 +6,7 @@ import CreateCita from "./CreateCita";
 import Navigation from "./Navigation";
 import "./Show.css";
 import EditCita from "./EditCita";
+import Estados from "./Estados";
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -15,6 +16,8 @@ function Citas() {
   const [cita, setCita] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [order, setOrder] = useState("ASC");
+  const [modalShowEstados, setModalShowEstados] = useState(false);
+
 
   const citasCollection = collection(db, "citas");
 
@@ -91,6 +94,13 @@ function Citas() {
                   >
                     Agregar Cita
                   </button>
+                  <button
+                    variant="secondary"
+                    className="btn-blue m-2"
+                    onClick={() => setModalShowEstados(true)}
+                  >
+                    Estados
+                  </button>
                 </div>
                 </div>
                 <section className="table__body">
@@ -158,6 +168,7 @@ function Citas() {
         cita={cita}
         show={modalShowEditCita}
         onHide={() => setModalShowEditCita(false)} />
+        <Estados show={modalShowEstados} onHide={() => setModalShowEstados(false)} />
     </>
   );
 }
