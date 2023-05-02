@@ -6,10 +6,10 @@ import { Modal } from "react-bootstrap";
 
 function CreateCita(props) {
   const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [idc, setIdc] = useState([]);
-  const [edad, setEdad] = useState([]);
-  const [numero, setNumero] = useState([]);
+  const [apellido, setApellido] = useState( "");
+  const [idc, setIdc] = useState("");
+  const [numero, setNumero] = useState("");
+  const [edad, setEdad] = useState("");;
   const [fecha, setFecha] = useState([]);
   const [horaInicio, setHoraInicio] = useState([]);
   const [horaFin, setHoraFin] = useState([]);
@@ -57,7 +57,7 @@ function CreateCita(props) {
                   <label className="form-label">Apellido</label>
                   <input
                     value={apellido}
-                    onChange={(e) => setApellido(e.target.value)}
+                    onChange={(e) => setApellido(e.currentTarget.value)}
                     type="text"
                     className="form-control"
                   />
@@ -66,7 +66,7 @@ function CreateCita(props) {
                   <label className="form-label">Nombre</label>
                   <input
                     value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    onChange={(e) => setNombre(e.currentTarget.value)}
                     type="text"
                     className="form-control"
                   />
@@ -75,7 +75,7 @@ function CreateCita(props) {
                   <label className="form-label">IDC</label>
                   <input
                     value={idc}
-                    onChange={(e) => setIdc(e.target.value)}
+                    onChange={(e) => setIdc(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />
@@ -84,7 +84,7 @@ function CreateCita(props) {
                   <label className="form-label">Edad</label>
                   <input
                     value={edad}
-                    onChange={(e) => setEdad(e.target.value)}
+                    onChange={(e) => setEdad(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />
@@ -93,7 +93,7 @@ function CreateCita(props) {
                   <label className="form-label">Numero</label>
                   <input
                     value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
+                    onChange={(e) => setNumero(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />
