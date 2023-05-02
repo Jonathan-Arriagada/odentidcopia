@@ -15,13 +15,18 @@ const Show = () => {
   const [order, setOrder] = useState("ASC");
   const [client, setClient] = useState([]);
   const [idParam, setIdParam] = useState("");
-
+ 
   const clientsCollection = collection(db, "clients");
 
   const getClients = async () => {
     const data = await getDocs(clientsCollection);
     setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
+
+  
+  useEffect(() => {
+    getClients();
+  }, []);
 
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);
@@ -34,14 +39,18 @@ const Show = () => {
   };
 
   let results = [];
+  
   if (!search) {
     results = clients;
-  } else {
+  }
+  else {
     results = clients.filter(
       (dato) =>
         dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
         dato.idc.toString().includes(search.toString())
-    );
+    )
+  }if(results === ""){
+    return (<h1>No existe</h1>)
   }
 
   const sorting = (col) => {
@@ -61,9 +70,7 @@ const Show = () => {
     }
   };
 
-  useEffect(() => {
-    getClients();
-  }, []);
+
   return (
     <>
       <div className="mainpage">

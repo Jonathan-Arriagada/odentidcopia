@@ -8,7 +8,7 @@ function CreateCita(props) {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [idc, setIdc] = useState([]);
-  const [edad, setEdad] = useState([]);
+  const [estado, setEstado] = useState([]);
   const [numero, setNumero] = useState([]);
   const [fecha, setFecha] = useState([]);
   const [horaInicio, setHoraInicio] = useState([]);
@@ -25,7 +25,7 @@ function CreateCita(props) {
       nombre: nombre,
       apellido: apellido,
       idc: idc,
-      edad: edad,
+      estado: estado,
       numero: numero,
       fecha: fecha,
       comentario: comentario,
@@ -81,11 +81,11 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Edad</label>
+                  <label className="form-label">Estado</label>
                   <input
-                    value={edad}
-                    onChange={(e) => setEdad(e.target.value)}
-                    type="number"
+                    value={estado}
+                    onChange={(e) => setEstado(e.target.value)}
+                    type="text"
                     className="form-control"
                   />
                 </div>
