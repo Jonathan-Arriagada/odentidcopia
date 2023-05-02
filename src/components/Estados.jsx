@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Modal } from 'react-bootstrap';
-import { addDoc, collection, doc, setDoc, deleteDoc } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
@@ -11,22 +11,32 @@ const Estados = ({ show, onHide }) => {
   const [error, setError] = useState('');
   const [estados, setEstados] = useState([]);
   const estadosCollection = collection(db, "estados");
+  const estadosCollectionOrdenados = useRef(query(estadosCollection, orderBy("name")));
+
+  const updateEstadosFromSnapshot = useCallback((snapshot) => {
+    const estadosArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setEstados(estadosArray);
+  }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "estados"), (snapshot) => {
-      setEstados(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-    });
-  
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-  
+    const unsubscribe = onSnapshot(estadosCollectionOrdenados.current, updateEstadosFromSnapshot);
+    return unsubscribe;
+  }, [updateEstadosFromSnapshot]);
+
+  const inputRef = useRef(null);
+
+  const estadoExiste = (name) => {
+    return estados.some((estado) => estado.name.toLowerCase() === name.toLowerCase());
+  };
 
   const handleCreate = (e) => {
     e.preventDefault();
     if (estado.trim() === '') {
       setError('El estado no puede estar vacío');
+      return;
+    }
+    if (estadoExiste(estado)) {
+      setError('El estado ya existe');
       return;
     }
     const newState = { name: estado };
@@ -43,10 +53,14 @@ const Estados = ({ show, onHide }) => {
     setError('');
   };
 
-  const handleUpdate = (e) => { 
+  const handleUpdate = (e) => {
     e.preventDefault();
     if (estado.trim() === '') {
       setError('El estado no puede estar vacío');
+      return;
+    }
+    if (estadoExiste(estado)) {
+      setError('El estado ya existe');
       return;
     }
     const stateToUpdate = estados[editIndex];
@@ -60,15 +74,14 @@ const Estados = ({ show, onHide }) => {
   };
 
   const handleDelete = async (index) => {
-      await deleteDoc(doc(estadosCollection, estados[index].id));
-      const newStates = [...estados];
-      newStates.splice(index, 1);
-      setEstados(newStates);
-      setError('');
+    await deleteDoc(doc(estadosCollection, estados[index].id));
+    const newStates = estados.filter((_, i) => i !== index);
+    setEstados(newStates);
+    setError('');
   };
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
         <Modal.Title>Crear/Editar/Eliminar Estado</Modal.Title>
       </Modal.Header>
@@ -81,12 +94,14 @@ const Estados = ({ show, onHide }) => {
               className="form-control"
               value={estado}
               onChange={(e) => setEstado(e.target.value)}
+              ref={inputRef}
             />
             {error && <small className="text-danger">{error}</small>}
           </div>
           <button className="btn btn-primary" type="submit">
             {editIndex !== null ? 'Actualizar' : 'Crear'}
           </button>
+
           {editIndex !== null && (
             <button className="btn btn-secondary mx-2" onClick={() => setEditIndex(null)}>
               Cancelar
@@ -98,11 +113,11 @@ const Estados = ({ show, onHide }) => {
             <div key={state.id} className="d-flex align-items-center justify-content-between border p-2">
               <div>{state.name}</div>
               <div>
-                <button className="btn btn-primary mx-1" onClick={() => handleEdit(index)}>
-                <i className="fa-solid fa-edit"></i>
+                <button className="btn btn-primary mx-1 btn-sm" onClick={() => handleEdit(index)}>
+                  <i className="fa-solid fa-edit"></i>
                 </button>
-                <button className="btn btn-danger" onClick={() => handleDelete(index)}>
-                <i className="fa-solid fa-trash-can"></i>
+                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(index)}>
+                  <i className="fa-solid fa-trash-can"></i>
                 </button>
               </div>
             </div>

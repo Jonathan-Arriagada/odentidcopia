@@ -1,12 +1,15 @@
 import React from "react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { useState, useEffect } from "react";
+import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../firebaseConfig/firebase";
+import { onSnapshot } from "firebase/firestore";
 import CreateCita from "./CreateCita";
 import Navigation from "./Navigation";
 import "./Show.css";
 import EditCita from "./EditCita";
 import Estados from "./Estados";
+import HorariosAtencionCitas from "./HorariosAtencionCitas";
+
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -17,19 +20,32 @@ function Citas() {
   const [idParam, setIdParam] = useState("");
   const [order, setOrder] = useState("ASC");
   const [modalShowEstados, setModalShowEstados] = useState(false);
-
+  const [modalShowHorarios, setModalShowHorarios] = useState(false);
 
   const citasCollection = collection(db, "citas");
+  const citasCollectionOrdenados = useRef(query(citasCollection, orderBy("fecha","desc")));
+  
+  const updateEstadosFromSnapshot = useCallback((snapshot) => {
+    const citasArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    citasArray.sort((a, b) => {
+      if (a.fecha === b.fecha) {
+        return b.horaInicio.localeCompare(a.horaInicio);
+      } else {
+        return b.fecha.localeCompare(a.fecha);
+      }
+    });
+    setCitas(citasArray);
+  }, []);
 
-  const getCitas = async () => {
-    const data = await getDocs(citasCollection);
-    setCitas(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
+  useEffect(() => {
+    const unsubscribe = onSnapshot(citasCollectionOrdenados.current, updateEstadosFromSnapshot);
+    return unsubscribe;
+  }, [updateEstadosFromSnapshot]);
 
   const deleteCita = async (id) => {
-    const citaDoc = doc(db, "citas", id);
-    await deleteDoc(citaDoc);
-    getCitas();
+      const citaDoc = doc(db, "citas", id);
+      await deleteDoc(citaDoc);
+      setCitas(prevCitas => prevCitas.filter(cita => cita.id !== id));
   };
 
   const searcher = (e) => {
@@ -64,10 +80,6 @@ function Citas() {
     }
   };
 
-  useEffect(() => {
-    getCitas();
-  }, []);
-
   return (
     <>
       <div className="mainpage">
@@ -100,6 +112,13 @@ function Citas() {
                     onClick={() => setModalShowEstados(true)}
                   >
                     Estados
+                  </button>
+                  <button
+                    variant="tertiary"
+                    className="btn-blue m-2"
+                    onClick={() => setModalShowHorarios(true)}
+                  >
+                    Horarios Atencion
                   </button>
                 </div>
                 </div>
@@ -169,6 +188,8 @@ function Citas() {
         show={modalShowEditCita}
         onHide={() => setModalShowEditCita(false)} />
         <Estados show={modalShowEstados} onHide={() => setModalShowEstados(false)} />
+        <HorariosAtencionCitas show={modalShowHorarios} onHide={() => setModalShowHorarios(false)} />
+
     </>
   );
 }

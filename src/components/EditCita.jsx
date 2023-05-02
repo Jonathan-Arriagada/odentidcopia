@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
@@ -14,8 +13,6 @@ const EditCita = (props) => {
     const [comentario, setComentario] = useState(props.cita.comentario || "");
     const [horaInicio, setHoraInicio] = useState(props.cita.horaInicio || "");
     const [horaFin, setHoraFin] = useState(props.cita.horaFin || "");
-
-  const navigate = useNavigate();
 
   const update = async (e) => {
     e.preventDefault();
@@ -35,8 +32,6 @@ const EditCita = (props) => {
     horaFin: horaFin || citaData.horaFin,
   };
   await updateDoc(citaRef, newData);
-    navigate("/agenda");
-    window.location.reload(false);
   };
 
   return (
