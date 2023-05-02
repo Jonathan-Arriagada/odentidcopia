@@ -7,13 +7,12 @@ function CreateCita(props) {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [idc, setIdc] = useState([]);
-  const [edad, setEdad] = useState([]);
   const [numero, setNumero] = useState([]);
   const [fecha, setFecha] = useState([]);
   const [horaInicio, setHoraInicio] = useState([]);
   const [horaFin, setHoraFin] = useState([]);
   const [comentario, setComentario] = useState("");
-
+  const [estado, setEstado] = useState("");
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
@@ -128,17 +127,10 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Edad</label>
-                  <input
-                    value={edad}
-                    onChange={(e) => setEdad(e.target.value)}
-                    type="number"
-                    className="form-control"
-                    multiple={false}
-                  >
+                    <select>
                     <option value="">Selecciona un estado</option>
-                    {optionsEstado}
-                  </select>
+                    {optionsEstado}      
+                    </select>   
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Numero</label>
