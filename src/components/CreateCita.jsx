@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useState, useEffect, useCallback } from "react";
+import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -8,16 +7,65 @@ function CreateCita(props) {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [idc, setIdc] = useState([]);
-  const [estado, setEstado] = useState([]);
+  const [edad, setEdad] = useState([]);
   const [numero, setNumero] = useState([]);
   const [fecha, setFecha] = useState([]);
   const [horaInicio, setHoraInicio] = useState([]);
   const [horaFin, setHoraFin] = useState([]);
   const [comentario, setComentario] = useState("");
 
-  const navigate = useNavigate();
+  const [optionsEstado, setOptionsEstado] = useState([]);
+  const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
+  const [optionsHoraFin, setOptionsHoraFin] = useState([]);
+  const [, setHorariosAtencion] = useState([]);
+
 
   const citasCollection = collection(db, "citas");
+
+  const updateOptionsEstado = useCallback(snapshot => {
+    const options = snapshot.docs.map(doc => (
+      <option key={`estado-${doc.id}`} value={doc.data().name}>{doc.data().name}</option>
+    ));
+    setOptionsEstado(options);
+  }, []);
+
+  const updateOptionsHorarios = useCallback(snapshot => {
+    const horarios = snapshot.docs.map(doc => doc.data());
+    setHorariosAtencion(horarios);
+
+    const optionsHoraInicio = horarios.map((horario, index) => (
+      <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
+    ));
+    setOptionsHoraInicio(optionsHoraInicio);
+
+    const optionsHoraFin = horarios
+      .filter(horario => horaInicio && horario.name > horaInicio)
+      .map((horario, index) => (
+        <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
+      ));
+    setOptionsHoraFin(optionsHoraFin);
+  }, [horaInicio]);
+
+  useEffect(() => {
+    const unsubscribe = [
+      onSnapshot(query(collection(db, "estados"), orderBy("name")), updateOptionsEstado),
+      onSnapshot(query(collection(db, "horariosAtencion"), orderBy("name")), updateOptionsHorarios)
+    ];
+
+    return () => unsubscribe.forEach(fn => fn());
+  }, [updateOptionsEstado, updateOptionsHorarios]);
+
+  const clearFields = () => {
+    setNombre("");
+    setApellido("");
+    setIdc("");
+    setEstado("");
+    setNumero("");
+    setFecha("");
+    setHoraInicio("");
+    setHoraFin("");
+    setComentario("");
+  };
 
   const store = async (e) => {
     e.preventDefault();
@@ -32,8 +80,7 @@ function CreateCita(props) {
       horaInicio: horaInicio,
       horaFin: horaFin,
     });
-    navigate("/agenda");
-    window.location.reload(false)
+    clearFields();
   };
 
   return (
@@ -81,13 +128,17 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Estado</label>
+                  <label className="form-label">Edad</label>
                   <input
-                    value={estado}
-                    onChange={(e) => setEstado(e.target.value)}
-                    type="text"
+                    value={edad}
+                    onChange={(e) => setEdad(e.target.value)}
+                    type="number"
                     className="form-control"
-                  />
+                    multiple={false}
+                  >
+                    <option value="">Selecciona un estado</option>
+                    {optionsEstado}
+                  </select>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Numero</label>
@@ -97,13 +148,13 @@ function CreateCita(props) {
                     type="number"
                     className="form-control"
                   />
-                </div>        
+                </div>
                 <div className="mb-1">
                   <label className="form-label">Fecha</label>
                   <input
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
-                    type="date"                             
+                    type="date"
                     className="form-control"
                   />
                 </div>
@@ -117,22 +168,27 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="mb-1">
-                  <label className="form-label">Inicio</label>
-                  <input
+                  <label className="form-label">Hora Inicio</label>
+                  <select
                     value={horaInicio}
-                    onChange={(e) => setHoraInicio(e.target.value)}
-                    type="time"
+                    onChange={(e) =>
+                      setHoraInicio(e.target.value)}
                     className="form-control"
-                  />
-                </div>                
+                    multiple={false}
+                  >
+                    {optionsHoraInicio}
+                  </select>
+                </div>
                 <div className="mb-1">
-                  <label className="form-label">Fin</label>
-                  <input
+                  <label className="form-label">Hora Fin</label>
+                  <select
                     value={horaFin}
                     onChange={(e) => setHoraFin(e.target.value)}
-                    type="time"
                     className="form-control"
-                  />
+                    multiple={false}
+                  >
+                    {optionsHoraFin}
+                  </select>
                 </div>
                 <button type="submit" onClick={props.onHide} className="btn btn-primary">Agregar</button>
               </form>
