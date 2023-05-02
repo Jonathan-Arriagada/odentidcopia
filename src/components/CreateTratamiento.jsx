@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -12,9 +12,25 @@ function CreateTratamiento(props) {
   const [saldo, setSaldo] = useState("");
   const [estadoPago, setEstadoPago] = useState([]);
   const [estadoTratamiento, setEstadoTratamiento] = useState("");
+  const [optionsEstado, setOptionsEstado] = useState([]);
   const navigate = useNavigate();
 
   const tratamientosCollection = collection(db, "tratamientos");
+
+  const updateOptionsEstado = useCallback(snapshot => {
+    const options = snapshot.docs.map(doc => (
+      <option key={`estado-${doc.id}`} value={doc.estados}>{doc.data().name}</option>
+    ));
+    setOptionsEstado(options);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = [
+      onSnapshot(query(collection(db, "estados"), orderBy("name")), updateOptionsEstado),
+    ];
+  
+    return () => unsubscribe.forEach(fn => fn());
+  }, [updateOptionsEstado]);
 
   const store = async (e) => {
     e.preventDefault();
@@ -104,12 +120,15 @@ function CreateTratamiento(props) {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Estado del Tratamiento</label>
-                  <input
+                   <select
                     value={estadoTratamiento}
                     onChange={(e) => setEstadoTratamiento(e.target.value)}
-                    type="text"
                     className="form-control"
-                  />
+                    multiple={false}
+                  >
+                    <option value="">Selecciona un estado</option>
+                    {optionsEstado}
+                  </select>
                 </div>
                 <button type="submit" onClick={props.onHide} className="btn btn-primary">Agregar</button>
               </form>

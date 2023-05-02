@@ -25,7 +25,9 @@ const Show = () => {
     const data = await getDocs(clientsCollection);
     setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
-
+  useEffect(() => {
+    getClients();
+  }, []);
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);
     await deleteDoc(clientDoc);
@@ -39,13 +41,15 @@ const Show = () => {
   let results = [];
   if (!search) {
     results = clients;
-  } else {
+  } else if (results !== []) {
     results = clients.filter(
       (dato) =>
         dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
         dato.idc.toString().includes(search.toString())
     );
   }
+  
+
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -64,9 +68,7 @@ const Show = () => {
     }
   };
 
-  useEffect(() => {
-    getClients();
-  }, []);
+  
   return (
     <>
       <div className="mainpage">
@@ -163,7 +165,6 @@ const Show = () => {
         show={modalShowEdit}
         onHide={() => setModalShowEdit(false)}
       />
-      
     </>
   );
 };

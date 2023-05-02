@@ -17,14 +17,14 @@ function CreateCita(props) {
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
-  const [, setHorariosAtencion] = useState([]);
+  const [horariosAtencion, setHorariosAtencion] = useState([]);
 
 
   const citasCollection = collection(db, "citas");
   
   const updateOptionsEstado = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => (
-      <option key={`estado-${doc.id}`} value={doc.id}>{doc.data().name}</option>
+      <option key={`estado-${doc.id}`} value={doc.estado}>{doc.data().name}</option>
     ));
     setOptionsEstado(options);
   }, []);
