@@ -17,7 +17,7 @@ const EditCita = (props) => {
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
-  const [, setHorariosAtencion] = useState([]);
+  const [horariosAtencion, setHorariosAtencion] = useState([]);
 
   const updateOptionsEstado = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => (
@@ -93,7 +93,7 @@ const EditCita = (props) => {
                   <label className="form-label">Apellido</label>
                   <input
                     defaultValue={props.cita.apellido}
-                    onChange={(e) => setApellido(e.currentTarget.value)}
+                    onChange={(e) => setApellido(e.target.value)}
                     type="text"
                     className="form-control"
                   />
@@ -102,7 +102,7 @@ const EditCita = (props) => {
                   <label className="form-label">Nombre</label>
                   <input
                     defaultValue={props.cita.nombre}
-                    onChange={(e) => setNombre(e.currentTarget.value)}
+                    onChange={(e) => setNombre(e.target.value)}
                     type="text"
                     className="form-control"
                   />
@@ -111,7 +111,7 @@ const EditCita = (props) => {
                   <label className="form-label">IDC</label>
                   <input
                     defaultValue={props.cita.idc}
-                    onChange={(e) => setIdc(e.currentTarget.value)}
+                    onChange={(e) => setIdc(e.target.value)}
                     type="number"
                     className="form-control"
                   />
@@ -132,7 +132,7 @@ const EditCita = (props) => {
                   <label className="form-label">Numero</label>
                   <input
                     defaultValue={props.cita.numero}
-                    onChange={(e) => setNumero(e.currentTarget.value)}
+                    onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
                   />
@@ -141,7 +141,7 @@ const EditCita = (props) => {
                   <label className="form-label">Fecha</label>
                   <input
                     value={props.cita.fecha}
-                    onChange={(e) => setFecha(e.currentTarget.value)}
+                    onChange={(e) => setFecha(e.target.value)}
                     type="date"
                     className="form-control"
                   />
@@ -150,7 +150,7 @@ const EditCita = (props) => {
                   <label className="form-label">Comentarios</label>
                   <input
                     value={props.cita.comentario}
-                    onChange={(e) => setComentario(e.currentTarget.value)}
+                    onChange={(e) => setComentario(e.target.value)}
                     type="text"
                     className="form-control"
                   />

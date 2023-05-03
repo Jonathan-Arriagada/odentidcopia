@@ -1,6 +1,6 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import Navigation from "./Navigation";
 import "./Show.css";
@@ -18,15 +18,20 @@ const Show = () => {
   const [idParam, setIdParam] = useState("");
   const [modalShowCita, setModalShowCita] = useState(false);
 
-  const clientsCollection = collection(db, "clients");
+  const clientsCollectiona = collection(db, "clients");
+  const clientsCollection = useRef(query(clientsCollectiona, orderBy("apellido")));
 
-  const getClients = async () => {
-    const data = await getDocs(clientsCollection);
-    setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  };
-  useEffect(() => {
-    getClients();
+  const getClients = useCallback((snapshot) => {
+    const clientsArray = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    setClients(clientsArray);
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(clientsCollection.current, getClients);
+    return unsubscribe;
+  }, [getClients]);
+
+
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);
     await deleteDoc(clientDoc);

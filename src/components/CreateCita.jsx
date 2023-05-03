@@ -2,22 +2,26 @@ import React, { useState, useEffect, useCallback } from "react";
 import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import SearchBar from "./SearchBar";
 
 function CreateCita(props) {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
-  const [idc, setIdc] = useState([]);
-  const [numero, setNumero] = useState([]);
-  const [fecha, setFecha] = useState([]);
-  const [horaInicio, setHoraInicio] = useState([]);
-  const [horaFin, setHoraFin] = useState([]);
-  const [comentario, setComentario] = useState("");
+  const [idc, setIdc] = useState("");
   const [estado, setEstado] = useState("");
+  const [numero, setNumero] = useState("");
+  const [fecha, setFecha] = useState("");
+  const [horaInicio, setHoraInicio] = useState("");
+  const [horaFin, setHoraFin] = useState("");
+  const [comentario, setComentario] = useState("");
+
+  const [editable, setEditable] = useState(true);
+  const [searchBarStyle, setSearchBarStyle] = useState({ display: 'none' });
+
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
-  const [horariosAtencion, setHorariosAtencion] = useState([]);
-
+  const [, setHorariosAtencion] = useState([]);
 
   const citasCollection = collection(db, "citas");
 
@@ -64,7 +68,21 @@ function CreateCita(props) {
     setHoraInicio("");
     setHoraFin("");
     setComentario("");
+    setEditable(true);
   };
+
+  const habilitarInputs = () => {
+    setSearchBarStyle({ display: 'none' });
+    setNombre("");
+    setApellido("");
+    setIdc("");
+    setEditable(true);
+  };
+
+  const habilitarSearchBar = () => {
+    setSearchBarStyle({ display: 'block' });
+    setEditable(false);
+  }
 
   const store = async (e) => {
     e.preventDefault();
@@ -82,6 +100,13 @@ function CreateCita(props) {
     clearFields();
   };
 
+  const manejarValorSeleccionado = (apellido, nombre, idc) => {
+    setApellido(apellido);
+    setNombre(nombre);
+    setIdc(idc);
+    setEditable(false);
+  }
+
   return (
     <Modal
       {...props}
@@ -94,41 +119,54 @@ function CreateCita(props) {
           <h1>Crear Cita</h1>
         </Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
+
+
         <div className="container">
           <div className="row">
             <div className="col">
+            <button type="submit" onClick={habilitarSearchBar} className="btn btn-secondary" style={{ margin: '1px' }}>Busqueda Auto</button>
+                <button type="submit" onClick={habilitarInputs} className="btn btn-secondary" style={{ margin: '1px' }}>Ingreso Manual</button>
               <form onSubmit={store}>
+               
+
+                <div className="mb-3" style={searchBarStyle}>
+                  <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
+                </div>
                 <div className="mb-3">
                   <label className="form-label">Apellido</label>
                   <input
                     value={apellido}
-                    onChange={(e) => setApellido(e.currentTarget.value)}
+                    onChange={(e) => setApellido(e.target.value)}
                     type="text"
                     className="form-control"
+                    disabled={!editable}
                   />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Nombre</label>
                   <input
                     value={nombre}
-                    onChange={(e) => setNombre(e.currentTarget.value)}
+                    onChange={(e) => setNombre(e.target.value)}
                     type="text"
                     className="form-control"
+                    disabled={!editable}
                   />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">IDC</label>
                   <input
                     value={idc}
-                    onChange={(e) => setIdc(e.currentTarget.value)}
+                    onChange={(e) => setIdc(e.target.value)}
                     type="number"
                     className="form-control"
+                    disabled={!editable}
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Estado de la Cita</label>
-                   <select
+                  <label className="form-label">Estado</label>
+                  <select
                     value={estado}
                     onChange={(e) => setEstado(e.target.value)}
                     className="form-control"
@@ -142,7 +180,7 @@ function CreateCita(props) {
                   <label className="form-label">Numero</label>
                   <input
                     value={numero}
-                    onChange={(e) => setNumero(e.currentTarget.value)}
+                    onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
                   />
@@ -181,14 +219,16 @@ function CreateCita(props) {
                   <label className="form-label">Hora Fin</label>
                   <select
                     value={horaFin}
-                    onChange={(e) => setHoraFin(e.currentTarget.value)}
+                    onChange={(e) => setHoraFin(e.target.value)}
                     className="form-control"
                     multiple={false}
                   >
                     {optionsHoraFin}
                   </select>
                 </div>
-                <button type="submit" onClick={props.onHide} className="btn btn-primary">Agregar</button>
+                <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+                <button type="submit" onClick={clearFields} className="btn btn-secondary" style={{ margin: '1px' }}>Limpiar</button>
+
               </form>
             </div>
           </div>

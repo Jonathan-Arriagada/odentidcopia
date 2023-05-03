@@ -10,9 +10,17 @@ const Create = (props) => {
   const [idc, setIdc] = useState([]);
   const [edad, setEdad] = useState([]);
   const [numero, setNumero] = useState([]);
-  const navigate = useNavigate();
+  const [valorBusqueda, setValorBusqueda] = useState("");
 
   const clientsCollection = collection(db, "clients");
+
+  const clearFields = () => {
+    setNombre("");
+    setApellido("");
+    setIdc("");
+    setEdad("");
+    setNumero("");
+  };
 
   const store = async (e) => {
     e.preventDefault();
@@ -22,9 +30,9 @@ const Create = (props) => {
       idc: idc,
       edad: edad,
       numero: numero,
+      valorBusqueda: valorBusqueda, 
     });
-    navigate("/clients");
-    window.location.reload(false)
+    clearFields();
   };
 
   return (
@@ -49,7 +57,10 @@ const Create = (props) => {
                   <label className="form-label">Apellido</label>
                   <input
                     value={apellido}
-                    onChange={(e) => setApellido(e.target.value)}
+                    onChange={(e) => {
+                      setApellido(e.target.value);
+                      setValorBusqueda(e.target.value + " " + nombre + " " + idc);
+                    }}
                     type="text"
                     className="form-control"
                   />
@@ -58,7 +69,10 @@ const Create = (props) => {
                 <label className="form-label">Nombre</label>
                   <input
                     value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    onChange={(e) => {
+                      setNombre(e.target.value)
+                      setValorBusqueda(apellido + " " + e.target.value + " " + idc);
+                    }}
                     type="text"
                     className="form-control"
                   />
@@ -67,7 +81,10 @@ const Create = (props) => {
                   <label className="form-label">IDC</label>
                   <input
                     value={idc}
-                    onChange={(e) => setIdc(e.target.value)}
+                    onChange={(e) => {
+                      setIdc(e.target.value)
+                      setValorBusqueda(apellido + " " + nombre + " " + e.target.value);
+                    }}
                     type="number"
                     className="form-control"
                   />
