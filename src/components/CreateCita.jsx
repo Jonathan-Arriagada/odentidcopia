@@ -6,18 +6,18 @@ import { Modal } from "react-bootstrap";
 function CreateCita(props) {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
-  const [idc, setIdc] = useState([]);
-  const [numero, setNumero] = useState([]);
-  const [fecha, setFecha] = useState([]);
-  const [horaInicio, setHoraInicio] = useState([]);
-  const [horaFin, setHoraFin] = useState([]);
-  const [comentario, setComentario] = useState("");
+  const [idc, setIdc] = useState("");
   const [estado, setEstado] = useState("");
+  const [numero, setNumero] = useState("");
+  const [fecha, setFecha] = useState("");
+  const [horaInicio, setHoraInicio] = useState("");
+  const [horaFin, setHoraFin] = useState("");
+  const [comentario, setComentario] = useState("");
+
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
-  const [horariosAtencion, setHorariosAtencion] = useState([]);
-
+  const [, setHorariosAtencion] = useState([]);
 
   const citasCollection = collection(db, "citas");
 
@@ -103,7 +103,7 @@ function CreateCita(props) {
                   <label className="form-label">Apellido</label>
                   <input
                     value={apellido}
-                    onChange={(e) => setApellido(e.currentTarget.value)}
+                    onChange={(e) => setApellido(e.target.value)}
                     type="text"
                     className="form-control"
                   />
@@ -112,7 +112,7 @@ function CreateCita(props) {
                   <label className="form-label">Nombre</label>
                   <input
                     value={nombre}
-                    onChange={(e) => setNombre(e.currentTarget.value)}
+                    onChange={(e) => setNombre(e.target.value)}
                     type="text"
                     className="form-control"
                   />
@@ -121,14 +121,14 @@ function CreateCita(props) {
                   <label className="form-label">IDC</label>
                   <input
                     value={idc}
-                    onChange={(e) => setIdc(e.currentTarget.value)}
+                    onChange={(e) => setIdc(e.target.value)}
                     type="number"
                     className="form-control"
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Estado de la Cita</label>
-                   <select
+                  <label className="form-label">Estado</label>
+                  <select
                     value={estado}
                     onChange={(e) => setEstado(e.target.value)}
                     className="form-control"
@@ -142,7 +142,7 @@ function CreateCita(props) {
                   <label className="form-label">Numero</label>
                   <input
                     value={numero}
-                    onChange={(e) => setNumero(e.currentTarget.value)}
+                    onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
                   />
@@ -181,7 +181,7 @@ function CreateCita(props) {
                   <label className="form-label">Hora Fin</label>
                   <select
                     value={horaFin}
-                    onChange={(e) => setHoraFin(e.currentTarget.value)}
+                    onChange={(e) => setHoraFin(e.target.value)}
                     className="form-control"
                     multiple={false}
                   >

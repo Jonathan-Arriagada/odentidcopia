@@ -10,6 +10,8 @@ const Edit = (props) => {
     const [idc, setIdc] = useState(props.client.idc || "");
     const [edad, setEdad] = useState(props.client.edad || "");
     const [numero, setNumero] = useState(props.client.numero || "");
+    const [valorBusqueda, setValorBusqueda] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -25,10 +27,9 @@ const Edit = (props) => {
     idc: idc || clientData.idc,
     edad: edad || clientData.edad,
     numero: numero || clientData.numero,
+    valorBusqueda: valorBusqueda || clientData.valorBusqueda, 
   };
   await updateDoc(clientRef, newData);
-    navigate("/clients");
-    window.location.reload(false);
   };
 
   return (
@@ -52,7 +53,10 @@ const Edit = (props) => {
                   <label className="form-label">Nombre</label>
                   <input
                     defaultValue={props.client.nombre}
-                    onChange={(e) => setNombre(e.currentTarget.value)}
+                    onChange={(e) => {
+                      setNombre(e.target.value)
+                      setValorBusqueda((apellido || props.client.apellido) + " " + e.target.value + " " + (idc || props.client.idc));
+                    }}
                     type="text"
                     className="form-control"
                   />
@@ -61,7 +65,10 @@ const Edit = (props) => {
                   <label className="form-label">Apellido</label>
                   <input
                     defaultValue={props.client.apellido}
-                    onChange={(e) => setApellido(e.currentTarget.value)}
+                    onChange={(e) => {
+                      setApellido(e.target.value);
+                      setValorBusqueda(e.target.value + " " + (nombre || props.client.nombre) + " " + (idc || props.client.idc));
+                    }}
                     type="text"
                     className="form-control"
                   />
@@ -70,7 +77,10 @@ const Edit = (props) => {
                   <label className="form-label">IDC</label>
                   <input
                     defaultValue={props.client.idc}
-                    onChange={(e) => setIdc(e.currentTarget.value)}
+                    onChange={(e) => {
+                      setIdc(e.target.value)
+                      setValorBusqueda((apellido || props.client.apellido) + " " + (nombre || props.client.nombre) + " " + e.target.value);
+                    }}
                     type="number"
                     className="form-control"
                   />
