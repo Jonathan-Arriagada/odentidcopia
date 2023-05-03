@@ -8,7 +8,6 @@ import Edit from "./Edit";
 import Create from "./Create";
 import CreateCita from "./CreateCita";
 
-
 const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
@@ -17,7 +16,7 @@ const Show = () => {
   const [order, setOrder] = useState("ASC");
   const [client, setClient] = useState([]);
   const [idParam, setIdParam] = useState("");
-  const [modalShowCita,setModalShowCita ] = useState(false);
+  const [modalShowCita, setModalShowCita] = useState(false);
 
   const clientsCollection = collection(db, "clients");
 
@@ -39,21 +38,16 @@ const Show = () => {
   };
 
   let results = [];
-  
+
   if (!search) {
     results = clients;
-  }
-  else {
+  } else {
     results = clients.filter(
       (dato) =>
         dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
         dato.idc.toString().includes(search.toString())
-    )
-  }if(results === ""){
-    return (<h1>No existe</h1>)
+    );
   }
-  
-
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -72,7 +66,6 @@ const Show = () => {
     }
   };
 
-  
   return (
     <>
       <div className="mainpage">
@@ -146,7 +139,10 @@ const Show = () => {
                           <button
                             variant="primary"
                             className="btn-blue mx-1"
-                            onClick={() => {setModalShowCita(true); setClient(client);}}
+                            onClick={() => {
+                              setModalShowCita(true);
+                              setClient(client);
+                            }}
                           >
                             Cita
                           </button>
@@ -159,9 +155,12 @@ const Show = () => {
             </div>
           </div>
         </div>
-
       </div>
-      <CreateCita show={modalShowCita} client={client} onHide={() => setModalShowCita(false)} />
+      <CreateCita
+        show={modalShowCita}
+        client={client}
+        onHide={() => setModalShowCita(false)}
+      />
       <Create show={modalShow} onHide={() => setModalShow(false)} />
       <Edit
         id={idParam}
