@@ -16,7 +16,7 @@ function CreateCita(props) {
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
-  const [, setHorariosAtencion] = useState([]);
+  const [horariosAtencion, setHorariosAtencion] = useState([]);
 
 
   const citasCollection = collection(db, "citas");
@@ -103,7 +103,7 @@ function CreateCita(props) {
                   <label className="form-label">Apellido</label>
                   <input
                     value={apellido}
-                    onChange={(e) => setApellido(e.target.value)}
+                    onChange={(e) => setApellido(e.currentTarget.value)}
                     type="text"
                     className="form-control"
                   />
@@ -112,7 +112,7 @@ function CreateCita(props) {
                   <label className="form-label">Nombre</label>
                   <input
                     value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    onChange={(e) => setNombre(e.currentTarget.value)}
                     type="text"
                     className="form-control"
                   />
@@ -121,7 +121,7 @@ function CreateCita(props) {
                   <label className="form-label">IDC</label>
                   <input
                     value={idc}
-                    onChange={(e) => setIdc(e.target.value)}
+                    onChange={(e) => setIdc(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />
@@ -136,7 +136,7 @@ function CreateCita(props) {
                   <label className="form-label">Numero</label>
                   <input
                     value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
+                    onChange={(e) => setNumero(e.currentTarget.value)}
                     type="number"
                     className="form-control"
                   />

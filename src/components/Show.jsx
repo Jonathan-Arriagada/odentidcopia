@@ -6,6 +6,8 @@ import Navigation from "./Navigation";
 import "./Show.css";
 import Edit from "./Edit";
 import Create from "./Create";
+import CreateCita from "./CreateCita";
+
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -15,19 +17,17 @@ const Show = () => {
   const [order, setOrder] = useState("ASC");
   const [client, setClient] = useState([]);
   const [idParam, setIdParam] = useState("");
- 
+  const [modalShowCita,setModalShowCita ] = useState(false);
+
   const clientsCollection = collection(db, "clients");
 
   const getClients = async () => {
     const data = await getDocs(clientsCollection);
     setClients(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
-
-  
   useEffect(() => {
     getClients();
   }, []);
-
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);
     await deleteDoc(clientDoc);
@@ -52,6 +52,8 @@ const Show = () => {
   }if(results === ""){
     return (<h1>No existe</h1>)
   }
+  
+
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -70,7 +72,7 @@ const Show = () => {
     }
   };
 
-
+  
   return (
     <>
       <div className="mainpage">
@@ -115,7 +117,7 @@ const Show = () => {
                   <tbody>
                     {results.map((client) => (
                       <tr key={client.id}>
-                        <td className=""> {client.apellido} </td>
+                        <td> {client.apellido} </td>
                         <td> {client.nombre} </td>
                         <td> {client.idc} </td>
                         <td> {client.edad} </td>
@@ -136,10 +138,17 @@ const Show = () => {
                             onClick={() => {
                               deleteClient(client.id);
                             }}
-                            className="btn btn-danger"
+                            className="btn btn-danger mx-1"
                           >
                             {" "}
                             <i className="fa-solid fa-trash-can"></i>{" "}
+                          </button>
+                          <button
+                            variant="primary"
+                            className="btn-blue mx-1"
+                            onClick={() => {setModalShowCita(true); setClient(client);}}
+                          >
+                            Cita
                           </button>
                         </td>
                       </tr>
@@ -150,7 +159,9 @@ const Show = () => {
             </div>
           </div>
         </div>
+
       </div>
+      <CreateCita show={modalShowCita} client={client} onHide={() => setModalShowCita(false)} />
       <Create show={modalShow} onHide={() => setModalShow(false)} />
       <Edit
         id={idParam}
