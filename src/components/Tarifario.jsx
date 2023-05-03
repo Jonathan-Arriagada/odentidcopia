@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "./Navigation";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
 import "./Show.css";
@@ -9,9 +9,21 @@ function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
-  const [modalShow, setModalShow] = React.useState(false);
-
+  const [modalShow, setModalShow] = useState(false);
+ 
   const tarifasCollection = collection(db, "tarifas");
+  const tarifasCollectionOrdenados = useRef(query(tarifasCollection, orderBy("codigo","asc")));
+
+  const updateEstadosFromSnapshot = useCallback((snapshot) => {
+    const tarifasArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setTarifas(tarifasArray);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(tarifasCollectionOrdenados.current, updateEstadosFromSnapshot);
+    return unsubscribe;
+  }, [updateEstadosFromSnapshot]);
+
 
   const getTarifas = async () => {
     const data = await getDocs(tarifasCollection);
@@ -30,9 +42,9 @@ function Tarifario() {
 
   let results = [];
   if (!search) {
-    results = tarifas;
+     results = tarifas;
   } else {
-    results = tarifas.filter(
+     results = tarifas.filter(
       (dato) =>
         dato.tratamiento.toLowerCase().includes(search.toLowerCase()) ||
         dato.codigo.toString().includes(search.toString())
@@ -55,10 +67,6 @@ function Tarifario() {
       setOrder("ASC");
     }
   };
-
-  useEffect(() => {
-    getTarifas();
-  }, []);
 
   return (
     <>
@@ -102,7 +110,7 @@ function Tarifario() {
                   </thead>
 
                   <tbody>
-                    {results.map((tarifa) => (
+                    {tarifas.map((tarifa) => (
                       <tr key={tarifa.id}>
                         <td> {tarifa.codigo} </td>
                         <td> {tarifa.tratamiento}</td>

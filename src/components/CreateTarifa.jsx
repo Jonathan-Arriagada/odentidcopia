@@ -19,8 +19,8 @@ const CreateTarifa = (props) => {
       tratamiento: tratamiento,
       tarifa: tarifa,
     });
-    navigate("/tarifas");
-    window.location.reload(false)
+
+  
   };
 
   return (

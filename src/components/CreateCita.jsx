@@ -127,10 +127,16 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="mb-3">
-                    <select>
+                  <label className="form-label">Estado de la Cita</label>
+                   <select
+                    value={estado}
+                    onChange={(e) => setEstado(e.target.value)}
+                    className="form-control"
+                    multiple={false}
+                  >
                     <option value="">Selecciona un estado</option>
-                    {optionsEstado}      
-                    </select>   
+                    {optionsEstado}
+                  </select>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Numero</label>
@@ -175,7 +181,7 @@ function CreateCita(props) {
                   <label className="form-label">Hora Fin</label>
                   <select
                     value={horaFin}
-                    onChange={(e) => setHoraFin(e.target.value)}
+                    onChange={(e) => setHoraFin(e.currentTarget.value)}
                     className="form-control"
                     multiple={false}
                   >
