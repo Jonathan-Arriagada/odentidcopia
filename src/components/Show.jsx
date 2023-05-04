@@ -31,6 +31,19 @@ const Show = () => {
     return unsubscribe;
   }, [getClients]);
 
+  const handleCitaClick = (client) => {
+    const { id, nombre, edad, numero } = client;
+    this.setState({
+      modalCreateCita: true,
+      citaData: {
+        idCliente: id,
+        nombreCliente: nombre,
+        edadCliente: edad,
+        numeroCliente: numero,
+      },
+    });
+  };
+
 
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);

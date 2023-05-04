@@ -3,7 +3,9 @@ import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firesto
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
+
 function CreateCita(props) {
+
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [idc, setIdc] = useState("");
