@@ -70,10 +70,9 @@ const SearchBar = ({ onValorSeleccionado }) => {
   //Pasa atributos a componente padre
   const seleccionarValor = (suggestion) => {
     setRenderSuggestions(false);
-    const apellido = suggestion.apellido;
-    const nombre = suggestion.nombre;
+    const apellidoConNombre = suggestion.apellidoConNombre;
     const idc = suggestion.idc;
-    onValorSeleccionado(apellido, nombre, idc);
+    onValorSeleccionado(apellidoConNombre, idc);
   }
 
   const todasLasSugerencias = () => {

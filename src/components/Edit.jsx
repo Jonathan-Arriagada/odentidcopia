@@ -4,8 +4,7 @@ import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const Edit = (props) => {
-    const [nombre, setNombre] = useState(props.client.nombre || "");
-    const [apellido, setApellido] = useState(props.client.apellido || "");
+    const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
     const [idc, setIdc] = useState(props.client.idc || "");
     const [edad, setEdad] = useState(props.client.edad || "");
     const [numero, setNumero] = useState(props.client.numero || "");
@@ -18,8 +17,7 @@ const Edit = (props) => {
     const clientData = clientDoc.data();
   
   const newData = {
-    nombre: nombre || clientData.nombre,
-    apellido: apellido || clientData.apellido,
+    apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
     idc: idc || clientData.idc,
     edad: edad || clientData.edad,
     numero: numero || clientData.numero,
@@ -46,24 +44,12 @@ const Edit = (props) => {
             <div className="col">
               <form onSubmit={update}>
                 <div className="mb-3">
-                  <label className="form-label">Nombre</label>
+                  <label className="form-label">Apellido y Nombres</label>
                   <input
-                    defaultValue={props.client.nombre}
+                    defaultValue={props.client.apellidoConNombre}
                     onChange={(e) => {
-                      setNombre(e.target.value)
-                      setValorBusqueda((apellido || props.client.apellido) + " " + e.target.value + " " + (idc || props.client.idc));
-                    }}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Apellido</label>
-                  <input
-                    defaultValue={props.client.apellido}
-                    onChange={(e) => {
-                      setApellido(e.target.value);
-                      setValorBusqueda(e.target.value + " " + (nombre || props.client.nombre) + " " + (idc || props.client.idc));
+                      setApellidoConNombre(e.target.value);
+                      setValorBusqueda(e.target.value + " " + (idc || props.client.idc));
                     }}
                     type="text"
                     className="form-control"
@@ -75,7 +61,7 @@ const Edit = (props) => {
                     defaultValue={props.client.idc}
                     onChange={(e) => {
                       setIdc(e.target.value)
-                      setValorBusqueda((apellido || props.client.apellido) + " " + (nombre || props.client.nombre) + " " + e.target.value);
+                      setValorBusqueda((apellidoConNombre || props.client.apellidoConNombre) + " " + e.target.value);
                     }}
                     type="number"
                     className="form-control"

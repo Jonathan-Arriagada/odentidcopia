@@ -68,7 +68,7 @@ function Citas() {
   } else {
     results = citas.filter(
       (dato) =>
-        dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
+        dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
         dato.idc.toString().includes(search.toString())
     );
   }
@@ -109,7 +109,7 @@ function Citas() {
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscar por Apellido o IDC..."
+                      placeholder="Buscar por Apellido y Nombre o IDC..."
                       className="form-control m-2 w-25"
                     />
                     <button
@@ -142,8 +142,7 @@ function Citas() {
                         <th onClick={() => sorting("fecha")}>Fecha</th>
                         <th>Inicio</th>
                         <th>Fin</th>
-                        <th>Apellido</th>
-                        <th>Nombre</th>
+                        <th>Apellido y Nombres</th>
                         <th>IDC</th>
                         <th>Estado</th>
                         <th>Numero</th>
@@ -158,8 +157,7 @@ function Citas() {
                           <td> {cita.fecha} </td>
                           <td> {cita.horaInicio} </td>
                           <td> {cita.horaFin} </td>
-                          <td> {cita.apellido} </td>
-                          <td> {cita.nombre} </td>
+                          <td> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
                           <td> {cita.estado} </td>
                           <td> {cita.numero} </td>

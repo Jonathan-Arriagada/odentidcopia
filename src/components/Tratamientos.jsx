@@ -6,6 +6,7 @@ import Navigation from "./Navigation";
 import CreateTratamiento from "./CreateTratamiento";
 import EditTratamiento from "./EditTratamiento";
 import "./loader.css"
+import EstadosTratamientos from "./EstadosTratamientos";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
@@ -17,6 +18,8 @@ function Tratamientos() {
   const [tratamiento, setTratamiento] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] = useState(false);
+
 
   const tratamientosCollection = collection(db, "tratamientos");
 
@@ -64,7 +67,7 @@ function Tratamientos() {
     results = tratamientos;
   } else {
     results = tratamientos.filter((dato) =>
-      dato.apellido.toLowerCase().includes(search.toLowerCase())
+      dato.apellidoConNombres.toLowerCase().includes(search.toLowerCase())
     );
   }
 
@@ -87,7 +90,7 @@ function Tratamientos() {
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscar por Apellido..."
+                      placeholder="Buscar por Apellido y Nombres..."
                       className="form-control m-2 w-25"
                     />
                     <button
@@ -97,17 +100,23 @@ function Tratamientos() {
                     >
                       Agregar Tratamiento
                     </button>
+                    <button
+                      variant="secondary"
+                      className="btn-blue m-2"
+                      onClick={() => setModalShowEstadosTratamientos(true)}
+                    >
+                      Estados Tratamientos
+                    </button>
                   </div>
                   <table className="table__body">
                     <thead>
                       <tr>
-                        <th onClick={() => sorting("apellido")}>Apellido</th>
-                        <th>Nombre</th>
+                        <th onClick={() => sorting("apellido")}>Apellido y Nombres</th>
                         <th>Tratamiento</th>
                         <th>Pieza</th>
                         <th>Saldo</th>
-                        <th>Estado del Pago</th>
                         <th>Estado del Tratamiento</th>
+                        <th>Notas</th>
                         <th>Accion</th>
                       </tr>
                     </thead>
@@ -115,13 +124,13 @@ function Tratamientos() {
                     <tbody>
                       {results.map((tratamiento) => (
                         <tr key={tratamiento.id}>
-                          <td> {tratamiento.apellido} </td>
-                          <td> {tratamiento.nombre} </td>
+                          <td> {tratamiento.apellidoConNombres} </td>
                           <td> {tratamiento.tratamiento} </td>
                           <td> {tratamiento.pieza} </td>
                           <td> {tratamiento.saldo} </td>
-                          <td> {tratamiento.estadoPago} </td>
-                          <td> {tratamiento.estadoTratamiento} </td>
+                          <td> {tratamiento.estadosTratamientos} </td>
+                          <td> {tratamiento.notas} </td>
+
                           <td>
                             <button
                               variant="primary"
@@ -154,6 +163,10 @@ function Tratamientos() {
           </div>
         )}
       </div>
+      <EstadosTratamientos
+        show={modalShowEstadosTratamientos}
+        onHide={() => setModalShowEstadosTratamientos(false)}
+      />
       <CreateTratamiento
         show={modalShowTratamiento}
         onHide={() => setModalShowTratamiento(false)}

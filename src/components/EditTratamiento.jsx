@@ -4,40 +4,31 @@ import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditTratamiento = (props) => {
-  const [apellido, setApellido] = useState(props.tratamiento.apellido || "");
-  const [nombre, setNombre] = useState(props.tratamiento.nombre || "");
+  const [apellidoConNombres, setApellidoConNombres] = useState(props.tratamiento.apellidoConNombres || "");
   const [tratamiento, setTratamiento] = useState(props.tratamiento.tratamiento || "");
   const [pieza, setPieza] = useState(props.tratamiento.pieza || "");
   const [saldo, setSaldo] = useState(props.tratamiento.saldo || "");
-  const [estadoPago, setEstadoPago] = useState([]);
-  const [estadoTratamiento, setEstadoTratamiento] = useState([]);
-  const [optionsEstado, setOptionsEstado] = useState([]);
-  const [optionsEstadoPago, setOptionsEstadoPago] = useState([]);
+  const [estadosTratamientos, setEstadosTratamientos] = useState([]);
+  const [optionsEstadosTratamientos, setOptionsEstadosTratamientos] = useState([]);
+  const [notas, setNotas] = useState(props.tratamiento.notas || "");
 
-  const updateOptionsEstado = useCallback((snapshot) => {
+
+  const updateOptionsEstadosTratamientos = useCallback((snapshot) => {
     const options = snapshot.docs.map((doc) => (
-      <option key={`estado-${doc.id}`} value={doc.estados}>
+      <option key={`estadosTratamientos-${doc.id}`} value={doc.estadosTratamientos}>
         {doc.data().name}
       </option>
     ));
-    setOptionsEstado(options);
-  }, []);
-
-  const updateOptionsEstadoPago = useCallback(snapshot => {
-    const optionsPago = snapshot.docs.map(doc => (
-      <option key={`estadoPago-${doc.id}`} value={doc.estadoPago}>{doc.data().name}</option>
-    ));
-    setOptionsEstadoPago(optionsPago);
+    setOptionsEstadosTratamientos(options);
   }, []);
 
   useEffect(() => {
     const unsubscribe = [
-      onSnapshot(query(collection(db, "estados"), orderBy("name")), updateOptionsEstado),
-      onSnapshot(query(collection(db, "estadoPago"), orderBy("name")), updateOptionsEstadoPago)      
+      onSnapshot(query(collection(db, "estadosTratamientos"), orderBy("name")), updateOptionsEstadosTratamientos),
     ];
 
     return () => unsubscribe.forEach(fn => fn());
-  }, [updateOptionsEstado, updateOptionsEstadoPago]);
+  }, [updateOptionsEstadosTratamientos]);
 
   const update = async (e) => {
     e.preventDefault();
@@ -46,13 +37,13 @@ const EditTratamiento = (props) => {
     const tratamientoData = tratamientoDoc.data();
 
     const newData = {
-      nombre: nombre || tratamientoData.nombre,
-      apellido: apellido || tratamientoData.apellido,
+      apellidoConNombres: apellidoConNombres || tratamientoData.apellidoConNombres,
       tratamiento: tratamiento || tratamientoData.tratamiento,
       pieza: pieza || tratamientoData.pieza,
       saldo: saldo || tratamientoData.saldo,
-      estadoPago: estadoPago || tratamientoData.estadoPago,
-      estadoTratamiento: estadoTratamiento || tratamientoData.estadoTratamiento,
+      estadosTratamientos: estadosTratamientos || tratamientoData.estadosTratamientos,
+      notas: notas || tratamientoData.notas,
+
     };
     await updateDoc(tratamientoRef, newData);
   };
@@ -75,19 +66,10 @@ const EditTratamiento = (props) => {
             <div className="col">
               <form onSubmit={update}>
                 <div className="mb-3">
-                  <label className="form-label">Apellido</label>
+                  <label className="form-label">Apellido y Nombres</label>
                   <input
-                    value={props.tratamiento.apellido}
-                    onChange={(e) => setApellido(e.target.value)}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Nombre</label>
-                  <input
-                    value={props.tratamiento.nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    value={props.tratamiento.apellidoConNombres}
+                    onChange={(e) => setApellidoConNombres(e.target.value)}
                     type="text"
                     className="form-control"
                   />
@@ -119,29 +101,26 @@ const EditTratamiento = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-1">
-                  <label className="form-label">Estado del Pago</label>
-                  <select
-                    value={estadoPago}
-                    onChange={(e) => setEstadoPago(e.target.value)}
-                    className="form-control"
-                    multiple={false}
-                  >
-                    <option value="">Selecciona un estado</option>
-                    {optionsEstadoPago}
-                  </select>
-                </div>
                 <div className="mb-3">
                   <label className="form-label">Estado del Tratamiento</label>
                   <select
-                    value={estadoTratamiento}
-                    onChange={(e) => setEstadoTratamiento(e.target.value)}
+                    value={estadosTratamientos}
+                    onChange={(e) => setEstadosTratamientos(e.target.value)}
                     className="form-control"
                     multiple={false}
                   >
                     <option value="">Selecciona un estado</option>
-                    {optionsEstado}
+                    {optionsEstadosTratamientos}
                   </select>
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Notas</label>
+                  <input
+                    value={props.tratamiento.notas}
+                    onChange={(e) => setNotas(e.target.value)}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
                 <button
                   type="submit"

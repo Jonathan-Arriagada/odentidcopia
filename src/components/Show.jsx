@@ -29,7 +29,7 @@ const Show = () => {
 
   const clientsCollectiona = collection(db, "clients");
   const clientsCollection = useRef(
-    query(clientsCollectiona, orderBy("apellido"))
+    query(clientsCollectiona, orderBy("apellidoConNombre"))
   );
 
   const getClients = useCallback((snapshot) => {
@@ -63,7 +63,7 @@ const Show = () => {
   } else {
     results = clients.filter(
       (dato) =>
-        dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
+        dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
         dato.idc.toString().includes(search.toString())
     );
   }
@@ -104,7 +104,7 @@ const Show = () => {
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscar por Apellido o IDC..."
+                      placeholder="Buscar por Apellido y Nombres o IDC..."
                       className="form-control m-2 w-25"
                     />
                     <button
@@ -120,8 +120,7 @@ const Show = () => {
                   <table>
                     <thead>
                       <tr>
-                        <th onClick={() => sorting("apellido")}>Apellido</th>
-                        <th>Nombre</th>
+                        <th onClick={() => sorting("apellidoConNombre")}>Apellido Y Nombres</th>
                         <th>IDC</th>
                         <th>Edad</th>
                         <th>Numero</th>
@@ -132,8 +131,7 @@ const Show = () => {
                     <tbody>
                       {results.map((client) => (
                         <tr key={client.id}>
-                          <td> {client.apellido} </td>
-                          <td> {client.nombre} </td>
+                          <td> {client.apellidoConNombre} </td>
                           <td> {client.idc} </td>
                           <td> {client.edad} </td>
                           <td> {client.numero} </td>

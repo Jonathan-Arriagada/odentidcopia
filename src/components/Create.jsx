@@ -5,8 +5,7 @@ import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const Create = (props) => {
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
+  const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState([]);
   const [edad, setEdad] = useState([]);
   const [numero, setNumero] = useState([]);
@@ -15,8 +14,7 @@ const Create = (props) => {
   const clientsCollection = collection(db, "clients");
 
   const clearFields = () => {
-    setNombre("");
-    setApellido("");
+    setApellidoConNombre("");
     setIdc("");
     setEdad("");
     setNumero("");
@@ -25,8 +23,7 @@ const Create = (props) => {
   const store = async (e) => {
     e.preventDefault();
     await addDoc(clientsCollection, {
-      nombre: nombre,
-      apellido: apellido,
+      apellidoConNombre: apellidoConNombre,
       idc: idc,
       edad: edad,
       numero: numero,
@@ -54,24 +51,12 @@ const Create = (props) => {
 
               <form onSubmit={store}>
                 <div className="mb-3">
-                  <label className="form-label">Apellido</label>
+                  <label className="form-label">Apellido y Nombres</label>
                   <input
-                    value={apellido}
+                    value={apellidoConNombre}
                     onChange={(e) => {
-                      setApellido(e.target.value);
-                      setValorBusqueda(e.target.value + " " + nombre + " " + idc);
-                    }}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
-                <label className="form-label">Nombre</label>
-                  <input
-                    value={nombre}
-                    onChange={(e) => {
-                      setNombre(e.target.value)
-                      setValorBusqueda(apellido + " " + e.target.value + " " + idc);
+                      setApellidoConNombre(e.target.value);
+                      setValorBusqueda(e.target.value + " " + idc);
                     }}
                     type="text"
                     className="form-control"
@@ -83,7 +68,7 @@ const Create = (props) => {
                     value={idc}
                     onChange={(e) => {
                       setIdc(e.target.value)
-                      setValorBusqueda(apellido + " " + nombre + " " + e.target.value);
+                      setValorBusqueda(apellidoConNombre + " " + e.target.value);
                     }}
                     type="number"
                     className="form-control"

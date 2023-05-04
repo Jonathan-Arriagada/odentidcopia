@@ -7,8 +7,7 @@ import SearchBar from "./SearchBar";
 
 function CreateCita(props) {
 
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
+  const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
   const [estado, setEstado] = useState("");
   const [numero, setNumero] = useState("");
@@ -61,8 +60,7 @@ function CreateCita(props) {
   }, [updateOptionsEstado, updateOptionsHorarios]);
 
   const clearFields = () => {
-    setNombre("");
-    setApellido("");
+    setApellidoConNombre("");
     setIdc("");
     setEstado("");
     setNumero("");
@@ -75,8 +73,7 @@ function CreateCita(props) {
 
   const habilitarInputs = () => {
     setSearchBarStyle({ display: 'none' });
-    setNombre("");
-    setApellido("");
+    setApellidoConNombre("");
     setIdc("");
     setEditable(true);
   };
@@ -89,8 +86,7 @@ function CreateCita(props) {
   const store = async (e) => {
     e.preventDefault();
     await addDoc(citasCollection, {
-      nombre: nombre,
-      apellido: apellido,
+      apellidoConNombre: apellidoConNombre,
       idc: idc,
       estado: estado,
       numero: numero,
@@ -102,9 +98,8 @@ function CreateCita(props) {
     clearFields();
   };
 
-  const manejarValorSeleccionado = (apellido, nombre, idc) => {
-    setApellido(apellido);
-    setNombre(nombre);
+  const manejarValorSeleccionado = (apellidoConNombre, idc) => {
+    setApellidoConNombre(apellidoConNombre);
     setIdc(idc);
     setEditable(false);
   }
@@ -137,20 +132,10 @@ function CreateCita(props) {
                   <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Apellido</label>
+                  <label className="form-label">Apellido y Nombres</label>
                   <input
-                    value={apellido}
-                    onChange={(e) => setApellido(e.target.value)}
-                    type="text"
-                    className="form-control"
-                    disabled={!editable}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Nombre</label>
-                  <input
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    value={apellidoConNombre}
+                    onChange={(e) => setApellidoConNombre(e.target.value)}
                     type="text"
                     className="form-control"
                     disabled={!editable}

@@ -4,8 +4,7 @@ import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditCita = (props) => {
-  const [nombre, setNombre] = useState(props.cita.nombre || "");
-  const [apellido, setApellido] = useState(props.cita.apellido || "");
+  const [apellidoConNombre, setApellidoConNombre] = useState(props.cita.apellidoConNombre || "");
   const [idc, setIdc] = useState(props.cita.idc || "");
   const [estado, setEstado] = useState(props.cita.estado || "");
   const [numero, setNumero] = useState(props.cita.numero || "");
@@ -58,8 +57,7 @@ const EditCita = (props) => {
     const citaData = citaDoc.data();
 
     const newData = {
-      nombre: nombre || citaData.nombre,
-      apellido: apellido || citaData.apellido,
+      apellidoConNombre: apellidoConNombre || citaData.apellidoConNombre,
       idc: idc || citaData.idc,
       estado: estado || citaData.estado,
       numero: numero || citaData.numero,
@@ -89,19 +87,10 @@ const EditCita = (props) => {
             <div className="col">
               <form onSubmit={update}>
                 <div className="mb-3">
-                  <label className="form-label">Apellido</label>
+                  <label className="form-label">Apellido y Nombres</label>
                   <input
-                    defaultValue={props.cita.apellido}
-                    onChange={(e) => setApellido(e.target.value)}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Nombre</label>
-                  <input
-                    defaultValue={props.cita.nombre}
-                    onChange={(e) => setNombre(e.target.value)}
+                    defaultValue={props.cita.apellidoConNombre}
+                    onChange={(e) => setApellidoConNombre(e.target.value)}
                     type="text"
                     className="form-control"
                   />
