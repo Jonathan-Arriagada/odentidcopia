@@ -14,10 +14,7 @@ function CreateCita(props) {
   const [horaInicio, setHoraInicio] = useState("");
   const [horaFin, setHoraFin] = useState("");
   const [comentario, setComentario] = useState("");
-
-  const [editable, setEditable] = useState(true);
-  const [searchBarStyle, setSearchBarStyle] = useState({ display: 'none' });
-
+  const [estado, setEstado] = useState("");
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
