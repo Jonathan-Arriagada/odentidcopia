@@ -15,7 +15,7 @@ const EditCita = (props) => {
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
-  const [horariosAtencion, setHorariosAtencion] = useState([]);
+  const [, setHorariosAtencion] = useState([]);
 
   const updateOptionsEstado = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => (
@@ -27,19 +27,20 @@ const EditCita = (props) => {
   const updateOptionsHorarios = useCallback(snapshot => {
     const horarios = snapshot.docs.map(doc => doc.data());
     setHorariosAtencion(horarios);
-
+  
     const optionsHoraInicio = horarios.map((horario, index) => (
       <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
     ));
     setOptionsHoraInicio(optionsHoraInicio);
-
+  
     const optionsHoraFin = horarios
-      .filter(horario => horaInicio && horario.name > horaInicio)
-      .map((horario, index) => (
-        <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
-      ));
-    setOptionsHoraFin(optionsHoraFin);
-    setHoraFin(optionsHoraFin[0].props.children)
+    .filter(horario => horario.name > horaInicio)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((horario, index) => (
+      <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
+    ));
+  setOptionsHoraFin(optionsHoraFin);
+    
   }, [horaInicio]);
 
   useEffect(() => {
@@ -77,7 +78,10 @@ const EditCita = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton>
+        <Modal.Header closeButton onClick={() => {
+        props.onHide();
+        setHoraFin("");
+      }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Editar Cita</h1>
         </Modal.Title>
@@ -129,7 +133,7 @@ const EditCita = (props) => {
                 <div className="mb-1">
                   <label className="form-label">Fecha</label>
                   <input
-                    value={props.cita.fecha}
+                    defaultValue={props.cita.fecha}
                     onChange={(e) => setFecha(e.target.value)}
                     type="date"
                     className="form-control"
@@ -138,7 +142,7 @@ const EditCita = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Comentarios</label>
                   <input
-                    value={props.cita.comentario}
+                    defaultValue={props.cita.comentario}
                     onChange={(e) => setComentario(e.target.value)}
                     type="text"
                     className="form-control"
@@ -148,8 +152,7 @@ const EditCita = (props) => {
                   <label className="form-label">Hora Inicio</label>
                   <select
                     defaultValue={props.cita.horaInicio}
-                    onChange={(e) =>
-                      setHoraInicio(e.target.value)}
+                    onChange={(e) => setHoraInicio(e.target.value)}
                     className="form-control"
                     multiple={false}
                   >

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
@@ -27,7 +26,7 @@ const Create = (props) => {
       idc: idc,
       edad: edad,
       numero: numero,
-      valorBusqueda: valorBusqueda, 
+      valorBusqueda: valorBusqueda,
     });
     clearFields();
   };
@@ -39,7 +38,8 @@ const Create = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton>
+          <Modal.Header closeButton onClick={props.onHide}>
+
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cliente</h1>
         </Modal.Title>

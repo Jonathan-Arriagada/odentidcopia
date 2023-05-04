@@ -6,7 +6,6 @@ import SearchBar from "./SearchBar";
 
 
 function CreateCita(props) {
-
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
   const [estado, setEstado] = useState("");
@@ -48,6 +47,7 @@ function CreateCita(props) {
         <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
       ));
     setOptionsHoraFin(optionsHoraFin);
+
   }, [horaInicio]);
 
   useEffect(() => {
@@ -111,22 +111,22 @@ function CreateCita(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton>
+      <Modal.Header closeButton onClick={() => {
+        setApellidoConNombre("");
+        setIdc("");
+      }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cita</h1>
         </Modal.Title>
       </Modal.Header>
-
       <Modal.Body>
-
-
         <div className="container">
           <div className="row">
             <div className="col">
-            <button type="submit" onClick={habilitarSearchBar} className="btn btn-secondary" style={{ margin: '1px' }}>Busqueda Auto</button>
-                <button type="submit" onClick={habilitarInputs} className="btn btn-secondary" style={{ margin: '1px' }}>Ingreso Manual</button>
+              <button type="submit" onClick={habilitarSearchBar} className="btn btn-secondary" style={{ margin: '1px' }}>Busqueda Auto</button>
+              <button type="submit" onClick={habilitarInputs} className="btn btn-secondary" style={{ margin: '1px' }}>Ingreso Manual</button>
               <form onSubmit={store}>
-               
+
 
                 <div className="mb-3" style={searchBarStyle}>
                   <SearchBar onValorSeleccionado={manejarValorSeleccionado} />

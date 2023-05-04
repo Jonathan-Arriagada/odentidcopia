@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import React, { useCallback, useRef } from "react";
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig/firebase";
 import Navigation from "./Navigation";
@@ -20,18 +20,22 @@ function Tratamientos() {
   const [isLoading, setIsLoading] = useState(true);
   const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] = useState(false);
 
+  const tratamientosCollectiona = collection(db, "tratamientos");
+  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombres")));
 
-  const tratamientosCollection = collection(db, "tratamientos");
-
-  const getTratamientos = async () => {
-    const data = await getDocs(tratamientosCollection);
-    setTratamientos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  const getTratamientos = useCallback((snapshot) => {
+    const tratamientosArray = snapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setTratamientos(tratamientosArray);
     setIsLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    getTratamientos();
-  }, []);
+    const unsubscribe = onSnapshot(tratamientosCollection.current, getTratamientos);
+    return unsubscribe;
+  }, [getTratamientos]);
 
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);

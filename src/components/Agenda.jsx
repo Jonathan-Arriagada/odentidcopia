@@ -109,7 +109,7 @@ function Citas() {
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscar por Apellido y Nombre o IDC..."
+                      placeholder="Buscar por Apellido, Nombre o IDC..."
                       className="form-control m-2 w-25"
                     />
                     <button
