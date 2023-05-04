@@ -1,29 +1,48 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "./Navigation";
-import { collection, getDocs, deleteDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  orderBy,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
 import "./Show.css";
+import EditTarifa from "./EditTarifa";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
   const [modalShow, setModalShow] = useState(false);
- 
+  const [modalShowEdit, setModalShowEdit] = useState(false);
+  const [tarifa, setTarifa] = useState([]);
+  const [idParam, setIdParam] = useState("");
+
   const tarifasCollection = collection(db, "tarifas");
-  const tarifasCollectionOrdenados = useRef(query(tarifasCollection, orderBy("codigo","asc")));
+  const tarifasCollectionOrdenados = useRef(
+    query(tarifasCollection, orderBy("codigo", "asc"))
+  );
 
   const updateEstadosFromSnapshot = useCallback((snapshot) => {
-    const tarifasArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const tarifasArray = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     setTarifas(tarifasArray);
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(tarifasCollectionOrdenados.current, updateEstadosFromSnapshot);
+    const unsubscribe = onSnapshot(
+      tarifasCollectionOrdenados.current,
+      updateEstadosFromSnapshot
+    );
     return unsubscribe;
   }, [updateEstadosFromSnapshot]);
-
 
   const getTarifas = async () => {
     const data = await getDocs(tarifasCollection);
@@ -42,9 +61,9 @@ function Tarifario() {
 
   let results = [];
   if (!search) {
-     results = tarifas;
+    results = tarifas;
   } else {
-     results = tarifas.filter(
+    results = tarifas.filter(
       (dato) =>
         dato.tratamiento.toLowerCase().includes(search.toLowerCase()) ||
         dato.codigo.toString().includes(search.toString())
@@ -117,6 +136,17 @@ function Tarifario() {
                         <td> {tarifa.tarifa} </td>
                         <td>
                           <button
+                            variant="primary"
+                            className="btn btn-success mx-1"
+                            onClick={() => {
+                              setModalShowEdit(true);
+                              setTarifa(tarifa);
+                              setIdParam(tarifa.id);
+                            }}
+                          >
+                            <i className="fa-regular fa-pen-to-square"></i>
+                          </button>
+                          <button
                             onClick={() => {
                               deleteTarifa(tarifa.id);
                             }}
@@ -136,6 +166,12 @@ function Tarifario() {
         </div>
       </div>
       <CreateTarifa show={modalShow} onHide={() => setModalShow(false)} />
+      <EditTarifa
+        id={idParam}
+        tarifa={tarifa}
+        show={modalShowEdit}
+        onHide={() => setModalShowEdit(false)}
+      />
     </>
   );
 }
