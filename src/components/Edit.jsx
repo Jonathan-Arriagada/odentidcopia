@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
@@ -11,9 +10,6 @@ const Edit = (props) => {
     const [edad, setEdad] = useState(props.client.edad || "");
     const [numero, setNumero] = useState(props.client.numero || "");
     const [valorBusqueda, setValorBusqueda] = useState("");
-
-
-  const navigate = useNavigate();
 
   const update = async (e) => {
     e.preventDefault();

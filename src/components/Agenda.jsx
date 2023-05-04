@@ -183,7 +183,8 @@ function Citas() {
           </div>
         </div>
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
-      <EditCita    id={idParam}
+      <EditCita    
+        id={idParam}
         cita={cita}
         show={modalShowEditCita}
         onHide={() => setModalShowEditCita(false)} />

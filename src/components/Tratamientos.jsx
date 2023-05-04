@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../firebaseConfig/firebase";
 import Navigation from "./Navigation";
 import CreateTratamiento from "./CreateTratamiento";
+import EditTratamiento from "./EditTratamiento";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShowTratamiento, setModalShowTratamiento] = useState(false);
+  const [modalShowEditTratamiento, setModalShowEditTratamiento] = useState(false);
   const [order, setOrder] = useState("ASC");
+  const [tratamiento, setTratamiento] = useState([]);
+  const [idParam, setIdParam] = useState("");
 
   const tratamientosCollection = collection(db, "tratamientos");
 
@@ -18,10 +22,14 @@ function Tratamientos() {
     setTratamientos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
+  useEffect(() => {
+    getTratamientos();
+  }, []);
+
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);
     await deleteDoc(tratamientoDoc);
-    getTratamientos();
+    setTratamientos(prevTratamientos => prevTratamientos.filter(tratamiento => tratamiento.id !== id));
   };
 
   const searcher = (e) => {
@@ -53,10 +61,6 @@ function Tratamientos() {
       dato.apellido.toLowerCase().includes(search.toLowerCase())
     );
   }
-
-  useEffect(() => {
-    getTratamientos();
-  }, []);
 
   return (
     <>
@@ -110,6 +114,17 @@ function Tratamientos() {
                         <td> {tratamiento.estadoPago} </td>
                         <td> {tratamiento.estadoTratamiento} </td>
                         <td>
+                        <button
+                            variant="primary"
+                            className="btn btn-success mx-1"
+                            onClick={() => {
+                              setModalShowEditTratamiento(true);
+                              setTratamiento(tratamiento);
+                              setIdParam(tratamiento.id);
+                            }}
+                          >
+                            <i className="fa-regular fa-pen-to-square"></i>
+                          </button>
                           <button
                             onClick={() => {
                               deletetratamiento(tratamiento.id);
@@ -132,6 +147,12 @@ function Tratamientos() {
       <CreateTratamiento
         show={modalShowTratamiento}
         onHide={() => setModalShowTratamiento(false)}
+      />
+      <EditTratamiento
+        id={idParam}
+        tratamiento={tratamiento}
+        show={modalShowEditTratamiento}
+        onHide={() => setModalShowEditTratamiento(false)}
       />
     </>
   );
