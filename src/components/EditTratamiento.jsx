@@ -86,7 +86,7 @@ const EditTratamiento = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Pieza</label>
                   <input
-                    value={pieza}
+                    value={props.tratamiento.pieza}
                     onChange={(e) => setPieza(e.target.value)}
                     type="number"
                     className="form-control"
@@ -104,7 +104,7 @@ const EditTratamiento = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Estado del Tratamiento</label>
                   <select
-                    value={estadosTratamientos}
+                    value={props.tratamiento.estadosTratamientos}
                     onChange={(e) => setEstadosTratamientos(e.target.value)}
                     className="form-control"
                     multiple={false}

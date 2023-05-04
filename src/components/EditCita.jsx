@@ -39,6 +39,7 @@ const EditCita = (props) => {
         <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
       ));
     setOptionsHoraFin(optionsHoraFin);
+    setHoraFin(optionsHoraFin[0].props.children)
   }, [horaInicio]);
 
   useEffect(() => {
@@ -107,7 +108,7 @@ const EditCita = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Estado</label>
                   <select
-                    value={estado}
+                    defaultValue={props.cita.estado}
                     onChange={(e) => setEstado(e.target.value)}
                     className="form-control"
                     multiple={false}
@@ -144,9 +145,9 @@ const EditCita = (props) => {
                   />
                 </div>
                 <div className="mb-1">
-                  <label className="form-label">Inicio</label>
+                  <label className="form-label">Hora Inicio</label>
                   <select
-                    value={horaInicio}
+                    defaultValue={props.cita.horaInicio}
                     onChange={(e) =>
                       setHoraInicio(e.target.value)}
                     className="form-control"
@@ -156,9 +157,9 @@ const EditCita = (props) => {
                   </select>
                 </div>
                 <div className="mb-1">
-                  <label className="form-label">Fin</label>
+                  <label className="form-label">Hora Fin</label>
                   <select
-                    value={horaFin}
+                    defaultValue={props.cita.horaFin}
                     onChange={(e) => setHoraFin(e.target.value)}
                     className="form-control"
                     multiple={false}
