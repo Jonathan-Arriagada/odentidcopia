@@ -13,7 +13,6 @@ const EditCita = (props) => {
   const [comentario, setComentario] = useState(props.cita.comentario || "");
   const [horaInicio, setHoraInicio] = useState(props.cita.horaInicio || "");
   const [horaFin, setHoraFin] = useState(props.cita.horaFin || "");
-
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
