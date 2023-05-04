@@ -9,7 +9,7 @@ import "./Show.css";
 import EditCita from "./EditCita";
 import Estados from "./Estados";
 import HorariosAtencionCitas from "./HorariosAtencionCitas";
-
+import "./loader.css";
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -21,12 +21,18 @@ function Citas() {
   const [order, setOrder] = useState("ASC");
   const [modalShowEstados, setModalShowEstados] = useState(false);
   const [modalShowHorarios, setModalShowHorarios] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const citasCollection = collection(db, "citas");
-  const citasCollectionOrdenados = useRef(query(citasCollection, orderBy("fecha","desc")));
-  
+  const citasCollectionOrdenados = useRef(
+    query(citasCollection, orderBy("fecha", "desc"))
+  );
+
   const updateEstadosFromSnapshot = useCallback((snapshot) => {
-    const citasArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const citasArray = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     citasArray.sort((a, b) => {
       if (a.fecha === b.fecha) {
         return b.horaInicio.localeCompare(a.horaInicio);
@@ -35,17 +41,21 @@ function Citas() {
       }
     });
     setCitas(citasArray);
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(citasCollectionOrdenados.current, updateEstadosFromSnapshot);
+    const unsubscribe = onSnapshot(
+      citasCollectionOrdenados.current,
+      updateEstadosFromSnapshot
+    );
     return unsubscribe;
   }, [updateEstadosFromSnapshot]);
 
   const deleteCita = async (id) => {
-      const citaDoc = doc(db, "citas", id);
-      await deleteDoc(citaDoc);
-      setCitas(prevCitas => prevCitas.filter(cita => cita.id !== id));
+    const citaDoc = doc(db, "citas", id);
+    await deleteDoc(citaDoc);
+    setCitas((prevCitas) => prevCitas.filter((cita) => cita.id !== id));
   };
 
   const searcher = (e) => {
@@ -84,43 +94,46 @@ function Citas() {
     <>
       <div className="mainpage">
         <Navigation />
-        <div className="container">
-          <div className="row">
-            <div className="col">
-              <div className="d-grid gap-2">
-                <div className="d-flex">
-                  <h1>Agenda</h1>
-                </div>
-                <div className="d-flex justify-content-end">
-                  <input
-                    value={search}
-                    onChange={searcher}
-                    type="text"
-                    placeholder="Buscar por Apellido o IDC..."
-                    className="form-control m-2 w-25"
-                  />
-                  <button
-                    variant="primary"
-                    className="btn-blue m-2"
-                    onClick={() => setModalShowCita(true)}
-                  >
-                    Agregar Cita
-                  </button>
-                  <button
-                    variant="secondary"
-                    className="btn-blue m-2"
-                    onClick={() => setModalShowEstados(true)}
-                  >
-                    Estados
-                  </button>
-                  <button
-                    variant="tertiary"
-                    className="btn-blue m-2"
-                    onClick={() => setModalShowHorarios(true)}
-                  >
-                    Horarios Atencion
-                  </button>
-                </div>
+        {isLoading ? (
+          <span className="loader position-absolute start-50 top-50 mt-3"></span>
+        ) : (
+          <div className="container mt-2">
+            <div className="row">
+              <div className="col">
+                <div className="d-grid gap-2">
+                  <div className="d-flex">
+                    <h1>Agenda</h1>
+                  </div>
+                  <div className="d-flex justify-content-end">
+                    <input
+                      value={search}
+                      onChange={searcher}
+                      type="text"
+                      placeholder="Buscar por Apellido o IDC..."
+                      className="form-control m-2 w-25"
+                    />
+                    <button
+                      variant="primary"
+                      className="btn-blue m-2"
+                      onClick={() => setModalShowCita(true)}
+                    >
+                      Agregar Cita
+                    </button>
+                    <button
+                      variant="secondary"
+                      className="btn-blue m-2"
+                      onClick={() => setModalShowEstados(true)}
+                    >
+                      Estados
+                    </button>
+                    <button
+                      variant="tertiary"
+                      className="btn-blue m-2"
+                      onClick={() => setModalShowHorarios(true)}
+                    >
+                      Horarios Atencion
+                    </button>
+                  </div>
                 </div>
                 <section className="table__body">
                   <table>
@@ -133,7 +146,7 @@ function Citas() {
                         <th>Nombre</th>
                         <th>IDC</th>
                         <th>Estado</th>
-                        <th>Numero</th>                        
+                        <th>Numero</th>
                         <th>Comentarios</th>
                         <th>Accion</th>
                       </tr>
@@ -149,19 +162,19 @@ function Citas() {
                           <td> {cita.nombre} </td>
                           <td> {cita.idc} </td>
                           <td> {cita.estado} </td>
-                          <td> {cita.numero} </td>                          
+                          <td> {cita.numero} </td>
                           <td> {cita.comentario} </td>
                           <td>
-                          <button
-                            variant="primary"
-                            className="btn btn-success mx-1"
-                            onClick={() => {
-                              setModalShowEditCita(true);
-                              setCita(cita);
-                              setIdParam(cita.id);
-                            }}
-                          >
-                            <i className="fa-regular fa-pen-to-square"></i>
+                            <button
+                              variant="primary"
+                              className="btn btn-success mx-1"
+                              onClick={() => {
+                                setModalShowEditCita(true);
+                                setCita(cita);
+                                setIdParam(cita.id);
+                              }}
+                            >
+                              <i className="fa-regular fa-pen-to-square"></i>
                             </button>
                             <button
                               onClick={() => {
@@ -181,16 +194,23 @@ function Citas() {
               </div>
             </div>
           </div>
-        </div>
+        )}
+      </div>
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
-      <EditCita    
+      <EditCita
         id={idParam}
         cita={cita}
         show={modalShowEditCita}
-        onHide={() => setModalShowEditCita(false)} />
-        <Estados show={modalShowEstados} onHide={() => setModalShowEstados(false)} />
-        <HorariosAtencionCitas show={modalShowHorarios} onHide={() => setModalShowHorarios(false)} />
-
+        onHide={() => setModalShowEditCita(false)}
+      />
+      <Estados
+        show={modalShowEstados}
+        onHide={() => setModalShowEstados(false)}
+      />
+      <HorariosAtencionCitas
+        show={modalShowHorarios}
+        onHide={() => setModalShowHorarios(false)}
+      />
     </>
   );
 }
