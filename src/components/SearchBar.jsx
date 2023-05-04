@@ -11,6 +11,8 @@ const SearchBar = ({ onValorSeleccionado }) => {
   const [clientes, setClientes] = useState([]);
   const [value, setValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [renderSuggestions, setRenderSuggestions] = useState(false);
+
 
   //UseEffect optimizado
   const updateClientesFromSnapshot = useCallback((snapshot) => {
@@ -26,7 +28,6 @@ const SearchBar = ({ onValorSeleccionado }) => {
  //Filtrador
   const filtrarValores = (value) => {
     const inputValue = value.trim().toLowerCase();
-    const inputLength = inputValue.length;
 
     const filtrado = clientes.filter((obj) => {
       const textoCompleto = obj.valorBusqueda.toLowerCase();
@@ -38,26 +39,29 @@ const SearchBar = ({ onValorSeleccionado }) => {
       }
     });
 
-    return inputLength === 0 ? [] : filtrado;
+    return filtrado;
   };
 
   //Cuatro Funciones del Autosuggest
   const onSuggestionsFetchRequested = ({ value }) => {
-    if (value && value.length > 0) {
       const filteredValues = filtrarValores(value);
-      console.log(filteredValues)
       setSuggestions(filteredValues);
-    }
+    
   }
   const onSuggestionsClearRequested = () => {
+    setRenderSuggestions(false);
     setSuggestions(clientes);
   }
   const getSuggestionValue = (suggestion) => {
+    setRenderSuggestions(false);
     return `${suggestion.valorBusqueda}`;
   }
   const renderSuggestion = (suggestion) => {
     return (
-      <div className='sugerencia' onClick={() => seleccionarValor(suggestion)}>
+      <div className='sugerencia' onClick={() => {
+        seleccionarValor(suggestion);
+        setRenderSuggestions(false);
+      }}>
         {`${suggestion.valorBusqueda}`}
       </div>
     );
@@ -65,6 +69,7 @@ const SearchBar = ({ onValorSeleccionado }) => {
 
   //Pasa atributos a componente padre
   const seleccionarValor = (suggestion) => {
+    setRenderSuggestions(false);
     const apellido = suggestion.apellido;
     const nombre = suggestion.nombre;
     const idc = suggestion.idc;
@@ -73,6 +78,7 @@ const SearchBar = ({ onValorSeleccionado }) => {
 
   const todasLasSugerencias = () => {
     setSuggestions(clientes);
+    setRenderSuggestions(true);
   };
 
 
@@ -84,13 +90,15 @@ const SearchBar = ({ onValorSeleccionado }) => {
         onSuggestionsClearRequested={onSuggestionsClearRequested}
         getSuggestionValue={getSuggestionValue}
         renderSuggestion={renderSuggestion}
+        alwaysRenderSuggestions={renderSuggestions}
+
         inputProps={{
           placeholder: "Buscar paciente...",
           value,
           onChange: (e, { newValue }) => {
             setValue(newValue);
           },
-          onClick: todasLasSugerencias
+          onClick: todasLasSugerencias,
         }
         }
       />
