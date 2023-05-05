@@ -27,20 +27,20 @@ const EditCita = (props) => {
   const updateOptionsHorarios = useCallback(snapshot => {
     const horarios = snapshot.docs.map(doc => doc.data());
     setHorariosAtencion(horarios);
-  
+
     const optionsHoraInicio = horarios.map((horario, index) => (
       <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
     ));
     setOptionsHoraInicio(optionsHoraInicio);
-  
+
     const optionsHoraFin = horarios
-    .filter(horario => horario.name > horaInicio)
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map((horario, index) => (
-      <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
-    ));
-  setOptionsHoraFin(optionsHoraFin);
-    
+      .filter(horario => horario.name > horaInicio)
+      .map((horario, index) => (
+        <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
+      ));
+    setOptionsHoraFin([...optionsHoraFin]);
+    setHoraFin(optionsHoraFin[0]?.props.children || props.cita.horaFin);
+
   }, [horaInicio]);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const EditCita = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-        <Modal.Header closeButton onClick={() => {
+      <Modal.Header closeButton onClick={() => {
         props.onHide();
         setHoraFin("");
       }}>
@@ -88,10 +88,11 @@ const EditCita = (props) => {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="row">
-            <div className="col">
-              <form onSubmit={update}>
-                <div className="mb-3">
+          <div className="col">
+            <form onSubmit={update}>
+
+              <div className="row">
+                <div className="col mb-3">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
                     defaultValue={props.cita.apellidoConNombre}
@@ -100,7 +101,7 @@ const EditCita = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
+                <div className="col mb-3">
                   <label className="form-label">IDC</label>
                   <input
                     defaultValue={props.cita.idc}
@@ -109,7 +110,19 @@ const EditCita = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
+              </div>
+
+              <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">Teléfono</label>
+                  <input
+                    defaultValue={props.cita.numero}
+                    onChange={(e) => setNumero(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col mb-3">
                   <label className="form-label">Estado</label>
                   <select
                     defaultValue={props.cita.estado}
@@ -121,16 +134,10 @@ const EditCita = (props) => {
                     {optionsEstado}
                   </select>
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Numero</label>
-                  <input
-                    defaultValue={props.cita.numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-1">
+              </div>
+
+              <div className="row">
+                <div className="col mb-6">
                   <label className="form-label">Fecha</label>
                   <input
                     defaultValue={props.cita.fecha}
@@ -139,16 +146,10 @@ const EditCita = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Comentarios</label>
-                  <input
-                    defaultValue={props.cita.comentario}
-                    onChange={(e) => setComentario(e.target.value)}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-1">
+              </div>
+
+              <div className="row">
+                <div className="col mb-3">
                   <label className="form-label">Hora Inicio</label>
                   <select
                     defaultValue={props.cita.horaInicio}
@@ -159,7 +160,7 @@ const EditCita = (props) => {
                     {optionsHoraInicio}
                   </select>
                 </div>
-                <div className="mb-1">
+                <div className="col mb-3">
                   <label className="form-label">Hora Fin</label>
                   <select
                     defaultValue={props.cita.horaFin}
@@ -170,17 +171,30 @@ const EditCita = (props) => {
                     {optionsHoraFin}
                   </select>
                 </div>
-                <button
-                  type="submit"
-                  onClick={() => {
-                    props.onHide();
-                  }}
-                  className="btn btn-primary"
-                >
-                  Editar
-                </button>
-              </form>
-            </div>
+              </div>
+
+              <div className="row">
+                <div className="col mb-6">
+                  <label className="form-label">Comentarios</label>
+                  <input
+                    defaultValue={props.cita.comentario}
+                    onChange={(e) => setComentario(e.target.value)}
+                    type="text"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                onClick={() => {
+                  props.onHide();
+                }}
+                className="btn btn-primary"
+              >
+                Editar
+              </button>
+            </form>
           </div>
         </div>
       </Modal.Body>

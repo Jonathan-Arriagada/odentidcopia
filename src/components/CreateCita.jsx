@@ -47,6 +47,7 @@ function CreateCita(props) {
         <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
       ));
     setOptionsHoraFin(optionsHoraFin);
+    setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
 
   }, [horaInicio]);
 
@@ -121,17 +122,17 @@ function CreateCita(props) {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="row">
+          <div className="col">
             <div className="col">
               <button type="submit" onClick={habilitarSearchBar} className="btn btn-secondary" style={{ margin: '1px' }}>Busqueda Auto</button>
               <button type="submit" onClick={habilitarInputs} className="btn btn-secondary" style={{ margin: '1px' }}>Ingreso Manual</button>
-              <form onSubmit={store}>
-
-
-                <div className="mb-3" style={searchBarStyle}>
-                  <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
-                </div>
-                <div className="mb-3">
+              <div className="col mb-6" style={searchBarStyle}>
+                <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
+              </div>
+            </div>
+            <form onSubmit={store}>
+              <div className="row">
+                <div className="col mb-3">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
                     value={apellidoConNombre}
@@ -141,7 +142,7 @@ function CreateCita(props) {
                     disabled={!editable}
                   />
                 </div>
-                <div className="mb-3">
+                <div className="col mb-3">
                   <label className="form-label">IDC</label>
                   <input
                     value={idc}
@@ -151,7 +152,20 @@ function CreateCita(props) {
                     disabled={!editable}
                   />
                 </div>
-                <div className="mb-3">
+              </div>
+
+              <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">Numero</label>
+                  <input
+                    value={numero}
+                    onChange={(e) => setNumero(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+
+                <div className="col mb-3">
                   <label className="form-label">Estado</label>
                   <select
                     value={estado}
@@ -163,16 +177,10 @@ function CreateCita(props) {
                     {optionsEstado}
                   </select>
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Numero</label>
-                  <input
-                    value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-1">
+              </div>
+
+              <div className="row">
+                <div className="col mb-6">
                   <label className="form-label">Fecha</label>
                   <input
                     value={fecha}
@@ -181,16 +189,10 @@ function CreateCita(props) {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Comentarios</label>
-                  <input
-                    value={comentario}
-                    onChange={(e) => setComentario(e.target.value)}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-1">
+              </div>
+
+              <div className="row">
+                <div className="col mb-3">
                   <label className="form-label">Hora Inicio</label>
                   <select
                     value={horaInicio}
@@ -202,7 +204,7 @@ function CreateCita(props) {
                     {optionsHoraInicio}
                   </select>
                 </div>
-                <div className="mb-1">
+                <div className="col mb-3">
                   <label className="form-label">Hora Fin</label>
                   <select
                     value={horaFin}
@@ -213,15 +215,28 @@ function CreateCita(props) {
                     {optionsHoraFin}
                   </select>
                 </div>
-                <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
-                <button type="submit" onClick={clearFields} className="btn btn-secondary" style={{ margin: '1px' }}>Limpiar</button>
+              </div>
 
-              </form>
-            </div>
+              <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">Comentarios</label>
+                  <input
+                    value={comentario}
+                    onChange={(e) => setComentario(e.target.value)}
+                    type="text"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+              <button type="submit" onClick={clearFields} className="btn btn-secondary" style={{ margin: '1px' }}>Limpiar</button>
+
+            </form>
           </div>
         </div>
+
       </Modal.Body>
-    </Modal>
+    </Modal >
   );
 }
 

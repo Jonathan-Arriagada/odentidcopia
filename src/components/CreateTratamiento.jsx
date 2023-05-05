@@ -8,12 +8,18 @@ import SearchBar from "./SearchBar";
 function CreateTratamiento(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
-  const [tratamiento, setTratamiento] = useState("");
-  const [pieza, setPieza] = useState([]);
-  const [saldo, setSaldo] = useState("");
+  const [cant, setCant] = useState("");
+  const [tarifasTratamientos, setTarifasTratamientos] = useState("");
+  const [pieza, setPieza] = useState("");
+  const [plazo, setPlazo] = useState("");
+  const [cuota, setCuota] = useState("");
   const [estadosTratamientos, setEstadosTratamientos] = useState("");
-  const [optionsEstadosTratamientos, setOptionsEstadosTratamientos] = useState([]);
+  const [fecha, setFecha] = useState("");
+  const [fechaVencimiento, setFechaVencimiento] = useState("");
   const [notas, setNotas] = useState("");
+
+  const [optionsEstadosTratamientos, setOptionsEstadosTratamientos] = useState([]);
+  const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
 
   const [editable, setEditable] = useState(true);
   const [searchBarStyle, setSearchBarStyle] = useState({ display: 'none' });
@@ -28,21 +34,33 @@ function CreateTratamiento(props) {
     setOptionsEstadosTratamientos(options);
   }, []);
 
+  const updateOptionsTarifasTratamientos = useCallback(snapshot => {
+    const options2 = snapshot.docs.map(doc => (
+      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tratamiento}</option>
+    ));
+    setOptionsTarifasTratamientos(options2);
+  }, []);
+
   useEffect(() => {
     const unsubscribe = [
       onSnapshot(query(collection(db, "estadosTratamientos"), orderBy("name")), updateOptionsEstadosTratamientos),
+      onSnapshot(query(collection(db, "tarifas"), orderBy("tratamiento")), updateOptionsTarifasTratamientos)
     ];
-
     return () => unsubscribe.forEach(fn => fn());
-  }, [updateOptionsEstadosTratamientos]);
+  }, [updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);
 
   const clearFields = () => {
     setApellidoConNombre("");
     setIdc("");
-    setTratamiento("");
+    setCant("")
+    setTarifasTratamientos("");
     setPieza("");
-    setSaldo("");
+    setPlazo("");
+    setCuota("")
     setEstadosTratamientos("");
+    setFecha("")
+    setFechaVencimiento("")
+    setNotas("")
     setEditable(true);
   };
 
@@ -63,10 +81,14 @@ function CreateTratamiento(props) {
     await addDoc(tratamientosCollection, {
       apellidoConNombre: apellidoConNombre,
       idc: idc,
-      tratamiento: tratamiento,
+      cant: cant,
+      tarifasTratamientos: tarifasTratamientos,
       pieza: pieza,
-      saldo: saldo,
+      plazo: plazo,
+      cuota: cuota,
       estadosTratamientos: estadosTratamientos,
+      fecha: fecha,
+      fechaVencimiento: fechaVencimiento,
       notas: notas,
     });
     clearFields();
@@ -86,6 +108,7 @@ function CreateTratamiento(props) {
       centered
     >
       <Modal.Header closeButton onClick={() => {
+        props.onHide();
         setApellidoConNombre("");
         setIdc("");
       }}>
@@ -95,15 +118,18 @@ function CreateTratamiento(props) {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="row">
+          <div className="col">
             <div className="col">
               <button type="submit" onClick={habilitarSearchBar} className="btn btn-secondary" style={{ margin: '1px' }}>Busqueda Auto</button>
               <button type="submit" onClick={habilitarInputs} className="btn btn-secondary" style={{ margin: '1px' }}>Ingreso Manual</button>
-              <form onSubmit={store}>
-                <div className="mb-3" style={searchBarStyle}>
-                  <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
-                </div>
-                <div className="mb-3">
+              <div className="mb-3" style={searchBarStyle}>
+                <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
+              </div>
+            </div>
+
+            <form onSubmit={store}>
+              <div className="row">
+                <div className="col mb-3">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
                     value={apellidoConNombre}
@@ -113,7 +139,7 @@ function CreateTratamiento(props) {
                     disabled={!editable}
                   />
                 </div>
-                <div className="mb-3">
+                <div className="col mb-3">
                   <label className="form-label">IDC</label>
                   <input
                     value={idc}
@@ -123,34 +149,22 @@ function CreateTratamiento(props) {
                     disabled={!editable}
                   />
                 </div>
-                <div className="mb-3">
+              </div>
+
+              <div className="row">
+              <div className="col mb-3">
                   <label className="form-label">Tratamiento</label>
-                  <input
-                    value={tratamiento}
-                    onChange={(e) => setTratamiento(e.target.value)}
-                    type="text"
+                  <select
+                    value={tarifasTratamientos}
+                    onChange={(e) => setTarifasTratamientos(e.target.value)}
                     className="form-control"
-                  />
+                    multiple={false}
+                  >
+                    <option value="">Selecciona un Tratamiento</option>
+                    {optionsTarifasTratamientos}
+                  </select>
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Pieza</label>
-                  <input
-                    value={pieza}
-                    onChange={(e) => setPieza(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Saldo</label>
-                  <input
-                    value={saldo}
-                    onChange={(e) => setSaldo(e.target.value)}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
+              <div className="col mb-3">
                   <label className="form-label">Estado del Tratamiento</label>
                   <select
                     value={estadosTratamientos}
@@ -162,7 +176,70 @@ function CreateTratamiento(props) {
                     {optionsEstadosTratamientos}
                   </select>
                 </div>
-                <div className="mb-3">
+              </div>
+
+              <div className="row">
+                <div className="col sm-2">
+                  <label className="form-label">Pieza</label>
+                  <input
+                    value={pieza}
+                    onChange={(e) => setPieza(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col mb-2">
+                  <label className="form-label">Cant</label>
+                  <input
+                    value={cant}
+                    onChange={(e) => setCant(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col sm-2">
+                  <label className="form-label">Plazo</label>
+                  <input
+                    value={plazo}
+                    onChange={(e) => setPlazo(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col sm-2">
+                  <label className="form-label">Cuota</label>
+                  <input
+                    value={cuota}
+                    onChange={(e) => setCuota(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col sm-3">
+                  <label className="form-label">Fecha</label>
+                  <input
+                    value={fecha}
+                    onChange={(e) => setFecha(e.target.value)}
+                    type="date"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col sm-3">
+                  <label className="form-label">Fecha Vencimiento</label>
+                  <input
+                    value={fechaVencimiento}
+                    onChange={(e) => setFechaVencimiento(e.target.value)}
+                    type="date"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col mb-3">
                   <label className="form-label">Notas</label>
                   <input
                     value={notas}
@@ -171,11 +248,10 @@ function CreateTratamiento(props) {
                     className="form-control"
                   />
                 </div>
-                <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
-                <button type="submit" onClick={clearFields} className="btn btn-secondary" style={{ margin: '1px' }}>Limpiar</button>
-
-              </form>
-            </div>
+              </div>
+              <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+              <button type="submit" onClick={clearFields} className="btn btn-secondary" style={{ margin: '1px' }}>Limpiar</button>
+            </form>
           </div>
         </div>
       </Modal.Body>
