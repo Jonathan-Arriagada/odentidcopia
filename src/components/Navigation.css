@@ -12,6 +12,10 @@
 
 .navigation.active {
     width: max-content;
+    .submenu-container{
+        display: none;
+        content: "";
+    }
 }
 
 .navigation .menu {
@@ -50,14 +54,15 @@
     margin-bottom: 10px;
 }
 
-.navigation header::after{
+.navigation header::after {
     position: absolute;
     content: "";
     height: 1px;
     width: 88%;
     background-color: white;
-    bottom: 0;
+    bottom: 0;   
 }
+
 
 .navigation.active header {
     padding: 0;
@@ -65,27 +70,43 @@
     background-color: transparent;
 }
 
-.navigation.active header::after, .navigation.active header span{
+.navigation.active header::after,
+.navigation.active header span {
     display: none;
 }
 
-.navigation header .profile{
+.navigation header .profile {
     height: 50px;
     aspect-ratio: 1;
     border-radius: 50%;
     background-color: lightgray;
 }
-.profile-img{
+
+.profile-img {
     height: 100%;
     aspect-ratio: 1;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.navigation.active header .profile{
+.navigation.active header .profile {
     height: 40px;
 }
 
 .navigation header span {
     font-size: 15;
 }
+
+.submenu-container {
+    background-color: #013b5f;
+    left: 15px;
+    font-size: 15px;
+    border-radius: 15px;
+    margin-top: 1px;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    padding: 4px 10px;
+}
+

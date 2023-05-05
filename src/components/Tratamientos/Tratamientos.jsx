@@ -119,6 +119,7 @@ function Tratamientos() {
                         <th>Tratamiento</th>
                         <th>Pieza</th>
                         <th>Cant</th>
+                        <th>Cta.</th>
                         <th>Plazo</th>
                         <th>Cuota</th>
                         <th>Fecha</th>
@@ -135,6 +136,7 @@ function Tratamientos() {
                           <td> {tratamiento.tarifasTratamientos} </td>
                           <td> {tratamiento.pieza} </td>
                           <td> {tratamiento.cant} </td>
+                          <td> {tratamiento.cta} </td>
                           <td> {tratamiento.plazo} </td>
                           <td> {tratamiento.cuota} </td>
                           <td> {tratamiento.fecha} </td>

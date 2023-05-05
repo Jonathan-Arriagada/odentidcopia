@@ -145,7 +145,7 @@ function Citas() {
                         <th>Apellido y Nombres</th>
                         <th>IDC</th>
                         <th>Estado</th>
-                        <th>Numero</th>
+                        <th>Telefono</th>
                         <th>Comentarios</th>
                         <th>Accion</th>
                       </tr>

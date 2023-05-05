@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import SearchBar from "../Utilidades/SearchBar";
@@ -9,6 +9,8 @@ function CreateTratamiento(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
   const [cant, setCant] = useState("");
+  const [cta, setCta] = useState("");
+  const [precio, setPrecio] = useState("");
   const [tarifasTratamientos, setTarifasTratamientos] = useState("");
   const [pieza, setPieza] = useState("");
   const [plazo, setPlazo] = useState("");
@@ -67,6 +69,8 @@ function CreateTratamiento(props) {
       apellidoConNombre: apellidoConNombre,
       idc: idc,
       cant: cant,
+      cta: cta,
+      precio: precio,
       tarifasTratamientos: tarifasTratamientos,
       pieza: pieza,
       plazo: plazo,
@@ -77,6 +81,19 @@ function CreateTratamiento(props) {
       notas: notas,
     });
   };
+
+  async function buscarTratamiento(tratamiento) {
+    const q = query(collection(db, "tarifas"), where("tratamiento", "==", tratamiento));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot) {
+      setCta(querySnapshot.docs[0].data().codigo);
+      setPrecio(querySnapshot.docs[0].data().tarifa);
+    } else {
+      setCta("");
+      setPrecio("");
+    }
+  }
+
 
   const manejarValorSeleccionado = (apellidoConNombre, idc) => {
     setApellidoConNombre(apellidoConNombre);
@@ -136,11 +153,14 @@ function CreateTratamiento(props) {
               </div>
 
               <div className="row">
-              <div className="col mb-3">
+                <div className="col mb-3">
                   <label className="form-label">Tratamiento</label>
                   <select
                     value={tarifasTratamientos}
-                    onChange={(e) => setTarifasTratamientos(e.target.value)}
+                    onChange={(e) => {
+                      setTarifasTratamientos(e.target.value)
+                      buscarTratamiento(e.target.value)
+                    }}
                     className="form-control"
                     multiple={false}
                   >
@@ -148,7 +168,7 @@ function CreateTratamiento(props) {
                     {optionsTarifasTratamientos}
                   </select>
                 </div>
-              <div className="col mb-3">
+                <div className="col mb-3">
                   <label className="form-label">Estado del Tratamiento</label>
                   <select
                     value={estadosTratamientos}
@@ -161,6 +181,27 @@ function CreateTratamiento(props) {
                   </select>
                 </div>
               </div>
+
+              <div className="row">
+              <div className="col mb-">
+                  <label className="form-label">Cta</label>
+                  <input
+                    value={cta}
+                    type="number"
+                    className="form-control"
+                    disabled={true}
+                  />
+                </div>
+                <div className="col mb-2">
+                  <label className="form-label">Precio</label>
+                  <input
+                    value={precio}
+                    type="number"
+                    className="form-control"
+                    disabled={true}
+                  />
+                </div>
+                </div>
 
               <div className="row">
                 <div className="col sm-2">

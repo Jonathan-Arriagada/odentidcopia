@@ -84,7 +84,7 @@ const Create = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Numero</label>
+                  <label className="form-label">Telefono</label>
                   <input
                     value={numero}
                     onChange={(e) => setNumero(e.target.value)}
