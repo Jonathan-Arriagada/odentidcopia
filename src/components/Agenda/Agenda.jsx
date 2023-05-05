@@ -1,15 +1,15 @@
 import React from "react";
 import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { db } from "../firebaseConfig/firebase";
+import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
 import CreateCita from "./CreateCita";
-import Navigation from "./Navigation";
-import "./Show.css";
+import Navigation from "../Navigation";
+import "../Pacientes/Show.css";
 import EditCita from "./EditCita";
 import Estados from "./Estados";
 import HorariosAtencionCitas from "./HorariosAtencionCitas";
-import "./loader.css";
+import "../Utilidades/loader.css";
 
 function Citas() {
   const [citas, setCitas] = useState([]);

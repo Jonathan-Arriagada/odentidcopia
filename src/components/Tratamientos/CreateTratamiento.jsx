@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { collection, addDoc, query, orderBy, onSnapshot } from "firebase/firestore";
-import { db } from "../firebaseConfig/firebase";
+import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
-import SearchBar from "./SearchBar";
+import SearchBar from "../Utilidades/SearchBar";
 
 
 function CreateTratamiento(props) {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getDoc, updateDoc, doc } from "firebase/firestore";
-import { db } from "../firebaseConfig/firebase";
+import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const Edit = (props) => {

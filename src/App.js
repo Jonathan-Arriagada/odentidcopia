@@ -1,16 +1,17 @@
 import "./App.css";
-import Show from "./components/Show";
+import Show from "./components/Pacientes/Show";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Create from "./components/Create";
-import Edit from "./components/Edit";
+import Create from "./components/Pacientes/Create";
+import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
-import CreateCita from "./components/CreateCita";
-import Agenda from "./components/Agenda";
-import Tarifario from "./components/Tarifario";
-import CreateTarifa from "./components/CreateTarifa";
-import Tratamientos from "./components/Tratamientos";
+import Agenda from "./components/Agenda/Agenda";
+import Tarifario from "./components/Tarifario/Tarifario";
+import CreateTarifa from "./components/Tarifario/CreateTarifa";
+import Tratamientos from "./components/Tratamientos/Tratamientos";
+import GestionFechasTratamientos from "./components/Tratamientos/GestionFechasTratamientos";
+import GestionPagosTratamientos from "./components/Tratamientos/GestionPagosTratamientos";
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -32,6 +33,9 @@ function App() {
             <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
+            <Route path="tratamientos/fechas" element={<RequireAuth><GestionFechasTratamientos /></RequireAuth>}/>
+            <Route path="tratamientos/pagos" element={<RequireAuth><GestionPagosTratamientos /></RequireAuth>}/>
+
         </Routes>
       </BrowserRouter>
     </div>

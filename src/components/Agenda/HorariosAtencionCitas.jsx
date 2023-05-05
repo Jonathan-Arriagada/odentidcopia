@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Modal } from 'react-bootstrap';
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "firebase/firestore";
-import { db } from "../firebaseConfig/firebase.js";
+import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
 
