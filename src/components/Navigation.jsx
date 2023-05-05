@@ -9,7 +9,7 @@ import { useContext } from "react";
 
 
 const Navigation = () => {
-    const [nav, setNav] = useState(false);
+    const [nav, setNav] = useState(true);
     const {currentUser} = useContext(AuthContext)
     const logout = () => {
         localStorage.setItem("user", JSON.stringify(null));

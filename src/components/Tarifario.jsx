@@ -24,6 +24,7 @@ function Tarifario() {
   const [tarifa, setTarifa] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const tarifasCollection = collection(db, "tarifas");
   const tarifasCollectionOrdenados = useRef(
@@ -47,6 +48,10 @@ function Tarifario() {
     return unsubscribe;
   }, [updateEstadosFromSnapshot]);
 
+  const tarifaExiste = (codigo) => {
+    return tarifas.some((tarifa) => tarifa.codigo === codigo);
+  };
+
   const getTarifas = async () => {
     const data = await getDocs(tarifasCollection);
     setTarifas(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -55,7 +60,6 @@ function Tarifario() {
   const deleteTarifa = async (id) => {
     const tarifaDoc = doc(db, "tarifas", id);
     await deleteDoc(tarifaDoc);
-    getTarifas();
   };
 
   const searcher = (e) => {

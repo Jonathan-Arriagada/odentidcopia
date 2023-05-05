@@ -174,7 +174,7 @@ const EditCita = (props) => {
               </div>
 
               <div className="row">
-                <div className="col mb-6">
+                <div className="col mb-3">
                   <label className="form-label">Comentarios</label>
                   <input
                     defaultValue={props.cita.comentario}
