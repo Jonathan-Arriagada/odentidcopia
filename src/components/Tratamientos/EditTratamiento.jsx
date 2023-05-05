@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { getDoc, updateDoc, doc, query, collection, orderBy, onSnapshot } from "firebase/firestore";
-import { db } from "../firebaseConfig/firebase";
+import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditTratamiento = (props) => {

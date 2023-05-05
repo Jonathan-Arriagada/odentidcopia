@@ -1,20 +1,13 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  query,
-  orderBy,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig/firebase";
-import Navigation from "./Navigation";
+import {collection, deleteDoc, doc, onSnapshot, query, orderBy} from "firebase/firestore";
+import { db } from "../../firebaseConfig/firebase";
+import Navigation from "../Navigation";
 import "./Show.css";
 import Edit from "./Edit";
 import Create from "./Create";
-import CreateCita from "./CreateCita";
-import './loader.css';
+import CreateCita from "../Agenda/CreateCita";
+import "../Utilidades/loader.css";
 
 const Show = () => {
   const [clients, setClients] = useState([]);

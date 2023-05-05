@@ -98,6 +98,12 @@ tbody tr.hide td p {
 }
 
 
+/*<!--ESTILOS PARA TARIFARIO-->*/
+.deleted-row {
+  background-color:#8f8c8c;
+  color: #f2f2f2;
+}
+
 
 
 

@@ -1,16 +1,30 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig/firebase";
+import React, { useState, useEffect } from "react";
+import { collection, addDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const CreateTarifa = (props) => {
-  const [codigo, setCodigo] = useState([]);
+  const [codigo, setCodigo] = useState(null);
   const [tratamiento, setTratamiento] = useState("");
   const [tarifa, setTarifa] = useState("");
-  const navigate = useNavigate();
+  const [editable] = useState(false);
 
   const tarifasCollection = collection(db, "tarifas");
+
+  useEffect(() => {
+    const getCodigo = async () => {
+      const querySnapshot = await getDocs(
+        query(tarifasCollection, orderBy("codigo", "desc"), limit(1))
+      );
+      if (!querySnapshot.empty) {
+        const maxCodigo = querySnapshot.docs[0].data().codigo;
+        setCodigo(Number(maxCodigo) + 1);
+      } else {
+        setCodigo(1);
+      }
+    };
+    getCodigo();
+  }, [tarifasCollection]);
 
   const store = async (e) => {
     e.preventDefault();
@@ -19,8 +33,6 @@ const CreateTarifa = (props) => {
       tratamiento: tratamiento,
       tarifa: tarifa,
     });
-
-  
   };
 
   return (
@@ -30,7 +42,11 @@ const CreateTarifa = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton>
+      <Modal.Header closeButton onClick={() => {
+        props.onHide();
+        setTratamiento("")
+        setTarifa("")
+      }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Tarifa</h1>
         </Modal.Title>
@@ -44,7 +60,7 @@ const CreateTarifa = (props) => {
                   <label className="form-label">Codigo</label>
                   <input
                     value={codigo}
-                    onChange={(e) => setCodigo(e.target.value)}
+                    disabled={!editable}
                     type="number"
                     className="form-control"
                   />
@@ -67,8 +83,15 @@ const CreateTarifa = (props) => {
                     className="form-control"
                   />
                 </div>
-                <button type="submit" onClick={props.onHide} className="btn btn-primary">Agregar</button>
-                  
+                <button
+                  type="submit"
+                  onClick={() => {
+                    props.onHide();
+                  }}
+                  className="btn btn-primary"
+                >
+                  Agregar
+                </button>
               </form>
             </div>
           </div>

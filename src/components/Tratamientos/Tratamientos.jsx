@@ -1,11 +1,11 @@
 import React, { useCallback, useRef } from "react";
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 import { useState, useEffect } from "react";
-import { db } from "../firebaseConfig/firebase";
-import Navigation from "./Navigation";
+import { db } from "../../firebaseConfig/firebase";
+import Navigation from "../Navigation";
 import CreateTratamiento from "./CreateTratamiento";
 import EditTratamiento from "./EditTratamiento";
-import "./loader.css"
+import "../Utilidades/loader.css";
 import EstadosTratamientos from "./EstadosTratamientos";
 
 function Tratamientos() {

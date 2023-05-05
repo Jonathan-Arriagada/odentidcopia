@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { db } from '../firebaseConfig/firebase';
+import { db } from '../../firebaseConfig/firebase';
 import './SearchBar.css';
 import Autosuggest from 'react-autosuggest';
 
