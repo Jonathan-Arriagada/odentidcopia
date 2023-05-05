@@ -30,7 +30,7 @@ const Login = () => {
             const errorMessage = error.message;
             setErrorMsg(errorMessage);
         })
-        
+        // <Link to={../ ${props.link}}
     }
 
     return (

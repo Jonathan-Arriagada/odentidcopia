@@ -116,7 +116,7 @@ const Show = () => {
                         <th onClick={() => sorting("apellidoConNombre")}>Apellido Y Nombres</th>
                         <th>IDC</th>
                         <th>Edad</th>
-                        <th>Numero</th>
+                        <th>Telefono</th>
                         <th>Accion</th>
                       </tr>
                     </thead>

@@ -38,10 +38,10 @@ const EditCita = (props) => {
       .map((horario, index) => (
         <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
       ));
-    setOptionsHoraFin([...optionsHoraFin]);
+    setOptionsHoraFin(optionsHoraFin);
     setHoraFin(optionsHoraFin[0]?.props.children || props.cita.horaFin);
 
-  }, [horaInicio]);
+  }, [horaInicio, props.cita.horaFin]);
 
   useEffect(() => {
     const unsubscribe = [

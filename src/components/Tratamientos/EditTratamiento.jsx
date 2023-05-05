@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { getDoc, updateDoc, doc, query, collection, orderBy, onSnapshot } from "firebase/firestore";
+import { getDoc, updateDoc, doc, query, collection, orderBy, onSnapshot, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -7,7 +7,9 @@ const EditTratamiento = (props) => {
   const [apellidoConNombres, setApellidoConNombres] = useState(props.tratamiento.apellidoConNombres || "");
   const [idc, setIdc] = useState(props.tratamiento.idc || "");
   const [cant, setCant] = useState(props.tratamiento.cant || "");
-  const [tarifasTratamientos, setTarifasTratamientos] = useState("");
+  const [tarifasTratamientos, setTarifasTratamientos] = useState(props.tratamiento.tarifasTratamientos || "");
+  const [cta, setCta] = useState(props.tratamiento.cta || "");
+  const [precio, setPrecio] = useState(props.tratamiento.precio || "");
   const [pieza, setPieza] = useState(props.tratamiento.pieza || "");
   const [plazo, setPlazo] = useState(props.tratamiento.plazo || "");
   const [cuota, setCuota] = useState(props.tratamiento.cuota || "");
@@ -41,6 +43,18 @@ const EditTratamiento = (props) => {
     return () => unsubscribe.forEach(fn => fn());
   }, [updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);
 
+  async function buscarTratamiento(tratamiento) {
+    const q = query(collection(db, "tarifas"), where("tratamiento", "==", tratamiento));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot) {
+      setCta(querySnapshot.docs[0].data().codigo);
+      setPrecio(querySnapshot.docs[0].data().tarifa)
+    } else {
+      setCta("");
+      setPrecio("")
+    }
+  }
+
   const update = async (e) => {
     e.preventDefault();
     const tratamientoRef = doc(db, "tratamientos", props.id);
@@ -52,6 +66,8 @@ const EditTratamiento = (props) => {
       idc: idc || tratamientoData.idc,
       cant: cant || tratamientoData.cant,
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
+      cta: cta || tratamientoData.cta,
+      precio: precio || tratamientoData.precio,
       pieza: pieza || tratamientoData.pieza,
       plazo: plazo || tratamientoData.plazo,
       cuota: cuota || tratamientoData.cuota,
@@ -61,6 +77,11 @@ const EditTratamiento = (props) => {
       notas: notas || tratamientoData.notas,
     };
     await updateDoc(tratamientoRef, newData);
+  };
+
+  const handleTarifasTratamientosChange = (event) => {
+    setTarifasTratamientos(event.target.value);
+    buscarTratamiento(event.target.value);
   };
 
   return (
@@ -80,140 +101,140 @@ const EditTratamiento = (props) => {
       <Modal.Body>
         <div className="container">
           <div className="col">
-              <form onSubmit={update}>
+            <form onSubmit={update}>
 
-                <div className="row">
-                  <div className="col mb-3">
-                    <label className="form-label">Apellido y Nombres</label>
-                    <input
-                      defaultValue={props.tratamiento.apellidoConNombres}
-                      onChange={(e) => setApellidoConNombres(e.target.value)}
-                      type="text"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col mb-3">
-                    <label className="form-label">IDC</label>
-                    <input
-                      value={idc}
-                      onChange={(e) => setIdc(e.target.value)}
-                      type="number"
-                      className="form-control"
-                    />
-                  </div>
+              <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">Apellido y Nombres</label>
+                  <input
+                    defaultValue={props.tratamiento.apellidoConNombres}
+                    onChange={(e) => setApellidoConNombres(e.target.value)}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
-
-                <div className="row">
-                  <div className="col mb-3">
-                    <label className="form-label">Tratamiento</label>
-                    <select
-                      value={tarifasTratamientos}
-                      onChange={(e) => setTarifasTratamientos(e.target.value)}
-                      className="form-control"
-                      multiple={false}
-                    >
-                      <option value="">Selecciona un Tratamiento</option>
-                      {optionsTarifasTratamientos}
-                    </select>
-                  </div>
-                  <div className="col mb-3">
-                    <label className="form-label">Estado del Tratamiento</label>
-                    <select
-                      defaultValue={props.tratamiento.estadosTratamientos}
-                      onChange={(e) => setEstadosTratamientos(e.target.value)}
-                      className="form-control"
-                      multiple={false}
-                    >
-                      <option value="">Selecciona un estado</option>
-                      {optionsEstadosTratamientos}
-                    </select>
-                  </div>
+                <div className="col mb-3">
+                  <label className="form-label">IDC</label>
+                  <input
+                    defaultValue={props.tratamiento.idc}
+                    onChange={(e) => setIdc(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
                 </div>
+              </div>
 
-                <div className="row">
-                  <div className="col mb-2">
-                    <label className="form-label">Pieza</label>
-                    <input
-                      defaultValue={props.tratamiento.pieza}
-                      onChange={(e) => setPieza(e.target.value)}
-                      type="number"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col mb-2">
-                    <label className="form-label">Cant</label>
-                    <input
-                      value={cant}
-                      onChange={(e) => setCant(e.target.value)}
-                      type="number"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col mb-2">
-                    <label className="form-label">Plazo</label>
-                    <input
-                      defaultValue={props.tratamiento.plazo}
-                      onChange={(e) => setPlazo(e.target.value)}
-                      type="number"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col mb-2">
-                    <label className="form-label">Cuota</label>
-                    <input
-                      value={cuota}
-                      onChange={(e) => setCuota(e.target.value)}
-                      type="number"
-                      className="form-control"
-                    />
-                  </div>
+              <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">Tratamiento</label>
+                  <select
+                    defaultValue={props.tratamiento.tarifasTratamientos}
+                    onChange={handleTarifasTratamientosChange}
+                    className="form-control"
+                    multiple={false}
+                  >
+                    <option value="">Selecciona un Tratamiento</option>
+                    {optionsTarifasTratamientos}
+                  </select>
                 </div>
-
-                <div className="row">
-                  <div className="col mb-3">
-                    <label className="form-label">Fecha</label>
-                    <input
-                      value={fecha}
-                      onChange={(e) => setFecha(e.target.value)}
-                      type="date"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col mb-3">
-                    <label className="form-label">Fecha Vencimiento</label>
-                    <input
-                      value={fechaVencimiento}
-                      onChange={(e) => setFechaVencimiento(e.target.value)}
-                      type="date"
-                      className="form-control"
-                    />
-                  </div>
+                <div className="col mb-3">
+                  <label className="form-label">Estado del Tratamiento</label>
+                  <select
+                    defaultValue={props.tratamiento.estadosTratamientos}
+                    onChange={(e) => setEstadosTratamientos(e.target.value)}
+                    className="form-control"
+                    multiple={false}
+                  >
+                    <option value="">Selecciona un estado</option>
+                    {optionsEstadosTratamientos}
+                  </select>
                 </div>
-
-                <div className="row">
-                  <div className="col mb-3">
-                    <label className="form-label">Notas</label>
-                    <input
-                      defaultValue={props.tratamiento.notas}
-                      onChange={(e) => setNotas(e.target.value)}
-                      type="text"
-                      className="form-control"
-                    />
-                  </div>
+              </div>
+              
+              <div className="row">
+                <div className="col mb-2">
+                  <label className="form-label">Pieza</label>
+                  <input
+                    defaultValue={props.tratamiento.pieza}
+                    onChange={(e) => setPieza(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
                 </div>
+                <div className="col mb-2">
+                  <label className="form-label">Cant</label>
+                  <input
+                    defaultValue={props.tratamiento.cant}
+                    onChange={(e) => setCant(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col mb-2">
+                  <label className="form-label">Plazo</label>
+                  <input
+                    defaultValue={props.tratamiento.plazo}
+                    onChange={(e) => setPlazo(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col mb-2">
+                  <label className="form-label">Cuota</label>
+                  <input
+                    defaultValue={props.tratamiento.cuota}
+                    onChange={(e) => setCuota(e.target.value)}
+                    type="number"
+                    className="form-control"
+                  />
+                </div>
+              </div>
 
-                <button
-                  type="submit"
-                  onClick={() => {
-                    props.onHide();
-                  }}
-                  className="btn btn-primary"
-                >
-                  Editar
-                </button>
-              </form>
-            </div>
+              <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">Fecha</label>
+                  <input
+                    defaultValue={props.tratamiento.fecha}
+                    onChange={(e) => setFecha(e.target.value)}
+                    type="date"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col mb-3">
+                  <label className="form-label">Fecha Vencimiento</label>
+                  <input
+                    defaultValue={props.tratamiento.fechaVencimiento}
+                    onChange={(e) => setFechaVencimiento(e.target.value)}
+                    type="date"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">Notas</label>
+                  <input
+                    defaultValue={props.tratamiento.notas}
+                    onChange={(e) => setNotas(e.target.value)}
+                    type="text"
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                onClick={() => {
+                  props.onHide();
+                }}
+                className="btn btn-primary"
+              >
+                Editar
+              </button>
+            </form>
           </div>
+        </div>
       </Modal.Body>
     </Modal>
   );

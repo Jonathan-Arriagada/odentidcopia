@@ -77,7 +77,7 @@ const Edit = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Numero</label>
+                  <label className="form-label">Telefono</label>
                   <input
                     defaultValue={props.client.numero}
                     onChange={(e) => setNumero(e.currentTarget.value)}

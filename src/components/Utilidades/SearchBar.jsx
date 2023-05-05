@@ -72,7 +72,8 @@ const SearchBar = ({ onValorSeleccionado }) => {
     setRenderSuggestions(false);
     const apellidoConNombre = suggestion.apellidoConNombre;
     const idc = suggestion.idc;
-    onValorSeleccionado(apellidoConNombre, idc);
+    const numero = suggestion.numero;
+    onValorSeleccionado(apellidoConNombre, idc, numero);
   }
 
   const todasLasSugerencias = () => {

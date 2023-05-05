@@ -49,7 +49,7 @@ function CreateCita(props) {
     setOptionsHoraFin(optionsHoraFin);
     setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
 
-  }, [horaInicio]);
+  }, [horaInicio,horaFin]);
 
   useEffect(() => {
     const unsubscribe = [
@@ -86,22 +86,21 @@ function CreateCita(props) {
     });
   };
 
-  const manejarValorSeleccionado = (apellidoConNombre, idc) => {
+  const manejarValorSeleccionado = (apellidoConNombre, idc, numero) => {
     setApellidoConNombre(apellidoConNombre);
     setIdc(idc);
+    setNumero(numero);
     setEditable(false);
   }
 
   return (
-    <Modal
-      {...props}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
+    <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton onClick={() => {
+        setSearchBarStyle({ display: 'none' });
+        setEditable(true);
         setApellidoConNombre("");
         setIdc("");
+        setNumero("");
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cita</h1>
@@ -143,12 +142,13 @@ function CreateCita(props) {
 
               <div className="row">
                 <div className="col mb-3">
-                  <label className="form-label">Numero</label>
+                  <label className="form-label">Teléfono</label>
                   <input
                     value={numero}
                     onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
+                    disabled={!editable}
                   />
                 </div>
 
