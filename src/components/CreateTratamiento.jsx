@@ -49,21 +49,6 @@ function CreateTratamiento(props) {
     return () => unsubscribe.forEach(fn => fn());
   }, [updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);
 
-  const clearFields = () => {
-    setApellidoConNombre("");
-    setIdc("");
-    setCant("")
-    setTarifasTratamientos("");
-    setPieza("");
-    setPlazo("");
-    setCuota("")
-    setEstadosTratamientos("");
-    setFecha("")
-    setFechaVencimiento("")
-    setNotas("")
-    setEditable(true);
-  };
-
   const habilitarInputs = () => {
     setSearchBarStyle({ display: 'none' });
     setApellidoConNombre("");
@@ -91,7 +76,6 @@ function CreateTratamiento(props) {
       fechaVencimiento: fechaVencimiento,
       notas: notas,
     });
-    clearFields();
   };
 
   const manejarValorSeleccionado = (apellidoConNombre, idc) => {
@@ -250,7 +234,6 @@ function CreateTratamiento(props) {
                 </div>
               </div>
               <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
-              <button type="submit" onClick={clearFields} className="btn btn-secondary" style={{ margin: '1px' }}>Limpiar</button>
             </form>
           </div>
         </div>

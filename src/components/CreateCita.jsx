@@ -60,18 +60,6 @@ function CreateCita(props) {
     return () => unsubscribe.forEach(fn => fn());
   }, [updateOptionsEstado, updateOptionsHorarios]);
 
-  const clearFields = () => {
-    setApellidoConNombre("");
-    setIdc("");
-    setEstado("");
-    setNumero("");
-    setFecha("");
-    setHoraInicio("");
-    setHoraFin("");
-    setComentario("");
-    setEditable(true);
-  };
-
   const habilitarInputs = () => {
     setSearchBarStyle({ display: 'none' });
     setApellidoConNombre("");
@@ -96,7 +84,6 @@ function CreateCita(props) {
       horaInicio: horaInicio,
       horaFin: horaFin,
     });
-    clearFields();
   };
 
   const manejarValorSeleccionado = (apellidoConNombre, idc) => {
@@ -229,8 +216,6 @@ function CreateCita(props) {
                 </div>
               </div>
               <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
-              <button type="submit" onClick={clearFields} className="btn btn-secondary" style={{ margin: '1px' }}>Limpiar</button>
-
             </form>
           </div>
         </div>

@@ -118,9 +118,12 @@ function Tratamientos() {
                         <th onClick={() => sorting("apellido")}>Apellido y Nombres</th>
                         <th>Tratamiento</th>
                         <th>Pieza</th>
-                        <th>Saldo</th>
+                        <th>Cant</th>
+                        <th>Plazo</th>
+                        <th>Cuota</th>
+                        <th>Fecha</th>
+                        <th>Fecha Vencimiento</th>
                         <th>Estado del Tratamiento</th>
-                        <th>Notas</th>
                         <th>Accion</th>
                       </tr>
                     </thead>
@@ -129,12 +132,14 @@ function Tratamientos() {
                       {results.map((tratamiento) => (
                         <tr key={tratamiento.id}>
                           <td> {tratamiento.apellidoConNombres} </td>
-                          <td> {tratamiento.tratamiento} </td>
+                          <td> {tratamiento.tarifasTratamientos} </td>
                           <td> {tratamiento.pieza} </td>
-                          <td> {tratamiento.saldo} </td>
+                          <td> {tratamiento.cant} </td>
+                          <td> {tratamiento.plazo} </td>
+                          <td> {tratamiento.cuota} </td>
+                          <td> {tratamiento.fecha} </td>
+                          <td> {tratamiento.fechaVencimiento} </td>
                           <td> {tratamiento.estadosTratamientos} </td>
-                          <td> {tratamiento.notas} </td>
-
                           <td>
                             <button
                               variant="primary"

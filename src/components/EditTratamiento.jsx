@@ -116,7 +116,7 @@ const EditTratamiento = (props) => {
                       {optionsTarifasTratamientos}
                     </select>
                   </div>
-                  <div className="mb-3">
+                  <div className="col mb-3">
                     <label className="form-label">Estado del Tratamiento</label>
                     <select
                       defaultValue={props.tratamiento.estadosTratamientos}
