@@ -16,7 +16,6 @@ function Tarifario() {
   const [tarifa, setTarifa] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
 
   const tarifasCollectiona = collection(db, "tarifas");
   const tarifasCollection = useRef(query(tarifasCollectiona, orderBy("codigo")));

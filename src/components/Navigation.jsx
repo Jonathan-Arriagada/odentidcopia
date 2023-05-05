@@ -15,7 +15,7 @@ const Submenu = (props) => {
 };
 
 const Navigation = () => {
-    const [isActive, setIsActive] = useState(false);
+    const [isActive, setIsActive] = useState(true);
     const [isActiveSubMenu, setIsActiveSubMenu] = useState(false);
     const { currentUser } = useContext(AuthContext);
     const location = useLocation();
