@@ -32,6 +32,7 @@ const CreateTarifa = (props) => {
       codigo: codigo,
       tratamiento: tratamiento,
       tarifa: tarifa,
+      eliminado: false,
     });
   };
 

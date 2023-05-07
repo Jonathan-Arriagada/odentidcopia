@@ -3,14 +3,20 @@ import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
+import moment from 'moment';
+import EditPago from './EditPago'
+import ListaSeleccionEstadoPago from './ListaSeleccionEstadoPago'
+
 
 function GestionPagosTratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
 
+  const [modalShowEditPago, setModalShowEditPago] = useState(false);
+
   const tratamientosCollectiona = collection(db, "tratamientos");
-  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombres")));
+  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombre")));
 
   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs.map((doc) => ({
@@ -21,8 +27,8 @@ function GestionPagosTratamientos() {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(tratamientosCollection.current, getTratamientos);
-    return unsubscribe;
+    const unsubscribeTratamientos = onSnapshot(tratamientosCollection.current, getTratamientos);
+    return unsubscribeTratamientos;
   }, [getTratamientos]);
 
 
@@ -52,7 +58,7 @@ function GestionPagosTratamientos() {
     results = tratamientos;
   } else {
     results = tratamientos.filter((dato) =>
-      dato.apellidoConNombres.toLowerCase().includes(search.toLowerCase())
+      dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase())
     );
   }
 
@@ -75,6 +81,13 @@ function GestionPagosTratamientos() {
                     placeholder="Buscar por Apellido y Nombres..."
                     className="form-control m-2 w-25"
                   />
+                  <button
+                    variant="secondary"
+                    className="btn-blue m-2"
+                    onClick={() => setModalShowEditPago(true)}
+                  >
+                    Estado Pago
+                  </button>
                 </div>
                 <table className="table__body">
                   <thead>
@@ -92,25 +105,32 @@ function GestionPagosTratamientos() {
                       <th>Resta</th>
                       <th>Fecha Vto</th>
                       <th>Estado Pago</th>
+                      <th></th>
+
                     </tr>
                   </thead>
 
                   <tbody>
                     {results.map((tratamiento) => (
                       <tr key={tratamiento.id}>
-                        <td>{tratamiento.apellidoConNombres}</td>
+                        <td>{tratamiento.apellidoConNombre}</td>
                         <td>{tratamiento.tarifasTratamientos}</td>
                         <td>{tratamiento.cta}</td>
                         <td>{tratamiento.pieza}</td>
                         <td>{tratamiento.cant}</td>
                         <td>{tratamiento.precio}</td>
-                        <td>{tratamiento.precio * tratamiento.cant}</td> 
-                        <td>{tratamiento.plazo === 0? 0 * (tratamiento.plazo - tratamiento.cuota) : ((tratamiento.precio * tratamiento.cant) / tratamiento.plazo) * (tratamiento.plazo - tratamiento.cuota)}</td>
+                        <td>{tratamiento.precio * tratamiento.cant}</td>
+                        <td>{tratamiento.plazo === 0 ? 0 * (tratamiento.plazo - tratamiento.cuota) : ((tratamiento.precio * tratamiento.cant) / tratamiento.plazo) * (tratamiento.plazo - tratamiento.cuota)}</td>
                         <td>{tratamiento.plazo}</td>
                         <td>{tratamiento.cuota}</td>
                         <td>{tratamiento.plazo - tratamiento.cuota}</td>
-                        <td>{tratamiento.fechaVencimiento}</td>
+                        <td>{moment(tratamiento.fechaVencimiento).format('DD/MM/YY')}</td>
                         <td>{tratamiento.estadoPago}</td>
+                        <td>
+                          <ListaSeleccionEstadoPago
+                            tratamientoId={tratamiento.id}
+                          />
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -120,6 +140,11 @@ function GestionPagosTratamientos() {
           </div>
         </div>
       </div>
+      <EditPago
+        show={modalShowEditPago}
+        onHide={() => setModalShowEditPago(false)}
+      />
+
     </>
   );
 }

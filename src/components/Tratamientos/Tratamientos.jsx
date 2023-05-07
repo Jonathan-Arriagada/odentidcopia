@@ -7,6 +7,8 @@ import CreateTratamiento from "./CreateTratamiento";
 import EditTratamiento from "./EditTratamiento";
 import "../Utilidades/loader.css";
 import EstadosTratamientos from "./EstadosTratamientos";
+import moment from 'moment';
+
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
@@ -21,7 +23,7 @@ function Tratamientos() {
   const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] = useState(false);
 
   const tratamientosCollectiona = collection(db, "tratamientos");
-  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombres")));
+  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("fecha", "desc")));
 
   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs.map((doc) => ({
@@ -37,6 +39,7 @@ function Tratamientos() {
     return unsubscribe;
   }, [getTratamientos]);
 
+
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);
     await deleteDoc(tratamientoDoc);
@@ -51,16 +54,20 @@ function Tratamientos() {
 
   const sorting = (col) => {
     if (order === "ASC") {
-      const sorted = [...tratamientos].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-      );
+      const sorted = [...tratamientos].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA > valueB ? 1 : -1;
+      });
       setTratamientos(sorted);
       setOrder("DSC");
     }
     if (order === "DSC") {
-      const sorted = [...tratamientos].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-      );
+      const sorted = [...tratamientos].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA < valueB ? 1 : -1;
+      });
       setTratamientos(sorted);
       setOrder("ASC");
     }
@@ -71,7 +78,7 @@ function Tratamientos() {
     results = tratamientos;
   } else {
     results = tratamientos.filter((dato) =>
-      dato.apellidoConNombres.toLowerCase().includes(search.toLowerCase())
+      dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase())
     );
   }
 
@@ -115,32 +122,34 @@ function Tratamientos() {
                   <table className="table__body">
                     <thead>
                       <tr>
+                        <th>N°</th>
                         <th onClick={() => sorting("apellido")}>Apellido y Nombres</th>
-                        <th>Tratamiento</th>
-                        <th>Pieza</th>
-                        <th>Cant</th>
-                        <th>Cta.</th>
-                        <th>Plazo</th>
-                        <th>Cuota</th>
-                        <th>Fecha</th>
-                        <th>Fecha Vencimiento</th>
-                        <th>Estado del Tratamiento</th>
+                        <th onClick={() => sorting("tarifasTratamientos")}>Tratamiento</th>
+                        <th onClick={() => sorting("pieza")}>Pieza</th>
+                        <th onClick={() => sorting("cant")}>Cant</th>
+                        <th onClick={() => sorting("cta")}>Cta.</th>
+                        <th onClick={() => sorting("plazo")}>Plazo</th>
+                        <th onClick={() => sorting("cuota")}>Cuota</th>
+                        <th onClick={() => sorting("fecha")}>Fecha</th>
+                        <th onClick={() => sorting("fechaVencimiento")}>Fecha Vencimiento</th>
+                        <th onClick={() => sorting("estadosTratamientos")}>Estado del Tratamiento</th>
                         <th>Accion</th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      {results.map((tratamiento) => (
+                      {results.map((tratamiento, index) => (
                         <tr key={tratamiento.id}>
-                          <td> {tratamiento.apellidoConNombres} </td>
+                          <td>{results.length - index}</td>
+                          <td> {tratamiento.apellidoConNombre} </td>
                           <td> {tratamiento.tarifasTratamientos} </td>
                           <td> {tratamiento.pieza} </td>
                           <td> {tratamiento.cant} </td>
                           <td> {tratamiento.cta} </td>
                           <td> {tratamiento.plazo} </td>
                           <td> {tratamiento.cuota} </td>
-                          <td> {tratamiento.fecha} </td>
-                          <td> {tratamiento.fechaVencimiento} </td>
+                          <td>{moment(tratamiento.fecha).format('DD/MM/YY')}</td>
+                          <td>{moment(tratamiento.fechaVencimiento).format('DD/MM/YY')}</td>
                           <td> {tratamiento.estadosTratamientos} </td>
                           <td>
                             <button

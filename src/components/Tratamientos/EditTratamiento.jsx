@@ -4,7 +4,7 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditTratamiento = (props) => {
-  const [apellidoConNombres, setApellidoConNombres] = useState(props.tratamiento.apellidoConNombres || "");
+  const [apellidoConNombre, setApellidoConNombre] = useState(props.tratamiento.apellidoConNombre || "");
   const [idc, setIdc] = useState(props.tratamiento.idc || "");
   const [cant, setCant] = useState(props.tratamiento.cant || "");
   const [tarifasTratamientos, setTarifasTratamientos] = useState(props.tratamiento.tarifasTratamientos || "");
@@ -30,15 +30,15 @@ const EditTratamiento = (props) => {
 
   const updateOptionsTarifasTratamientos = useCallback(snapshot => {
     const options2 = snapshot.docs.map(doc => (
-      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tratamiento}</option>
-    ));
+      <option key={`tarifasTratamientos-${doc.id}`} value={doc.data().tarifasTratamientos}>{doc.data().tratamiento}</option>
+      ));
     setOptionsTarifasTratamientos(options2);
   }, []);
 
   useEffect(() => {
     const unsubscribe = [
       onSnapshot(query(collection(db, "estadosTratamientos"), orderBy("name")), updateOptionsEstadosTratamientos),
-      onSnapshot(query(collection(db, "tarifas"), orderBy("tratamiento")), updateOptionsTarifasTratamientos)
+      onSnapshot(query(collection(db, "tarifas"), orderBy("eliminado"), where("eliminado", "!=", true)), updateOptionsTarifasTratamientos)
     ];
     return () => unsubscribe.forEach(fn => fn());
   }, [updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);
@@ -62,7 +62,7 @@ const EditTratamiento = (props) => {
     const tratamientoData = tratamientoDoc.data();
 
     const newData = {
-      apellidoConNombres: apellidoConNombres || tratamientoData.apellidoConNombres,
+      apellidoConNombre: apellidoConNombre || tratamientoData.apellidoConNombre,
       idc: idc || tratamientoData.idc,
       cant: cant || tratamientoData.cant,
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
@@ -107,8 +107,8 @@ const EditTratamiento = (props) => {
                 <div className="col mb-3">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
-                    defaultValue={props.tratamiento.apellidoConNombres}
-                    onChange={(e) => setApellidoConNombres(e.target.value)}
+                    defaultValue={props.tratamiento.apellidoConNombre}
+                    onChange={(e) => setApellidoConNombre(e.target.value)}
                     type="text"
                     className="form-control"
                   />

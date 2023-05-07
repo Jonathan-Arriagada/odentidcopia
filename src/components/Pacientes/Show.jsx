@@ -42,7 +42,7 @@ const Show = () => {
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);
     await deleteDoc(clientDoc);
-    getClients();
+    setClients((prevClients) => prevClients.filter((cliente) => cliente.id !== id));
   };
 
   const searcher = (e) => {
@@ -63,16 +63,20 @@ const Show = () => {
 
   const sorting = (col) => {
     if (order === "ASC") {
-      const sorted = [...clients].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-      );
+      const sorted = [...clients].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA > valueB ? 1 : -1;
+      });
       setClients(sorted);
       setOrder("DSC");
     }
     if (order === "DSC") {
-      const sorted = [...clients].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-      );
+      const sorted = [...clients].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA < valueB ? 1 : -1;
+      });
       setClients(sorted);
       setOrder("ASC");
     }
@@ -114,9 +118,9 @@ const Show = () => {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("apellidoConNombre")}>Apellido Y Nombres</th>
-                        <th>IDC</th>
-                        <th>Edad</th>
-                        <th>Telefono</th>
+                        <th onClick={() => sorting("idc")}>IDC</th>
+                        <th onClick={() => sorting("edad")}>Edad</th>
+                        <th onClick={() => sorting("numero")}>Telefono</th>
                         <th>Accion</th>
                       </tr>
                     </thead>

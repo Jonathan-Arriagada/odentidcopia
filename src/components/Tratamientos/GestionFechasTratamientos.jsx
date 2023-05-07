@@ -11,7 +11,7 @@ function GestionFechasTratamientos() {
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
   const tratamientosCollectiona = collection(db, "tratamientos");
-  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombres")));
+  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombre")));
 
   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs.map((doc) => ({
@@ -53,7 +53,7 @@ function GestionFechasTratamientos() {
     results = tratamientos;
   } else {
     results = tratamientos.filter((dato) =>
-      dato.apellidoConNombres.toLowerCase().includes(search.toLowerCase())
+      dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase())
     );
   }
 
@@ -94,19 +94,22 @@ function GestionFechasTratamientos() {
                       <th>Fecha</th>
                       <th>Estado Tratamiento</th>
                       <th>Y    -    M    -    D</th>
- 
+                      <th>Notas</th>
+
                     </tr>
                   </thead>
 
                   <tbody>
                     {results.map((tratamiento) => (
                       <tr key={tratamiento.id}>
-                        <td> {tratamiento.apellidoConNombres} </td>
+                        <td> {tratamiento.apellidoConNombre} </td>
                         <td> {tratamiento.tarifasTratamientos} </td>
                         <td> {tratamiento.pieza} </td>
-                        <td> {tratamiento.fecha} </td>
+                        <td>{moment(tratamiento.fecha).format('DD/MM/YY')}</td>
                         <td> {tratamiento.estadosTratamientos} </td>
                         <td>  {renderDateDiff(tratamiento.fecha)} </td>
+                        <td> {tratamiento.notas} </td>
+
                       </tr>
                     ))}
                   </tbody>

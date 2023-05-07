@@ -46,7 +46,7 @@ function CreateTratamiento(props) {
   useEffect(() => {
     const unsubscribe = [
       onSnapshot(query(collection(db, "estadosTratamientos"), orderBy("name")), updateOptionsEstadosTratamientos),
-      onSnapshot(query(collection(db, "tarifas"), orderBy("tratamiento")), updateOptionsTarifasTratamientos)
+      onSnapshot(query(collection(db, "tarifas"), orderBy("eliminado"), where("eliminado", "!=", true)), updateOptionsTarifasTratamientos)
     ];
     return () => unsubscribe.forEach(fn => fn());
   }, [updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);

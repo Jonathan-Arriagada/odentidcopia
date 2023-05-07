@@ -10,6 +10,8 @@ import EditCita from "./EditCita";
 import Estados from "./Estados";
 import HorariosAtencionCitas from "./HorariosAtencionCitas";
 import "../Utilidades/loader.css";
+import moment from 'moment';
+
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -28,7 +30,7 @@ function Citas() {
     query(citasCollection, orderBy("fecha", "desc"))
   );
 
-  const updateEstadosFromSnapshot = useCallback((snapshot) => {
+  const getCitas = useCallback((snapshot) => {
     const citasArray = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -45,12 +47,9 @@ function Citas() {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      citasCollectionOrdenados.current,
-      updateEstadosFromSnapshot
-    );
+    const unsubscribe = onSnapshot(citasCollectionOrdenados.current, getCitas);
     return unsubscribe;
-  }, [updateEstadosFromSnapshot]);
+  }, [getCitas]);
 
   const deleteCita = async (id) => {
     const citaDoc = doc(db, "citas", id);
@@ -75,16 +74,20 @@ function Citas() {
 
   const sorting = (col) => {
     if (order === "ASC") {
-      const sorted = [...citas].sort((a, b) =>
-        a[col].toString() > b[col].toString() ? 1 : -1
-      );
+      const sorted = [...citas].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA > valueB ? 1 : -1;
+      });
       setCitas(sorted);
       setOrder("DSC");
     }
     if (order === "DSC") {
-      const sorted = [...citas].sort((a, b) =>
-        a[col].toString() < b[col].toString() ? 1 : -1
-      );
+      const sorted = [...citas].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA < valueB ? 1 : -1;
+      });
       setCitas(sorted);
       setOrder("ASC");
     }
@@ -140,12 +143,12 @@ function Citas() {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("fecha")}>Fecha</th>
-                        <th>Inicio</th>
-                        <th>Fin</th>
-                        <th>Apellido y Nombres</th>
-                        <th>IDC</th>
-                        <th>Estado</th>
-                        <th>Telefono</th>
+                        <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
+                        <th onClick={() => sorting("horaFin")}>Hora Fin</th>
+                        <th onClick={() => sorting("apellidoConNombre")}>Apellido y Nombres</th>
+                        <th onClick={() => sorting("idc")}>IDC</th>
+                        <th onClick={() => sorting("estado")}>Estado</th>
+                        <th onClick={() => sorting("numero")}>Telefono</th>
                         <th>Comentarios</th>
                         <th>Accion</th>
                       </tr>
@@ -154,7 +157,7 @@ function Citas() {
                     <tbody>
                       {results.map((cita) => (
                         <tr key={cita.id}>
-                          <td> {cita.fecha} </td>
+                          <td>{moment(cita.fecha).format('DD/MM/YY')}</td>
                           <td> {cita.horaInicio} </td>
                           <td> {cita.horaFin} </td>
                           <td> {cita.apellidoConNombre} </td>
