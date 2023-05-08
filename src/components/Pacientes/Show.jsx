@@ -161,7 +161,7 @@ const Show = () => {
                                 setClient(client);
                               }}
                             >
-                              Cita
+                              Crear Cita
                             </button>
                           </td>
                         </tr>
