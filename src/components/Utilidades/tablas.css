@@ -1,0 +1,12 @@
+/*Aplica estilo a todas las td hijas de table*/
+table.table__body td,th {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+#tablaTratamientos {
+    @media (min-width: 1400px) {
+        max-width: 1600px;
+    }
+}

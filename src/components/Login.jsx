@@ -23,7 +23,7 @@ const Login = () => {
         .then((userCredential) => {
             const user = userCredential.user
             dispatch({type:"LOGIN", payload:user})
-            navigate("/clients")
+            navigate("/agenda")
         })
         .catch((error) => {
             setError(true)
