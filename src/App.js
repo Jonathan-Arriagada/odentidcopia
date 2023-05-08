@@ -10,8 +10,6 @@ import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
 import CreateTarifa from "./components/Tarifario/CreateTarifa";
 import Tratamientos from "./components/Tratamientos/Tratamientos";
-import GestionFechasTratamientos from "./components/Tratamientos/GestionFechasTratamientos";
-import GestionPagosTratamientos from "./components/Tratamientos/GestionPagosTratamientos";
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -32,9 +30,6 @@ function App() {
             <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
-            <Route path="tratamientos/fechas" element={<RequireAuth><GestionFechasTratamientos /></RequireAuth>}/>
-            <Route path="tratamientos/pagos" element={<RequireAuth><GestionPagosTratamientos /></RequireAuth>}/>
-
         </Routes>
       </BrowserRouter>
     </div>

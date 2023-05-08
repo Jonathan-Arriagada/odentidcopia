@@ -141,7 +141,7 @@ function CreateCita(props) {
         <div className="container">
           <div className="col">
             <div className="col mb-3" style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px" }}>
-              <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold" }}>Buscador por Apellido, Nombre o Idc:</label>
+              <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold" }}>Buscador por Apellido, Nombre o DNI:</label>
               <input
                 style={{ borderRadius: "100px" }}
                 type="text"
@@ -169,7 +169,7 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">DNI</label>
                   <input
                     value={idc || ""}
                     onChange={(e) => setIdc(e.target.value)}

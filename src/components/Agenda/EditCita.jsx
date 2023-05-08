@@ -106,7 +106,7 @@ const EditCita = (props) => {
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">DNI</label>
                   <input
                     defaultValue={props.cita.idc}
                     onChange={(e) => setIdc(e.target.value)}
@@ -179,7 +179,7 @@ const EditCita = (props) => {
 
               <div className="row">
                 <div className="col mb-3">
-                  <label className="form-label">Comentarios</label>
+                  <label className="form-label">Notas</label>
                   <input
                     defaultValue={props.cita.comentario}
                     onChange={(e) => setComentario(e.target.value)}

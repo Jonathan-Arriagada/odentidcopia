@@ -4,9 +4,9 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditTratamiento = (props) => {
+  const [codigo, ] = useState(props.tratamiento.codigo);
   const [apellidoConNombre, setApellidoConNombre] = useState(props.tratamiento.apellidoConNombre || "");
   const [idc, setIdc] = useState(props.tratamiento.idc || "");
-  const [cant, setCant] = useState(props.tratamiento.cant || "");
   const [tarifasTratamientos, setTarifasTratamientos] = useState(props.tratamiento.tarifasTratamientos || "");
   const [cta, setCta] = useState(props.tratamiento.cta || "");
   const [precio, setPrecio] = useState(props.tratamiento.precio || "");
@@ -72,9 +72,9 @@ const EditTratamiento = (props) => {
     const tratamientoData = tratamientoDoc.data();
 
     const newData = {
+      codigo: codigo || tratamientoData.codigo,
       apellidoConNombre: apellidoConNombre || tratamientoData.apellidoConNombre,
       idc: idc || tratamientoData.idc,
-      cant: cant || tratamientoData.cant,
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
       cta: cta || tratamientoData.cta,
       precio: precio || tratamientoData.precio,
@@ -123,7 +123,7 @@ const EditTratamiento = (props) => {
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">DNI</label>
                   <input
                     defaultValue={props.tratamiento.idc}
                     onChange={(e) => setIdc(e.target.value)}
@@ -166,15 +166,6 @@ const EditTratamiento = (props) => {
                   <input
                     defaultValue={props.tratamiento.pieza}
                     onChange={(e) => setPieza(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="col mb-2">
-                  <label className="form-label">Cant</label>
-                  <input
-                    defaultValue={props.tratamiento.cant}
-                    onChange={(e) => setCant(e.target.value)}
                     type="number"
                     className="form-control"
                   />

@@ -1,13 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 
 function CreateTratamiento(props) {
+  const [codigo, setCodigo] = useState(null);
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
-  const [cant, setCant] = useState("");
   const [cta, setCta] = useState("");
   const [precio, setPrecio] = useState("");
   const [tarifasTratamientos, setTarifasTratamientos] = useState("");
@@ -64,12 +64,27 @@ function CreateTratamiento(props) {
     return () => unsubscribe.forEach(fn => fn());
   }, [updateOptionsPacientes, updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);
 
+  useEffect(() => {
+    const getCodigo = async () => {
+      const querySnapshot = await getDocs(
+        query(tratamientosCollection, orderBy("codigo", "desc"), limit(1))
+      );
+      if (!querySnapshot.empty) {
+        const maxCodigo = querySnapshot.docs[0].data().codigo;
+        setCodigo(Number(maxCodigo) + 1);
+      } else {
+        setCodigo(Number(1));
+      }
+    };
+    getCodigo();
+  }, [tratamientosCollection]);
+
   const store = async (e) => {
     e.preventDefault();
     await addDoc(tratamientosCollection, {
+      codigo: codigo,
       apellidoConNombre: apellidoConNombre,
       idc: idc,
-      cant: cant,
       cta: cta,
       precio: precio,
       tarifasTratamientos: tarifasTratamientos,
@@ -136,11 +151,10 @@ function CreateTratamiento(props) {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="col">
-            <div className="col mb-3" style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px" }}>
-              <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold" }}>Buscador por Apellido, Nombre o Idc:</label>
+            <div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width:"60%" }}>
+              <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
               <input
-                style={{ borderRadius: "100px" }}
+                style={{ borderRadius: "150px"}}
                 type="text"
                 className="form-control"
                 onChangeCapture={(e) => manejarValorSeleccionado(e.target.value)}
@@ -152,7 +166,6 @@ function CreateTratamiento(props) {
                 {valorBusquedaOptionsJSX}
               </datalist>
             </div>
-          </div>
 
           <form onSubmit={store}>
             <div className="row">
@@ -167,7 +180,7 @@ function CreateTratamiento(props) {
                 />
               </div>
               <div className="col mb-3">
-                <label className="form-label">IDC</label>
+                <label className="form-label">DNI</label>
                 <input
                   value={idc}
                   onChange={(e) => setIdc(e.target.value)}
@@ -230,7 +243,7 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col sm-2">
+              <div className="col mb-3">
                 <label className="form-label">Pieza</label>
                 <input
                   value={pieza}
@@ -239,16 +252,7 @@ function CreateTratamiento(props) {
                   className="form-control"
                 />
               </div>
-              <div className="col mb-2">
-                <label className="form-label">Cant</label>
-                <input
-                  value={cant}
-                  onChange={(e) => setCant(e.target.value)}
-                  type="number"
-                  className="form-control"
-                />
-              </div>
-              <div className="col sm-2">
+              <div className="col mb-3">
                 <label className="form-label">Plazo</label>
                 <input
                   value={plazo}
@@ -257,7 +261,7 @@ function CreateTratamiento(props) {
                   className="form-control"
                 />
               </div>
-              <div className="col sm-2">
+              <div className="col mb-3">
                 <label className="form-label">Cuota</label>
                 <input
                   value={cuota}
@@ -269,7 +273,7 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col sm-3">
+              <div className="col mb-3">
                 <label className="form-label">Fecha</label>
                 <input
                   value={fecha}
@@ -278,7 +282,7 @@ function CreateTratamiento(props) {
                   className="form-control"
                 />
               </div>
-              <div className="col sm-3">
+              <div className="col mb-3">
                 <label className="form-label">Fecha Vencimiento</label>
                 <input
                   value={fechaVencimiento}
