@@ -81,6 +81,7 @@ const CreateTarifa = (props) => {
                     onChange={(e) => setTarifa(e.target.value)}
                     type="text"
                     className="form-control"
+                    required
                   />
                 </div>
                 <button

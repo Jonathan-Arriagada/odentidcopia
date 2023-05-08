@@ -97,7 +97,7 @@ function Citas() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
-          <div className="container mt-2">
+          <div className="container mt-2 mw-100">
             <div className="row">
               <div className="col">
                 <div className="d-grid gap-2">

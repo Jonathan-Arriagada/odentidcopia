@@ -9,6 +9,7 @@ const Create = (props) => {
   const [edad, setEdad] = useState([]);
   const [numero, setNumero] = useState([]);
   const [valorBusqueda, setValorBusqueda] = useState("");
+  const [validacion, setValidacion] = useState(false);
 
   const clientsCollection = collection(db, "clients");
 
@@ -21,14 +22,21 @@ const Create = (props) => {
 
   const store = async (e) => {
     e.preventDefault();
-    await addDoc(clientsCollection, {
-      apellidoConNombre: apellidoConNombre,
-      idc: idc,
-      edad: edad,
-      numero: numero,
-      valorBusqueda: valorBusqueda,
-    });
-    clearFields();
+    const form = e.target;
+    if (form.checkValidity()) {
+      await addDoc(clientsCollection, {
+        apellidoConNombre: apellidoConNombre,
+        idc: idc,
+        edad: edad,
+        numero: numero,
+        valorBusqueda: valorBusqueda,
+      })
+      .then (setValidacion(true))
+      clearFields();
+    } else {
+      setValidacion(false);
+      clearFields();
+    }
   };
 
   return (
@@ -38,8 +46,7 @@ const Create = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-          <Modal.Header closeButton onClick={props.onHide}>
-
+      <Modal.Header closeButton onClick={props.onHide}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cliente</h1>
         </Modal.Title>
@@ -48,8 +55,7 @@ const Create = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-
-              <form onSubmit={store}>
+              <form onSubmit={store} noValidate>
                 <div className="mb-3">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
@@ -60,6 +66,7 @@ const Create = (props) => {
                     }}
                     type="text"
                     className="form-control"
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -67,20 +74,24 @@ const Create = (props) => {
                   <input
                     value={idc}
                     onChange={(e) => {
-                      setIdc(e.target.value)
-                      setValorBusqueda(apellidoConNombre + " " + e.target.value);
+                      setIdc(e.target.value);
+                      setValorBusqueda(
+                        apellidoConNombre + " " + e.target.value
+                      );
                     }}
                     type="number"
                     className="form-control"
+                    required
                   />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Edad</label>
                   <input
                     value={edad}
-                    onChange={(e) => setEdad(e.target.value)}
+                    onChange={(e) => { if (e.target.value === ""){ setValidacion(false)} else { setEdad(e.target.value); setValidacion(true)}}}
                     type="number"
                     className="form-control"
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -92,7 +103,19 @@ const Create = (props) => {
                     className="form-control"
                   />
                 </div>
-                <button type="submit" onClick={props.onHide} className="btn btn-primary">Agregar</button>
+                <button
+                  type="submit"
+                  onClick={() => {
+                    validacion
+                      ? props.onHide()
+                      : alert(
+                          "Por favor complete todos los campos requeridos."
+                        );
+                  }}
+                  className="btn btn-primary"
+                >
+                  Agregar
+                </button>
               </form>
             </div>
           </div>

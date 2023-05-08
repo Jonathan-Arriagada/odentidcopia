@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import SearchBar from "../Utilidades/SearchBar";
-
 
 function CreateCita(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
@@ -16,7 +21,7 @@ function CreateCita(props) {
   const [comentario, setComentario] = useState("");
 
   const [editable, setEditable] = useState(true);
-  const [searchBarStyle, setSearchBarStyle] = useState({ display: 'none' });
+  const [searchBarStyle, setSearchBarStyle] = useState({ display: "none" });
 
   const [optionsEstado, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
@@ -25,52 +30,66 @@ function CreateCita(props) {
 
   const citasCollection = collection(db, "citas");
 
-  const updateOptionsEstado = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => (
-      <option key={`estado-${doc.id}`} value={doc.data().name}>{doc.data().name}</option>
+  const updateOptionsEstado = useCallback((snapshot) => {
+    const options = snapshot.docs.map((doc) => (
+      <option key={`estado-${doc.id}`} value={doc.data().name}>
+        {doc.data().name}
+      </option>
     ));
     setOptionsEstado(options);
   }, []);
 
-  const updateOptionsHorarios = useCallback(snapshot => {
-    const horarios = snapshot.docs.map(doc => doc.data());
-    setHorariosAtencion(horarios);
+  const updateOptionsHorarios = useCallback(
+    (snapshot) => {
+      const horarios = snapshot.docs.map((doc) => doc.data());
+      setHorariosAtencion(horarios);
 
-    const optionsHoraInicio = horarios.map((horario, index) => (
-      <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
-    ));
-    setOptionsHoraInicio(optionsHoraInicio);
-
-    const optionsHoraFin = horarios
-      .filter(horario => horaInicio && horario.name > horaInicio)
-      .map((horario, index) => (
-        <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
+      const optionsHoraInicio = horarios.map((horario, index) => (
+        <option key={`horarioInicio-${index}`} value={horario.id}>
+          {horario.name}
+        </option>
       ));
-    setOptionsHoraFin(optionsHoraFin);
-    setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
+      setOptionsHoraInicio(optionsHoraInicio);
 
-  }, [horaInicio,horaFin]);
+      const optionsHoraFin = horarios
+        .filter((horario) => horaInicio && horario.name > horaInicio)
+        .map((horario, index) => (
+          <option key={`horarioFin-${index}`} value={horario.id}>
+            {horario.name}
+          </option>
+        ));
+      setOptionsHoraFin(optionsHoraFin);
+      setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
+    },
+    [horaInicio, horaFin]
+  );
 
   useEffect(() => {
     const unsubscribe = [
-      onSnapshot(query(collection(db, "estados"), orderBy("name")), updateOptionsEstado),
-      onSnapshot(query(collection(db, "horariosAtencion"), orderBy("name")), updateOptionsHorarios)
+      onSnapshot(
+        query(collection(db, "estados"), orderBy("name")),
+        updateOptionsEstado
+      ),
+      onSnapshot(
+        query(collection(db, "horariosAtencion"), orderBy("name")),
+        updateOptionsHorarios
+      ),
     ];
 
-    return () => unsubscribe.forEach(fn => fn());
+    return () => unsubscribe.forEach((fn) => fn());
   }, [updateOptionsEstado, updateOptionsHorarios]);
 
   const habilitarInputs = () => {
-    setSearchBarStyle({ display: 'none' });
+    setSearchBarStyle({ display: "none" });
     setApellidoConNombre("");
     setIdc("");
     setEditable(true);
   };
 
   const habilitarSearchBar = () => {
-    setSearchBarStyle({ display: 'block' });
+    setSearchBarStyle({ display: "block" });
     setEditable(false);
-  }
+  };
 
   const store = async (e) => {
     e.preventDefault();
@@ -84,6 +103,18 @@ function CreateCita(props) {
       horaInicio: horaInicio,
       horaFin: horaFin,
     });
+    clearFields();
+  };
+
+  const clearFields = () => {
+    setApellidoConNombre("");
+    setIdc("");
+    setEstado("");
+    setNumero("");
+    setFecha("");
+    setHoraInicio("");
+    setHoraFin("");
+    setComentario("");
   };
 
   const manejarValorSeleccionado = (apellidoConNombre, idc, numero) => {
@@ -91,17 +122,25 @@ function CreateCita(props) {
     setIdc(idc);
     setNumero(numero);
     setEditable(false);
-  }
+  };
 
   return (
-    <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-      <Modal.Header closeButton onClick={() => {
-        setSearchBarStyle({ display: 'none' });
-        setEditable(true);
-        setApellidoConNombre("");
-        setIdc("");
-        setNumero("");
-      }}>
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header
+        closeButton
+        onClick={() => {
+          setSearchBarStyle({ display: "none" });
+          setEditable(true);
+          setApellidoConNombre("");
+          setIdc("");
+          setNumero("");
+        }}
+      >
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cita</h1>
         </Modal.Title>
@@ -110,8 +149,22 @@ function CreateCita(props) {
         <div className="container">
           <div className="col">
             <div className="col">
-              <button type="submit" onClick={habilitarSearchBar} className="btn btn-secondary" style={{ margin: '1px' }}>Busqueda Auto</button>
-              <button type="submit" onClick={habilitarInputs} className="btn btn-secondary" style={{ margin: '1px' }}>Ingreso Manual</button>
+              <button
+                type="submit"
+                onClick={habilitarSearchBar}
+                className="btn btn-secondary"
+                style={{ margin: "1px" }}
+              >
+                Busqueda Auto
+              </button>
+              <button
+                type="submit"
+                onClick={habilitarInputs}
+                className="btn btn-secondary"
+                style={{ margin: "1px" }}
+              >
+                Ingreso Manual
+              </button>
               <div className="col mb-6" style={searchBarStyle}>
                 <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
               </div>
@@ -126,6 +179,7 @@ function CreateCita(props) {
                     type="text"
                     className="form-control"
                     disabled={!editable}
+                    required
                   />
                 </div>
                 <div className="col mb-3">
@@ -136,6 +190,7 @@ function CreateCita(props) {
                     type="number"
                     className="form-control"
                     disabled={!editable}
+                    required
                   />
                 </div>
               </div>
@@ -159,6 +214,7 @@ function CreateCita(props) {
                     onChange={(e) => setEstado(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     <option value="">Selecciona un estado</option>
                     {optionsEstado}
@@ -174,6 +230,7 @@ function CreateCita(props) {
                     onChange={(e) => setFecha(e.target.value)}
                     type="date"
                     className="form-control"
+                    required
                   />
                 </div>
               </div>
@@ -183,10 +240,10 @@ function CreateCita(props) {
                   <label className="form-label">Hora Inicio</label>
                   <select
                     value={horaInicio}
-                    onChange={(e) =>
-                      setHoraInicio(e.target.value)}
+                    onChange={(e) => setHoraInicio(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     {optionsHoraInicio}
                   </select>
@@ -198,6 +255,7 @@ function CreateCita(props) {
                     onChange={(e) => setHoraFin(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     {optionsHoraFin}
                   </select>
@@ -215,13 +273,21 @@ function CreateCita(props) {
                   />
                 </div>
               </div>
-              <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+              <button
+                type="submit"
+                onClick={() => {
+                  props.onHide();
+                }}
+                className="btn btn-primary"
+                style={{ margin: "1px" }}
+              >
+                Agregar
+              </button>
             </form>
           </div>
         </div>
-
       </Modal.Body>
-    </Modal >
+    </Modal>
   );
 }
 

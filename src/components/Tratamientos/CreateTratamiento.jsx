@@ -1,9 +1,16 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import SearchBar from "../Utilidades/SearchBar";
-
 
 function CreateTratamiento(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
@@ -19,71 +26,100 @@ function CreateTratamiento(props) {
   const [fecha, setFecha] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
   const [notas, setNotas] = useState("");
+  const [validacion, setValidacion] = useState(false);
 
-  const [optionsEstadosTratamientos, setOptionsEstadosTratamientos] = useState([]);
-  const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
+  const [optionsEstadosTratamientos, setOptionsEstadosTratamientos] = useState(
+    []
+  );
+  const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState(
+    []
+  );
 
   const [editable, setEditable] = useState(true);
-  const [searchBarStyle, setSearchBarStyle] = useState({ display: 'none' });
-
+  const [searchBarStyle, setSearchBarStyle] = useState({ display: "none" });
 
   const tratamientosCollection = collection(db, "tratamientos");
 
-  const updateOptionsEstadosTratamientos = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => (
-      <option key={`estadosTratamientos-${doc.id}`} value={doc.estadosTratamientos}>{doc.data().name}</option>
+  const updateOptionsEstadosTratamientos = useCallback((snapshot) => {
+    const options = snapshot.docs.map((doc) => (
+      <option
+        key={`estadosTratamientos-${doc.id}`}
+        value={doc.estadosTratamientos}
+      >
+        {doc.data().name}
+      </option>
     ));
     setOptionsEstadosTratamientos(options);
   }, []);
 
-  const updateOptionsTarifasTratamientos = useCallback(snapshot => {
-    const options2 = snapshot.docs.map(doc => (
-      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tratamiento}</option>
+  const updateOptionsTarifasTratamientos = useCallback((snapshot) => {
+    const options2 = snapshot.docs.map((doc) => (
+      <option
+        key={`tarifasTratamientos-${doc.id}`}
+        value={doc.tarifasTratamientos}
+      >
+        {doc.data().tratamiento}
+      </option>
     ));
     setOptionsTarifasTratamientos(options2);
   }, []);
 
   useEffect(() => {
     const unsubscribe = [
-      onSnapshot(query(collection(db, "estadosTratamientos"), orderBy("name")), updateOptionsEstadosTratamientos),
-      onSnapshot(query(collection(db, "tarifas"), orderBy("tratamiento")), updateOptionsTarifasTratamientos)
+      onSnapshot(
+        query(collection(db, "estadosTratamientos"), orderBy("name")),
+        updateOptionsEstadosTratamientos
+      ),
+      onSnapshot(
+        query(collection(db, "tarifas"), orderBy("tratamiento")),
+        updateOptionsTarifasTratamientos
+      ),
     ];
-    return () => unsubscribe.forEach(fn => fn());
+    return () => unsubscribe.forEach((fn) => fn());
   }, [updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);
 
   const habilitarInputs = () => {
-    setSearchBarStyle({ display: 'none' });
+    setSearchBarStyle({ display: "none" });
     setApellidoConNombre("");
     setIdc("");
     setEditable(true);
   };
 
   const habilitarSearchBar = () => {
-    setSearchBarStyle({ display: 'block' });
+    setSearchBarStyle({ display: "block" });
     setEditable(false);
-  }
+  };
 
   const store = async (e) => {
     e.preventDefault();
-    await addDoc(tratamientosCollection, {
-      apellidoConNombre: apellidoConNombre,
-      idc: idc,
-      cant: cant,
-      cta: cta,
-      precio: precio,
-      tarifasTratamientos: tarifasTratamientos,
-      pieza: pieza,
-      plazo: plazo,
-      cuota: cuota,
-      estadosTratamientos: estadosTratamientos,
-      fecha: fecha,
-      fechaVencimiento: fechaVencimiento,
-      notas: notas,
-    });
+    const form = e.target;
+    if (form.checkValidity()) {
+      await addDoc(tratamientosCollection, {
+        apellidoConNombre: apellidoConNombre,
+        idc: idc,
+        cant: cant,
+        cta: cta,
+        precio: precio,
+        tarifasTratamientos: tarifasTratamientos,
+        pieza: pieza,
+        plazo: plazo,
+        cuota: cuota,
+        estadosTratamientos: estadosTratamientos,
+        fecha: fecha,
+        fechaVencimiento: fechaVencimiento,
+        notas: notas,
+      });
+      setValidacion(true);
+    } else {
+      setValidacion(false);
+    }
   };
 
   async function buscarTratamiento(tratamiento) {
-    const q = query(collection(db, "tarifas"), where("tratamiento", "==", tratamiento));
+    const q = query(
+      collection(db, "tarifas"),
+      where("tratamiento", "==", tratamiento)
+    );
     const querySnapshot = await getDocs(q);
     if (querySnapshot) {
       setCta(querySnapshot.docs[0].data().codigo);
@@ -94,12 +130,11 @@ function CreateTratamiento(props) {
     }
   }
 
-
   const manejarValorSeleccionado = (apellidoConNombre, idc) => {
     setApellidoConNombre(apellidoConNombre);
     setIdc(idc);
     setEditable(false);
-  }
+  };
 
   return (
     <Modal
@@ -108,11 +143,14 @@ function CreateTratamiento(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton onClick={() => {
-        props.onHide();
-        setApellidoConNombre("");
-        setIdc("");
-      }}>
+      <Modal.Header
+        closeButton
+        onClick={() => {
+          props.onHide();
+          setApellidoConNombre("");
+          setIdc("");
+        }}
+      >
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Tratamiento</h1>
         </Modal.Title>
@@ -121,14 +159,28 @@ function CreateTratamiento(props) {
         <div className="container">
           <div className="col">
             <div className="col">
-              <button type="submit" onClick={habilitarSearchBar} className="btn btn-secondary" style={{ margin: '1px' }}>Busqueda Auto</button>
-              <button type="submit" onClick={habilitarInputs} className="btn btn-secondary" style={{ margin: '1px' }}>Ingreso Manual</button>
+              <button
+                type="submit"
+                onClick={habilitarSearchBar}
+                className="btn btn-secondary"
+                style={{ margin: "1px" }}
+              >
+                Busqueda Auto
+              </button>
+              <button
+                type="submit"
+                onClick={habilitarInputs}
+                className="btn btn-secondary"
+                style={{ margin: "1px" }}
+              >
+                Ingreso Manual
+              </button>
               <div className="mb-3" style={searchBarStyle}>
                 <SearchBar onValorSeleccionado={manejarValorSeleccionado} />
               </div>
             </div>
 
-            <form onSubmit={store}>
+            <form onSubmit={store} noValidate>
               <div className="row">
                 <div className="col mb-3">
                   <label className="form-label">Apellido y Nombres</label>
@@ -138,6 +190,7 @@ function CreateTratamiento(props) {
                     type="text"
                     className="form-control"
                     disabled={!editable}
+                    required
                   />
                 </div>
                 <div className="col mb-3">
@@ -148,6 +201,7 @@ function CreateTratamiento(props) {
                     type="number"
                     className="form-control"
                     disabled={!editable}
+                    required
                   />
                 </div>
               </div>
@@ -158,11 +212,12 @@ function CreateTratamiento(props) {
                   <select
                     value={tarifasTratamientos}
                     onChange={(e) => {
-                      setTarifasTratamientos(e.target.value)
-                      buscarTratamiento(e.target.value)
+                      setTarifasTratamientos(e.target.value);
+                      buscarTratamiento(e.target.value);
                     }}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     <option value="">Selecciona un Tratamiento</option>
                     {optionsTarifasTratamientos}
@@ -175,6 +230,7 @@ function CreateTratamiento(props) {
                     onChange={(e) => setEstadosTratamientos(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     <option value="">Selecciona un estado</option>
                     {optionsEstadosTratamientos}
@@ -183,7 +239,7 @@ function CreateTratamiento(props) {
               </div>
 
               <div className="row">
-              <div className="col mb-">
+                <div className="col mb-">
                   <label className="form-label">Cta</label>
                   <input
                     value={cta}
@@ -201,7 +257,7 @@ function CreateTratamiento(props) {
                     disabled={true}
                   />
                 </div>
-                </div>
+              </div>
 
               <div className="row">
                 <div className="col sm-2">
@@ -274,12 +330,23 @@ function CreateTratamiento(props) {
                   />
                 </div>
               </div>
-              <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+              <button
+                type="submit"
+                onClick={() => {
+                  validacion
+                    ? props.onHide()
+                    : alert("Por favor complete todos los campos requeridos.");
+                }}
+                className="btn btn-primary"
+                style={{ margin: "1px" }}
+              >
+                Agregar
+              </button>
             </form>
           </div>
         </div>
       </Modal.Body>
-    </Modal >
+    </Modal>
   );
 }
 
