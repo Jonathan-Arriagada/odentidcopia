@@ -58,7 +58,7 @@ const Create = (props) => {
                       setApellidoConNombre(e.target.value);
                       setValorBusqueda(e.target.value + " " + idc);
                     }}
-                    type="text"
+                    type="text"               
                     className="form-control"
                   />
                 </div>

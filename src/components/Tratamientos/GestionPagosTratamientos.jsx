@@ -1,18 +1,21 @@
 import React, { useCallback, useRef } from "react";
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, doc, orderBy, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
+import { DropdownButton, Dropdown } from 'react-bootstrap';
+
 
 function GestionPagosTratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
+  const [selectedOption, setSelectedOption] = useState("");
 
   const tratamientosCollectiona = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombres")));
-
-  const getTratamientos = useCallback((snapshot) => {
+  
+   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
@@ -25,6 +28,13 @@ function GestionPagosTratamientos() {
     return unsubscribe;
   }, [getTratamientos]);
 
+  const guardarSeleccion = async (id) => {
+    const tratamientosCollection = collection(db, "tratamientos");
+    console.log(tratamientosCollection)
+      await tratamientosCollection.doc(id).update({
+        estadoPago: selectedOption,
+      });
+    };  
 
   const searcher = (e) => {
     setSearch(e.target.value);
@@ -110,7 +120,14 @@ function GestionPagosTratamientos() {
                         <td>{tratamiento.cuota}</td>
                         <td>{tratamiento.plazo - tratamiento.cuota}</td>
                         <td>{tratamiento.fechaVencimiento}</td>
-                        <td>{tratamiento.estadoPago}</td>
+                        <td>{tratamiento.estadoPago}<select  onChange={(e) => setSelectedOption(e.target.value)}>
+                        <option value="">Seleccione una opción</option>
+        <option value="Finalizado">Finalizado</option>
+        <option value="">Option 2</option>
+        <option value="">Option 3</option>
+      </select>
+</td>
+<td>      <button onClick={()=>guardarSeleccion(tratamiento.id)}>Guardar</button></td>
                       </tr>
                     ))}
                   </tbody>

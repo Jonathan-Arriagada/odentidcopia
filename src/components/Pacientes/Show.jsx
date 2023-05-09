@@ -108,7 +108,7 @@ const Show = () => {
                       Nuevo
                     </button>
                   </div>
-                </div>
+                </div>                   
                 <section className="table__body">
                   <table>
                     <thead>
@@ -182,7 +182,7 @@ const Show = () => {
         client={client}
         show={modalShowEdit}
         onHide={() => setModalShowEdit(false)}
-      />
+      />    
     </>
   );
 };
