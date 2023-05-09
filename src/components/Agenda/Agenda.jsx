@@ -1,5 +1,5 @@
 import React from "react";
-import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { collection, deleteDoc, doc, query, orderBy, where,getDocs } from "firebase/firestore";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
@@ -26,6 +26,10 @@ function Citas() {
   const [modalShowHorarios, setModalShowHorarios] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [contador, setContador] = useState(0);
+  const [estados, setEstados] = useState([]);
+
+  const estadosCollectiona = collection(db, "estados");
+  const estadosCollection = useRef(query(estadosCollectiona))
 
   const citasCollection = collection(db, "citas");
   const citasCollectionOrdenados = useRef(
@@ -48,16 +52,56 @@ function Citas() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(citasCollectionOrdenados.current, (snapshot) => {
-      getCitas(snapshot);
-      const citasPorConfirmar = snapshot.docs.filter(
-        (doc) => doc.data().estado === "Por Confirmar"
-      );
-      setContador(citasPorConfirmar.length);
-    });
-    return unsubscribe;
-  }, [getCitas]);
+  const getEstados = useCallback((snapshot) => {
+    const estadosArray = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setEstados(estadosArray);
+  }, []);
+
+  const buscarEstilos = (estadoParam) => {
+    const colorEncontrado = estados.find((e) => e.name === estadoParam);
+    switch (colorEncontrado.color) {
+      case "yellow":
+        return { backgroundColor: "#f7e172" };
+      case "red":
+        return { backgroundColor: "#de4747"};
+      case "green":
+        return { backgroundColor: "#86e49d"};
+      case "blue":
+        return { backgroundColor: "#6fcaea" };
+      case "orange":
+        return { backgroundColor: "#f5b04e" };
+      case "purple":
+        return { backgroundColor: "#5f5fad", color:"#fff" };
+      case "grey":
+        return { backgroundColor: "#89898c" };
+      default:
+        return {};
+    }
+    };
+
+    useEffect(() => {
+      const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => {
+        getCitas(snapshot);
+        const citasPorConfirmar = snapshot.docs.filter(
+          (doc) => doc.data().estado === "Por Confirmar"
+        );
+        setContador(citasPorConfirmar.length);
+      });
+  
+      const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
+  
+      return () => {
+        unsubscribeCitas();
+        unsubscribeEstados();
+      };
+    }, [getCitas, getEstados]);
+
+  
+  
+
 
   const deleteCita = async (id) => {
     const citaDoc = doc(db, "citas", id);
@@ -173,7 +217,7 @@ function Citas() {
                         <td> {cita.horaFin} </td>
                         <td> {cita.apellidoConNombre} </td>
                         <td> {cita.idc} </td>
-                        <td> {cita.estado} </td>
+                        <td> <p style={buscarEstilos(cita.estado)} className="status">{cita.estado}</p></td>
                         <td> {cita.numero} </td>
                         <td> {cita.comentario} </td>
                         <td>

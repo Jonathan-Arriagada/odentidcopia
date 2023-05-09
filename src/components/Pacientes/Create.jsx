@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc,getDocs, query , where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -10,6 +10,7 @@ const Create = (props) => {
   const [numero, setNumero] = useState([]);
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [validacion, setValidacion] = useState(false);
+  const [error, setError] = useState("")
 
   const clientsCollection = collection(db, "clients");
 
@@ -24,6 +25,13 @@ const Create = (props) => {
     e.preventDefault();
     const form = e.target;
     if (form.checkValidity()) {
+      const querySnapshot = await getDocs(
+        query(clientsCollection, where("idc", "==", idc))
+      );
+      if (!querySnapshot.empty) {
+        setError("El ID ya existe en la base de datos");
+        return;
+      }
       await addDoc(clientsCollection, {
         apellidoConNombre: apellidoConNombre,
         idc: idc,
@@ -32,12 +40,17 @@ const Create = (props) => {
         valorBusqueda: valorBusqueda,
       })
       .then (setValidacion(true))
+      .catch((error) =>{
+        console.error("Error adding document: ", error);
+        setValidacion(false);
+      } )
       clearFields();
     } else {
       setValidacion(false);
       clearFields();
     }
   };
+
 
   return (
     <Modal
@@ -83,12 +96,13 @@ const Create = (props) => {
                     className="form-control"
                     required
                   />
+                  {error && <small className="text-danger">{error}</small>}
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Edad</label>
                   <input
                     value={edad}
-                    onChange={(e) => { if (e.target.value === ""){ setValidacion(false)} else { setEdad(e.target.value); setValidacion(true)}}}
+                    onChange={(e) => setEdad(e.target.value)}
                     type="number"
                     className="form-control"
                     required
@@ -105,13 +119,7 @@ const Create = (props) => {
                 </div>
                 <button
                   type="submit"
-                  onClick={() => {
-                    validacion
-                      ? props.onHide()
-                      : alert(
-                          "Por favor complete todos los campos requeridos."
-                        );
-                  }}
+                  onClick={props.onHide}
                   className="btn btn-primary"
                 >
                   Agregar

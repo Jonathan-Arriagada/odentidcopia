@@ -94,6 +94,14 @@ tbody tr.hide td p {
   transition: .2s ease-in-out .5s;
 }
 
+.status {
+  border-radius: 2rem;
+  text-align: center;
+  padding: .4rem 0;
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
 
 /*<!--ESTILOS PARA TARIFARIO-->*/
 .deleted-row {

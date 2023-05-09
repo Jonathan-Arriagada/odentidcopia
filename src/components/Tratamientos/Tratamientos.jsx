@@ -42,6 +42,22 @@ function Tratamientos() {
     }
   };
 
+  function getEstadoStyle(estado) {
+    switch (estado) {
+      case "EN CURSO":
+        return { backgroundColor: "#ebc474" };
+      case "ABANDONADO":
+        return { backgroundColor: "#d893a3",
+          color: "#b30021" };
+      case "FINALIZADO":
+        return { backgroundColor: "#86e49d", color: "#006b21"};
+      case "SUSPENDIDO":
+        return { backgroundColor: "#6fcaea" };
+      default:
+        return {};
+    }
+  }
+
   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs.map((doc) => ({
       ...doc.data(),
@@ -56,6 +72,19 @@ function Tratamientos() {
     return unsubscribe;
   }, [getTratamientos]);
 
+  function getPagoStyle(estado) {
+    switch (estado) {
+      case "Programado":
+        return { backgroundColor: "#ebc474" };
+      case "Cancelado":
+        return { backgroundColor: "#d893a3",
+          color: "#b30021" };
+      case "Finalizado":
+        return { backgroundColor: "#86e49d", color: "#006b21"};
+      default:
+        return {};
+    }
+  }
 
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);
@@ -191,8 +220,8 @@ function Tratamientos() {
                     <td> {tratamiento.tarifasTratamientos} </td>
                     <td> {tratamiento.pieza} </td>
                     <td>{moment(tratamiento.fecha).format('DD/MM/YY')}</td>
-                    <td> {tratamiento.estadoPago} </td>
-                    <td> {tratamiento.estadosTratamientos} </td>
+                    <td><p style={getPagoStyle(tratamiento.estadoPago)} className="status">{tratamiento.estadoPago}</p></td>
+                    <td><p style={getEstadoStyle(tratamiento.estadosTratamientos)} className="status"> {tratamiento.estadosTratamientos}</p></td>
                     <td> {renderDateDiff(tratamiento.fecha)} </td>
 
                     <td >
