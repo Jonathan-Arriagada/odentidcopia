@@ -12,17 +12,21 @@ const EditCita = (props) => {
   const [comentario, setComentario] = useState(props.cita.comentario || "");
   const [horaInicio, setHoraInicio] = useState(props.cita.horaInicio || "");
   const [horaFin, setHoraFin] = useState(props.cita.horaFin || "");
-  const [optionsEstado, setOptionsEstado] = useState([]);
+  const [estadoOptions, setOptionsEstado] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
   const [, setHorariosAtencion] = useState([]);
 
   const updateOptionsEstado = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => (
-      <option key={`estado-${doc.id}`} value={doc.data().name}>{doc.data().name}</option>
-    ));
+    const options = snapshot.docs.map(doc => doc.data().name);
     setOptionsEstado(options);
   }, []);
+
+  // En la función render:
+  const estadoOptionsJSX = estadoOptions.map((option, index) => (
+    <option key={`estado-${index}`} value={option}>{option}</option>
+  ));
+
 
   const updateOptionsHorarios = useCallback(snapshot => {
     const horarios = snapshot.docs.map(doc => doc.data());
@@ -102,7 +106,7 @@ const EditCita = (props) => {
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">DNI</label>
                   <input
                     defaultValue={props.cita.idc}
                     onChange={(e) => setIdc(e.target.value)}
@@ -131,7 +135,7 @@ const EditCita = (props) => {
                     multiple={false}
                   >
                     <option value="">Selecciona un estado</option>
-                    {optionsEstado}
+                    {estadoOptionsJSX}
                   </select>
                 </div>
               </div>
@@ -175,7 +179,7 @@ const EditCita = (props) => {
 
               <div className="row">
                 <div className="col mb-3">
-                  <label className="form-label">Comentarios</label>
+                  <label className="form-label">Notas</label>
                   <input
                     defaultValue={props.cita.comentario}
                     onChange={(e) => setComentario(e.target.value)}

@@ -4,9 +4,9 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditTratamiento = (props) => {
-  const [apellidoConNombres, setApellidoConNombres] = useState(props.tratamiento.apellidoConNombres || "");
+  const [codigo, ] = useState(props.tratamiento.codigo);
+  const [apellidoConNombre, setApellidoConNombre] = useState(props.tratamiento.apellidoConNombre || "");
   const [idc, setIdc] = useState(props.tratamiento.idc || "");
-  const [cant, setCant] = useState(props.tratamiento.cant || "");
   const [tarifasTratamientos, setTarifasTratamientos] = useState(props.tratamiento.tarifasTratamientos || "");
   const [cta, setCta] = useState(props.tratamiento.cta || "");
   const [precio, setPrecio] = useState(props.tratamiento.precio || "");
@@ -30,7 +30,7 @@ const EditTratamiento = (props) => {
 
   const updateOptionsTarifasTratamientos = useCallback(snapshot => {
     const options2 = snapshot.docs.map(doc => (
-      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tratamiento}</option>
+      <option key={`tarifasTratamientos-${doc.id}`} value={doc.data().tarifasTratamientos}>{doc.data().tratamiento}</option>
     ));
     setOptionsTarifasTratamientos(options2);
   }, []);
@@ -38,20 +38,30 @@ const EditTratamiento = (props) => {
   useEffect(() => {
     const unsubscribe = [
       onSnapshot(query(collection(db, "estadosTratamientos"), orderBy("name")), updateOptionsEstadosTratamientos),
-      onSnapshot(query(collection(db, "tarifas"), orderBy("tratamiento")), updateOptionsTarifasTratamientos)
+      onSnapshot(query(collection(db, "tarifas"), orderBy("eliminado")), updateOptionsTarifasTratamientos)
     ];
     return () => unsubscribe.forEach(fn => fn());
   }, [updateOptionsEstadosTratamientos, updateOptionsTarifasTratamientos]);
 
-  async function buscarTratamiento(tratamiento) {
+  async function buscarTratamiento(tratamiento, tratamientoAnterior) {
     const q = query(collection(db, "tarifas"), where("tratamiento", "==", tratamiento));
     const querySnapshot = await getDocs(q);
-    if (querySnapshot) {
-      setCta(querySnapshot.docs[0].data().codigo);
-      setPrecio(querySnapshot.docs[0].data().tarifa)
+    if (!querySnapshot.empty) {
+      const data = querySnapshot.docs[0].data();
+      if (data.eliminado) {
+        const confirmMessage = "El tratamiento seleccionado está marcado como eliminado. ¿Deseas continuar?";
+        const shouldContinue = window.confirm(confirmMessage);
+        if (!shouldContinue) {
+          props.onHide()
+          return;
+        }
+      }
+      setTarifasTratamientos(tratamiento);
+      setCta(data.codigo);
+      setPrecio(data.tarifa);
     } else {
       setCta("");
-      setPrecio("")
+      setPrecio("");
     }
   }
 
@@ -62,9 +72,9 @@ const EditTratamiento = (props) => {
     const tratamientoData = tratamientoDoc.data();
 
     const newData = {
-      apellidoConNombres: apellidoConNombres || tratamientoData.apellidoConNombres,
+      codigo: codigo || tratamientoData.codigo,
+      apellidoConNombre: apellidoConNombre || tratamientoData.apellidoConNombre,
       idc: idc || tratamientoData.idc,
-      cant: cant || tratamientoData.cant,
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
       cta: cta || tratamientoData.cta,
       precio: precio || tratamientoData.precio,
@@ -79,9 +89,8 @@ const EditTratamiento = (props) => {
     await updateDoc(tratamientoRef, newData);
   };
 
-  const handleTarifasTratamientosChange = (event) => {
-    setTarifasTratamientos(event.target.value);
-    buscarTratamiento(event.target.value);
+  const handleTarifasTratamientosChange = (event, tratamiento) => {
+    buscarTratamiento(event, tratamiento);
   };
 
   return (
@@ -107,14 +116,14 @@ const EditTratamiento = (props) => {
                 <div className="col mb-3">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
-                    defaultValue={props.tratamiento.apellidoConNombres}
-                    onChange={(e) => setApellidoConNombres(e.target.value)}
+                    defaultValue={props.tratamiento.apellidoConNombre}
+                    onChange={(e) => setApellidoConNombre(e.target.value)}
                     type="text"
                     className="form-control"
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">DNI</label>
                   <input
                     defaultValue={props.tratamiento.idc}
                     onChange={(e) => setIdc(e.target.value)}
@@ -129,7 +138,7 @@ const EditTratamiento = (props) => {
                   <label className="form-label">Tratamiento</label>
                   <select
                     defaultValue={props.tratamiento.tarifasTratamientos}
-                    onChange={handleTarifasTratamientosChange}
+                    onChange={(e) => handleTarifasTratamientosChange(e.target.value, props.tratamiento)}
                     className="form-control"
                     multiple={false}
                   >
@@ -150,22 +159,13 @@ const EditTratamiento = (props) => {
                   </select>
                 </div>
               </div>
-              
+
               <div className="row">
                 <div className="col mb-2">
                   <label className="form-label">Pieza</label>
                   <input
                     defaultValue={props.tratamiento.pieza}
                     onChange={(e) => setPieza(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="col mb-2">
-                  <label className="form-label">Cant</label>
-                  <input
-                    defaultValue={props.tratamiento.cant}
-                    onChange={(e) => setCant(e.target.value)}
                     type="number"
                     className="form-control"
                   />

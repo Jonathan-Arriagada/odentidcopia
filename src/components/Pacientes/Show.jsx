@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import {collection, deleteDoc, doc, onSnapshot, query, orderBy} from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import "./Show.css";
@@ -8,6 +8,8 @@ import Edit from "./Edit";
 import Create from "./Create";
 import CreateCita from "../Agenda/CreateCita";
 import "../Utilidades/loader.css";
+import "../Utilidades/tablas.css";
+
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -42,7 +44,7 @@ const Show = () => {
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);
     await deleteDoc(clientDoc);
-    getClients();
+    setClients((prevClients) => prevClients.filter((cliente) => cliente.id !== id));
   };
 
   const searcher = (e) => {
@@ -63,16 +65,20 @@ const Show = () => {
 
   const sorting = (col) => {
     if (order === "ASC") {
-      const sorted = [...clients].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-      );
+      const sorted = [...clients].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA > valueB ? 1 : -1;
+      });
       setClients(sorted);
       setOrder("DSC");
     }
     if (order === "DSC") {
-      const sorted = [...clients].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-      );
+      const sorted = [...clients].sort((a, b) => {
+        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        return valueA < valueB ? 1 : -1;
+      });
       setClients(sorted);
       setOrder("ASC");
     }
@@ -97,7 +103,7 @@ const Show = () => {
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscar por Apellido y Nombres o IDC..."
+                      placeholder="Buscar por Apellido y Nombres o DNI..."
                       className="form-control m-2 w-25"
                     />
                     <button
@@ -108,7 +114,7 @@ const Show = () => {
                       Nuevo
                     </button>
                   </div>
-                </div>                   
+                </div>
                 <section className="table__body">
                   <table>
                     <thead>
@@ -121,50 +127,49 @@ const Show = () => {
                       </tr>
                     </thead>
 
-                    <tbody>
-                      {results.map((client) => (
-                        <tr key={client.id}>
-                          <td> {client.apellidoConNombre} </td>
-                          <td> {client.idc} </td>
-                          <td> {client.edad} </td>
-                          <td> {client.numero} </td>
-                          <td>
-                            <button
-                              variant="primary"
-                              className="btn btn-success mx-1"
-                              onClick={() => {
-                                setModalShowEdit(true);
-                                setClient(client);
-                                setIdParam(client.id);
-                              }}
-                            >
-                              <i className="fa-regular fa-pen-to-square"></i>
-                            </button>
-                            <button
-                              onClick={() => {
-                                deleteClient(client.id);
-                              }}
-                              className="btn btn-danger mx-1"
-                            >
-                              {" "}
-                              <i className="fa-solid fa-trash-can"></i>{" "}
-                            </button>
-                            <button
-                              variant="primary"
-                              className="btn-blue mx-1"
-                              onClick={() => {
-                                setModalShowCita(true);
-                                setClient(client);
-                              }}
-                            >
-                              Cita
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </section>
+                  <tbody>
+                    {results.map((client) => (
+                      <tr key={client.id}>
+                        <td> {client.apellidoConNombre} </td>
+                        <td> {client.idc} </td>
+                        <td> {client.edad} </td>
+                        <td> {client.numero} </td>
+                        <td>
+                          <button
+                            variant="primary"
+                            className="btn btn-success mx-1"
+                            onClick={() => {
+                              setModalShowEdit(true);
+                              setClient(client);
+                              setIdParam(client.id);
+                            }}
+                          >
+                            <i className="fa-regular fa-pen-to-square"></i>
+                          </button>
+                          <button
+                            onClick={() => {
+                              deleteClient(client.id);
+                            }}
+                            className="btn btn-danger mx-1"
+                          >
+                            {" "}
+                            <i className="fa-solid fa-trash-can"></i>{" "}
+                          </button>
+                          <button
+                            variant="primary"
+                            className="btn-blue mx-1"
+                            onClick={() => {
+                              setModalShowCita(true);
+                              setClient(client);
+                            }}
+                          >
+                            Crear Cita
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

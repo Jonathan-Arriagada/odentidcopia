@@ -56,7 +56,7 @@ const Edit = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">DNI</label>
                   <input
                     defaultValue={props.client.idc}
                     onChange={(e) => {

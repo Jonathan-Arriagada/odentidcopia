@@ -63,7 +63,7 @@ const Create = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">IDC</label>
+                  <label className="form-label">DNI</label>
                   <input
                     value={idc}
                     onChange={(e) => {
