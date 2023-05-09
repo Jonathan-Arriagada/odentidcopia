@@ -95,7 +95,7 @@ function Tarifario() {
                   <div className="d-flex">
                     <h1>Tarifario</h1>
                   </div>
-                  <div className="d-flex justify-content-end">
+                  <div className="d-flex justify-content-between">
                     <input
                       value={search}
                       onChange={searcher}

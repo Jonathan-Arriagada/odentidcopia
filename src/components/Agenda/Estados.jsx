@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Modal } from "react-bootstrap";
-import {
-  addDoc,
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  query,
-  orderBy,
-} from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy,} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
@@ -18,9 +10,7 @@ const Estados = ({ show, onHide }) => {
   const [error, setError] = useState("");
   const [estados, setEstados] = useState([]);
   const estadosCollection = collection(db, "estados");
-  const estadosCollectionOrdenados = useRef(
-    query(estadosCollection, orderBy("name"))
-  );
+  const estadosCollectionOrdenados = useRef(query(estadosCollection, orderBy("name")));
   const [color, setColor] = useState("");
 
   const updateEstadosFromSnapshot = useCallback((snapshot) => {

@@ -1,54 +1,65 @@
-import React, { useState } from "react";
-import { collection, addDoc,getDocs, query , where } from "firebase/firestore";
+import React, { useState, } from "react";
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const Create = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
-  const [idc, setIdc] = useState([]);
-  const [edad, setEdad] = useState([]);
-  const [numero, setNumero] = useState([]);
+  const [idc, setIdc] = useState("");
+  const [edad, setEdad] = useState("");
+  const [numero, setNumero] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
-  const [validacion, setValidacion] = useState(false);
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
 
   const clientsCollection = collection(db, "clients");
+
+  const validateFields = async (e) => {
+    e.preventDefault();
+    if (
+      apellidoConNombre.trim() === "" ||
+      idc.trim() === "" ||
+      edad.trim() === "" ||
+      numero.trim() === ""
+    ) {
+      setError("Todos los campos son obligatorios");
+      setTimeout(clearError, 2000)
+      return false;
+    } else {
+      const querySnapshot = await getDocs(query(clientsCollection, where("idc", "==", idc)));
+      if (!querySnapshot.empty) {
+        setError("El DNI ya existe en la Base de Datos");
+        setTimeout(clearError, 2000)
+        return false;
+      } else {
+        setError("");
+        await store();
+        clearFields();
+        props.onHide();
+      }
+    }
+    return true;
+  };
+
+  const clearError = () => {
+    setError("");
+  };
 
   const clearFields = () => {
     setApellidoConNombre("");
     setIdc("");
     setEdad("");
     setNumero("");
+    setError("");
   };
 
-  const store = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    if (form.checkValidity()) {
-      const querySnapshot = await getDocs(
-        query(clientsCollection, where("idc", "==", idc))
-      );
-      if (!querySnapshot.empty) {
-        setError("El ID ya existe en la base de datos");
-        return;
-      }
-      await addDoc(clientsCollection, {
-        apellidoConNombre: apellidoConNombre,
-        idc: idc,
-        edad: edad,
-        numero: numero,
-        valorBusqueda: valorBusqueda,
-      })
-      .then (setValidacion(true))
-      .catch((error) =>{
-        console.error("Error adding document: ", error);
-        setValidacion(false);
-      } )
-      clearFields();
-    } else {
-      setValidacion(false);
-      clearFields();
-    }
+  const store = async () => {
+    await addDoc(clientsCollection, {
+      apellidoConNombre: apellidoConNombre,
+      idc: idc,
+      edad: edad,
+      numero: numero,
+      valorBusqueda: valorBusqueda,
+    });
   };
 
 
@@ -59,7 +70,7 @@ const Create = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton onClick={props.onHide}>
+      <Modal.Header closeButton onClick={() => {clearFields(); props.onHide();}}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cliente</h1>
         </Modal.Title>
@@ -68,9 +79,14 @@ const Create = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={store} noValidate>
+              <form>
+              {error && (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                )}
                 <div className="mb-3">
-                  <label className="form-label">Apellido y Nombres</label>
+                  <label className="form-label">Apellido y Nombres*</label>
                   <input
                     value={apellidoConNombre}
                     onChange={(e) => {
@@ -83,7 +99,7 @@ const Create = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">DNI</label>
+                  <label className="form-label">DNI*</label>
                   <input
                     value={idc}
                     onChange={(e) => {
@@ -96,10 +112,9 @@ const Create = (props) => {
                     className="form-control"
                     required
                   />
-                  {error && <small className="text-danger">{error}</small>}
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Edad</label>
+                  <label className="form-label">Edad*</label>
                   <input
                     value={edad}
                     onChange={(e) => setEdad(e.target.value)}
@@ -109,17 +124,18 @@ const Create = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Telefono</label>
+                  <label className="form-label">Telefono*</label>
                   <input
                     value={numero}
                     onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
+                    required
                   />
                 </div>
                 <button
                   type="submit"
-                  onClick={props.onHide}
+                  onClick={validateFields}
                   className="btn btn-primary"
                 >
                   Agregar
