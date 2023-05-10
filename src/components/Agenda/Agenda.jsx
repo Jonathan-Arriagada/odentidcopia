@@ -13,7 +13,6 @@ import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
 import moment from 'moment';
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import { Modal, Button } from "react-bootstrap";
 
 
@@ -31,11 +30,13 @@ function Citas() {
   const [contador, setContador] = useState(0);
   const [estados, setEstados] = useState([]);
   const [mostrarAjustes, setMostrarAjustes] = useState(false);
-  const [modalShow, setModalShow] = useState(false);
+  const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
 
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona))
+
 
   const citasCollection = collection(db, "citas");
   const citasCollectionOrdenados = useRef(query(citasCollection, orderBy("fecha", "desc")));
@@ -124,18 +125,37 @@ function Citas() {
     setSearch(e.target.value);
   };
 
+  const filtroFecha = (param) => {
+    if (param === "Dia") {
+      setSearch(moment().format("YYYY-MM-DD"))
+    }
+    if (param === "Semana") {
+      const fechaInicio = moment().subtract(7, 'days').format("YYYY-MM-DD");
+      const fechaFin = moment().format("YYYY-MM-DD");
+      setSearch({ fechaInicio, fechaFin });
+    }
+    if (param === "Mes") {
+      const fechaInicio = moment().subtract(30, 'days').format("YYYY-MM-DD");
+      const fechaFin = moment().format("YYYY-MM-DD");
+      setSearch({ fechaInicio, fechaFin });
+    }
+  };
+
   var results = !search
     ? citas
-    : search.toString().length === 10 && search.charAt(4) === "-" && search.charAt(7) === "-"
-      ? (
-        citas.filter((dato) => dato.fecha === search.toString())
-      )
-      : (
-        citas.filter((dato) =>
+    : typeof search === 'object'
+      ? citas.filter((dato) => {
+        const fecha = moment(dato.fecha).format("YYYY-MM-DD");
+        return (
+          fecha >= search.fechaInicio && fecha <= search.fechaFin
+        );
+      })
+      : search.toString().length === 10 && search.charAt(4) === "-" && search.charAt(7) === "-"
+        ? citas.filter((dato) => dato.fecha === search.toString())
+        : citas.filter((dato) =>
           dato.apellidoConNombre.toLowerCase().includes(search) ||
           dato.idc.toString().includes(search.toString())
-        )
-      );
+        );
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -197,33 +217,39 @@ function Citas() {
                     <button
                       variant="primary"
                       className="btn btn-success mx-1 btn-md"
-                      style={{ borderRadius: "20px", justifyItems: "center", maxHeight: "50px" }}
-                      onClick={() => setModalShow(true)}
+                      style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center",alignSelf:"center", height:"45px" }}
+                      onClick={() => setMostrarBotonesFechas(!mostrarBotonesFechas)}
                     >
-                      <i className="fa-regular fa-calendar-check" style={{ transform: "scale(1.4)" }}></i>
+                      <i className="fa-regular fa-calendar-check" style={{ transform: "scale(1.4)", }}></i>
                     </button>
+                    {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems:"center"}}>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Dia')}>Dia</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Semana')}>Semana</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Mes')}>Mes</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => setModalSeleccionFechaShow(true)}>Seleccionar</button>
+                    </div>)}
 
-                    <Modal show={modalShow} onHide={() => setModalShow(false)}>
+                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate("") }}>
                       <Modal.Header closeButton onClick={() => {
-                        setModalShow(false);
+                        setModalSeleccionFechaShow(false);
                         setSelectedDate("");
                       }}>
                         <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
                       </Modal.Header>
                       <Modal.Body style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                        <Calendar onChange={(date) => {
+                        <Calendar defaultValue={moment().format("YYYY-MM-DD")} onChange={(date) => {
                           const formattedDate = moment(date).format('YYYY-MM-DD');
                           setSelectedDate(formattedDate);
-                        }} value={selectedDate} />
+                        }}
+                          value={selectedDate}
+                        />
                       </Modal.Body>
                       <Modal.Footer>
-                        <Button variant="primary" onClick={() => {setSearch(selectedDate); setModalShow(false)}}>
-                          Filtrar
+                        <Button variant="primary" onClick={() => { setSearch(selectedDate); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false); }}>
+                          Buscar Fecha
                         </Button>
                       </Modal.Footer>
                     </Modal>
-
-
 
                     <div className="col d-flex justify-content-end">
                       <button
