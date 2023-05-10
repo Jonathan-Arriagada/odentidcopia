@@ -34,7 +34,6 @@ function CreateTratamiento(props) {
 
   const updateOptionsPacientes = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => doc.data().valorBusqueda);
-    options.unshift("<---Ingreso manual--->");
     setValorBusquedaOptions(options);
   }, []);
 
@@ -155,13 +154,6 @@ function CreateTratamiento(props) {
 
 
   const manejarValorSeleccionado = async (suggestion) => {
-    if (suggestion === "<---Ingreso manual--->" || suggestion === "") {
-      setApellidoConNombre("");
-      setIdc("");
-      setEditable(true);
-      return;
-    }
-
     const querySnapshot = await getDocs(
       query(collection(db, "clients"), where("valorBusqueda", "==", suggestion))
     );
@@ -172,7 +164,7 @@ function CreateTratamiento(props) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
       setIdc(data.idc);
-      setEditable(false);
+      setEditable(true);
     }
   };
 
@@ -215,7 +207,7 @@ function CreateTratamiento(props) {
                   onChange={(e) => setApellidoConNombre(e.target.value)}
                   type="text"
                   className="form-control"
-                  disabled={!editable}
+                  disabled={editable}
                   required
                 />
               </div>
@@ -226,7 +218,7 @@ function CreateTratamiento(props) {
                   onChange={(e) => setIdc(e.target.value)}
                   type="number"
                   className="form-control"
-                  disabled={!editable}
+                  disabled={editable}
                   required
                 />
               </div>
