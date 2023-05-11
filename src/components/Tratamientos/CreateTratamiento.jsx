@@ -3,7 +3,6 @@ import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit }
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
-
 function CreateTratamiento(props) {
   const [codigo, setCodigo] = useState(null);
   const [apellidoConNombre, setApellidoConNombre] = useState("");

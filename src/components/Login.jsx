@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import './Login.css'
 import logo from '../img/logo-odentid.png'
-
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig/firebase';
 import { useNavigate } from 'react-router-dom';

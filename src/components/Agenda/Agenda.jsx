@@ -13,7 +13,6 @@ import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
 import moment from 'moment';
 
-
 function Citas() {
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");

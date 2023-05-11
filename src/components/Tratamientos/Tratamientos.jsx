@@ -12,7 +12,6 @@ import EditPago from "./EditPago";
 import ListaSeleccionEstadoPago from './ListaSeleccionEstadoPago'
 import moment from 'moment';
 
-
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");

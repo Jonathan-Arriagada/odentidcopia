@@ -8,7 +8,6 @@ import EditTarifa from "./EditTarifa";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
 
-
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
   const [search, setSearch] = useState("");

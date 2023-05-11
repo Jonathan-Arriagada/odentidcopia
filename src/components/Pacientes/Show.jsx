@@ -10,7 +10,6 @@ import CreateCita from "../Agenda/CreateCita";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
 
-
 const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
@@ -115,7 +114,7 @@ const Show = () => {
                     </button>
                   </div>
                 </div>
-                <section className="table__body">
+                <section className="table__body"/>
                   <table>
                     <thead>
                       <tr>
@@ -126,7 +125,7 @@ const Show = () => {
                         <th>Accion</th>
                       </tr>
                     </thead>
-
+                  
                   <tbody>
                     {results.map((client) => (
                       <tr key={client.id}>

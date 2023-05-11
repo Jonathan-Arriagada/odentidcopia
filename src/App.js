@@ -10,6 +10,7 @@ import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
 import CreateTarifa from "./components/Tarifario/CreateTarifa";
 import Tratamientos from "./components/Tratamientos/Tratamientos";
+import History from "./components/Historia Clinica/History.jsx";
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -30,6 +31,7 @@ function App() {
             <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
+            <Route path="history" element={<RequireAuth><History /></RequireAuth>}/>
         </Routes>
       </BrowserRouter>
     </div>

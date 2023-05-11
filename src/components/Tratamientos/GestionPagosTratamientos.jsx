@@ -3,8 +3,6 @@ import { collection, query, doc, orderBy, onSnapshot } from "firebase/firestore"
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
-import { DropdownButton, Dropdown } from 'react-bootstrap';
-
 
 function GestionPagosTratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
