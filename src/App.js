@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Pacientes/Create";
 import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
-import { useContext, useEffect,useState } from "react";
+import { useContext, } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";

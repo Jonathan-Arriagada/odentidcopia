@@ -4,6 +4,7 @@ import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "fireb
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
+
 const HorariosAtencionCitas = ({ show, onHide }) => {
     const [editIndex, setEditIndex] = useState(null);
     const [horario, setHorario] = useState('');
@@ -80,6 +81,7 @@ const HorariosAtencionCitas = ({ show, onHide }) => {
         await deleteDoc(doc(horariosCollection, horarios[index].id));
         const newHorarios = horarios.filter((_, i) => i !== index);
         setHorarios(newHorarios);
+        setHorario('');
         setError('');
     };
 
