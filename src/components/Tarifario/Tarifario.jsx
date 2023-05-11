@@ -87,14 +87,14 @@ function Tarifario() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
-          <div className="container mt-2">
+          <div className="container mt-2 mw-100">
             <div className="row">
               <div className="col">
                 <div className="d-grid gap-2">
                   <div className="d-flex">
                     <h1>Tarifario</h1>
                   </div>
-                  <div className="d-flex justify-content-end">
+                  <div className="d-flex justify-content-between">
                     <input
                       value={search}
                       onChange={searcher}

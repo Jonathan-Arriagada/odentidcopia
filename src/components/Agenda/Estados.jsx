@@ -1,86 +1,96 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Modal } from 'react-bootstrap';
-import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "firebase/firestore";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Modal } from "react-bootstrap";
+import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy,} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
 const Estados = ({ show, onHide }) => {
   const [editIndex, setEditIndex] = useState(null);
-  const [estado, setEstado] = useState('');
-  const [error, setError] = useState('');
+  const [estado, setEstado] = useState("");
+  const [error, setError] = useState("");
   const [estados, setEstados] = useState([]);
   const estadosCollection = collection(db, "estados");
   const estadosCollectionOrdenados = useRef(query(estadosCollection, orderBy("name")));
+  const [color, setColor] = useState("");
 
   const updateEstadosFromSnapshot = useCallback((snapshot) => {
-    const estadosArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const estadosArray = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     setEstados(estadosArray);
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(estadosCollectionOrdenados.current, updateEstadosFromSnapshot);
+    const unsubscribe = onSnapshot(
+      estadosCollectionOrdenados.current,
+      updateEstadosFromSnapshot
+    );
     return unsubscribe;
   }, [updateEstadosFromSnapshot]);
 
   const inputRef = useRef(null);
 
   const estadoExiste = (name) => {
-    return estados.some((estado) => estado.name.toLowerCase() === name.toLowerCase());
+    return estados.some(
+      (estado) => estado.name.toLowerCase() === name.toLowerCase()
+    );
   };
 
   const handleCreate = (e) => {
     e.preventDefault();
-    if (estado.trim() === '') {
-      setError('El estado no puede estar vacío');
+    if (estado.trim() === "") {
+      setError("El estado no puede estar vacío");
       return;
     }
     if (estadoExiste(estado)) {
-      setError('El estado ya existe');
+      setError("El estado ya existe");
       return;
     }
-    const newState = { name: estado };
-    addDoc(estadosCollection, newState)
-      .then(() => {
-        setEstado('');
-        setError('');
-      })
+    const newState = { name: estado, color: color };
+    addDoc(estadosCollection, newState).then(() => {
+      setEstado("");
+      setError("");
+      setColor("")
+    });
   };
 
   const handleEdit = (index) => {
     setEditIndex(index);
     setEstado(estados[index].name);
-    setError('');
+    setError("");
   };
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    if (estado.trim() === '') {
-      setError('El estado no puede estar vacío');
-      return;
-    }
-    if (estadoExiste(estado)) {
-      setError('El estado ya existe');
+    if (estado.trim() === "") {
+      setError("El estado no puede estar vacío");
       return;
     }
     const stateToUpdate = estados[editIndex];
-    const newState = { name: estado };
-    setDoc(doc(estadosCollection, stateToUpdate.id), newState)
-      .then(() => {
-        setEditIndex(null);
-        setEstado('');
-        setError('');
-      })
+    const newState = { name: estado, color:color };
+    setDoc(doc(estadosCollection, stateToUpdate.id), newState).then(() => {
+      setEditIndex(null);
+      setEstado("");
+      setError("");
+      setColor("")
+    });
   };
 
   const handleDelete = async (index) => {
     await deleteDoc(doc(estadosCollection, estados[index].id));
     const newStates = estados.filter((_, i) => i !== index);
     setEstados(newStates);
-    setError('');
+    setError("");
   };
 
   return (
-    <Modal show={show} onHide={onHide} aria-labelledby="contained-modal-title-vcenter" centered>
+    <Modal
+      show={show}
+      onHide={onHide}
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
       <Modal.Header closeButton>
         <Modal.Title>Crear/Editar/Eliminar Estado</Modal.Title>
       </Modal.Header>
@@ -97,25 +107,54 @@ const Estados = ({ show, onHide }) => {
             />
             {error && <small className="text-danger">{error}</small>}
           </div>
+          <div className="mb-3">
+            <label className="form-label">Color</label>
+            <select
+              className="form-select"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            >
+              <option value="">Selecciona un color</option>
+              <option value="red">Rojo</option>
+              <option value="blue">Azul</option>
+              <option value="green">Verde</option>
+              <option value="yellow">Amarillo</option>
+              <option value="orange">Naranja</option>
+              <option value="grey">Gris</option>
+              <option value="purple">Purple</option>
+            </select>
+          </div>
           <button className="btn btn-primary" type="submit">
-            {editIndex !== null ? 'Actualizar' : 'Crear'}
+            {editIndex !== null ? "Actualizar" : "Crear"}
           </button>
 
           {editIndex !== null && (
-            <button className="btn btn-secondary mx-2" onClick={() => setEditIndex(null)}>
+            <button
+              className="btn btn-secondary mx-2"
+              onClick={() => setEditIndex(null)}
+            >
               Cancelar
             </button>
           )}
         </form>
         <div className="mt-3">
           {estados.map((state, index) => (
-            <div key={state.id} className="d-flex align-items-center justify-content-between border p-2">
+            <div
+              key={state.id}
+              className="d-flex align-items-center justify-content-between border p-2"
+            >
               <div>{state.name}</div>
               <div>
-                <button className="btn btn-primary mx-1 btn-sm" onClick={() => handleEdit(index)}>
+                <button
+                  className="btn btn-primary mx-1 btn-sm"
+                  onClick={() => handleEdit(index)}
+                >
                   <i className="fa-solid fa-edit"></i>
                 </button>
-                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(index)}>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDelete(index)}
+                >
                   <i className="fa-solid fa-trash-can"></i>
                 </button>
               </div>

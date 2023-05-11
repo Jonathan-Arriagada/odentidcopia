@@ -17,14 +17,13 @@ function CreateTratamiento(props) {
   const [fecha, setFecha] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
   const [notas, setNotas] = useState("");
+  const [error, setError] = useState("");
 
   const [estadoOptionsTratamientos, setEstadoOptionsTratamientos] = useState([]);
   const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
 
-
   const [editable, setEditable] = useState(true);
-
 
   const tratamientosCollection = collection(db, "tratamientos");
 
@@ -35,7 +34,6 @@ function CreateTratamiento(props) {
 
   const updateOptionsPacientes = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => doc.data().valorBusqueda);
-    options.unshift("<---Ingreso manual--->");
     setValorBusquedaOptions(options);
   }, []);
 
@@ -78,6 +76,48 @@ function CreateTratamiento(props) {
     getCodigo();
   }, [tratamientosCollection]);
 
+  const validateFields = async (e) => {
+    e.preventDefault();
+    if (
+      apellidoConNombre.trim() === "" ||
+      idc.trim() === "" ||
+      tarifasTratamientos.trim() === "" ||
+      estadosTratamientos.trim() === "" ||
+      fecha.trim() === "" ||
+      fechaVencimiento.trim() === ""
+    ) {
+      setError("Respeta los campos obligatorios *");
+      setTimeout(clearError, 2000)
+      return false;
+    } else {
+      setError("");
+      await store();
+      clearFields();
+      props.onHide();
+    }
+    return true;
+  };
+
+  const clearError = () => {
+    setError("");
+  };
+
+  const clearFields = () => {
+    setCodigo("")
+    setApellidoConNombre("")
+    setIdc("")
+    setCta("")
+    setPrecio("")
+    setTarifasTratamientos("")
+    setPieza("")
+    setPlazo("")
+    setCuota("")
+    setEstadosTratamientos("")
+    setFecha("")
+    setFechaVencimiento("")
+    setNotas("")
+  };
+
   const store = async (e) => {
     e.preventDefault();
     await addDoc(tratamientosCollection, {
@@ -98,7 +138,10 @@ function CreateTratamiento(props) {
   };
 
   async function buscarTratamiento(tratamiento) {
-    const q = query(collection(db, "tarifas"), where("tratamiento", "==", tratamiento));
+    const q = query(
+      collection(db, "tarifas"),
+      where("tratamiento", "==", tratamiento)
+    );
     const querySnapshot = await getDocs(q);
     if (querySnapshot) {
       setCta(querySnapshot.docs[0].data().codigo);
@@ -111,13 +154,6 @@ function CreateTratamiento(props) {
 
 
   const manejarValorSeleccionado = async (suggestion) => {
-    if (suggestion === "<---Ingreso manual--->" || suggestion === "") {
-      setApellidoConNombre("");
-      setIdc("");
-      setEditable(true);
-      return;
-    }
-
     const querySnapshot = await getDocs(
       query(collection(db, "clients"), where("valorBusqueda", "==", suggestion))
     );
@@ -128,7 +164,7 @@ function CreateTratamiento(props) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
       setIdc(data.idc);
-      setEditable(false);
+      setEditable(true);
     }
   };
 
@@ -139,60 +175,58 @@ function CreateTratamiento(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton onClick={() => {
-        props.onHide();
-        setApellidoConNombre("");
-        setIdc("");
-      }}>
+      <Modal.Header closeButton onClick={() => { clearFields(); props.onHide(); }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Tratamiento</h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-            <div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width:"60%" }}>
-              <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
-              <input
-                style={{ borderRadius: "150px"}}
-                type="text"
-                className="form-control"
-                onChangeCapture={(e) => manejarValorSeleccionado(e.target.value)}
-                list="pacientes-list"
-                multiple={false}
-              />
-              <datalist id="pacientes-list">
-                <option value="">Ingreso manual</option>
-                {valorBusquedaOptionsJSX}
-              </datalist>
-            </div>
+          <div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
+            <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
+            <input
+              style={{ borderRadius: "150px" }}
+              type="text"
+              className="form-control"
+              onChangeCapture={(e) => manejarValorSeleccionado(e.target.value)}
+              list="pacientes-list"
+              multiple={false}
+            />
+            <datalist id="pacientes-list">
+              <option value="">Ingreso manual</option>
+              {valorBusquedaOptionsJSX}
+            </datalist>
+          </div>
 
-          <form onSubmit={store}>
+          <form>
             <div className="row">
               <div className="col mb-3">
-                <label className="form-label">Apellido y Nombres</label>
+                <label className="form-label">Apellido y Nombres*</label>
                 <input
                   value={apellidoConNombre}
                   onChange={(e) => setApellidoConNombre(e.target.value)}
                   type="text"
                   className="form-control"
-                  disabled={!editable}
+                  disabled={editable}
+                  required
                 />
               </div>
               <div className="col mb-3">
-                <label className="form-label">DNI</label>
+                <label className="form-label">DNI*</label>
                 <input
                   value={idc}
                   onChange={(e) => setIdc(e.target.value)}
                   type="number"
                   className="form-control"
-                  disabled={!editable}
+                  disabled={editable}
+                  required
                 />
               </div>
             </div>
 
             <div className="row">
               <div className="col mb-3">
-                <label className="form-label">Tratamiento</label>
+                <label className="form-label">Tratamiento*</label>
                 <select
                   value={tarifasTratamientos}
                   onChange={(e) => {
@@ -201,18 +235,20 @@ function CreateTratamiento(props) {
                   }}
                   className="form-control"
                   multiple={false}
+                  required
                 >
                   <option value="">Selecciona un Tratamiento</option>
                   {optionsTarifasTratamientos}
                 </select>
               </div>
               <div className="col mb-3">
-                <label className="form-label">Estado del Tratamiento</label>
+                <label className="form-label">Estado del Tratamiento*</label>
                 <select
                   value={estadosTratamientos}
                   onChange={(e) => setEstadosTratamientos(e.target.value)}
                   className="form-control"
                   multiple={false}
+                  required
                 >
                   <option value="">Selecciona un estado</option>
                   {estadoOptionsTratamientosJSX}
@@ -273,21 +309,23 @@ function CreateTratamiento(props) {
 
             <div className="row">
               <div className="col mb-3">
-                <label className="form-label">Fecha</label>
+                <label className="form-label">Fecha*</label>
                 <input
                   value={fecha}
                   onChange={(e) => setFecha(e.target.value)}
                   type="date"
                   className="form-control"
+                  required
                 />
               </div>
               <div className="col mb-3">
-                <label className="form-label">Fecha Vencimiento</label>
+                <label className="form-label">Fecha Vencimiento*</label>
                 <input
                   value={fechaVencimiento}
                   onChange={(e) => setFechaVencimiento(e.target.value)}
                   type="date"
                   className="form-control"
+                  required
                 />
               </div>
             </div>
@@ -303,11 +341,20 @@ function CreateTratamiento(props) {
                 />
               </div>
             </div>
-            <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+            <div style={{ display: "flex"}}>
+              <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '10px' }}>
+                Agregar
+              </button>
+              {error && (
+                <div className="alert alert-danger" role="alert" style={{ margin: '10px' }}>
+                  {error}
+                </div>
+              )}
+            </div>
           </form>
         </div>
-      </Modal.Body>
-    </Modal>
+      </Modal.Body >
+    </Modal >
   );
 }
 

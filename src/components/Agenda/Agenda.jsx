@@ -1,5 +1,5 @@
 import React from "react";
-import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { collection, deleteDoc, doc, query, orderBy, } from "firebase/firestore";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
@@ -12,6 +12,8 @@ import HorariosAtencionCitas from "./HorariosAtencionCitas";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
 import moment from 'moment';
+import Calendar from "react-calendar";
+import { Modal, Button } from "react-bootstrap";
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -25,11 +27,18 @@ function Citas() {
   const [modalShowHorarios, setModalShowHorarios] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [contador, setContador] = useState(0);
+  const [estados, setEstados] = useState([]);
+  const [mostrarAjustes, setMostrarAjustes] = useState(false);
+  const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
+
+  const estadosCollectiona = collection(db, "estados");
+  const estadosCollection = useRef(query(estadosCollectiona))
+
 
   const citasCollection = collection(db, "citas");
-  const citasCollectionOrdenados = useRef(
-    query(citasCollection, orderBy("fecha", "desc"))
-  );
+  const citasCollectionOrdenados = useRef(query(citasCollection, orderBy("fecha", "desc")));
 
   const getCitas = useCallback((snapshot) => {
     const citasArray = snapshot.docs.map((doc) => ({
@@ -47,16 +56,62 @@ function Citas() {
     setIsLoading(false);
   }, []);
 
+  const getEstados = useCallback((snapshot) => {
+    const estadosArray = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setEstados(estadosArray);
+  }, []);
+
+  const buscarEstilos = (estadoParam) => {
+    const colorEncontrado = estados.find((e) => e.name === estadoParam);
+    switch (colorEncontrado.color) {
+      case "yellow":
+        return { backgroundColor: "#f7e172" };
+      case "red":
+        return { backgroundColor: "#de4747" };
+      case "green":
+        return { backgroundColor: "#86e49d" };
+      case "blue":
+        return { backgroundColor: "#6fcaea" };
+      case "orange":
+        return { backgroundColor: "#f5b04e" };
+      case "purple":
+        return { backgroundColor: "#5f5fad", color: "#fff" };
+      case "grey":
+        return { backgroundColor: "#89898c" };
+      default:
+        return {};
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(citasCollectionOrdenados.current, (snapshot) => {
+    const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => {
       getCitas(snapshot);
       const citasPorConfirmar = snapshot.docs.filter(
         (doc) => doc.data().estado === "Por Confirmar"
       );
       setContador(citasPorConfirmar.length);
     });
-    return unsubscribe;
-  }, [getCitas]);
+
+    const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
+
+    return () => {
+      unsubscribeCitas();
+      unsubscribeEstados();
+    };
+  }, [getCitas, getEstados]);
+
+
+  function funcMostrarAjustes() {
+    if (mostrarAjustes) {
+      setMostrarAjustes(false);
+    } else {
+      setMostrarAjustes(true);
+    }
+  };
+
 
   const deleteCita = async (id) => {
     const citaDoc = doc(db, "citas", id);
@@ -64,20 +119,42 @@ function Citas() {
     setCitas((prevCitas) => prevCitas.filter((cita) => cita.id !== id));
   };
 
+
   const searcher = (e) => {
     setSearch(e.target.value);
   };
 
-  let results = [];
-  if (!search) {
-    results = citas;
-  } else {
-    results = citas.filter(
-      (dato) =>
-        dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
-        dato.idc.toString().includes(search.toString())
-    );
-  }
+  const filtroFecha = (param) => {
+    if (param === "Dia") {
+      setSearch(moment().format("YYYY-MM-DD"))
+    }
+    if (param === "Semana") {
+      const fechaInicio = moment().subtract(7, 'days').format("YYYY-MM-DD");
+      const fechaFin = moment().format("YYYY-MM-DD");
+      setSearch({ fechaInicio, fechaFin });
+    }
+    if (param === "Mes") {
+      const fechaInicio = moment().subtract(30, 'days').format("YYYY-MM-DD");
+      const fechaFin = moment().format("YYYY-MM-DD");
+      setSearch({ fechaInicio, fechaFin });
+    }
+  };
+
+  var results = !search
+    ? citas
+    : typeof search === 'object'
+      ? citas.filter((dato) => {
+        const fecha = moment(dato.fecha).format("YYYY-MM-DD");
+        return (
+          fecha >= search.fechaInicio && fecha <= search.fechaFin
+        );
+      })
+      : search.toString().length === 10 && search.charAt(4) === "-" && search.charAt(7) === "-"
+        ? citas.filter((dato) => dato.fecha === search.toString())
+        : citas.filter((dato) =>
+          dato.apellidoConNombre.toLowerCase().includes(search) ||
+          dato.idc.toString().includes(search.toString())
+        );
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -107,15 +184,27 @@ function Citas() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
-          <div className="container mt-2">
+          <div className="container mt-2 mw-100">
             <div className="row">
               <div className="col">
                 <div className="d-grid gap-2">
                   <div className="d-flex justify-content-between">
-                    <h1>Agenda</h1>
+                    <div className="d-flex justify-content-center align-items-center" style={{ maxHeight: "40px" }}>
+                      <h1>Agenda</h1>
+                      <button
+                        className="btn btn-dark mx-2 btn-sm"
+                        style={{ borderRadius: "5px" }}
+                        onClick={() => {
+                          funcMostrarAjustes(true);
+                        }}
+                      >
+                        <i className="fa-solid fa-gear"></i>
+                      </button>
+                    </div>
                     <label>Citas Por Confirmar: {contador}</label>
                   </div>
-                  <div className="d-flex justify-content-end">
+
+                  <div className="d-flex justify-content-between">
                     <input
                       value={search}
                       onChange={searcher}
@@ -123,6 +212,44 @@ function Citas() {
                       placeholder="Buscar por Apellido, Nombre o DNI..."
                       className="form-control m-2 w-25"
                     />
+
+                    <button
+                      variant="primary"
+                      className="btn btn-success mx-1 btn-md"
+                      style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center",alignSelf:"center", height:"45px" }}
+                      onClick={() => setMostrarBotonesFechas(!mostrarBotonesFechas)}
+                    >
+                      <i className="fa-regular fa-calendar-check" style={{ transform: "scale(1.4)", }}></i>
+                    </button>
+                    {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems:"center"}}>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Dia')}>Dia</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Semana')}>Semana</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Mes')}>Mes</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => setModalSeleccionFechaShow(true)}>Seleccionar</button>
+                    </div>)}
+
+                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate("") }}>
+                      <Modal.Header closeButton onClick={() => {
+                        setModalSeleccionFechaShow(false);
+                        setSelectedDate("");
+                      }}>
+                        <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <Calendar defaultValue={moment().format("YYYY-MM-DD")} onChange={(date) => {
+                          const formattedDate = moment(date).format('YYYY-MM-DD');
+                          setSelectedDate(formattedDate);
+                        }}
+                          value={selectedDate}
+                        />
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="primary" onClick={() => { setSearch(selectedDate); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false); }}>
+                          Buscar Fecha
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+
                     <div className="col d-flex justify-content-end">
                       <button
                         variant="primary"
@@ -131,24 +258,28 @@ function Citas() {
                       >
                         Agregar Cita
                       </button>
-                      <button
-                        variant="secondary"
-                        className="btn-blue m-2"
-                        onClick={() => setModalShowEstados(true)}
-                      >
-                        Estados
-                      </button>
-                      <button
-                        variant="tertiary"
-                        className="btn-blue m-2"
-                        onClick={() => setModalShowHorarios(true)}
-                      >
-                        Horarios Atencion
-                      </button>
+                      {mostrarAjustes && (
+                        <div className="d-flex">
+                          <button
+                            variant="secondary"
+                            className="btn-blue m-2"
+                            onClick={() => setModalShowEstados(true)}
+                          >
+                            Estados
+                          </button>
+                          <button
+                            variant="tertiary"
+                            className="btn-blue m-2"
+                            onClick={() => setModalShowHorarios(true)}
+                          >
+                            Horarios Atencion
+                          </button>
+                        </div>
+                      )}
                     </div>
-
                   </div>
                 </div>
+
                 <table className="table__body">
                   <thead>
                     <tr>
@@ -172,7 +303,7 @@ function Citas() {
                         <td> {cita.horaFin} </td>
                         <td> {cita.apellidoConNombre} </td>
                         <td> {cita.idc} </td>
-                        <td> {cita.estado} </td>
+                        <td> <p style={buscarEstilos(cita.estado)} className="status">{cita.estado}</p></td>
                         <td> {cita.numero} </td>
                         <td> {cita.comentario} </td>
                         <td>
@@ -205,7 +336,7 @@ function Citas() {
             </div>
           </div>
         )}
-      </div>
+      </div >
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
       <EditCita
         id={idParam}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -9,9 +9,12 @@ function CreateCita(props) {
   const [estado, setEstado] = useState("");
   const [numero, setNumero] = useState("");
   const [fecha, setFecha] = useState("");
-  const [horaInicio, setHoraInicio] = useState("");
-  const [horaFin, setHoraFin] = useState("");
+  const [horaInicio, setHoraInicio] = useState("08:00");
+  const [horaFin, setHoraFin] = useState("08:30");
   const [comentario, setComentario] = useState("");
+  const [error, setError] = useState("");
+
+
   const [editable, setEditable] = useState(true);
   const [estadoOptions, setEstadoOptions] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
@@ -47,6 +50,7 @@ function CreateCita(props) {
     const optionsHoraInicio = horarios.map((horario, index) => (
       <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
     ));
+   optionsHoraInicio.pop();
     setOptionsHoraInicio(optionsHoraInicio);
 
     if (horaInicio) {
@@ -55,8 +59,8 @@ function CreateCita(props) {
         .map((horario, index) => (
           <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
         ));
+        setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
       setOptionsHoraFin(optionsHoraFin);
-      setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
     }
   }, [horaInicio, horaFin]);
 
@@ -72,29 +76,53 @@ function CreateCita(props) {
 
   useEffect(() => {
     if (props.client) {
-    setApellidoConNombre(props.client.apellidoConNombre);
-    setIdc(props.client.idc);
-    setNumero(props.client.numero);
-    setEditable(false);
-  } else {
-    setApellidoConNombre("");
-    setIdc("");
-    setNumero("");
-  }
+      setApellidoConNombre(props.client.apellidoConNombre);
+      setIdc(props.client.idc);
+      setNumero(props.client.numero);
+      setEditable(false);
+    } else {
+      setApellidoConNombre("");
+      setIdc("");
+      setNumero("");
+    }
   }, [props.client]);
 
   const store = async (e) => {
     e.preventDefault();
-    await addDoc(citasCollection, {
-      apellidoConNombre: apellidoConNombre,
-      idc: idc,
-      estado: estado,
-      numero: numero,
-      fecha: fecha,
-      comentario: comentario,
-      horaInicio: horaInicio,
-      horaFin: horaFin,
-    });
+    const querySnapshot = await getDocs(query(collection(db, "clients"), where("idc", "==", idc)));
+    if (!querySnapshot.empty) {
+      await addDoc(citasCollection, {
+        apellidoConNombre: apellidoConNombre,
+        idc: idc,
+        estado: estado,
+        numero: numero,
+        fecha: fecha,
+        comentario: comentario,
+        horaInicio: horaInicio,
+        horaFin: horaFin,
+      });
+      clearFields();
+    } else {
+      await addDoc(collection(db, "clients"), {
+        apellidoConNombre: apellidoConNombre,
+        idc: idc,
+        edad: 0,
+        numero: numero,
+        valorBusqueda: apellidoConNombre + " " + idc
+      });
+
+      await addDoc(citasCollection, {
+        apellidoConNombre: apellidoConNombre,
+        idc: idc,
+        estado: estado,
+        numero: numero,
+        fecha: fecha,
+        horaInicio: horaInicio,
+        horaFin: horaFin,
+        comentario: comentario,
+      });
+      clearFields();
+    }
   };
 
   const manejarValorSeleccionado = async (suggestion) => {
@@ -119,6 +147,45 @@ function CreateCita(props) {
       setNumero(data.numero);
       setEditable(false);
     }
+  };
+
+  const clearFields = () => {
+    setApellidoConNombre("");
+    setIdc("");
+    setNumero("");
+    setEstado("");
+    setFecha("");
+    setHoraInicio("");
+    setHoraInicio("");
+    setComentario("");
+    setNumero("");
+  };
+
+  const validateFields = async (e) => {
+    e.preventDefault();
+    if (
+      apellidoConNombre.trim() === "" ||
+      idc.trim() === "" ||
+      estado.trim() === "" ||
+      numero.trim() === "" ||
+      fecha.trim() === "" ||
+      horaInicio.trim() === "" ||
+      horaFin.trim() === "" 
+    ) {
+      setError("Respeta los campos obligatorios *");
+      setTimeout(clearError, 2000)
+      return false;
+    } else {
+        setError("");
+        await store();
+        clearFields();
+        props.onHide();
+      }
+    return true;
+  };
+
+  const clearError = () => {
+    setError("");
   };
 
   return (
@@ -152,49 +219,53 @@ function CreateCita(props) {
               </datalist>
             </div>
 
-            <form onSubmit={store}>
+            <form>
               <div className="row">
                 <div className="col mb-3">
-                  <label className="form-label">Apellido y Nombres</label>
+                  <label className="form-label">Apellido y Nombres*</label>
                   <input
                     value={apellidoConNombre || ""}
                     onChange={(e) => setApellidoConNombre(e.target.value)}
                     type="text"
                     className="form-control"
                     disabled={!editable}
+                    required
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">DNI</label>
+                  <label className="form-label">DNI*</label>
                   <input
                     value={idc || ""}
                     onChange={(e) => setIdc(e.target.value)}
                     type="number"
                     className="form-control"
                     disabled={!editable}
+                    required
                   />
                 </div>
               </div>
 
               <div className="row">
                 <div className="col mb-3">
-                  <label className="form-label">Teléfono</label>
+                  <label className="form-label">Teléfono*</label>
                   <input
                     value={numero || ""}
                     onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
                     disabled={!editable}
+                    required
                   />
                 </div>
 
                 <div className="col mb-3">
-                  <label className="form-label">Estado</label>
+                  <label className="form-label">Estado*</label>
                   <select
                     value={estado}
                     onChange={(e) => setEstado(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     <option value="">Selecciona un estado</option>
                     {estadoOptionsJSX}
@@ -204,36 +275,39 @@ function CreateCita(props) {
 
               <div className="row">
                 <div className="col mb-6">
-                  <label className="form-label">Fecha</label>
+                  <label className="form-label">Fecha*</label>
                   <input
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
                     type="date"
                     className="form-control"
+                    required
                   />
                 </div>
               </div>
 
               <div className="row">
                 <div className="col mb-3">
-                  <label className="form-label">Hora Inicio</label>
+                  <label className="form-label">Hora Inicio*</label>
                   <select
                     value={horaInicio}
                     onChange={(e) =>
                       setHoraInicio(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     {optionsHoraInicio}
                   </select>
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">Hora Fin</label>
+                  <label className="form-label">Hora Fin*</label>
                   <select
                     value={horaFin}
                     onChange={(e) => setHoraFin(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
                     {optionsHoraFin}
                   </select>
@@ -251,7 +325,14 @@ function CreateCita(props) {
                   />
                 </div>
               </div>
-              <button type="submit" onClick={props.onHide} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+              <div style={{ display: "flex"}}>
+              <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+              {error && (
+                <div className="alert alert-danger" role="alert" style={{ margin: '10px' }}>
+                  {error}
+                </div>
+              )}
+            </div>
             </form>
           </div>
         </div>
