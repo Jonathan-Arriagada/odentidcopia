@@ -4,20 +4,25 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Pacientes/Create";
 import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
-import { useContext } from "react";
+import { useContext, useEffect,useState } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
 import CreateTarifa from "./components/Tarifario/CreateTarifa";
 import Tratamientos from "./components/Tratamientos/Tratamientos";
 
+
 function App() {
   const {currentUser} = useContext(AuthContext)
-  
   const RequireAuth = ({children}) => {
     return currentUser ? children : <Navigate to="/"/>
   };
-  
+
+  function RequireAdmin({children}) {
+    const rol = localStorage.getItem('rol');
+    return rol === "admin" ? children : <Navigate to="/clients" />;
+  };;
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -27,7 +32,7 @@ function App() {
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
             <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>
             <Route path="Agenda" element={<RequireAuth><Agenda /></RequireAuth>}/>
-            <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
+            <Route path="tarifas" element={<RequireAuth><RequireAdmin><Tarifario /></RequireAdmin></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
         </Routes>

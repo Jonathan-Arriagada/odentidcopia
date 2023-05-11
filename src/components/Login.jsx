@@ -6,11 +6,12 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig/firebase';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { db } from '../firebaseConfig/firebase';
+import { query, collection, where, getDocs } from 'firebase/firestore';
 
 const Login = () => {
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
-
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState(false);
     const navigate = useNavigate()
@@ -30,7 +31,18 @@ const Login = () => {
             const errorMessage = error.message;
             setErrorMsg(errorMessage);
         })
-        // <Link to={../ ${props.link}}
+        const q = query(collection(db, "user"), where("correo", "==", email));
+        getDocs(q).then((querySnapshot) => {
+            if (querySnapshot.docs.length > 0) {
+              const doc = querySnapshot.docs[0];
+              console.log(doc.data().rol);
+              localStorage.setItem('objeto', JSON.stringify(doc.data().rol));
+            } else {
+              console.log("No se encontraron documentos");
+            }
+          }).catch((error) => {
+            console.log("Error al obtener los documentos: ", error);
+          });
     }
 
     return (
