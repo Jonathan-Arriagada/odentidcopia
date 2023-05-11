@@ -69,23 +69,23 @@ function Citas() {
     const colorEncontrado = estados.find((e) => e.name === estadoParam);
     switch (colorEncontrado.color) {
       case "yellow":
-        return { backgroundColor: "#f7e172" };
-      case "red":
-        return { backgroundColor: "#de4747" };
-      case "green":
-        return { backgroundColor: "#86e49d" };
-      case "blue":
-        return { backgroundColor: "#6fcaea" };
-      case "orange":
-        return { backgroundColor: "#f5b04e" };
-      case "purple":
-        return { backgroundColor: "#5f5fad", color: "#fff" };
-      case "grey":
-        return { backgroundColor: "#89898c" };
+        return { backgroundColor: "#F7D33B" };
+        case "red":
+        return { backgroundColor: "#E53E3E" };
+        case "green":
+        return { backgroundColor: "#48BB78" };
+        case "blue":
+        return { backgroundColor: "#3182CE" };
+        case "orange":
+        return { backgroundColor: "#ED8936" };
+        case "purple":
+        return { backgroundColor: "#805AD5", color: "#fff" };
+        case "grey":
+        return { backgroundColor: "#A0AEC0" };
       default:
-        return {};
-    }
-  };
+        return {};
+    }
+  };
 
   useEffect(() => {
     const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => {
@@ -177,6 +177,8 @@ function Citas() {
       setOrder("ASC");
     }
   };
+
+
 
   return (
     <>
