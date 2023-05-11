@@ -123,7 +123,7 @@ const Estados = ({ show, onHide }) => {
               <option value="grey">Gris</option>
               <option value="purple">Purple</option>
             </select>
-          </div>
+          </div>
           <button className="btn btn-primary" type="submit">
             {editIndex !== null ? "Actualizar" : "Crear"}
           </button>

@@ -1,9 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "../Navigation";
-import { collection, updateDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  updateDoc,
+  doc,
+  orderBy,
+  query,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
-import "../Pacientes/Show.css"
+import "../Pacientes/Show.css";
 import EditTarifa from "./EditTarifa";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
@@ -17,11 +24,14 @@ function Tarifario() {
   const [tarifa, setTarifa] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [userType, setUserType] = useState("");
 
   const tarifasCollectiona = collection(db, "tarifas");
-  const tarifasCollection = useRef(query(tarifasCollectiona, orderBy("codigo")));
+  const tarifasCollection = useRef(
+    query(tarifasCollectiona, orderBy("codigo"))
+  );
 
-  const [disabledRows,] = useState([]);
+  const [disabledRows] = useState([]);
 
   const getTarifarios = useCallback((snapshot) => {
     const tarifasArray = snapshot.docs.map((doc) => ({
@@ -34,6 +44,8 @@ function Tarifario() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(tarifasCollection.current, getTarifarios);
+    const type = localStorage.getItem("rol");
+    setUserType(type);
     return unsubscribe;
   }, [getTarifarios]);
 
@@ -79,7 +91,6 @@ function Tarifario() {
     }
   };
 
-
   return (
     <>
       <div className="mainpage">
@@ -103,17 +114,18 @@ function Tarifario() {
                       className="form-control m-2 w-25"
                     />
                     <div className="d-flex justify-content-end">
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => {
-                          setModalShow(true);
-                        }}
-                      >
-                        Agregar Tarifa
-                      </button>
+                      {userType === '"admin"' ? (
+                        <button
+                          variant="primary"
+                          className="btn-blue m-2"
+                          onClick={() => {
+                            setModalShow(true);
+                          }}
+                        >
+                          Agregar Tarifa
+                        </button>
+                      ) : null}
                     </div>
-
                   </div>
                 </div>
                 <table className="table__body">
@@ -122,7 +134,7 @@ function Tarifario() {
                       <th onClick={() => sorting("codigo")}>Código</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
-                      <th>Accion</th>
+                      {userType === '"admin"' ? <th>Accion</th> : null}
                     </tr>
                   </thead>
 
@@ -135,41 +147,49 @@ function Tarifario() {
                         <td> {tarifa.codigo} </td>
                         <td> {tarifa.tratamiento}</td>
                         <td> {tarifa.tarifa} </td>
-                        <td>
-                          <button
-                            variant="primary"
-                            className="btn btn-success mx-1"
-                            disabled={disabledRows.includes(tarifa.id) || tarifa.eliminado}
-                            onClick={() => {
-                              setModalShowEdit(true);
-                              setTarifa(tarifa);
-                              setIdParam(tarifa.id);
-                            }}
-                          >
-                            <i className="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <button
-                            onClick={() => {
-                              deleteTarifa(tarifa.id);
-                            }}
-                            className="btn btn-danger"
-                            disabled={disabledRows.includes(tarifa.id) || tarifa.eliminado}
-                          >
-                            <i className="fa-solid fa-trash"></i>
-                          </button>
-                          {tarifa.eliminado}
-                          <button
-                            onClick={() => {
-                              activeTarifa(tarifa.id);
-                            }}
-                            className="btn btn-light"
-                            disabled={disabledRows.includes(tarifa.id)}
-                            style={{ marginLeft: "2px" }}
-                          >
-                            {" "}
-                            <i className="fa-solid fa-power-off"></i>{" "}
-                          </button>
-                        </td>
+                        {userType === '"admin"' ? (
+                          <td>
+                            <button
+                              variant="primary"
+                              className="btn btn-success mx-1"
+                              disabled={
+                                disabledRows.includes(tarifa.id) ||
+                                tarifa.eliminado
+                              }
+                              onClick={() => {
+                                setModalShowEdit(true);
+                                setTarifa(tarifa);
+                                setIdParam(tarifa.id);
+                              }}
+                            >
+                              <i className="fa-regular fa-pen-to-square"></i>
+                            </button>
+                            <button
+                              onClick={() => {
+                                deleteTarifa(tarifa.id);
+                              }}
+                              className="btn btn-danger"
+                              disabled={
+                                disabledRows.includes(tarifa.id) ||
+                                tarifa.eliminado
+                              }
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                            </button>
+                            {tarifa.eliminado}
+                            <button
+                              onClick={() => {
+                                activeTarifa(tarifa.id);
+                              }}
+                              className="btn btn-light"
+                              disabled={disabledRows.includes(tarifa.id)}
+                              style={{ marginLeft: "2px" }}
+                            >
+                              {" "}
+                              <i className="fa-solid fa-power-off"></i>{" "}
+                            </button>
+                          </td>
+                        ) : null}
                       </tr>
                     ))}
                   </tbody>
