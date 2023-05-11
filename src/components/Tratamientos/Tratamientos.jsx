@@ -15,7 +15,6 @@ import Calendar from "react-calendar";
 import { Dropdown } from 'react-bootstrap';
 import { Modal, Button } from "react-bootstrap";
 
-
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");

@@ -1,7 +1,7 @@
 import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
-import { FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed } from 'react-icons/fa';
+import { FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed, FaBookMedical } from 'react-icons/fa';
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
@@ -31,7 +31,9 @@ const Navigation = () => {
             <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUser} /></Link>
             <Link to="/tarifas" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
             <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaFileMedical} /> </Link>
+            <Link to="/history" className="text-decoration-none link-light"><Nav title="Historia Clinica" Icon={FaBookMedical} /></Link>
             <Link to="/" className="text-decoration-none link-light" onClick={logout}><Nav title="Logout" Icon={FaDoorClosed} /></Link>
+
         </div>
     );
 };

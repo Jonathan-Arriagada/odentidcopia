@@ -4,7 +4,6 @@ import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "fireb
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
-
 const HorariosAtencionCitas = ({ show, onHide }) => {
     const [editIndex, setEditIndex] = useState(null);
     const [horario, setHorario] = useState('');

@@ -3,7 +3,6 @@ import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, } from 
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
-
 function CreateCita(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
@@ -17,12 +16,10 @@ function CreateCita(props) {
 
 
   const [editable, setEditable] = useState(true);
-
   const [estadoOptions, setEstadoOptions] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
-
   const [, setHorariosAtencion] = useState([]);
 
   const citasCollection = collection(db, "citas");
