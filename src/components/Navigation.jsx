@@ -1,7 +1,7 @@
 import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
-import { FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed, } from 'react-icons/fa';
+import { FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed, FaUserTie} from 'react-icons/fa';
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
@@ -26,7 +26,7 @@ const Navigation = () => {
                 <span>Odentid</span>
                 <span>{currentUser.email}</span>
             </header>
-            
+            <Link to="/admin" className="text-decoration-none link-light"><Nav title="Admin Panel" Icon={FaUserTie} /></Link>
             <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
             <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUser} /></Link>
             <Link to="/tarifas" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>

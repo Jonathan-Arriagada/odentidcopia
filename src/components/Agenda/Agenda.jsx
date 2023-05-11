@@ -214,7 +214,7 @@ function Citas() {
                     {taparFiltro && (
                       <input 
                       className="form-control m-2 w-25"
-                      value="FILTRO ENTRE FECHAS APLICADO"
+                      value="<-FILTRO ENTRE FECHAS APLICADO->"
                       style={{textAlign:"center"}}
                       disabled
                       >
