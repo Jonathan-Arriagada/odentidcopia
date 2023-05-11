@@ -18,10 +18,6 @@ function App() {
     return currentUser ? children : <Navigate to="/"/>
   };
 
-  function RequireAdmin({children}) {
-    const rol = localStorage.getItem('rol');
-    return rol === "admin" ? children : <Navigate to="/clients" />;
-  };;
 
   return (
     <div className="App">
@@ -32,7 +28,7 @@ function App() {
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
             <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>
             <Route path="Agenda" element={<RequireAuth><Agenda /></RequireAuth>}/>
-            <Route path="tarifas" element={<RequireAuth><RequireAdmin><Tarifario /></RequireAdmin></RequireAuth>}/>
+            <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
         </Routes>

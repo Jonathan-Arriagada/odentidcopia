@@ -68,28 +68,7 @@ function Citas() {
     setEstados(estadosArray);
   }, []);
 
-  const buscarEstilos = (estadoParam) => {
-    const colorEncontrado = estados.find((e) => e.name === estadoParam);
-    if(colorEncontrado) {
-    switch (colorEncontrado.color) {
-      case "yellow":
-        return { backgroundColor: "#F7D33B" };
-      case "red":
-        return { backgroundColor: "#E53E3E" };
-      case "green":
-        return { backgroundColor: "#48BB78" };
-      case "blue":
-        return { backgroundColor: "#3182CE" };
-      case "orange":
-        return { backgroundColor: "#ED8936" };
-      case "purple":
-        return { backgroundColor: "#805AD5", color: "#fff" };
-      case "grey":
-        return { backgroundColor: "#A0AEC0" };
-      default:
-        return {};
-    }
-  };
+  
 
   useEffect(() => {
     const unsubscribeCitas = onSnapshot(
@@ -102,7 +81,6 @@ function Citas() {
         setContador(citasPorConfirmar.length);
       }
     );
-
     const unsubscribeEstados = onSnapshot(
       estadosCollection.current,
       getEstados
@@ -115,6 +93,31 @@ function Citas() {
       unsubscribeEstados();
     };
   }, [getCitas, getEstados]);
+
+    const buscarEstilos = (estadoParam) => {
+      const colorEncontrado = estados.find((e) => e.name === estadoParam);
+      if(colorEncontrado) {
+      switch (colorEncontrado.color) {
+        case "yellow":
+          return { backgroundColor: "#F7D33B" };
+        case "red":
+          return { backgroundColor: "#E53E3E" };
+        case "green":
+          return { backgroundColor: "#48BB78" };
+        case "blue":
+          return { backgroundColor: "#3182CE" };
+        case "orange":
+          return { backgroundColor: "#ED8936" };
+        case "purple":
+          return { backgroundColor: "#805AD5", color: "#fff" };
+        case "grey":
+          return { backgroundColor: "#A0AEC0" };
+        default:
+          return {};
+      }
+    };
+}
+
 
   function funcMostrarAjustes() {
     if (mostrarAjustes) {
@@ -415,5 +418,6 @@ function Citas() {
     </>
   );
 }
+
 
 export default Citas;
