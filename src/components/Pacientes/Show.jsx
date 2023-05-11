@@ -10,6 +10,7 @@ import CreateCita from "../Agenda/CreateCita";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
 
+
 const Show = () => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
@@ -105,27 +106,29 @@ const Show = () => {
                       placeholder="Buscar por Apellido y Nombres o DNI..."
                       className="form-control m-2 w-25"
                     />
-                    <button
-                      variant="primary"
-                      className="btn-blue m-2"
-                      onClick={() => setModalShow(true)}
-                    >
-                      Nuevo
-                    </button>
+                    <div className="col d-flex justify-content-end">
+                      <button
+                        variant="primary"
+                        className="btn-blue m-2"
+                        onClick={() => setModalShow(true)}
+                      >
+                        Nuevo
+                      </button>
+                    </div>
                   </div>
+
                 </div>
-                <section className="table__body"/>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th onClick={() => sorting("apellidoConNombre")}>Apellido Y Nombres</th>
-                        <th>IDC</th>
-                        <th>Edad</th>
-                        <th>Telefono</th>
-                        <th>Accion</th>
-                      </tr>
-                    </thead>
-                  
+                <table className="table__body">
+                  <thead>
+                    <tr>
+                      <th onClick={() => sorting("apellidoConNombre")}>Apellido Y Nombres</th>
+                      <th onClick={() => sorting("idc")}>DNI</th>
+                      <th onClick={() => sorting("edad")}>Edad</th>
+                      <th onClick={() => sorting("numero")}>Telefono</th>
+                      <th>Accion</th>
+                    </tr>
+                  </thead>
+
                   <tbody>
                     {results.map((client) => (
                       <tr key={client.id}>
@@ -186,7 +189,7 @@ const Show = () => {
         client={client}
         show={modalShowEdit}
         onHide={() => setModalShowEdit(false)}
-      />    
+      />
     </>
   );
 };
