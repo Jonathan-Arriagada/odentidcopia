@@ -35,7 +35,7 @@ const Login = () => {
             if (querySnapshot.docs.length > 0) {
               const doc = querySnapshot.docs[0];
               console.log(doc.data().rol);
-              localStorage.setItem('objeto', JSON.stringify(doc.data().rol));
+              localStorage.setItem('rol', JSON.stringify(doc.data().rol));
             } else {
               console.log("No se encontraron documentos");
             }

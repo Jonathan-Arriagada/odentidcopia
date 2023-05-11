@@ -19,10 +19,13 @@ function App() {
     return currentUser ? children : <Navigate to="/"/>
   };
 
+<<<<<<< HEAD
   function RequireAdmin({children}) {
     const rol = localStorage.getItem('rol');
     return rol === "admin" ? children : <Navigate to="/agenda" />;
   };;
+=======
+>>>>>>> 97311c19904253715c55fd8bc9b66b1b5fd065b3
 
   return (
     <div className="App">
