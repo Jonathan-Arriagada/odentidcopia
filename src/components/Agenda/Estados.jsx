@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Modal } from "react-bootstrap";
-import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy,} from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
@@ -58,6 +58,7 @@ const Estados = ({ show, onHide }) => {
   const handleEdit = (index) => {
     setEditIndex(index);
     setEstado(estados[index].name);
+    setColor(estados[index].color);
     setError("");
   };
 
@@ -68,7 +69,7 @@ const Estados = ({ show, onHide }) => {
       return;
     }
     const stateToUpdate = estados[editIndex];
-    const newState = { name: estado, color:color };
+    const newState = { name: estado, color: color };
     setDoc(doc(estadosCollection, stateToUpdate.id), newState).then(() => {
       setEditIndex(null);
       setEstado("");
@@ -81,7 +82,9 @@ const Estados = ({ show, onHide }) => {
     await deleteDoc(doc(estadosCollection, estados[index].id));
     const newStates = estados.filter((_, i) => i !== index);
     setEstados(newStates);
+    setEstado("");
     setError("");
+    setColor("")
   };
 
   return (

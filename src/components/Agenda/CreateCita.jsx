@@ -102,6 +102,7 @@ function CreateCita(props) {
         horaFin: horaFin,
       });
       clearFields();
+      props.onHide();
     } else {
       await addDoc(collection(db, "clients"), {
         apellidoConNombre: apellidoConNombre,
@@ -122,6 +123,7 @@ function CreateCita(props) {
         comentario: comentario,
       });
       clearFields();
+      props.onHide();
     }
   };
 
@@ -161,8 +163,7 @@ function CreateCita(props) {
     setNumero("");
   };
 
-  const validateFields = async (e) => {
-    e.preventDefault();
+  const validateFields = (e) => {
     if (
       apellidoConNombre.trim() === "" ||
       idc.trim() === "" ||
@@ -177,9 +178,7 @@ function CreateCita(props) {
       return false;
     } else {
         setError("");
-        await store();
-        clearFields();
-        props.onHide();
+        store(e);
       }
     return true;
   };

@@ -23,9 +23,7 @@ const Show = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const clientsCollectiona = collection(db, "clients");
-  const clientsCollection = useRef(
-    query(clientsCollectiona, orderBy("apellidoConNombre"))
-  );
+  const clientsCollection = useRef(query(clientsCollectiona, orderBy("apellidoConNombre")));
 
   const getClients = useCallback((snapshot) => {
     const clientsArray = snapshot.docs.map((doc) => ({

@@ -1,7 +1,7 @@
 import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
-import { FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed, FaBookMedical } from 'react-icons/fa';
+import { FaUser, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed, } from 'react-icons/fa';
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"

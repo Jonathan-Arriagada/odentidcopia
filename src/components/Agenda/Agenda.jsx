@@ -15,6 +15,7 @@ import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
 
+
 function Citas() {
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");
@@ -32,6 +33,7 @@ function Citas() {
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
+  const [taparFiltro, setTaparFiltro] = useState(false);
   const [userType, setUserType] = useState("");
 
   const estadosCollectiona = collection(db, "estados");
@@ -68,6 +70,7 @@ function Citas() {
 
   const buscarEstilos = (estadoParam) => {
     const colorEncontrado = estados.find((e) => e.name === estadoParam);
+    if(colorEncontrado) {
     switch (colorEncontrado.color) {
       case "yellow":
         return { backgroundColor: "#F7D33B" };
@@ -84,9 +87,9 @@ function Citas() {
       case "grey":
         return { backgroundColor: "#A0AEC0" };
       default:
-        return {};
-    }
-  };
+        return {};
+    }
+  };
 
   useEffect(() => {
     const unsubscribeCitas = onSnapshot(
@@ -222,106 +225,49 @@ function Citas() {
                   </div>
 
                   <div className="d-flex justify-content-between">
+                    {taparFiltro && (
+                      <input 
+                      className="form-control m-2 w-25"
+                      value="FILTRO ENTRE FECHAS APLICADO"
+                      style={{textAlign:"center"}}
+                      disabled
+                      >
+                      </input>
+                    )}
                     <input
                       value={search}
                       onChange={searcher}
                       type="text"
                       placeholder="Buscar por Apellido, Nombre o DNI..."
                       className="form-control m-2 w-25"
+                      style={{
+                        display: taparFiltro ? "none" : "block",   }}
                     />
 
                     <button
                       variant="primary"
                       className="btn btn-success mx-1 btn-md"
-                      style={{
-                        borderRadius: "12px",
-                        justifyContent: "center",
-                        verticalAlign: "center",
-                        alignSelf: "center",
-                        height: "45px",
-                      }}
-                      onClick={() =>
-                        setMostrarBotonesFechas(!mostrarBotonesFechas)
-                      }
+                      style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center",alignSelf:"center", height:"45px" }}
+                      onClick={() => setMostrarBotonesFechas(!mostrarBotonesFechas)}
                     >
                       <i
                         className="fa-regular fa-calendar-check"
                         style={{ transform: "scale(1.4)" }}
                       ></i>
                     </button>
-                    {mostrarBotonesFechas && (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          verticalAlign: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => filtroFecha("Dia")}
-                        >
-                          Dia
-                        </button>
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => filtroFecha("Semana")}
-                        >
-                          Semana
-                        </button>
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => filtroFecha("Mes")}
-                        >
-                          Mes
-                        </button>
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => setModalSeleccionFechaShow(true)}
-                        >
-                          Seleccionar
-                        </button>
-                      </div>
-                    )}
+                    {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems:"center"}}>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Dia')}>Dia</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Semana')}>Semana</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Mes')}>Mes</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => setModalSeleccionFechaShow(true)}>Seleccionar</button>
+                    </div>)}
 
-                    <Modal
-                      show={modalSeleccionFechaShow}
-                      onHide={() => {
+                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate("") }}>
+                      <Modal.Header closeButton onClick={() => {
                         setModalSeleccionFechaShow(false);
                         setSelectedDate("");
-                      }}
-                    >
-                      <Modal.Header
-                        closeButton
-                        onClick={() => {
-                          setModalSeleccionFechaShow(false);
-                          setSelectedDate("");
-                        }}
-                      >
-                        <Modal.Title>
-                          Seleccione una fecha para filtrar:
-                        </Modal.Title>
+                      }}>
+                        <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
                       </Modal.Header>
                       <Modal.Body
                         style={{

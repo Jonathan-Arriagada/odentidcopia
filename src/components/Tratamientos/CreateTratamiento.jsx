@@ -76,24 +76,22 @@ function CreateTratamiento(props) {
     getCodigo();
   }, [tratamientosCollection]);
 
-  const validateFields = async (e) => {
-    e.preventDefault();
+  const validateFields = (e) => {
     if (
       apellidoConNombre.trim() === "" ||
       idc.trim() === "" ||
       tarifasTratamientos.trim() === "" ||
       estadosTratamientos.trim() === "" ||
       fecha.trim() === "" ||
-      fechaVencimiento.trim() === ""
+      fechaVencimiento.trim() === "" ||
+      plazo.trim() === "" 
     ) {
       setError("Respeta los campos obligatorios *");
       setTimeout(clearError, 2000)
       return false;
     } else {
       setError("");
-      await store();
-      clearFields();
-      props.onHide();
+      store(e);
     }
     return true;
   };
@@ -135,6 +133,8 @@ function CreateTratamiento(props) {
       fechaVencimiento: fechaVencimiento,
       notas: notas,
     });
+    clearFields();
+    props.onHide();
   };
 
   async function buscarTratamiento(tratamiento) {
@@ -288,12 +288,13 @@ function CreateTratamiento(props) {
                 />
               </div>
               <div className="col mb-3">
-                <label className="form-label">Plazo</label>
+                <label className="form-label">Plazo*</label>
                 <input
                   value={plazo}
                   onChange={(e) => setPlazo(e.target.value)}
                   type="number"
                   className="form-control"
+                  required
                 />
               </div>
               <div className="col mb-3">
