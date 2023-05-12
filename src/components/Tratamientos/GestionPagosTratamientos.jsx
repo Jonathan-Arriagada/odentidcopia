@@ -9,6 +9,7 @@ function GestionPagosTratamientos() {
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
   const [selectedOption, setSelectedOption] = useState("");
+  
 
   const tratamientosCollectiona = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("apellidoConNombres")));
@@ -20,6 +21,7 @@ function GestionPagosTratamientos() {
     }));
     setTratamientos(tratamientosArray);
   }, []);
+  
 
   useEffect(() => {
     const unsubscribe = onSnapshot(tratamientosCollection.current, getTratamientos);

@@ -18,6 +18,7 @@ function CreateTratamiento(props) {
   const [fechaVencimiento, setFechaVencimiento] = useState("");
   const [notas, setNotas] = useState("");
   const [error, setError] = useState("");
+  const [color, setColor] = useState("");
 
   const [estadoOptionsTratamientos, setEstadoOptionsTratamientos] = useState([]);
   const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);

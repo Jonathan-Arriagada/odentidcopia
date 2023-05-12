@@ -5,14 +5,22 @@ import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
+import { useEffect } from "react";
 
 const Navigation = () => {
     const [isActive, setIsActive] = useState(false);
     const { currentUser } = useContext(AuthContext);
+    const [userType, setUserType] = useState("");
 
     const logout = () => {
         localStorage.setItem("user", JSON.stringify(null));
     };
+
+    useEffect(() => {
+        const type = localStorage.getItem("rol");
+        setUserType(type);
+      }, []);
+    
 
     return (
         <div className={`navigation ${isActive && "active"}`}>
@@ -26,7 +34,7 @@ const Navigation = () => {
                 <span>Odentid</span>
                 <span>{currentUser.email}</span>
             </header>
-            <Link to="/admin" className="text-decoration-none link-light"><Nav title="Admin Panel" Icon={FaUserTie} /></Link>
+            {userType === '"admin"' ? ( <Link to="/admin" className="text-decoration-none link-light"><Nav title="Admin Panel" Icon={FaUserTie} /></Link>) : null}
             <Link to="/miPerfil" className="text-decoration-none link-light"><Nav title="Mi Perfil" Icon={FaUser} /></Link>
             <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
             <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link>
