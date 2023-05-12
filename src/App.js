@@ -11,6 +11,7 @@ import Tarifario from "./components/Tarifario/Tarifario";
 import CreateTarifa from "./components/Tarifario/CreateTarifa";
 import Tratamientos from "./components/Tratamientos/Tratamientos";
 import PanelAdmin from "./components/Admin/PanelAdmin";
+import MiPerfil from "./components/Admin/MiPerfil";
 
 
 function App() {
@@ -19,20 +20,22 @@ function App() {
     return currentUser ? children : <Navigate to="/"/>
   };
 
-<<<<<<< HEAD
-  function RequireAdmin({children}) {
-    const rol = localStorage.getItem('rol');
-    return rol === "admin" ? children : <Navigate to="/agenda" />;
-  };;
-=======
->>>>>>> 97311c19904253715c55fd8bc9b66b1b5fd065b3
+  function RequireAdmin({ children }) {
+    const { currentUser } = useContext(AuthContext);
+    if (currentUser && currentUser.email === "test@hotmail.com") {
+      return children;
+    } else {
+      return <Navigate to="/agenda" />;
+    }
+  }
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<Login />}/>
-            <Route index path="admin" element={<RequireAuth><PanelAdmin/></RequireAuth>}/>
+            <Route index path="admin" element={<RequireAuth><RequireAdmin><PanelAdmin/></RequireAdmin></RequireAuth>}/>
+            <Route index path="miPerfil" element={<RequireAuth><MiPerfil/></RequireAuth>}/>
             <Route index path="clients" element={<RequireAuth><Show/></RequireAuth>}/>
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
             <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>

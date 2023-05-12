@@ -4,7 +4,7 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const CreateTarifa = (props) => {
-  const [codigo, setCodigo] = useState(null);
+  const [codigo, setCodigo] = useState('');
   const [tratamiento, setTratamiento] = useState("");
   const [tarifa, setTarifa] = useState("");
   const [editable] = useState(false);

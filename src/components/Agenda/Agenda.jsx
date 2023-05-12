@@ -251,7 +251,7 @@ function Citas() {
                       variant="primary"
                       className="btn btn-success mx-1 btn-md"
                       style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center",alignSelf:"center", height:"45px" }}
-                      onClick={() => setMostrarBotonesFechas(!mostrarBotonesFechas)}
+                      onClick={() => { setMostrarBotonesFechas(!mostrarBotonesFechas); setSearch(""); setTaparFiltro(false) }}
                     >
                       <i
                         className="fa-regular fa-calendar-check"
@@ -259,16 +259,19 @@ function Citas() {
                       ></i>
                     </button>
                     {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems:"center"}}>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Dia')}>Dia</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Semana')}>Semana</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => filtroFecha('Mes')}>Mes</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => setModalSeleccionFechaShow(true)}>Seleccionar</button>
+                    <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {filtroFecha('Dia'); setTaparFiltro(false)}}>Dia</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {filtroFecha('Semana'); setTaparFiltro(true)}}>Semana</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {filtroFecha('Mes'); setTaparFiltro(true)}}>Mes</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {setModalSeleccionFechaShow(true)}}>Seleccionar</button>
                     </div>)}
 
-                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate("") }}>
+                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate("");setTaparFiltro(false); setSearch("");setMostrarBotonesFechas(false) }}>
                       <Modal.Header closeButton onClick={() => {
                         setModalSeleccionFechaShow(false);
                         setSelectedDate("");
+                        setTaparFiltro(false);
+                        setSearch("");
+                        setMostrarBotonesFechas(false);
                       }}>
                         <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
                       </Modal.Header>
@@ -290,14 +293,7 @@ function Citas() {
                         />
                       </Modal.Body>
                       <Modal.Footer>
-                        <Button
-                          variant="primary"
-                          onClick={() => {
-                            setSearch(selectedDate);
-                            setModalSeleccionFechaShow(false);
-                            setMostrarBotonesFechas(false);
-                          }}
-                        >
+                      <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false) }}>
                           Buscar Fecha
                         </Button>
                       </Modal.Footer>

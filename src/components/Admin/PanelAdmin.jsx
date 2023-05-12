@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "../Navigation";
-import { collection, deleteDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
+import { collection, orderBy, query, onSnapshot } from "firebase/firestore";
+import { db, } from "../../firebaseConfig/firebase";
 import CrearAsistente from "./CrearAsistente";
-import EditarAsistente from "./EditarAsistente";
 import "../Pacientes/Show.css"
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
-import moment from 'moment';
 
 
 function PanelAdmin() {
@@ -15,9 +13,7 @@ function PanelAdmin() {
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
   const [modalShow, setModalShow] = useState(false);
-  const [modalShowEdit, setModalShowEdit] = useState(false);
-  const [usuario, setUsuario] = useState([]);
-  const [idParam, setIdParam] = useState("");
+
   const [isLoading, setIsLoading] = useState(true);
 
   const userCollectiona = collection(db, "user");
@@ -38,12 +34,6 @@ function PanelAdmin() {
     return unsubscribe;
   }, [getUsuarios]);
 
-
-  const deleteUsuario = async (id) => {
-    const usuarioDoc = doc(db, "user", id);
-    await deleteDoc(usuarioDoc);
-    setUsuarios((prevUsuarios) => prevUsuarios.filter((usuario) => usuario.id !== id));
-  };
 
   const searcher = (e) => {
     setSearch(e.target.value);
@@ -118,43 +108,21 @@ function PanelAdmin() {
                   <thead>
                     <tr>
                       <th onClick={() => sorting("codigo")}>Código</th>
-                      <th>Apellido y Nombres</th>
-                      <th>Email</th>
-                      <th>Telefono</th>
-                      <th>Fecha Agregado</th>
+                      <th onClick={() => sorting("apellidoConNombre")}>Apellido y Nombres</th>
+                      <th onClick={() => sorting("correo")}>Email</th>
+                      <th onClick={() => sorting("telefono")}>Telefono</th>
+                      <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    {results.map((cita) => (
-                      <tr key={cita.id}>
+                    {results.map((usuario) => (
+                      <tr key={usuario.id}>
                         <td> {usuario.codigo} </td>
                         <td> {usuario.apellidoConNombre}</td>
                         <td> {usuario.correo} </td>
                         <td> {usuario.telefono} </td>
-                        <td>{moment(usuario.fechaAgregado).format('DD/MM/YY')}</td>
-                        <td>
-                        <button
-                            variant="primary"
-                            className="btn btn-success mx-1"
-                            onClick={() => {
-                            setModalShowEdit(true);
-                              setUsuario(usuario);
-                              setIdParam(usuario.id);
-                            }}
-                          >
-                            <i className="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <button
-                            onClick={() => {
-                              deleteUsuario(usuario.id);
-                            }}
-                            className="btn btn-danger"
-                          >
-                            {" "}
-                            <i className="fa-solid fa-trash-can"></i>{" "}
-                          </button>
-                        </td>
+                        <td> {usuario.fechaAlta}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -165,12 +133,6 @@ function PanelAdmin() {
         )}
       </div>
       <CrearAsistente show={modalShow} onHide={() => setModalShow(false)} />
-      {/*<EditarAsistente
-        id={idParam}
-        usuario={usuario}
-        show={modalShowEdit}
-        onHide={() => setModalShowEdit(false)}
-      />*/}
     </>
   );
 }

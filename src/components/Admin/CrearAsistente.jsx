@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { collection, addDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
+import { collection, addDoc, query, orderBy, limit, getDocs, where } from "firebase/firestore";
+import { db, auth, } from "../../firebaseConfig/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth"
 import { Modal } from "react-bootstrap";
+import moment from 'moment';
 
 
 const CrearAsistente = (props) => {
-  const [codigo, setCodigo] = useState(null);
+  const [codigo, setCodigo] = useState('');
   const [apellidoConNombre, setApellidoConNombre] = useState('');
-  const [fechaAgregado, setFechaAgregado] = useState(new Date());
+  const [, setFechaAlta] = useState('');
   const [telefono, setTelefono] = useState('');
-  const [email, setEmail] = useState('');
+  const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
-  const [rol,setRol] = useState('asistente');
+  const [rol, setRol] = useState('asistente');
+  const [error, setError] = useState('');
   const [editable] = useState(false);
 
   const userCollection = collection(db, "user");
@@ -32,36 +35,66 @@ const CrearAsistente = (props) => {
   }, [userCollection]);
 
 
-
   const store = async (e) => {
     e.preventDefault();
-      const { user } = await db.auth().createUserWithEmailAndPassword(email, password);
-      await user.getIdTokenResult().then(() => {
-        return user.setCustomClaims({ role: 'asistente' });
-      });
+    const { user } = await createUserWithEmailAndPassword(auth, correo, password);
 
-      await addDoc(userCollection, {
-        codigo: codigo,
-        apellidoConNombre: apellidoConNombre,
-        password: password,
-        email: email,
-        telefono: telefono,
-        rol :rol,
-        fechaAgregado: fechaAgregado,
-      });
-      clearFields();
-      props.onHide();
+    await user.getIdTokenResult().then(() => {
+      return user;
+    });
+
+    await addDoc(userCollection, {
+      codigo: codigo,
+      apellidoConNombre: apellidoConNombre,
+      password: password,
+      correo: correo,
+      telefono: telefono,
+      rol: rol,
+      fechaAlta: moment(new Date()).format('DD/MM/YY'),
+    });
+    clearFields();
+    props.onHide();
   };
 
   const clearFields = () => {
     setCodigo("")
     setApellidoConNombre("");
-    setEmail("");
+    setCorreo("");
     setPassword("");
     setTelefono("");
     setRol("");
-    setFechaAgregado("");
+    setFechaAlta("");
+    setError("");
   };
+
+  const validateFields = async (e) => {
+    const querySnapshot = await getDocs(query(userCollection, where("correo", "==", correo)));
+    if (!querySnapshot.empty) {
+      setError("El correo ya está registrado");
+      setTimeout(clearError, 2000);
+      return;
+    } else {
+      if (apellidoConNombre.trim() === "" || correo.trim() === "" || password.trim() === "") {
+        setError("Respeta los campos obligatorios *");
+        setTimeout(clearError, 2000);
+        return;
+      } else {
+        if (password.length < 6) {
+          setError("El password debe tener al menos 6 caracteres");
+          setTimeout(clearError, 2000);
+          return;
+        } else {
+          setError("");
+          store(e);
+        }
+      }
+    }
+  }
+
+  const clearError = () => {
+    setError("");
+  };
+
 
   return (
     <Modal
@@ -83,7 +116,7 @@ const CrearAsistente = (props) => {
           <div className="row">
             <div className="col">
               <form onSubmit={store}>
-              <div className="mb-3">
+                <div className="mb-3">
                   <label className="form-label">Codigo</label>
                   <input
                     value={codigo}
@@ -93,12 +126,13 @@ const CrearAsistente = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Apellido y Nombres</label>
+                  <label className="form-label">Apellido y Nombres*</label>
                   <input
                     value={apellidoConNombre}
                     onChange={(e) => setApellidoConNombre(e.target.value)}
                     type="text"
                     className="form-control"
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -111,33 +145,43 @@ const CrearAsistente = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Email</label>
+                  <label className="form-label">Email*</label>
                   <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    type="text"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                    type="email"
                     className="form-control"
+                    autoComplete="off"
+                    required
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Password</label>
+                  <label className="form-label">Password*</label>
                   <input
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     className="form-control"
+                    minLength={6}
+                    autoComplete="off"
+                    required
                   />
                 </div>
+                <div style={{ display: "flex" }}>
+                  <button
+                    type="submit"
+                    onClick={validateFields}
+                    className="btn btn-primary"
+                  >
+                    Agregar
+                  </button>
+                  {error && (
+                    <div className="alert alert-danger" role="alert" style={{ margin: '10px' }}>
+                      {error}
+                    </div>
+                  )}
+                </div>
 
-                <button
-                  type="submit"
-                  onClick={() => {
-                    props.onHide();
-                  }}
-                  className="btn btn-primary"
-                >
-                  Agregar
-                </button>
               </form>
             </div>
           </div>

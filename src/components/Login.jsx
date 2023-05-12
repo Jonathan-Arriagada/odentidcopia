@@ -60,8 +60,9 @@ const Login = () => {
                     <label htmlFor="password">Contraseña</label>
                 </div>
                 {error && <span className="error">Email o Contraseña incorrectos.</span>}
-                {error && <span className="error">{errorMsg}</span>}
+                l{error && <span className="error">{errorMsg}</span>}
                 <button type="submit">Iniciar Sesión</button>
+                <p><a href>Olvidé mi Clave</a></p>
             </form>
         </div>
     );
