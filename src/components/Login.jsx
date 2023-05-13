@@ -30,7 +30,7 @@ const Login = () => {
             const errorMessage = error.message;
             setErrorMsg(errorMessage);
         })
-        const q = query(collection(db, "user"), where("correo", "==", email));
+        const q = query(collection(db, "user"), where("rol", "==", "admin"));
         getDocs(q).then((querySnapshot) => {
             if (querySnapshot.docs.length > 0) {
               const doc = querySnapshot.docs[0];
@@ -43,6 +43,21 @@ const Login = () => {
             console.log("Error al obtener los documentos: ", error);
           });
     }
+
+    /*OLVIDE MI CLAVE
+    import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+        // Password reset email sent!
+        // ..
+    })
+    .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+  });*/
 
     return (
         <div className='login-page'>
@@ -60,9 +75,9 @@ const Login = () => {
                     <label htmlFor="password">Contraseña</label>
                 </div>
                 {error && <span className="error">Email o Contraseña incorrectos.</span>}
-                l{error && <span className="error">{errorMsg}</span>}
+                {error && <span className="error">{errorMsg}</span>}
                 <button type="submit">Iniciar Sesión</button>
-                <p><a href>Olvidé mi Clave</a></p>
+                <p>Olvidé mi Clave</p>
             </form>
         </div>
     );

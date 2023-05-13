@@ -1,155 +1,168 @@
-import React, { useState, useEffect} from "react";
-import {doc, getDoc, updateDoc, } from "firebase/firestore";
-import { auth, db } from "../../firebaseConfig/firebase";
+import React, { useState, useEffect, } from "react";
+import { doc, updateDoc, where, collection, getDocs, query } from "firebase/firestore";
+import { auth, db, sesionActiva } from "../../firebaseConfig/firebase";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Navigation from "../Navigation";
+import "../Utilidades/loader.css";
+import "../Utilidades/tablas.css";
+import "../Pacientes/Show.css";
 
 const MiPerfil = () => {
-  const [user, ] = useState('');
-  const [userData, setUserData] = useState(null);
-  const [codigo, setCodigo] = useState("");
+  const [user, setUser] = useState("");
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [correo, setCorreo] = useState("");
-  const [password, setPassword] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [fechaAlta, setFechaAlta] = useState("");
+  const [rol, setRol] = useState("");
+  const [foto, setFoto] = useState("");
+
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+  const [editable, setEditable] = useState(false);
+
+  const [, setMostrarPerfil] = useState(true);
+  const [, setMostrarSeguridad] = useState(false);
+  const [, setMostrarNotificaciones] = useState(false);
+  const storage = getStorage();
 
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const userDocRef = doc(db, "user", user.uid);
-        const userDocSnapshot = await getDoc(userDocRef);
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          setUserData(userData);
-          setCodigo(userData.codigo);
-          setApellidoConNombre(userData.apellidoConNombre);
-          setCorreo(userData.correo);
-          setPassword(userData.password);
-          setTelefono(userData.telefono);
-        } else {
-          console.log("User data not found");
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.log("Error fetching user data:", error);
-        setIsLoading(false);
-      }
+      const user = await sesionActiva;
+      const userQuery = query(collection(db, "user"), where("correo", "==", user.email));
+      const userDocsSnapshot = await getDocs(userQuery);
+      const userData2 = userDocsSnapshot.docs[0].data();
+      setUser(userData2)
+      setApellidoConNombre(userData2.apellidoConNombre);
+      setCorreo(userData2.correo);
+      setTelefono(userData2.telefono);
+      setFechaAlta(userData2.fechaAlta);
+      setRol(userData2.rol);
+      setIsLoading(false);
     };
+    fetchUserData();
 
-    if (user) {
-      fetchUserData();
-    }
-  }, [user]);
+  }, []);
 
-  const handleEdit = () => {
-    setIsEditing(true);
+  const handleEdit = (e) => {
+    e.preventDefault();
+    setEditable(true)
   };
 
-  const handleSave = async () => {
-    try {
-      const userDocRef = doc(db, "user", user.uid);
-      await updateDoc(userDocRef, {
-        codigo,
-        apellidoConNombre,
-        correo,
-        password,
-        telefono,
-      });
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const currentUser = auth.currentUser;
+    await currentUser.updateProfile({
+      displayName: apellidoConNombre,
+      photoURL: foto,
+    });
+    await currentUser.updateEmail(correo);
 
-      // Actualizar en el módulo de autenticación de Firebase usando el SDK de administración
-      const currentUser = auth.currentUser;
-      await currentUser.updateProfile({
-        displayName: apellidoConNombre,
-        photoURL: "",
-      });
-      await currentUser.updateEmail(correo);
-      await currentUser.updatePassword(password);
-
-      setIsEditing(false);
-    } catch (error) {
-      console.log("Error updating user data:", error);
-    }
-  };
-
-  if (isLoading) {
-    return <p>Loading...</p>;
+    const userDocRef = doc(db, "user", user.uid);
+    await updateDoc(userDocRef, {
+      apellidoConNombre,
+      correo,
+      telefono,
+      foto,
+    });
+    setEditable(false);
   }
 
-  if (!userData) {
-    return <p>No user data found.</p>;
+
+
+  const handleUploadImage = async (e) => {
+    setEditable(true)
+    const file = e.target.files[0];
+
+    const storageRef = ref(storage, `profile_images/${file.name}`);
+
+    await uploadBytes(storageRef, file);
+
+    const downloadURL = await getDownloadURL(storageRef);
+
+    setFoto(downloadURL);
+
   }
+
+
+  /* Actualizar CLAVE
+  await currentUser.updatePassword(password);
+  */
+
 
   return (
-    <div>
-      <h1>Mi Perfil</h1>
-      <div>
-        <label>Código:</label>
-        {isEditing ? (
-          <input
-            type="text"
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-          />
-        ) : (
-          <p>{codigo}</p>
-        )}
-      </div>
-      <div>
-        <label>Apellido y Nombre:</label>
-        {isEditing ? (
-          <input
-            type="text"
-            value={apellidoConNombre}
-            onChange={(e) => setApellidoConNombre(e.target.value)}
-          />
-        ) : (
-            <p>{apellidoConNombre}</p>
-            )}
+    <div className="mainpage">
+      <Navigation />
+      {isLoading ? (
+        <span className="loader position-absolute start-50 top-50 mt-3"></span>
+      ) : (
+        <div className="container-xl px-4 mt-4">
+          <div className="d-flex">
+            <h1>Mi Perfil</h1>
           </div>
-          <div>
-            <label>Correo:</label>
-            {isEditing ? (
-          <input
-            type="email"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-          />
-        ) : (
-          <p>{correo}</p>
-        )}
-      </div>
-      <div>
-        <label>Password:</label>
-        {isEditing ? (
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        ) : (
-          <p>********</p>
-        )}
-      </div>
-      <div>
-        <label>Teléfono:</label>
-        {isEditing ? (
-          <input
-            type="text"
-            value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
-          />
-        ) : (
-          <p>{telefono}</p>
-        )}
-      </div>
-      <div>
-        {isEditing ? (
-          <button onClick={handleSave}>Guardar</button>
-        ) : (
-          <button onClick={handleEdit}>Editar</button>
-        )}
-      </div>
+
+          <nav className="nav nav-borders">
+            <div className="nav-link active ms-0" onClick={() => { setMostrarPerfil(true); setMostrarSeguridad(false); setMostrarNotificaciones(false); }} >Perfil</div>
+            <div className="nav-link" onClick={() => { setMostrarPerfil(false); setMostrarSeguridad(true); setMostrarNotificaciones(false); }} >Seguridad</div>
+            <div className="nav-link" onClick={() => { setMostrarPerfil(false); setMostrarSeguridad(false); setMostrarNotificaciones(true); }} >Notificaciones</div>
+          </nav>
+          <hr className="mt-0 mb-4" />
+          <div className="row">
+            <div className="col-xl-4">
+              <div className="card mb-4 mb-xl-0">
+                <div className="card-header">Imagen de Perfil</div>
+                <div className="card-body text-center">
+                  <img className="img-account-profile rounded-circle mb-2" src={foto || "http://bootdey.com/img/Content/avatar/avatar1.png"} alt="Ejemplo Imagen de Perfil" />
+                  <div className="small font-italic text-muted mb-4">JPG or PNG no mayor a 5 MB</div>
+                  <button className="btn btn-primary" id="custom-file-upload" type="button">
+                    <label>Subir archivo
+                      <input type="file" accept="image/jpeg, image/png, image/jpg" onChange={handleUploadImage} style={{ display: "none" }} />
+                    </label>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-8">
+              <div className="card mb-4">
+                <div className="card-header">Detalles de la Cuenta</div>
+                <div className="card-body">
+                  <form>
+                    <div className="row gx-3 mb-3">
+                      <div className="col-md-6">
+                        <label className="small mb-1">Apellido y Nombres</label>
+                        <input className="form-control" id="inputApellidoConNombres" type="text" placeholder="Ingresa tu Apellido y Nombres" value={apellidoConNombre || ""}
+                          onChange={(e) => setApellidoConNombre(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="small mb-1">Telefono</label>
+                        <input className="form-control" id="inputPhone" type="tel" placeholder="Ingresa tu Telefono" value={telefono || ""}
+                          onChange={(e) => setTelefono(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <label className="small mb-1">Correo Electronico</label>
+                      <input className="form-control" id="inputEmailAddress" type="email" placeholder="Ingresa tu Correo Electronico" value={correo}
+                        onChange={(e) => setCorreo(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                    </div>
+                    <div className="row gx-3 mb-3">
+                      <div className="col-md-6">
+                        <label className="small mb-1">Rol</label>
+                        <input className="form-control" id="inputLocation" type="text" value={rol} disabled style={{ textAlign: "center" }} />
+                      </div>
+                      <div className="col-md-6">
+                        <label className="small mb-1">Fecha de Alta</label>
+                        <input className="form-control" id="inputBirthday" type="text" name="birthday" value={fechaAlta} disabled style={{ textAlign: "center" }} />
+                      </div>
+                    </div>
+                    <button className="btn btn-primary" type="submit" onClick={editable ? handleSave : handleEdit}>
+                      {editable ? "Guardar Cambios" : "Editar Informacion"}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
