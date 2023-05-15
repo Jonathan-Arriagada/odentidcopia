@@ -11,6 +11,7 @@ const EditPago = ({ show, onHide }) => {
   const [estadosTratamientos, setEstadosTratamientos] = useState([]);
   const estadosTratamientosCollection = collection(db, "estadoPago");
   const estadosTratamientosCollectionOrdenados = useRef(query(estadosTratamientosCollection, orderBy("name")));
+  const [color, setColor] = useState("");
 
   const updateEstadosTratamientosFromSnapshot = useCallback((snapshot) => {
     const estadosTratamientosArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -38,17 +39,19 @@ const EditPago = ({ show, onHide }) => {
       setError('El estado ya existe');
       return;
     }
-    const newState = { name: estadoTratamientos };
+    const newState = { name: estadoTratamientos, color: color };
     addDoc(estadosTratamientosCollection, newState)
       .then(() => {
         setEstadoTratamientos('');
         setError('');
+        setColor("")
       })
   };
 
   const handleEdit = (index) => {
     setEditIndex(index);
     setEstadoTratamientos(estadosTratamientos[index].name);
+    setColor(estadosTratamientos[index].color);
     setError('');
   };
 
@@ -58,17 +61,15 @@ const EditPago = ({ show, onHide }) => {
       setError('El estado no puede estar vacío');
       return;
     }
-    if (estadoTratamientosExiste(estadoTratamientos)) {
-      setError('El estado ya existe');
-      return;
-    }
+
     const stateToUpdate = estadosTratamientos[editIndex];
-    const newState = { name: estadoTratamientos };
+    const newState = { name: estadoTratamientos, color: color };
     setDoc(doc(estadosTratamientosCollection, stateToUpdate.id), newState)
       .then(() => {
         setEditIndex(null);
         setEstadoTratamientos('');
         setError('');
+        setColor("")
       })
   };
 
@@ -77,17 +78,18 @@ const EditPago = ({ show, onHide }) => {
     const newStates = estadosTratamientos.filter((_, i) => i !== index);
     setEstadosTratamientos(newStates);
     setError('');
+    setColor("")
   };
 
   return (
     <Modal show={show} onHide={onHide} aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
-        <Modal.Title>Gestión Estados Tratamientos</Modal.Title>
+        <Modal.Title>Gestión Estados Pago</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={editIndex !== null ? handleUpdate : handleCreate}>
           <div className="mb-3">
-            <label className="form-label">Estado Tratamiento</label>
+            <label className="form-label">Estado Pago</label>
             <input
               type="text"
               className="form-control"
@@ -96,6 +98,23 @@ const EditPago = ({ show, onHide }) => {
               ref={inputRef}
             />
             {error && <small className="text-danger">{error}</small>}
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Color</label>
+            <select
+              className="form-select"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            >
+              <option value="">Selecciona un color</option>
+              <option value="red">Rojo</option>
+              <option value="blue">Azul</option>
+              <option value="green">Verde</option>
+              <option value="yellow">Amarillo</option>
+              <option value="orange">Naranja</option>
+              <option value="grey">Gris</option>
+              <option value="purple">Purpura</option>
+            </select>
           </div>
           <button className="btn btn-primary" type="submit">
             {editIndex !== null ? 'Actualizar' : 'Crear'}
