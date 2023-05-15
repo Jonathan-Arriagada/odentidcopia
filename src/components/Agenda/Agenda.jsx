@@ -212,7 +212,7 @@ function Citas() {
                       style={{ maxHeight: "40px" }}
                     >
                       <h1>Agenda</h1>
-                      {userType === '"admin"' ? (
+                      {userType === '"RmTnUw1iPj5q"' ? (
                         <button
                           className="btn btn-dark mx-2 btn-sm"
                           style={{ borderRadius: "5px" }}

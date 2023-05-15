@@ -30,7 +30,7 @@ const Login = () => {
             const errorMessage = error.message;
             setErrorMsg(errorMessage);
         })
-        const q = query(collection(db, "user"), where("rol", "==", "admin"));
+        const q = query(collection(db, "user"), where("correo", "==", email));
         getDocs(q).then((querySnapshot) => {
             if (querySnapshot.docs.length > 0) {
               const doc = querySnapshot.docs[0];

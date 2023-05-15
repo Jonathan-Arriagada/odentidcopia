@@ -345,7 +345,7 @@ function Tratamientos() {
                       style={{ maxHeight: "34px" }}
                     >
                       <h1>Tratamientos</h1>
-                      {userType === '"admin"' ? (
+                      {userType === '"RmTnUw1iPj5q"' ? (
                         <button
                           className="btn btn-dark mx-2 btn-sm"
                           onClick={() => {

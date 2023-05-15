@@ -134,7 +134,7 @@ function Tarifario() {
                       <th onClick={() => sorting("codigo")}>Código</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
-                      {userType === '"admin"' ? <th>Accion</th> : null}
+                      {userType === '"RmTnUw1iPj5q"' ? <th>Accion</th> : null}
                     </tr>
                   </thead>
 
@@ -147,7 +147,7 @@ function Tarifario() {
                         <td> {tarifa.codigo} </td>
                         <td> {tarifa.tratamiento}</td>
                         <td> {tarifa.tarifa} </td>
-                        {userType === '"admin"' ? (
+                        {userType === '"RmTnUw1iPj5q"' ? (
                           <td>
                             <button
                               variant="primary"
