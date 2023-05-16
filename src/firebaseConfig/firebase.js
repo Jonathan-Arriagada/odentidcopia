@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword, signOut } from "firebase/auth";
+import { getAuth, EmailAuthProvider, reauthenticateWithCredential, updatePassword, signOut, } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -26,13 +26,6 @@ export const db = getFirestore(app)
 export const verifCredenciales = EmailAuthProvider.credential;
 export const reautenticar = reauthenticateWithCredential;
 export const actualizarClave = updatePassword;
-export const deslogear = signOut;
+export { updateProfile, updateEmail,onAuthStateChanged,sendPasswordResetEmail } from "firebase/auth";
 
-export const sesionActiva = new Promise((resolve, reject) => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    unsubscribe(); // Detener el observador después de obtener el usuario
-    resolve(user); // Resolver la promesa con el usuario activo
-  }, reject);
-});
-//ESTA FUNCION DEVUELVE EL USUARIO ACTIVO TODO EL TIEMPO
-//EL auth.currenteUser DEVUELVE UNA VEZ SOLA EL USUARIO QUE INICIÓ
+export const deslogear = signOut;
