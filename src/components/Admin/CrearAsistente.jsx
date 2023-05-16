@@ -14,6 +14,7 @@ const CrearAsistente = (props) => {
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [rol, setRol] = useState('yS3tEzgK9Qp7');
+  const [foto, ] = useState('');
   const [error, setError] = useState('');
   const [editable] = useState(false);
 
@@ -46,10 +47,10 @@ const CrearAsistente = (props) => {
     await addDoc(userCollection, {
       codigo: codigo,
       apellidoConNombre: apellidoConNombre,
-      password: password,
       correo: correo,
       telefono: telefono,
       rol: rol,
+      foto: foto,
       fechaAlta: moment(new Date()).format('DD/MM/YY'),
     });
     clearFields();

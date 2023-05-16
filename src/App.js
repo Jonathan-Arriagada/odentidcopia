@@ -20,21 +20,22 @@ function App() {
     return currentUser ? children : <Navigate to="/"/>
   };
 
+  /*//HAY QUE VALIDAR ESTO CON EL ROL NO CON MAIL
   function RequireAdmin({ children }) {
     const { currentUser } = useContext(AuthContext);
-    if (currentUser && currentUser.email === "test@hotmail.com") {
+    if (currentUser && currentUser.email === "test@hotmail.com") { 
       return children;
     } else {
       return <Navigate to="/agenda" />;
     }
-  }
+  }*/
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<Login />}/>
-            <Route index path="admin" element={<RequireAuth><RequireAdmin><PanelAdmin/></RequireAdmin></RequireAuth>}/>
+            <Route index path="admin" element={<RequireAuth><PanelAdmin/></RequireAuth>}/>
             <Route index path="miPerfil" element={<RequireAuth><MiPerfil/></RequireAuth>}/>
             <Route index path="clients" element={<RequireAuth><Show/></RequireAuth>}/>
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>

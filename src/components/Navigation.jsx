@@ -29,7 +29,7 @@ const Navigation = () => {
             </div>
             <header>
                 <div className="profile">
-                    <img src={profile} alt="profile" className="profile-img" />
+                    <img src={currentUser.photoURL || profile } alt="profile" className="profile-img" />
                 </div>
                 <span>Odentid</span>
                 <span>{currentUser.email}</span>

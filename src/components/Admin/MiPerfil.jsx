@@ -1,7 +1,9 @@
 import React, { useState, useEffect, } from "react";
 import { doc, updateDoc, where, collection, getDocs, query, } from "firebase/firestore";
-import { auth, db, sesionActiva, } from "../../firebaseConfig/firebase";
+import { auth, db, deslogear, } from "../../firebaseConfig/firebase";
+import { updateProfile, updateEmail, onAuthStateChanged } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useNavigate } from 'react-router-dom';
 import Navigation from "../Navigation";
 import EditClave from "./EditClave";
 import "../Utilidades/loader.css";
@@ -18,54 +20,74 @@ const MiPerfil = () => {
   const [foto, setFoto] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [editable, setEditable] = useState(false);
+  const [mostrarCancelar, setMostrarCancelar] = useState(false);
+  const [id, setId] = useState("");
   const [, setMostrarPerfil] = useState(true);
   const [modalShowEditClave, setModalShowEditClave] = useState(false);
   const [, setMostrarNotificaciones] = useState(false);
+  const [mostrarBotonFoto, setMostrarBotonFoto] = useState(false);
   const storage = getStorage();
-
+  const navigate = useNavigate()
 
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const user = await sesionActiva;
-      const userQuery = query(collection(db, "user"), where("correo", "==", user.email));
-      const userDocsSnapshot = await getDocs(userQuery);
+    const unsubscribe = onAuthStateChanged(auth, fetchUserData);
+    return unsubscribe;
+  }, []);
+
+  const fetchUserData = async (user) => {
+    const userQuery = query(collection(db, "user"), where("correo", "==", user.email));
+    const userDocsSnapshot = await getDocs(userQuery);
+    if (!userDocsSnapshot.empty) {
       const userData2 = userDocsSnapshot.docs[0].data();
-      setUser(userData2)
+      const userId = userDocsSnapshot.docs[0].id;
+      setUser(userData2);
       setApellidoConNombre(userData2.apellidoConNombre);
       setCorreo(userData2.correo);
       setTelefono(userData2.telefono);
       setFechaAlta(userData2.fechaAlta);
-      setFoto(userData2.foto)
-      setRol(userData2.rol);
-      setIsLoading(false);
-    };
-    fetchUserData();
-
-  }, []);
+      setFoto(userData2.foto);
+      setRol(userData2.rol === "RmTnUw1iPj5q" ? "Admin" : "Asistente");
+      setId(userId)
+    }
+    setIsLoading(false);
+  };
 
   const handleEdit = (e) => {
     e.preventDefault();
     setEditable(true)
+    setMostrarCancelar(true)
+  };
+
+  const handleCancelar = (e) => {
+    e.preventDefault();
+    setEditable(false)
+    setMostrarCancelar(false)
   };
 
   const handleSave = async (e) => {
-    e.preventDefault(); //NO FUNCIONA AUN
-    const user = auth.currentUser
-    await user.updateProfile({
-      displayName: apellidoConNombre,
-      photoURL: foto,
-    });
-    await user.updateEmail(correo);
+    try {
+      e.preventDefault();
+      const user = auth.currentUser;
 
-    const userDocRef = doc(db, "user", user.uid);
-    await updateDoc(userDocRef, {
-      apellidoConNombre,
-      correo,
-      telefono,
-      foto,
-    });
-    setEditable(false);
+      await updateProfile(user, {
+        displayName: apellidoConNombre,
+      });
+      await updateEmail(user, correo);
+
+      const userDocRef = doc(db, "user", id);
+      await updateDoc(userDocRef, {
+        apellidoConNombre,
+        correo,
+        telefono,
+      });
+      window.alert('Modificacion usuario exitosa')
+      deslogear(auth);
+      localStorage.setItem("user", JSON.stringify(null));
+      navigate("/")
+    } catch (error) {
+      console.error("Error al guardar sus datos. Vuelva a iniciar sesión e intente de nuevo", error);
+    }
   }
 
   const notificaciones = () => {
@@ -75,13 +97,38 @@ const MiPerfil = () => {
 
 
   const handleUploadImage = async (e) => {
-    setEditable(true)
-    const file = e.target.files[0];
-    const storageRef = ref(storage, `imagenes_perfil/${file.name}`);
-    await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
-    setFoto(downloadURL);
+    try {
+      const file = e.target.files[0];
+      const storageRef = ref(storage, `imagenes_perfil/${file.name}`);
+      await uploadBytes(storageRef, file);
+
+      const downloadURL = await getDownloadURL(storageRef);
+      setFoto(downloadURL);
+      setMostrarBotonFoto(true)
+    } catch (error) {
+      console.error("Error al cargar la imagen al almacenamiento. Vuelva a iniciar sesión e intente de nuevo", error);
     }
+  }
+
+  const subirFoto = async (e) => {
+    try {
+    e.preventDefault();
+    const user = auth.currentUser;
+    await updateProfile(user, {
+      photoURL: foto,
+    });
+    const userDocRef = doc(db, "user", id);
+    await updateDoc(userDocRef, {
+      foto: foto
+    });
+    window.alert('Modificacion foto exitosa')
+    deslogear(auth);
+    localStorage.setItem("user", JSON.stringify(null));
+    navigate("/")
+  } catch (error) {
+    console.error("Error al guardar la imagen. Vuelva a iniciar sesión e intente de nuevo", error);
+  }
+  }
 
   return (
     <>
@@ -108,11 +155,12 @@ const MiPerfil = () => {
                   <div className="card-body text-center">
                     <img className="img-account-profile rounded-circle mb-2" src={foto || "http://bootdey.com/img/Content/avatar/avatar1.png"} alt="Ejemplo Imagen de Perfil" />
                     <div className="small font-italic text-muted mb-4">JPG or PNG no mayor a 5 MB</div>
-                    <button className="btn btn-primary" id="custom-file-upload" onChange={handleUploadImage} type="button">
+                    <button className="btn btn-primary" id="custom-file-upload" onChange={handleUploadImage} type="button" style={{margin: "1px"}}>
                       <label>Subir archivo
-                        <input type="file" accept="image/jpeg, image/png, image/jpg"  style={{ display: "none" }} />
-                      </label>
+                        <input type="file" accept="image/jpeg, image/png, image/jpg" style={{ display: "none" }} /></label>
                     </button>
+                    {mostrarBotonFoto && (<button className="btn btn-primary" id="custom-file-upload" onClick={subirFoto} type="button" style={{margin: "1px"}}>
+                      Guardar foto</button>)}
                   </div>
                 </div>
               </div>
@@ -136,7 +184,7 @@ const MiPerfil = () => {
                       <div className="mb-3">
                         <label className="small mb-1">Correo Electronico</label>
                         <input className="form-control" id="inputEmailAddress" type="email" placeholder="Ingresa tu Correo Electronico" value={correo}
-                          onChange={(e) => setCorreo(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                          onChange={(e) => setCorreo(e.target.value.toLowerCase())} disabled={!editable} style={{ textAlign: "center" }} autoComplete="off" />
                       </div>
                       <div className="row gx-3 mb-3">
                         <div className="col-md-6">
@@ -148,9 +196,12 @@ const MiPerfil = () => {
                           <input className="form-control" id="inputBirthday" type="text" name="birthday" value={fechaAlta} disabled style={{ textAlign: "center" }} />
                         </div>
                       </div>
-                      <button className="btn btn-primary" type="submit" onClick={editable ? handleSave : handleEdit}>
+                      <button className="btn btn-primary" type="submit" onClick={editable ? handleSave : handleEdit} style={{margin: "1px"}}>
                         {editable ? "Guardar Cambios" : "Editar Informacion"}
                       </button>
+                      {mostrarCancelar && (<button className="btn btn-primary" type="submit" onClick={handleCancelar} style={{margin: "1px"}}>
+                        Cancelar
+                      </button>)}
                     </form>
                   </div>
                 </div>
