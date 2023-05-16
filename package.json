@@ -6,16 +6,20 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.12.3",
+    "@popperjs/core": "^2.11.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
     "date-picker": "^0.5.0",
     "firebase": "^9.18.0",
+    "firebase-admin": "^11.8.0",
     "google-auth-library": "^8.8.0",
     "google-spreadsheet": "^3.3.0",
     "googleapis": "^118.0.0",
     "moment": "^2.29.4",
+    "popper": "^1.0.1",
+    "popper.js": "^1.16.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-calendar": "^4.2.1",
@@ -51,5 +55,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "webpack-node-externals": "^3.0.0"
   }
 }
