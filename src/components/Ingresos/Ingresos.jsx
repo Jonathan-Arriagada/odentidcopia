@@ -1,49 +1,50 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, query, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import "../Pacientes/Show.css"
-import CrearIngreso from "./CrearIngreso";
-import EditIngreso from "./EditIngreso";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
-import moment from "moment";
-
+import EditIngreso from "./EditIngreso";
 
 
 const Ingresos = () => {
-  const [ingresos, setIngresos] = useState([]);
+  const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
-  const [modalShowCrearIngreso, setModalShowCrearIngreso] = useState(false);
   const [modalShowEditIngreso, setModalShowEditIngreso] = useState(false);
   const [order, setOrder] = useState("ASC");
-  const [ingreso, setIngreso] = useState([]);
+  const [tratamiento, setTratamiento] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const ingresosCollectiona = collection(db, "ingresos");
-  const ingresosCollection = useRef(query(ingresosCollectiona, orderBy("fechaIngreso")));
+  const tratamientosCollectionRef = collection(db, "tratamientos");
+  const tratamientosCollection = useRef(query(tratamientosCollectionRef));
 
-  const getIngresos = useCallback((snapshot) => {
-    const ingresosArray = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    }));
-    setIngresos(ingresosArray);
+  const getTratamientos = useCallback((snapshot) => {
+    const tratamientosArray = snapshot.docs.map((doc) => {
+      const { cobrosManuales } = doc.data();
+      return {
+        cobrosManuales,
+        id: doc.id,
+      };
+    }).filter((tratamiento) => tratamiento.cobrosManuales.fechaCobro.length > 0 && tratamiento.cobrosManuales.estadoCobro.toString() === "COBRADO"); 
+
+    tratamientosArray.sort((a, b) => {
+      const fechaCobroA = a.cobrosManuales.fechaCobro[0];
+      const fechaCobroB = b.cobrosManuales.fechaCobro[0];
+      return fechaCobroA.localeCompare(fechaCobroB);
+    });
+
+    setTratamientos(tratamientosArray);
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(ingresosCollection.current, getIngresos);
+    const unsubscribe = onSnapshot(tratamientosCollection.current, getTratamientos);
     return unsubscribe;
-  }, [getIngresos]);
+  }, [getTratamientos]);
 
-  const deleteIngreso = async (id) => {
-    const ingresoDoc = doc(db, "ingresos", id);
-    await deleteDoc(ingresoDoc);
-    setIngresos((prevIngresos) => prevIngresos.filter((ingreso) => ingreso.id !== id));
-  };
 
   const searcher = (e) => {
     setSearch(e.target.value);
@@ -52,32 +53,33 @@ const Ingresos = () => {
   let results = [];
 
   if (!search) {
-    results = ingresos;
+    results = tratamientos;
   } else {
-    results = ingresos.filter(
+    results = tratamientos.filter(
       (dato) =>
-        dato.tratamientoIngreso.toLowerCase().includes(search.toLowerCase()) ||
-        dato.metodoPagoIngreso.toLowerCase().includes(search.toLowerCase())
+        dato.cobrosManuales.pacienteCobro.toString().toLowerCase().includes(search.toLowerCase()) ||
+        dato.cobrosManuales.tratamientoCobro.toString().toLowerCase().includes(search.toLowerCase()) ||
+        dato.cobrosManuales.metodoPago.toString().toLowerCase().includes(search.toLowerCase()) 
     );
   }
 
   const sorting = (col) => {
     if (order === "ASC") {
-      const sorted = [...ingresos].sort((a, b) => {
+      const sorted = [...tratamientos].sort((a, b) => {
         const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
         const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
         return valueA > valueB ? 1 : -1;
       });
-      setIngresos(sorted);
+      setTratamientos(sorted);
       setOrder("DSC");
     }
     if (order === "DSC") {
-      const sorted = [...ingresos].sort((a, b) => {
+      const sorted = [...tratamientos].sort((a, b) => {
         const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
         const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
         return valueA < valueB ? 1 : -1;
       });
-      setIngresos(sorted);
+      setTratamientos(sorted);
       setOrder("ASC");
     }
   };
@@ -96,71 +98,53 @@ const Ingresos = () => {
                   <div className="d-flex">
                     <h1>Ingresos</h1>
                   </div>
-                  <div className="d-flex justify-content-end">
+                  <div className="d-flex justify-content-start">
                     <input
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscar por Trtamiento y Metodo de Pago..."
+                      placeholder="Buscar por Tratamiento, Paciente o Metodo de Pago..."
                       className="form-control m-2 w-25"
                     />
-                    <div className="col d-flex justify-content-end">
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => setModalShowCrearIngreso(true)}
-                      >
-                        Nuevo
-                      </button>
-                    </div>
                   </div>
 
                 </div>
                 <table className="table__body">
                   <thead>
                     <tr>
-                    <th>N°</th>
-                      <th onClick={() => sorting("fechaIngreso")}>Fecha</th>
-                      <th onClick={() => sorting("metodoPagoIngreso")}>Metodo Pago</th>
-                      <th onClick={() => sorting("importeIngreso")}>Importe</th>
-                      <th onClick={() => sorting("ctaTratamiento")}>Cta</th>
-                      <th onClick={() => sorting("paciente")}>Paciente</th>
-                      <th onClick={() => sorting("tratamientoIngreso")}>Tratamiento</th>
+                      <th>N°</th>
+                      <th onClick={() => sorting("fechaCobro")}>Fecha</th>
+                      <th onClick={() => sorting("metodoPago")}>Metodo Pago</th>
+                      <th onClick={() => sorting("importeAbonado")}>Importe</th>
+                      <th onClick={() => sorting("codigoTratamiento")}>Cta</th>
+                      <th onClick={() => sorting("pacienteCobro")}>Paciente</th>
+                      <th onClick={() => sorting("tratamientoCobro")}>Tratamiento</th>
                       <th>Accion</th>
+
                     </tr>
                   </thead>
 
                   <tbody>
-                    {results.map((ingreso) => (
-                      <tr key={ingreso.id}>
-                        <td> {1} </td>
-                        <td> {moment(ingreso.fechaIngreso).format("DD/MM/YY")} </td>
-                        <td> {ingreso.metodoPagoIngreso} </td>
-                        <td> {ingreso.importeIngreso} </td>
-                        <td> {ingreso.ctaTratamiento} </td>
-                        <td> {ingreso.paciente} </td>
-                        <td> {ingreso.tratamientoIngreso} </td>
-                        <td>
-                          <button
-                            variant="primary"
-                            className="btn btn-success mx-1"
-                            onClick={() => {
-                              setModalShowEditIngreso(true);
-                              setIngreso(ingreso);
-                              setIdParam(ingreso.id);
-                            }}
-                          >
-                            <i className="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <button
-                            onClick={() => {
-                              deleteIngreso(ingreso.id);
-                            }}
-                            className="btn btn-danger mx-1"
-                          >
-                            {" "}
-                            <i className="fa-solid fa-trash-can"></i>{" "}
-                          </button>
+                    {results.map((tratamiento, index) => (
+                      <tr key={tratamiento.id}>
+                        <td>{index + 1}</td>
+                        <td> {tratamiento.cobrosManuales.fechaCobro} </td>
+                        <td> {tratamiento.cobrosManuales.metodoPago} </td>
+                        <td> {tratamiento.cobrosManuales.importeAbonado} </td>
+                        <td> {tratamiento.cobrosManuales.codigoTratamiento} </td>
+                        <td> {tratamiento.cobrosManuales.pacienteCobro} </td>
+                        <td> {tratamiento.cobrosManuales.tratamientoCobro} </td>
+                        <td><button
+                          variant="primary"
+                          className="btn btn-success mx-1"
+                          onClick={() => {
+                            setModalShowEditIngreso(true);
+                            setTratamiento(tratamiento.cobrosManuales);
+                            setIdParam(tratamiento.id);
+                          }}
+                        >
+                          <i className="fa-regular fa-pen-to-square"></i>
+                        </button>
                         </td>
                       </tr>
                     ))}
@@ -172,14 +156,13 @@ const Ingresos = () => {
         )}
       </div>
 
-    
-      <CrearIngreso show={modalShowCrearIngreso} onHide={() => setModalShowCrearIngreso(false)} />
-      <EditIngreso
+
+     {/*} <EditIngreso
         id={idParam}
-        ingreso={ingreso}
+        tratamiento={tratamiento}
         show={modalShowEditIngreso}
         onHide={() => setModalShowEditIngreso(false)}
-      />
+                        />*/}
     </>
   );
 };
