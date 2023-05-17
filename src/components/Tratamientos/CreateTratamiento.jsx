@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -84,7 +84,7 @@ function CreateTratamiento(props) {
       estadosTratamientos.trim() === "" ||
       fecha.trim() === "" ||
       fechaVencimiento.trim() === "" ||
-      plazo.trim() === "" 
+      plazo.trim() === ""
     ) {
       setError("Respeta los campos obligatorios *");
       setTimeout(clearError, 2000)
@@ -118,7 +118,7 @@ function CreateTratamiento(props) {
 
   const store = async (e) => {
     e.preventDefault();
-    await addDoc(tratamientosCollection, {
+     await addDoc(tratamientosCollection, {
       codigo: codigo,
       apellidoConNombre: apellidoConNombre,
       idc: idc,
@@ -132,6 +132,13 @@ function CreateTratamiento(props) {
       fecha: fecha,
       fechaVencimiento: fechaVencimiento,
       notas: notas,
+      cobrosManuales: {
+        fechaCobro: [],
+        metodoPago: [],
+        importeAbonado: [],
+        tratamientoCobro: [],
+        codigoTratamiento: [],
+      },
     });
     clearFields();
     props.onHide();
@@ -342,7 +349,7 @@ function CreateTratamiento(props) {
                 />
               </div>
             </div>
-            <div style={{ display: "flex"}}>
+            <div style={{ display: "flex" }}>
               <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '10px' }}>
                 Agregar
               </button>

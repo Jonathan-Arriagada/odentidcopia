@@ -114,7 +114,7 @@ function Tarifario() {
                       className="form-control m-2 w-25"
                     />
                     <div className="d-flex justify-content-end">
-                      {userType === '"admin"' ? (
+                      {userType === '"RmTnUw1iPj5q"' ? (
                         <button
                           variant="primary"
                           className="btn-blue m-2"

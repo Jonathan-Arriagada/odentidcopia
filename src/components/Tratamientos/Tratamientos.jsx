@@ -1,12 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDoc, updateDoc, arrayUnion, addDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
@@ -26,8 +19,8 @@ function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShowTratamiento, setModalShowTratamiento] = useState(false);
-  const [modalShowEditTratamiento, setModalShowEditTratamiento] =
-    useState(false);
+  const [modalShowEditTratamiento, setModalShowEditTratamiento] = useState(false);
+  const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
   const [order, setOrder] = useState("ASC");
   const [tratamiento, setTratamiento] = useState([]);
   const [idParam, setIdParam] = useState("");
@@ -37,7 +30,7 @@ function Tratamientos() {
     useState(false);
   const [modalShowEditPago, setModalShowEditPago] = useState(false);
   const [estadoTratamiento, setEstadoTratamiento] = useState([])
-  const [estadoPago,setEstadoPago] = useState([])
+  const [estadoPago, setEstadoPago] = useState([])
 
   const tratamientosCollectiona = collection(db, "tratamientos");
   const tratamientosCollection = useRef(
@@ -62,6 +55,16 @@ function Tratamientos() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
   const [taparFiltro, setTaparFiltro] = useState(false);
+  const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
+
+  const [fechaCobro, setFechaCobro] = useState("");
+  const [metodoPagoCobro, setMetodoPagoCobro] = useState("");
+  const [importeCobro, setImporteCobro] = useState("");
+  const [idParaCobro, setIdParaCobro] = useState("");
+
+  const [apellidoConNombreTrataParaCobroAIngresos, setPacienteParaCobroAIngresos] = useState("");
+  const [codTrataParaCobroAIngresos, setCodTrataParaCobroAIngresos] = useState("");
+  const [nombreTrataParaCobroAIngresos, setNombreTrataParaCobroAIngresos] = useState("");
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
   const estadosTratamientoCollection = useRef(query(estadosTratamientoCollectiona));
@@ -169,8 +172,8 @@ function Tratamientos() {
     );
     const type = localStorage.getItem("rol");
     setUserType(type);
-    return () => {unsubscribe(); unsubscribeEstados(); unsubscribeEstadosPago()};
-  }, [getTratamientos,getEstadoTratamientos,getEstadoPago]);
+    return () => { unsubscribe(); unsubscribeEstados(); unsubscribeEstadosPago() };
+  }, [getTratamientos, getEstadoTratamientos, getEstadoPago]);
 
 
   const deletetratamiento = async (id) => {
@@ -326,6 +329,60 @@ function Tratamientos() {
       const fechaFin = moment().format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
+  };
+
+  const clearFieldsCobro = () => {
+    setFechaCobro("");
+    setMetodoPagoCobro("");
+    setImporteCobro("");
+    setIdParaCobro("");
+  };
+
+  const guardarCobro = async (e, id) => {
+    e.preventDefault();
+    try {
+      const tratamientoRef = doc(db, "tratamientos", id);
+      const tratamientoDoc = await getDoc(tratamientoRef)
+      const tratamientoData = tratamientoDoc.data();
+
+      if (tratamientoDoc.exists()) {
+        await updateDoc(tratamientoRef, {
+          "cobrosManuales.fechaCobro": arrayUnion(fechaCobro),
+          "cobrosManuales.metodoPago": arrayUnion(metodoPagoCobro),
+          "cobrosManuales.importeAbonado": arrayUnion(importeCobro),
+          "cobrosManuales.tratamientoCobro": arrayUnion(tratamientoData.tarifasTratamientos),
+          "cobrosManuales.codigoTratamiento": arrayUnion(tratamientoData.cta),
+        });
+      }
+      clearFieldsCobro("")
+      setMostrarModalAgregarCobro([false, ""]);
+    } catch {
+      window.alert("Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde")
+    }
+  }
+
+  const enviarCobroAIngreso = async (e,fecha,importe,metodoPago) => {
+    e.preventDefault();
+    try {
+      const ingresosCollection = collection(db, "ingresos");
+      await addDoc(ingresosCollection, {
+        fechaIngreso: fecha,
+        metodoPagoIngreso: metodoPago,
+        importeIngreso: importe,
+        tratamientoIngreso: nombreTrataParaCobroAIngresos,
+        ctaTratamiento: codTrataParaCobroAIngresos,
+        paciente: apellidoConNombreTrataParaCobroAIngresos,
+      });
+      window.alert("Cobro Agregado. Exitosamente!")
+    } catch {
+      window.alert("Hubo inconvenientes al tratar de agregar el Ingreso. Intentelo más tarde")
+    }
+    clearFieldsCobrosAIngresos()
+  }
+
+  const clearFieldsCobrosAIngresos = () => {
+    setCodTrataParaCobroAIngresos("");
+    setCodTrataParaCobroAIngresos("");
   };
 
   return (
@@ -824,9 +881,13 @@ function Tratamientos() {
                             <Dropdown.Menu>
                               {mostrarVer && (
                                 <Dropdown.Item
-                                  onClick={() =>
-                                    ocultarTabla(tratamiento.codigo)
-                                  }
+                                  onClick={() => {
+                                    ocultarTabla(tratamiento.codigo);
+                                    setIdParaCobro(tratamiento.id);
+                                    setCodTrataParaCobroAIngresos(tratamiento.cta);
+                                    setNombreTrataParaCobroAIngresos(tratamiento.tarifasTratamientos);
+                                    setPacienteParaCobroAIngresos(tratamiento.apellidoConNombre);
+                                  }}
                                 >
                                   <i className="fa-regular fa-eye"></i> Ver
                                 </Dropdown.Item>
@@ -848,6 +909,14 @@ function Tratamientos() {
                                 Editar
                               </Dropdown.Item>
                               <Dropdown.Item
+                                onClick={() => {
+                                  setModalShowVerNotas([true, tratamiento.notas]);
+                                }}
+                              >
+                                <i className="fa-regular fa-comment"></i>{" "}
+                                Ver Notas
+                              </Dropdown.Item>
+                              <Dropdown.Item
                                 onClick={() =>
                                   deletetratamiento(tratamiento.id)
                                 }
@@ -863,75 +932,133 @@ function Tratamientos() {
                   </tbody>
                 </table>
 
-                {mostrarTabla && (
-                  <table className="table__body" style={{ marginTop: "50px" }}>
-                    <thead>
-                      <tr>
-                        <th>Precio</th>
-                        <th>Saldo</th>
-                        <th>Plazo</th>
-                        <th>Cuota</th>
-                        <th>Resta</th>
-                        <th>Fecha Vto</th>
-                        <th>Estado Pago</th>
-                        <th></th>
-                      </tr>
-                    </thead>
+                {modalShowVerNotas[0] && (
+                  <Modal show={modalShowVerNotas[0]} size="lg" aria-labelledby="contained-modal-title-vcenter" centered
+                    onHide={() => setModalShowVerNotas([false, ""])}>
+                    <Modal.Header closeButton onClick={() => setModalShowVerNotas([false, ""])}>
+                      <Modal.Title>Comentarios</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <div className="container">
+                        <div className="col">
+                          <form>
+                            <div className="row">
+                              <div className="col mb-6">
+                                <p>{modalShowVerNotas[1]}</p>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </Modal.Body>
+                  </Modal>)}
 
-                    <tbody>
-                      {results.map((tratamiento) => (
-                        <tr key={tratamiento.id}>
-                          <td>{tratamiento.precio}</td>
-                          <td>
-                            {tratamiento.plazo === 0
-                              ? 0 * (tratamiento.plazo - tratamiento.cuota)
-                              : (tratamiento.precio / tratamiento.plazo) *
-                                (tratamiento.plazo - tratamiento.cuota)}
-                          </td>
-                          <td>{tratamiento.plazo}</td>
-                          <td>{tratamiento.cuota}</td>
-                          <td>{tratamiento.plazo - tratamiento.cuota}</td>
-                          <td>
-                            {moment(tratamiento.fechaVencimiento).format(
-                              "DD/MM/YY"
-                            )}
-                          </td>
-                          <td style={{ display: "flex" }}>
-                            <span style={{ marginRight: "5px" }}>
-                              {tratamiento.estadoPago}
-                            </span>
-                            <ListaSeleccionEstadoPago
-                              tratamientoId={tratamiento.id}
-                            />
-                          </td>
+                {mostrarTabla && (
+                  <div style={{ marginTop: "30px" }}>
+                    <h4 style={{ textAlign: "left" }}>Pagos - Gestión Auto</h4>
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th>Precio</th>
+                          <th>Saldo</th>
+                          <th>Plazo</th>
+                          <th>Cuota</th>
+                          <th>Resta</th>
+                          <th>Fecha Vto</th>
+                          <th>Estado Pago</th>
+                          <th></th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+
+                      <tbody>
+                        {results.map((tratamiento) => (
+                          <tr key={tratamiento.id}>
+                            <td>{tratamiento.precio}</td>
+                            <td>
+                              {tratamiento.plazo === 0
+                                ? 0 * (tratamiento.plazo - tratamiento.cuota)
+                                : (tratamiento.precio / tratamiento.plazo) *
+                                (tratamiento.plazo - tratamiento.cuota)}
+                            </td>
+                            <td>{tratamiento.plazo}</td>
+                            <td>{tratamiento.cuota}</td>
+                            <td>{tratamiento.plazo - tratamiento.cuota}</td>
+                            <td>
+                              {moment(tratamiento.fechaVencimiento).format(
+                                "DD/MM/YY"
+                              )}
+                            </td>
+                            <td style={{ display: "flex" }}>
+                              <span style={{ marginRight: "5px" }}>
+                                {tratamiento.estadoPago}
+                              </span>
+                              <ListaSeleccionEstadoPago
+                                tratamientoId={tratamiento.id}
+                              />
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
 
                 {mostrarTabla && (
-                  <table
-                    className="table__body"
-                    style={{
-                      marginTop: "50px",
-                      width: "80%",
-                      border: "1px solid lightgray",
-                    }}
-                  >
-                    <thead>
-                      <tr>
-                        <th>Comentarios</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {results.map((tratamiento) => (
-                        <tr key={tratamiento.id}>
-                          <td>{tratamiento.notas}</td>
+                  <div style={{ marginTop: "30px" }}>
+                    <h4 style={{ textAlign: "left" }}>Cobros - Gestión Manual</h4>
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th>Fecha</th>
+                          <th>Metodo Pago</th>
+                          <th>Importe abonado</th>
+                          <th>Resta importe</th>
+                          <th>Accion</th>
+                          <th>
+                            <button
+                              className="btn btn-secondary mx-1 btn-md"
+                              onClick={() => {
+                                setMostrarModalAgregarCobro([true, idParaCobro])
+                              }}
+                            >
+                              <i className="fa-solid fa-circle-plus"></i>
+                            </button>
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+
+                      <tbody>
+                        {results.map((tratamiento) => (
+                          tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
+                            const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
+                            const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
+                            const metodoPago = tratamiento.cobrosManuales.metodoPago[index] || "";
+                            const resta = importe === "" ? "" : tratamiento.precio - importe;
+
+                            return (
+                              <tr key={index}>
+                                <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
+                                <td>{metodoPago.toString()}</td>
+                                <td>{importe.toString()}</td>
+                                <td>{resta.toString()}</td>
+                                <td>
+                                  {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (<button
+                                    variant="primary"
+                                    className="btn btn-success mx-1"
+                                    onClick={(e) => {
+                                      enviarCobroAIngreso(e,fecha,importe,metodoPago)
+                                    }}
+                                  >
+                                    Cobrar <i className="fa-solid fa-cart-shopping"></i>
+                                  </button>)}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             </div>
@@ -956,6 +1083,67 @@ function Tratamientos() {
         show={modalShowEditPago}
         onHide={() => setModalShowEditPago(false)}
       />
+      {mostrarModalAgregarCobro[0] && (
+        <Modal show={mostrarModalAgregarCobro[0]} size="lg" aria-labelledby="contained-modal-title-vcenter" centered >
+          <Modal.Header closeButton onClick={() => { setMostrarModalAgregarCobro([false, ""]); clearFieldsCobro() }}>
+            <Modal.Title>Agregar Cobro</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="container">
+              <div className="col">
+                <form>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Fecha Cobro</label>
+                      <input
+                        onChange={(e) => setFechaCobro(e.target.value)}
+                        type="date"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Metodo Pago Cobro</label>
+                      <input
+                        onChange={(e) => setMetodoPagoCobro(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Importe Cobro</label>
+                      <input
+                        onChange={(e) => setImporteCobro(e.target.value)}
+                        type="number"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <div style={{ display: "flex" }}>
+              <button
+                type="submit"
+                onClick={(e) => { guardarCobro(e, mostrarModalAgregarCobro[1]) }}
+                className="btn btn-primary"
+              >
+                Guardar Cobro
+              </button>
+            </div>
+          </Modal.Footer>
+        </Modal>)}
     </>
   );
 }
