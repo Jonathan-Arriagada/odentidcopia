@@ -1,85 +1,133 @@
 import { useContext, useState } from 'react';
 import './Login.css'
 import logo from '../img/logo-odentid.png'
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebaseConfig/firebase';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { db } from '../firebaseConfig/firebase';
 import { query, collection, where, getDocs } from 'firebase/firestore';
+import { Modal } from "react-bootstrap";
+
 
 const Login = () => {
-    const [email,setEmail] = useState("")
-    const [password,setPassword] = useState("")
+    const [email, setEmail] = useState("")
+    const [emailReseteo, setEmailReseteo] = useState("")
+    const [password, setPassword] = useState("")
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState(false);
     const navigate = useNavigate()
+    const [mostrarModal, setMostrarModal] = useState(false);
 
-    const {dispatch} = useContext(AuthContext)
+    const { dispatch } = useContext(AuthContext)
 
     const submit = (e) => {
         e.preventDefault();
-        signInWithEmailAndPassword(auth,email,password)
-        .then((userCredential) => {
-            const user = userCredential.user
-            dispatch({type:"LOGIN", payload:user})
-            navigate("/agenda")
-        })
-        .catch((error) => {
-            setError(true)
-            const errorMessage = error.message;
-            setErrorMsg(errorMessage);
-        })
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user
+                dispatch({ type: "LOGIN", payload: user })
+                navigate("/agenda")
+            })
+            .catch((error) => {
+                setError(true)
+                const errorMessage = error.message;
+                setErrorMsg(errorMessage);
+            })
         const q = query(collection(db, "user"), where("correo", "==", email));
         getDocs(q).then((querySnapshot) => {
             if (querySnapshot.docs.length > 0) {
-              const doc = querySnapshot.docs[0];
-              console.log(doc.data().rol);
-              localStorage.setItem('rol', JSON.stringify(doc.data().rol));
+                const doc = querySnapshot.docs[0];
+                localStorage.setItem('rol', JSON.stringify(doc.data().rol));
             } else {
-              console.log("No se encontraron documentos");
+                console.log("No se encontraron documentos");
             }
-          }).catch((error) => {
+        }).catch((error) => {
             console.log("Error al obtener los documentos: ", error);
-          });
+        });
     }
 
-    /*OLVIDE MI CLAVE
-    import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+    const pedirReseteoClave = (e) => {
+        e.preventDefault();
+        setMostrarModal(false)
+        sendPasswordResetEmail(auth, emailReseteo)
+            .then(() => {
+                window.alert("Mail con instrucciones para reestablecer clave ENVIADO!")
+                setEmailReseteo("")
+            })
+            .catch((error) => {
+                window.alert(`Hubo un error al enviar el correo. Intente de nuevo más tarde! ${error.message}`);
+            })
+    }
 
-    const auth = getAuth();
-    sendPasswordResetEmail(auth, email)
-    .then(() => {
-        // Password reset email sent!
-        // ..
-    })
-    .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-  });*/
+    const handleModal = (e) => {
+        e.preventDefault();
+        setMostrarModal(true)
+    }
 
     return (
-        <div className='login-page'>
+        <>
+            <div className='login-page'>
 
-            <img className="logo" src={logo} alt="Odentid"/>
+                <img className="logo" src={logo} alt="Odentid" />
 
-            <form onSubmit={submit}>
-                
-                <div className="email">
-                    <input onChange={(e) => setEmail(e.target.value)} type="email" id="email" required/>
-                    <label htmlFor="email">Email</label>
-                </div>
-                <div className="password">
-                    <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" required/>
-                    <label htmlFor="password">Contraseña</label>
-                </div>
-                {error && <span className="error">Email o Contraseña incorrectos.</span>}
-                {error && <span className="error">{errorMsg}</span>}
-                <button type="submit">Iniciar Sesión</button>
-                <p>Olvidé mi Clave</p>
-            </form>
-        </div>
+                <form>
+
+                    <div className="email">
+                        <input onChange={(e) => setEmail(e.target.value)} type="email" id="email" />
+                        <label htmlFor="email">Email</label>
+                    </div>
+                    <div className="password">
+                        <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" />
+                        <label htmlFor="password">Contraseña</label>
+                    </div>
+                    {error && <span className="error">Email o Contraseña incorrectos.</span>}
+                    {error && <span className="error">{errorMsg}</span>}
+                    <button type="submit" onClick={submit}>Iniciar Sesión</button>
+                    <button type="button" onClick={handleModal} style={{display:"inline-block", width:"150px", background: "white", color: "black", marginLeft: "50px", padding: "0", }}>
+                        <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>Olvidé mi Clave</span>
+                    </button>
+                </form>
+            </div>
+
+            {mostrarModal && (
+                <Modal show={mostrarModal} size="lg" aria-labelledby="contained-modal-title-vcenter" centered >
+                    <Modal.Header>
+                        <Modal.Title>Reestablecer Clave</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="container">
+                            <div className="col">
+                                <form>
+                                    <div className="row">
+                                        <div className="col mb-6">
+                                            <label className="form-label">Ingrese su correo</label>
+                                            <input
+                                                onChange={(e) => setEmailReseteo(e.target.value)}
+                                                type="email"
+                                                className="form-control"
+                                                autoComplete="off"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div style={{ display: "flex" }}>
+                            <button
+                                type="submit"
+                                onClick={(e) => { pedirReseteoClave(e); setMostrarModal(false); }}
+                                className="btn btn-primary"
+                            >
+                                Enviar Correo
+                            </button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>)}
+        </>
     );
 };
 

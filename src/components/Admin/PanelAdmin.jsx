@@ -111,7 +111,7 @@ function PanelAdmin() {
                       <th onClick={() => sorting("apellidoConNombre")}>Apellido y Nombres</th>
                       <th onClick={() => sorting("correo")}>Email</th>
                       <th onClick={() => sorting("telefono")}>Telefono</th>
-                      <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
+                      <th onClick={() => sorting("fechaAlta")}>Fecha Alta</th>
                     </tr>
                   </thead>
 

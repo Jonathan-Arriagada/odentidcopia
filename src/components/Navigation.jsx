@@ -1,7 +1,7 @@
 import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
-import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaFileMedical, FaAngleLeft, FaDoorClosed, FaUserTie, FaUser, FaBookMedical} from 'react-icons/fa';
+import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt, FaStethoscope} from 'react-icons/fa';
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
@@ -29,7 +29,7 @@ const Navigation = () => {
             </div>
             <header>
                 <div className="profile">
-                    <img src={profile} alt="profile" className="profile-img" />
+                    <img src={currentUser.photoURL || profile } alt="profile" className="profile-img" />
                 </div>
                 <span>Odentid</span>
                 <span>{currentUser.email}</span>
@@ -39,9 +39,10 @@ const Navigation = () => {
             <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
             <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link>
             <Link to="/tarifas" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
-            <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaFileMedical} /> </Link>
             <Link to="/history" className="text-decoration-none link-light"><Nav title="Historial Clinico" Icon={FaBookMedical} /></Link>
-            <Link to="/" className="text-decoration-none link-light" onClick={logout}><Nav title="Logout" Icon={FaDoorClosed} /></Link>
+            <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /> </Link>
+            <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Ingresos" Icon={FaDollarSign} /> </Link>
+            <Link to="/" className="text-decoration-none link-light" onClick={logout}><Nav title="Logout" Icon={FaSignOutAlt} /></Link>
 
         </div>
     );
