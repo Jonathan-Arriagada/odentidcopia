@@ -68,7 +68,7 @@ function Citas() {
     setEstados(estadosArray);
   }, []);
 
-  
+
 
   useEffect(() => {
     const unsubscribeCitas = onSnapshot(
@@ -86,7 +86,7 @@ function Citas() {
       getEstados
     );
     const type = localStorage.getItem("rol");
-    setUserType(type); 
+    setUserType(type);
 
     return () => {
       unsubscribeCitas();
@@ -94,9 +94,9 @@ function Citas() {
     };
   }, [getCitas, getEstados]);
 
-    const buscarEstilos = (estadoParam) => {
-      const colorEncontrado = estados.find((e) => e.name === estadoParam);
-      if(colorEncontrado) {
+  const buscarEstilos = (estadoParam) => {
+    const colorEncontrado = estados.find((e) => e.name === estadoParam);
+    if (colorEncontrado) {
       switch (colorEncontrado.color) {
         case "yellow":
           return { backgroundColor: "#F7D33B" };
@@ -113,10 +113,10 @@ function Citas() {
         case "grey":
           return { backgroundColor: "#A0AEC0" };
         default:
-          return {};
-      }
-    };
-}
+          return {};
+      }
+    };
+  }
 
 
   function funcMostrarAjustes() {
@@ -156,19 +156,19 @@ function Citas() {
   var results = !search
     ? citas
     : typeof search === "object"
-    ? citas.filter((dato) => {
+      ? citas.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       })
-    : search.toString().length === 10 &&
-      search.charAt(4) === "-" &&
-      search.charAt(7) === "-"
-    ? citas.filter((dato) => dato.fecha === search.toString())
-    : citas.filter(
-        (dato) =>
-          dato.apellidoConNombre.toLowerCase().includes(search) ||
-          dato.idc.toString().includes(search.toString())
-      );
+      : search.toString().length === 10 &&
+        search.charAt(4) === "-" &&
+        search.charAt(7) === "-"
+        ? citas.filter((dato) => dato.fecha === search.toString())
+        : citas.filter(
+          (dato) =>
+            dato.apellidoConNombre.toLowerCase().includes(search) ||
+            dato.idc.toString().includes(search.toString())
+        );
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -209,7 +209,7 @@ function Citas() {
                   <div className="d-flex justify-content-between">
                     <div
                       className="d-flex justify-content-center align-items-center"
-                      style={{ maxHeight: "40px" }}
+                      style={{ maxHeight: "40px", marginLeft: "10px" }}
                     >
                       <h1>Agenda</h1>
                       {userType === '"RmTnUw1iPj5q"' ? (
@@ -229,11 +229,11 @@ function Citas() {
 
                   <div className="d-flex justify-content-between">
                     {taparFiltro && (
-                      <input 
-                      className="form-control m-2 w-25"
-                      value="<-FILTRO ENTRE FECHAS APLICADO->"
-                      style={{textAlign:"center"}}
-                      disabled
+                      <input
+                        className="form-control m-2 w-25"
+                        value="<-FILTRO ENTRE FECHAS APLICADO->"
+                        style={{ textAlign: "center" }}
+                        disabled
                       >
                       </input>
                     )}
@@ -244,13 +244,14 @@ function Citas() {
                       placeholder="Buscar por Apellido, Nombre o DNI..."
                       className="form-control m-2 w-25"
                       style={{
-                        display: taparFiltro ? "none" : "block",   }}
+                        display: taparFiltro ? "none" : "block",
+                      }}
                     />
 
                     <button
                       variant="primary"
                       className="btn btn-success mx-1 btn-md"
-                      style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center",alignSelf:"center", height:"45px" }}
+                      style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center", alignSelf: "center", height: "45px" }}
                       onClick={() => { setMostrarBotonesFechas(!mostrarBotonesFechas); setSearch(""); setTaparFiltro(false) }}
                     >
                       <i
@@ -258,14 +259,14 @@ function Citas() {
                         style={{ transform: "scale(1.4)" }}
                       ></i>
                     </button>
-                    {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems:"center"}}>
-                    <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {filtroFecha('Dia'); setTaparFiltro(false)}}>Dia</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {filtroFecha('Semana'); setTaparFiltro(true)}}>Semana</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {filtroFecha('Mes'); setTaparFiltro(true)}}>Mes</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => {setModalSeleccionFechaShow(true)}}>Seleccionar</button>
+                    {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
+                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
                     </div>)}
 
-                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate("");setTaparFiltro(false); setSearch("");setMostrarBotonesFechas(false) }}>
+                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); setMostrarBotonesFechas(false) }}>
                       <Modal.Header closeButton onClick={() => {
                         setModalSeleccionFechaShow(false);
                         setSelectedDate("");
@@ -293,7 +294,7 @@ function Citas() {
                         />
                       </Modal.Body>
                       <Modal.Footer>
-                      <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false) }}>
+                        <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false) }}>
                           Buscar Fecha
                         </Button>
                       </Modal.Footer>

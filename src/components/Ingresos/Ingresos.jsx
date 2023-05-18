@@ -6,36 +6,32 @@ import Navigation from "../Navigation";
 import "../Pacientes/Show.css"
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
-import EditIngreso from "./EditIngreso";
+import moment from "moment";
+import Calendar from "react-calendar";
+import { Modal, Button } from "react-bootstrap";
 
 
 const Ingresos = () => {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
-  const [modalShowEditIngreso, setModalShowEditIngreso] = useState(false);
   const [order, setOrder] = useState("ASC");
-  const [tratamiento, setTratamiento] = useState([]);
-  const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [totalIngresos, setTotalIngresos] = useState(0);
+  const [cantIngresos, setCantIngresos] = useState(0);
+
+  const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
+  const [taparFiltro, setTaparFiltro] = useState(false);
 
   const tratamientosCollectionRef = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectionRef));
 
   const getTratamientos = useCallback((snapshot) => {
-    const tratamientosArray = snapshot.docs.map((doc) => {
-      const { cobrosManuales } = doc.data();
-      return {
-        cobrosManuales,
-        id: doc.id,
-      };
-    }).filter((tratamiento) => tratamiento.cobrosManuales.fechaCobro.length > 0 && tratamiento.cobrosManuales.estadoCobro.toString() === "COBRADO"); 
-
-    tratamientosArray.sort((a, b) => {
-      const fechaCobroA = a.cobrosManuales.fechaCobro[0];
-      const fechaCobroB = b.cobrosManuales.fechaCobro[0];
-      return fechaCobroA.localeCompare(fechaCobroB);
-    });
-
+    const tratamientosArray = snapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
     setTratamientos(tratamientosArray);
     setIsLoading(false);
   }, []);
@@ -45,23 +41,146 @@ const Ingresos = () => {
     return unsubscribe;
   }, [getTratamientos]);
 
-
   const searcher = (e) => {
-    setSearch(e.target.value);
+    if (typeof e === "string") {
+      setSearch(e);
+    } else {
+      setSearch(e.target.value);
+    }
   };
 
-  let results = [];
-
-  if (!search) {
+  var results;
+  if (!search || search === "") {
     results = tratamientos;
   } else {
-    results = tratamientos.filter(
-      (dato) =>
-        dato.cobrosManuales.pacienteCobro.toString().toLowerCase().includes(search.toLowerCase()) ||
-        dato.cobrosManuales.tratamientoCobro.toString().toLowerCase().includes(search.toLowerCase()) ||
-        dato.cobrosManuales.metodoPago.toString().toLowerCase().includes(search.toLowerCase()) 
-    );
+    if (typeof search === "object") {
+      results = tratamientos.map((tratamiento) => {
+        const {
+          fechaCobro,
+          importeAbonado,
+          metodoPago,
+          codigoTratamiento,
+          pacienteCobro,
+          tratamientoCobro,
+          estadoCobro,
+        } = tratamiento.cobrosManuales;
+
+        const filteredFechaCobro = [];
+        const filteredImporteAbonado = [];
+        const filteredMetodoPago = [];
+        const filteredCodigoTratamiento = [];
+        const filteredPacienteCobro = [];
+        const filteredTratamientoCobro = [];
+        const filteredEstadoCobro = [];
+
+        for (let i = 0; i < fechaCobro.length; i++) {
+          const fecha = fechaCobro[i];
+          const fechaz = moment(fecha).format("YYYY-MM-DD");
+          if (fechaz >= search.fechaInicio && fechaz <= search.fechaFin) {
+            filteredFechaCobro.push(fecha);
+            filteredImporteAbonado.push(importeAbonado[i]);
+            filteredMetodoPago.push(metodoPago[i]);
+            filteredCodigoTratamiento.push(codigoTratamiento[i]);
+            filteredPacienteCobro.push(pacienteCobro[i]);
+            filteredTratamientoCobro.push(tratamientoCobro[i]);
+            filteredEstadoCobro.push(estadoCobro[i]);
+          }
+        }
+
+        return {
+          ...tratamiento,
+          cobrosManuales: {
+            fechaCobro: filteredFechaCobro,
+            importeAbonado: filteredImporteAbonado,
+            metodoPago: filteredMetodoPago,
+            codigoTratamiento: filteredCodigoTratamiento,
+            pacienteCobro: filteredPacienteCobro,
+            tratamientoCobro: filteredTratamientoCobro,
+            estadoCobro: filteredEstadoCobro,
+          },
+        };
+      });
+    } else {
+      if (search.toString().length === 10 && search.charAt(4) === "-" && search.charAt(7) === "-") {
+        results = tratamientos.map((tratamiento) => {
+          const {
+            fechaCobro,
+            importeAbonado,
+            metodoPago,
+            codigoTratamiento,
+            pacienteCobro,
+            tratamientoCobro,
+            estadoCobro,
+          } = tratamiento.cobrosManuales;
+
+          const filteredFechaCobro = [];
+          const filteredImporteAbonado = [];
+          const filteredMetodoPago = [];
+          const filteredCodigoTratamiento = [];
+          const filteredPacienteCobro = [];
+          const filteredTratamientoCobro = [];
+          const filteredEstadoCobro = [];
+
+          for (let i = 0; i < fechaCobro.length; i++) {
+            const fecha = fechaCobro[i];
+            const fechaz = moment(fecha).format("YYYY-MM-DD");
+            if (fechaz === search) {
+              filteredFechaCobro.push(fecha);
+              filteredImporteAbonado.push(importeAbonado[i]);
+              filteredMetodoPago.push(metodoPago[i]);
+              filteredCodigoTratamiento.push(codigoTratamiento[i]);
+              filteredPacienteCobro.push(pacienteCobro[i]);
+              filteredTratamientoCobro.push(tratamientoCobro[i]);
+              filteredEstadoCobro.push(estadoCobro[i]);
+            }
+          }
+
+          return {
+            ...tratamiento,
+            cobrosManuales: {
+              fechaCobro: filteredFechaCobro,
+              importeAbonado: filteredImporteAbonado,
+              metodoPago: filteredMetodoPago,
+              codigoTratamiento: filteredCodigoTratamiento,
+              pacienteCobro: filteredPacienteCobro,
+              tratamientoCobro: filteredTratamientoCobro,
+              estadoCobro: filteredEstadoCobro,
+            },
+          };
+        });
+      } else {
+        results = tratamientos.filter(
+          (dato) =>
+            dato.cobrosManuales.pacienteCobro?.toString().toLowerCase().includes(search.toLowerCase()) ||
+            dato.cobrosManuales.tratamientoCobro?.toString().toLowerCase().includes(search.toLowerCase()) ||
+            dato.cobrosManuales.metodoPago?.toString().toLowerCase().includes(search.toLowerCase())
+        );
+      }
+    }
   }
+
+  useEffect(() => {
+    let total = 0;
+    let cantidad = 0;
+  
+    results.forEach((tratamiento) => {
+      const importes = tratamiento.cobrosManuales.importeAbonado;
+      const estadosCobro = tratamiento.cobrosManuales.estadoCobro;
+  
+      importes.forEach((importe, index) => {
+        const estadoCobro = estadosCobro[index];
+  
+        if (estadoCobro === "COBRADO") {
+          total += Number(importe);
+          cantidad++;
+        }
+      });
+    });
+  
+    setTotalIngresos(total);
+    setCantIngresos(cantidad);
+  }, [results]);
+
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -84,6 +203,22 @@ const Ingresos = () => {
     }
   };
 
+  const filtroFecha = (param) => {
+    if (param === "Dia") {
+      setSearch(moment().format("YYYY-MM-DD"));
+    }
+    if (param === "Semana") {
+      const fechaInicio = moment().subtract(7, "days").format("YYYY-MM-DD");
+      const fechaFin = moment().format("YYYY-MM-DD");
+      setSearch({ fechaInicio, fechaFin });
+    }
+    if (param === "Mes") {
+      const fechaInicio = moment().subtract(30, "days").format("YYYY-MM-DD");
+      const fechaFin = moment().format("YYYY-MM-DD");
+      setSearch({ fechaInicio, fechaFin });
+    }
+  };
+
   return (
     <>
       <div className="mainpage">
@@ -92,62 +227,224 @@ const Ingresos = () => {
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
           <div className="container m-2 mw-100">
-            <div className="row">
-              <div className="col">
+            <div className="col">
+              <div className="row">
                 <div className="d-grid gap-2">
                   <div className="d-flex">
                     <h1>Ingresos</h1>
                   </div>
-                  <div className="d-flex justify-content-start">
+                  <div className="d-flex justify-content-between">
+                    {taparFiltro && (
+                      <input
+                        className="form-control m-2 w-25"
+                        value="<-FILTRO ENTRE FECHAS APLICADO->"
+                        style={{ textAlign: "center" }}
+                        disabled
+                      ></input>
+                    )}
                     <input
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscar por Tratamiento, Paciente o Metodo de Pago..."
+                      placeholder="Buscar por Tratamiento, Paciente o Metodo Pago..."
                       className="form-control m-2 w-25"
+                      style={{
+                        display: taparFiltro ? "none" : "block",
+                      }}
                     />
-                  </div>
+                    <button
+                      variant="primary"
+                      className="btn btn-success mx-1 btn-md"
+                      style={{
+                        borderRadius: "12px",
+                        justifyContent: "center",
+                        verticalAlign: "center",
+                        alignSelf: "center",
+                        height: "45px",
+                      }}
+                      onClick={() => {
+                        setMostrarBotonesFechas(!mostrarBotonesFechas);
+                        setSearch("");
+                        setTaparFiltro(false);
+                      }}
+                    >
+                      <i
+                        className="fa-regular fa-calendar-check"
+                        style={{ transform: "scale(1.4)" }}
+                      ></i>
+                    </button>
+                    {mostrarBotonesFechas && (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          verticalAlign: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <button
+                          style={{
+                            borderRadius: "7px",
+                            margin: "1px",
+                            height: "38px",
+                          }}
+                          className="btn btn-outline-dark"
+                          onClick={() => {
+                            filtroFecha("Dia");
+                            setTaparFiltro(false);
+                          }}
+                        >
+                          Dia
+                        </button>
+                        <button
+                          style={{
+                            borderRadius: "7px",
+                            margin: "1px",
+                            height: "38px",
+                          }}
+                          className="btn btn-outline-dark"
+                          onClick={() => {
+                            filtroFecha("Semana");
+                            setTaparFiltro(true);
+                          }}
+                        >
+                          Semana
+                        </button>
+                        <button
+                          style={{
+                            borderRadius: "7px",
+                            margin: "1px",
+                            height: "38px",
+                          }}
+                          className="btn btn-outline-dark"
+                          onClick={() => {
+                            filtroFecha("Mes");
+                            setTaparFiltro(true);
+                          }}
+                        >
+                          Mes
+                        </button>
+                        <button
+                          style={{
+                            borderRadius: "7px",
+                            margin: "1px",
+                            height: "38px",
+                          }}
+                          className="btn btn-outline-dark"
+                          onClick={() => {
+                            setModalSeleccionFechaShow(true);
+                          }}
+                        >
+                          Seleccionar
+                        </button>
+                      </div>
+                    )}
 
+                    <Modal
+                      show={modalSeleccionFechaShow}
+                      onHide={() => {
+                        setModalSeleccionFechaShow(false);
+                        setSelectedDate("");
+                        setTaparFiltro(false);
+                        setSearch("");
+                        setMostrarBotonesFechas(false);
+                      }}
+                    >
+                      <Modal.Header
+                        closeButton
+                        onClick={() => {
+                          setModalSeleccionFechaShow(false);
+                          setSelectedDate("");
+                          setTaparFiltro(false);
+                          setSearch("");
+                          setMostrarBotonesFechas(false);
+                        }}
+                      >
+                        <Modal.Title>
+                          Seleccione una fecha para filtrar:
+                        </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Calendar
+                          defaultValue={moment().format("YYYY-MM-DD")}
+                          onChange={(date) => {
+                            const formattedDate =
+                              moment(date).format("YYYY-MM-DD");
+                            setSelectedDate(formattedDate);
+                          }}
+                          value={selectedDate}
+                        />
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            setSearch(selectedDate);
+                            setTaparFiltro(false);
+                            setModalSeleccionFechaShow(false);
+                            setMostrarBotonesFechas(false);
+                          }}
+                        >
+                          Buscar Fecha
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                    <div className="col d-flex justify-content-end">
+                      <div className="d-flex flex-column">
+                        <h5>Cant Ingresos: {cantIngresos} </h5>
+                        <h5>Total Ingresos: {totalIngresos}</h5>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <div className="row">
                 <table className="table__body">
                   <thead>
                     <tr>
-                      <th>N°</th>
                       <th onClick={() => sorting("fechaCobro")}>Fecha</th>
                       <th onClick={() => sorting("metodoPago")}>Metodo Pago</th>
                       <th onClick={() => sorting("importeAbonado")}>Importe</th>
                       <th onClick={() => sorting("codigoTratamiento")}>Cta</th>
                       <th onClick={() => sorting("pacienteCobro")}>Paciente</th>
                       <th onClick={() => sorting("tratamientoCobro")}>Tratamiento</th>
-                      <th>Accion</th>
 
                     </tr>
                   </thead>
 
                   <tbody>
-                    {results.map((tratamiento, index) => (
-                      <tr key={tratamiento.id}>
-                        <td>{index + 1}</td>
-                        <td> {tratamiento.cobrosManuales.fechaCobro} </td>
-                        <td> {tratamiento.cobrosManuales.metodoPago} </td>
-                        <td> {tratamiento.cobrosManuales.importeAbonado} </td>
-                        <td> {tratamiento.cobrosManuales.codigoTratamiento} </td>
-                        <td> {tratamiento.cobrosManuales.pacienteCobro} </td>
-                        <td> {tratamiento.cobrosManuales.tratamientoCobro} </td>
-                        <td><button
-                          variant="primary"
-                          className="btn btn-success mx-1"
-                          onClick={() => {
-                            setModalShowEditIngreso(true);
-                            setTratamiento(tratamiento.cobrosManuales);
-                            setIdParam(tratamiento.id);
-                          }}
-                        >
-                          <i className="fa-regular fa-pen-to-square"></i>
-                        </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {results.map((tratamiento) => {
+                      return tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
+                        const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
+                        const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
+                        const metodoPago = tratamiento.cobrosManuales.metodoPago[index] || "";
+                        const cta = tratamiento.cobrosManuales.codigoTratamiento[index] || "";
+                        const paciente = tratamiento.cobrosManuales.pacienteCobro[index] || "";
+                        const tratamientoz = tratamiento.cobrosManuales.tratamientoCobro[index] || "";
+                        const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index] || "";
+
+                        if (estadoCobro === "COBRADO") {
+                          return (
+                            <tr key={index}>
+                              <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
+                              <td>{metodoPago.toString()}</td>
+                              <td>{importe.toString()}</td>
+                              <td>{cta.toString()}</td>
+                              <td>{paciente.toString()}</td>
+                              <td>{tratamientoz.toString()}</td>
+                            </tr>
+                          );
+                        }
+                        return false;
+                      });
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -155,14 +452,6 @@ const Ingresos = () => {
           </div>
         )}
       </div>
-
-
-     {/*} <EditIngreso
-        id={idParam}
-        tratamiento={tratamiento}
-        show={modalShowEditIngreso}
-        onHide={() => setModalShowEditIngreso(false)}
-                        />*/}
     </>
   );
 };

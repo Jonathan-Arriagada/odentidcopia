@@ -54,7 +54,13 @@ function Tratamientos() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
   const [taparFiltro, setTaparFiltro] = useState(false);
-  const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
+
+  const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
+  const [indexParaEditcobro, setIndexParaEditcobro] = useState("");
+  const [fechaEditCobro, setFechaEditCobro] = useState("");
+  const [metodoPagoEditCobro, setMetodoPagoEditCobro] = useState("");
+  const [importeEditCobro, setImporteEditCobro] = useState("");
+  const [idParaEditcobro, setIdParaEditcobro] = useState("");
 
   const [codigoCobro, setCodigoCobro] = useState("");
   const [trataCobro, setTrataCobro] = useState("");
@@ -62,10 +68,10 @@ function Tratamientos() {
   const [fechaCobro, setFechaCobro] = useState("");
   const [metodoPagoCobro, setMetodoPagoCobro] = useState("");
   const [importeCobro, setImporteCobro] = useState("");
-
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
   const [pagoFinalizado, setPagoFinalizado] = useState(false);
+  const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
   const estadosTratamientoCollection = useRef(query(estadosTratamientoCollectiona));
@@ -332,6 +338,15 @@ function Tratamientos() {
     }
   };
 
+  const clearFieldsEditarCobro = () => {
+    setMostrarModalEditarCobro([false, "", "", ""]);
+    setIndexParaEditcobro("");
+    setIdParaCobro("");
+    setFechaEditCobro("");
+    setMetodoPagoEditCobro("");
+    setImporteEditCobro("");
+  };
+
   const clearFieldsCobro = () => {
     setFechaCobro("");
     setMetodoPagoCobro("");
@@ -424,10 +439,48 @@ function Tratamientos() {
 
         });
       }
-
       setRestoCobro(tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0));
     } catch (e) {
       window.alert("Hubo inconvenientes al tratar de eliminar  su cobro. Intentelo más tarde" + e + e.message)
+    }
+  };
+
+  const editarCobro = async (e) => {
+    e.preventDefault();
+    try {
+      const tratamientoRef = doc(db, "tratamientos", idParaEditcobro);
+      const tratamientoDoc = await getDoc(tratamientoRef)
+      const tratamientoData = tratamientoDoc.data();
+
+      const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
+      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
+      const importeCobroArray = tratamientoData.cobrosManuales.importeAbonado;
+      const metodoPagoArray = tratamientoData.cobrosManuales.metodoPago;
+      const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
+      const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
+
+      fechaCobroArray[indexParaEditcobro] = fechaEditCobro || fechaCobroArray[indexParaEditcobro];
+      metodoPagoArray[indexParaEditcobro] = metodoPagoEditCobro || metodoPagoArray[indexParaEditcobro];
+      importeCobroArray[indexParaEditcobro] = importeEditCobro || importeCobroArray[indexParaEditcobro];
+      codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
+      tratamientoCobroArray[indexParaEditcobro] = trataCobro;
+      pacienteCobroArray[indexParaEditcobro] = pacienteCobro;
+
+
+      if (tratamientoDoc.exists()) {
+        await updateDoc(tratamientoRef, {
+          "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.metodoPago": metodoPagoArray,
+          "cobrosManuales.importeAbonado": importeCobroArray,
+          "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
+          "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
+          "cobrosManuales.pacienteCobro": pacienteCobroArray,
+        });
+      }
+      setRestoCobro(tratamientoData.precio - importeCobroArray.reduce((total, importe) => total + Number(importe), 0));
+      clearFieldsEditarCobro()
+    } catch (e) {
+      window.alert("Hubo inconvenientes al tratar de Editar su cobro. Intentelo más tarde" + e + e.message)
     }
   };
 
@@ -439,7 +492,7 @@ function Tratamientos() {
   };
 
 
-  const cambiarEstadoCobro = async (e, id, index) => {
+  const cambiarEstadoCobro = async (e, id, index, string) => {
     e.preventDefault();
     try {
       const tratamientoRef = doc(db, "tratamientos", id);
@@ -447,18 +500,24 @@ function Tratamientos() {
       const tratamientoData = tratamientoDoc.data();
       const estadoArray = tratamientoData.cobrosManuales.estadoCobro;
 
-      estadoArray[index] = "COBRADO";
+      estadoArray[index] = string;
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.estadoCobro": estadoArray,
         });
       }
-      window.alert("Se ha ingresado su Cobro");
+      if (string === "COBRADO") {
+        window.alert("AGREGADO. Se ha ingresado su Cobro a Ingresos");
+      } else {
+        window.alert("ELIMINADO. Se ha quitado el Cobro de Ingresos");
+
+      }
     } catch (e) {
-      window.alert("Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde" + e + e.message);
+      window.alert("Hubo inconvenientes al tratar de agregar/quitar su cobro. Intentelo más tarde" + e + e.message);
     }
   }
+
 
   return (
     <>
@@ -978,6 +1037,10 @@ function Tratamientos() {
                                 onClick={() => {
                                   setModalShowEditTratamiento(true);
                                   setTratamiento(tratamiento);
+                                  setIdParaCobro(tratamiento.id);
+                                  setCodigoCobro(tratamiento.cta);
+                                  setTrataCobro(tratamiento.tarifasTratamientos);
+                                  setPacienteCobro(tratamiento.apellidoConNombre);
                                   setIdParam(tratamiento.id);
                                 }}
                               >
@@ -1082,10 +1145,10 @@ function Tratamientos() {
                     <table className="table__body">
                       <thead>
                         <tr>
+                        <th>N°</th>
                           <th>Fecha Cobro</th>
                           <th>Metodo Pago</th>
                           <th>Importe abonado</th>
-                          <th>Saldo Restante</th>
                           <th>Accion</th>
                           <th>
                             {!pagoFinalizado && (<button
@@ -1106,26 +1169,48 @@ function Tratamientos() {
                             const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
                             const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
                             const metodoPago = tratamiento.cobrosManuales.metodoPago[index] || "";
-                            const resta = importe === "" ? "" : tratamiento.precio - importe;
+                            const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
 
                             return (
                               <tr key={index}>
+                                <td>{index+1}</td>
                                 <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
                                 <td>{metodoPago.toString()}</td>
                                 <td>{importe.toString()}</td>
-                                <td>{resta.toString()}</td>
                                 <td>
                                   {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
                                     <>
                                       <button
                                         variant="primary"
-                                        className="btn btn-success sm-1"
+                                        className={`btn ${estadoCobro === "SIN COBRAR" ? "btn-success" : "btn-warning"} sm-1`}
                                         onClick={(e) => {
-                                          cambiarEstadoCobro(e, idParaCobro, index);
+                                          if (estadoCobro === "SIN COBRAR") {
+                                            cambiarEstadoCobro(e, idParaCobro, index, "COBRADO");
+                                          } else {
+                                            cambiarEstadoCobro(e, idParaCobro, index, "SIN COBRAR");
+                                          }
                                         }}
                                         style={{ margin: "1px" }}
                                       >
-                                        Cobrar <i className="fa-solid fa-cart-shopping"></i>
+                                        {estadoCobro === "SIN COBRAR" ? (
+                                          <>
+                                            Cobrar <i className="fa-solid fa-cart-shopping"></i>
+                                          </>
+                                        ) : (
+                                          "Descobrar"
+                                        )}
+                                      </button>
+                                      <button
+                                        variant="primary"
+                                        className="btn btn-secondary sm-1"
+                                        onClick={(e) => {
+                                          setIndexParaEditcobro(index)
+                                          setIdParaEditcobro(idParaCobro)
+                                          setMostrarModalEditarCobro([true, fecha, importe, metodoPago]);
+                                        }}
+                                        style={{ margin: "1px" }}
+                                      >
+                                        <i className="fa-regular fa-pen-to-square"></i>
                                       </button>
                                       <button
                                         variant="primary"
@@ -1228,6 +1313,71 @@ function Tratamientos() {
                 className="btn btn-primary"
               >
                 Guardar Cobro
+              </button>
+            </div>
+          </Modal.Footer>
+        </Modal>)}
+
+      {mostrarModalEditarCobro[0] && (
+        <Modal show={mostrarModalEditarCobro[0]} size="lg" aria-labelledby="contained-modal-title-vcenter" centered >
+          <Modal.Header closeButton onClick={() => { clearFieldsEditarCobro() }}>
+            <Modal.Title>Editar Cobro</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="container">
+              <div className="col">
+                <form>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Fecha Cobro</label>
+                      <input
+                        defaultValue={mostrarModalEditarCobro[1]}
+                        onChange={(e) => setFechaEditCobro(e.target.value)}
+                        type="date"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Metodo Pago Cobro</label>
+                      <input
+                        defaultValue={mostrarModalEditarCobro[3]}
+                        onChange={(e) => setMetodoPagoEditCobro(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Importe Cobro</label>
+                      <input
+                        defaultValue={mostrarModalEditarCobro[2]}
+                        onChange={(e) => setImporteEditCobro(e.target.value)}
+                        type="number"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <div style={{ display: "flex" }}>
+              <button
+                type="submit"
+                onClick={(e) => { editarCobro(e) }}
+                className="btn btn-primary"
+              >
+                Editar Cobro
               </button>
             </div>
           </Modal.Footer>
