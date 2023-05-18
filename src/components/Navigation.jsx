@@ -11,6 +11,7 @@ const Navigation = () => {
     const [isActive, setIsActive] = useState(false);
     const { currentUser } = useContext(AuthContext);
     const [userType, setUserType] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const logout = () => {
         localStorage.setItem("user", JSON.stringify(null));
@@ -19,6 +20,7 @@ const Navigation = () => {
     useEffect(() => {
         const type = localStorage.getItem("rol");
         setUserType(type);
+        setIsLoading(true)
       }, []);
     
 
@@ -34,6 +36,8 @@ const Navigation = () => {
                 <span>Odentid</span>
                 <span>{currentUser.email}</span>
             </header>
+            {isLoading && (
+                <>
             {userType === '"RmTnUw1iPj5q"' ? ( <Link to="/admin" className="text-decoration-none link-light"><Nav title="Admin Panel" Icon={FaUserTie} /></Link>) : null}
             <Link to="/miPerfil" className="text-decoration-none link-light"><Nav title="Mi Perfil" Icon={FaUser} /></Link>
             <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
@@ -42,7 +46,8 @@ const Navigation = () => {
             <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /> </Link>
             <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Ingresos" Icon={FaDollarSign} /> </Link>
             <Link to="/" className="text-decoration-none link-light" onClick={logout}><Nav title="Logout" Icon={FaSignOutAlt} /></Link>
-
+            </>
+            )}
         </div>
     );
 };

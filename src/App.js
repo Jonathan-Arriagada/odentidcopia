@@ -4,8 +4,10 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Pacientes/Create";
 import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
-import { useContext, } from "react";
+import { useContext, useEffect, useState} from "react";
 import { AuthContext } from "./context/AuthContext";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "./firebaseConfig/firebase";
 import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
 import CreateTarifa from "./components/Tarifario/CreateTarifa";
@@ -21,22 +23,22 @@ function App() {
     return currentUser ? children : <Navigate to="/"/>
   };
 
-  /*//HAY QUE VALIDAR ESTO CON EL ROL NO CON MAIL
   function RequireAdmin({ children }) {
-    const { currentUser } = useContext(AuthContext);
-    if (currentUser && currentUser.email === "test@hotmail.com") { 
+    const storedRole = localStorage.getItem('rol');
+    
+    if (storedRole === '"RmTnUw1iPj5q"') {
       return children;
     } else {
       return <Navigate to="/agenda" />;
     }
-  }*/
+  }
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
             <Route path="/" element={<Login />}/>
-            <Route index path="admin" element={<RequireAuth><PanelAdmin/></RequireAuth>}/>
+            <Route index path="admin" element={<RequireAuth><RequireAdmin><PanelAdmin/></RequireAdmin></RequireAuth>}/>
             <Route index path="miPerfil" element={<RequireAuth><MiPerfil/></RequireAuth>}/>
             <Route index path="clients" element={<RequireAuth><Show/></RequireAuth>}/>
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>

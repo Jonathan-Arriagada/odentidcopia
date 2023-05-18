@@ -1,5 +1,14 @@
 import React, { useCallback, useRef } from "react";
-import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDoc, updateDoc, } from "firebase/firestore";
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
@@ -19,17 +28,19 @@ function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShowTratamiento, setModalShowTratamiento] = useState(false);
-  const [modalShowEditTratamiento, setModalShowEditTratamiento] = useState(false);
+  const [modalShowEditTratamiento, setModalShowEditTratamiento] =
+    useState(false);
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
   const [order, setOrder] = useState("ASC");
   const [tratamiento, setTratamiento] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] = useState(false);
+  const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] =
+    useState(false);
   const [modalShowEditPago, setModalShowEditPago] = useState(false);
-  const [estadoTratamiento, setEstadoTratamiento] = useState([])
-  const [estadoPago, setEstadoPago] = useState([])
+  const [estadoTratamiento, setEstadoTratamiento] = useState([]);
+  const [estadoPago, setEstadoPago] = useState([]);
 
   const tratamientosCollectiona = collection(db, "tratamientos");
   const tratamientosCollection = useRef(
@@ -54,7 +65,8 @@ function Tratamientos() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
   const [taparFiltro, setTaparFiltro] = useState(false);
-  const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
+  const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] =
+    useState(false);
 
   const [codigoCobro, setCodigoCobro] = useState("");
   const [trataCobro, setTrataCobro] = useState("");
@@ -68,7 +80,9 @@ function Tratamientos() {
   const [pagoFinalizado, setPagoFinalizado] = useState(false);
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
-  const estadosTratamientoCollection = useRef(query(estadosTratamientoCollectiona));
+  const estadosTratamientoCollection = useRef(
+    query(estadosTratamientoCollectiona)
+  );
 
   const estadosPagoCollectiona = collection(db, "estadoPago");
   const estadosPagoCollection = useRef(query(estadosPagoCollectiona));
@@ -86,7 +100,9 @@ function Tratamientos() {
   };
 
   const buscarEstilos = (estadoParam) => {
-    const colorEncontrado = estadoTratamiento.find((e) => e.name === estadoParam);
+    const colorEncontrado = estadoTratamiento.find(
+      (e) => e.name === estadoParam
+    );
     if (colorEncontrado) {
       switch (colorEncontrado.color) {
         case "yellow":
@@ -173,9 +189,12 @@ function Tratamientos() {
     );
     const type = localStorage.getItem("rol");
     setUserType(type);
-    return () => { unsubscribe(); unsubscribeEstados(); unsubscribeEstadosPago() };
+    return () => {
+      unsubscribe();
+      unsubscribeEstados();
+      unsubscribeEstadosPago();
+    };
   }, [getTratamientos, getEstadoTratamientos, getEstadoPago]);
-
 
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);
@@ -342,14 +361,18 @@ function Tratamientos() {
     e.preventDefault();
     try {
       const tratamientoRef = doc(db, "tratamientos", id);
-      const tratamientoDoc = await getDoc(tratamientoRef)
+      const tratamientoDoc = await getDoc(tratamientoRef);
       const tratamientoData = tratamientoDoc.data();
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro || [];
-      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento || [];
-      const importeAbonadoArray = tratamientoData.cobrosManuales.importeAbonado || [];
+      const codigoTratamientoArray =
+        tratamientoData.cobrosManuales.codigoTratamiento || [];
+      const importeAbonadoArray =
+        tratamientoData.cobrosManuales.importeAbonado || [];
       const metodoPagoArray = tratamientoData.cobrosManuales.metodoPago || [];
-      const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro || [];
-      const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro || [];
+      const tratamientoCobroArray =
+        tratamientoData.cobrosManuales.tratamientoCobro || [];
+      const pacienteCobroArray =
+        tratamientoData.cobrosManuales.pacienteCobro || [];
       const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro || [];
 
       fechaCobroArray.push(fechaCobro);
@@ -359,7 +382,6 @@ function Tratamientos() {
       tratamientoCobroArray.push(trataCobro);
       pacienteCobroArray.push(pacienteCobro);
       estadoCobroArray.push("SIN COBRAR");
-
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -374,12 +396,14 @@ function Tratamientos() {
       }
       setRestoCobro(restoCobro - importeCobro);
       setMostrarModalAgregarCobro([false, ""]);
-
     } catch (e) {
-      window.alert("Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde" + e + e.message)
+      window.alert(
+        "Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde" +
+          e +
+          e.message
+      );
     }
-  }
-
+  };
 
   useEffect(() => {
     if (restoCobro === 0) {
@@ -393,24 +417,47 @@ function Tratamientos() {
     e.preventDefault();
     try {
       const tratamientoRef = doc(db, "tratamientos", id);
-      const tratamientoDoc = await getDoc(tratamientoRef)
+      const tratamientoDoc = await getDoc(tratamientoRef);
       const tratamientoData = tratamientoDoc.data();
 
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
-      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
+      const codigoTratamientoArray =
+        tratamientoData.cobrosManuales.codigoTratamiento;
       const importeAbonadoArray = tratamientoData.cobrosManuales.importeAbonado;
       const metodoPagoArray = tratamientoData.cobrosManuales.metodoPago;
-      const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
+      const tratamientoCobroArray =
+        tratamientoData.cobrosManuales.tratamientoCobro;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
       const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro;
 
-      const nuevaFechaCobroArray = eliminarPosicionArray(fechaCobroArray, index);
-      const nuevoCodigoTratamientoArray = eliminarPosicionArray(codigoTratamientoArray, index);
-      const nuevoImporteAbonadoArray = eliminarPosicionArray(importeAbonadoArray, index);
-      const nuevoMetodoPagoArray = eliminarPosicionArray(metodoPagoArray, index);
-      const nuevoTratamientoCobroArray = eliminarPosicionArray(tratamientoCobroArray, index);
-      const nuevoPacienteCobroArray = eliminarPosicionArray(pacienteCobroArray, index);
-      const nuevoEstadoCobroArray = eliminarPosicionArray(estadoCobroArray, index);
+      const nuevaFechaCobroArray = eliminarPosicionArray(
+        fechaCobroArray,
+        index
+      );
+      const nuevoCodigoTratamientoArray = eliminarPosicionArray(
+        codigoTratamientoArray,
+        index
+      );
+      const nuevoImporteAbonadoArray = eliminarPosicionArray(
+        importeAbonadoArray,
+        index
+      );
+      const nuevoMetodoPagoArray = eliminarPosicionArray(
+        metodoPagoArray,
+        index
+      );
+      const nuevoTratamientoCobroArray = eliminarPosicionArray(
+        tratamientoCobroArray,
+        index
+      );
+      const nuevoPacienteCobroArray = eliminarPosicionArray(
+        pacienteCobroArray,
+        index
+      );
+      const nuevoEstadoCobroArray = eliminarPosicionArray(
+        estadoCobroArray,
+        index
+      );
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -421,13 +468,22 @@ function Tratamientos() {
           "cobrosManuales.codigoTratamiento": nuevoCodigoTratamientoArray,
           "cobrosManuales.pacienteCobro": nuevoPacienteCobroArray,
           "cobrosManuales.estadoCobro": nuevoEstadoCobroArray,
-
         });
       }
 
-      setRestoCobro(tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0));
+      setRestoCobro(
+        tratamientoData.precio -
+          nuevoImporteAbonadoArray.reduce(
+            (total, importe) => total + Number(importe),
+            0
+          )
+      );
     } catch (e) {
-      window.alert("Hubo inconvenientes al tratar de eliminar  su cobro. Intentelo más tarde" + e + e.message)
+      window.alert(
+        "Hubo inconvenientes al tratar de eliminar  su cobro. Intentelo más tarde" +
+          e +
+          e.message
+      );
     }
   };
 
@@ -437,7 +493,6 @@ function Tratamientos() {
     }
     return array.filter((_, i) => i !== index);
   };
-
 
   const cambiarEstadoCobro = async (e, id, index) => {
     e.preventDefault();
@@ -456,9 +511,13 @@ function Tratamientos() {
       }
       window.alert("Se ha ingresado su Cobro");
     } catch (e) {
-      window.alert("Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde" + e + e.message);
+      window.alert(
+        "Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde" +
+          e +
+          e.message
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -923,9 +982,7 @@ function Tratamientos() {
                         <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
                         <td>
                           <p
-                            style={buscarEstilosPago(
-                              tratamiento.estadoPago
-                            )}
+                            style={buscarEstilosPago(tratamiento.estadoPago)}
                             className="status"
                           >
                             {tratamiento.estadoPago}
@@ -960,16 +1017,32 @@ function Tratamientos() {
                                     ocultarTabla(tratamiento.codigo);
                                     setIdParaCobro(tratamiento.id);
                                     setCodigoCobro(tratamiento.cta);
-                                    setTrataCobro(tratamiento.tarifasTratamientos);
-                                    setPacienteCobro(tratamiento.apellidoConNombre);
-                                    setRestoCobro(tratamiento.precio - tratamiento.cobrosManuales.importeAbonado.reduce((total, importe) => total + Number(importe), 0));
+                                    setTrataCobro(
+                                      tratamiento.tarifasTratamientos
+                                    );
+                                    setPacienteCobro(
+                                      tratamiento.apellidoConNombre
+                                    );
+                                    setRestoCobro(
+                                      tratamiento.precio -
+                                        tratamiento.cobrosManuales.importeAbonado.reduce(
+                                          (total, importe) =>
+                                            total + Number(importe),
+                                          0
+                                        )
+                                    );
                                   }}
                                 >
                                   <i className="fa-regular fa-eye"></i> Ver
                                 </Dropdown.Item>
                               )}
                               {!mostrarVer && (
-                                <Dropdown.Item onClick={() => { ocultarTabla(""); clearFieldsCobro("") }}>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    ocultarTabla("");
+                                    clearFieldsCobro("");
+                                  }}
+                                >
                                   <i className="fa-regular fa-eye-slash"></i>{" "}
                                   Ocultar
                                 </Dropdown.Item>
@@ -986,11 +1059,14 @@ function Tratamientos() {
                               </Dropdown.Item>
                               <Dropdown.Item
                                 onClick={() => {
-                                  setModalShowVerNotas([true, tratamiento.notas]);
+                                  setModalShowVerNotas([
+                                    true,
+                                    tratamiento.notas,
+                                  ]);
                                 }}
                               >
-                                <i className="fa-regular fa-comment"></i>{" "}
-                                Ver Notas
+                                <i className="fa-regular fa-comment"></i> Ver
+                                Notas
                               </Dropdown.Item>
                               <Dropdown.Item
                                 onClick={() =>
@@ -1009,9 +1085,17 @@ function Tratamientos() {
                 </table>
 
                 {modalShowVerNotas[0] && (
-                  <Modal show={modalShowVerNotas[0]} size="lg" aria-labelledby="contained-modal-title-vcenter" centered
-                    onHide={() => setModalShowVerNotas([false, ""])}>
-                    <Modal.Header closeButton onClick={() => setModalShowVerNotas([false, ""])}>
+                  <Modal
+                    show={modalShowVerNotas[0]}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    onHide={() => setModalShowVerNotas([false, ""])}
+                  >
+                    <Modal.Header
+                      closeButton
+                      onClick={() => setModalShowVerNotas([false, ""])}
+                    >
                       <Modal.Title>Comentarios</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -1027,7 +1111,8 @@ function Tratamientos() {
                         </div>
                       </div>
                     </Modal.Body>
-                  </Modal>)}
+                  </Modal>
+                )}
 
                 {mostrarTabla && (
                   <div style={{ marginTop: "30px" }}>
@@ -1074,8 +1159,16 @@ function Tratamientos() {
 
                 {mostrarTabla && (
                   <div style={{ marginTop: "30px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <h4 style={{ textAlign: "left", marginRight: "10px" }}>Cobros - Gestión Manual</h4>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <h4 style={{ textAlign: "left", marginRight: "10px" }}>
+                        Cobros - Gestión Manual
+                      </h4>
                       <h4>Saldo Restante: {restoCobro}</h4>
                     </div>
 
@@ -1088,62 +1181,93 @@ function Tratamientos() {
                           <th>Saldo Restante</th>
                           <th>Accion</th>
                           <th>
-                            {!pagoFinalizado && (<button
-                              className="btn btn-secondary mx-1 btn-md"
-                              onClick={() => {
-                                setMostrarModalAgregarCobro([true, idParaCobro])
-                              }}
-                            >
-                              <i className="fa-solid fa-circle-plus"></i>
-                            </button>)}
+                            {!pagoFinalizado && (
+                              <button
+                                className="btn btn-secondary mx-1 btn-md"
+                                onClick={() => {
+                                  setMostrarModalAgregarCobro([
+                                    true,
+                                    idParaCobro,
+                                  ]);
+                                }}
+                              >
+                                <i className="fa-solid fa-circle-plus"></i>
+                              </button>
+                            )}
                           </th>
                         </tr>
                       </thead>
 
                       <tbody>
-                        {results.map((tratamiento) => (
-                          tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
-                            const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
-                            const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
-                            const metodoPago = tratamiento.cobrosManuales.metodoPago[index] || "";
-                            const resta = importe === "" ? "" : tratamiento.precio - importe;
+                        {results.map((tratamiento) =>
+                          tratamiento.cobrosManuales.fechaCobro.map(
+                            (_, index) => {
+                              const fecha =
+                                tratamiento.cobrosManuales.fechaCobro[index] ||
+                                "";
+                              const importe =
+                                tratamiento.cobrosManuales.importeAbonado[
+                                  index
+                                ] || "";
+                              const metodoPago =
+                                tratamiento.cobrosManuales.metodoPago[index] ||
+                                "";
+                              const resta =
+                                importe === ""
+                                  ? ""
+                                  : tratamiento.precio - importe;
 
-                            return (
-                              <tr key={index}>
-                                <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
-                                <td>{metodoPago.toString()}</td>
-                                <td>{importe.toString()}</td>
-                                <td>{resta.toString()}</td>
-                                <td>
-                                  {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
-                                    <>
-                                      <button
-                                        variant="primary"
-                                        className="btn btn-success sm-1"
-                                        onClick={(e) => {
-                                          cambiarEstadoCobro(e, idParaCobro, index);
-                                        }}
-                                        style={{ margin: "1px" }}
-                                      >
-                                        Cobrar <i className="fa-solid fa-cart-shopping"></i>
-                                      </button>
-                                      <button
-                                        variant="primary"
-                                        className="btn btn-danger sm-1"
-                                        onClick={(e) => {
-                                          eliminarCobro(e, idParaCobro, index);
-                                        }}
-                                        style={{ margin: "1px" }}
-                                      >
-                                        <i className="fa-solid fa-trash-can"></i>
-                                      </button>
-                                    </>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })
-                        ))}
+                              return (
+                                <tr key={index}>
+                                  <td>
+                                    {moment(fecha.toString()).format(
+                                      "DD/MM/YY"
+                                    )}
+                                  </td>
+                                  <td>{metodoPago.toString()}</td>
+                                  <td>{importe.toString()}</td>
+                                  <td>{resta.toString()}</td>
+                                  <td>
+                                    {tratamiento.cobrosManuales
+                                      .fechaCobro[0] !== "" && (
+                                      <>
+                                        <button
+                                          variant="primary"
+                                          className="btn btn-success sm-1"
+                                          onClick={(e) => {
+                                            cambiarEstadoCobro(
+                                              e,
+                                              idParaCobro,
+                                              index
+                                            );
+                                          }}
+                                          style={{ margin: "1px" }}
+                                        >
+                                          Cobrar{" "}
+                                          <i className="fa-solid fa-cart-shopping"></i>
+                                        </button>
+                                        <button
+                                          variant="primary"
+                                          className="btn btn-danger sm-1"
+                                          onClick={(e) => {
+                                            eliminarCobro(
+                                              e,
+                                              idParaCobro,
+                                              index
+                                            );
+                                          }}
+                                          style={{ margin: "1px" }}
+                                        >
+                                          <i className="fa-solid fa-trash-can"></i>
+                                        </button>
+                                      </>
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          )
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -1172,8 +1296,19 @@ function Tratamientos() {
         onHide={() => setModalShowEditPago(false)}
       />
       {mostrarModalAgregarCobro[0] && (
-        <Modal show={mostrarModalAgregarCobro[0]} size="lg" aria-labelledby="contained-modal-title-vcenter" centered >
-          <Modal.Header closeButton onClick={() => { setMostrarModalAgregarCobro([false, ""]); clearFieldsCobro() }}>
+        <Modal
+          show={mostrarModalAgregarCobro[0]}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header
+            closeButton
+            onClick={() => {
+              setMostrarModalAgregarCobro([false, ""]);
+              clearFieldsCobro();
+            }}
+          >
             <Modal.Title>Agregar Cobro</Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -1224,14 +1359,17 @@ function Tratamientos() {
             <div style={{ display: "flex" }}>
               <button
                 type="submit"
-                onClick={(e) => { guardarCobro(e, mostrarModalAgregarCobro[1]) }}
+                onClick={(e) => {
+                  guardarCobro(e, mostrarModalAgregarCobro[1]);
+                }}
                 className="btn btn-primary"
               >
                 Guardar Cobro
               </button>
             </div>
           </Modal.Footer>
-        </Modal>)}
+        </Modal>
+      )}
     </>
   );
 }
