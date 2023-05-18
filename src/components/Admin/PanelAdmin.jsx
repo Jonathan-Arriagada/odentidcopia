@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "../Navigation";
 import { collection, orderBy, query, onSnapshot, updateDoc, doc } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import { db, } from "../../firebaseConfig/firebase";
 import CrearAsistente from "./CrearAsistente";
 import "../Pacientes/Show.css"
@@ -19,7 +18,6 @@ function PanelAdmin() {
 
   const userCollectiona = collection(db, "user");
   const userCollection = useRef(query(userCollectiona, orderBy("codigo")));
-  const auth = getAuth();
 
   const getUsuarios = useCallback((snapshot) => {
     const usuariosArray = snapshot.docs.map((doc) => ({
