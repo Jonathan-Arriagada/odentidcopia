@@ -200,7 +200,6 @@ function CreateTratamiento(props) {
               multiple={false}
             />
             <datalist id="pacientes-list">
-              <option value="">Ingreso manual</option>
               {valorBusquedaOptionsJSX}
             </datalist>
           </div>

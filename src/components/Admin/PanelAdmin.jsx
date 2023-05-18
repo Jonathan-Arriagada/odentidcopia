@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "../Navigation";
-import { collection, orderBy, query, onSnapshot } from "firebase/firestore";
+import { collection, orderBy, query, onSnapshot, updateDoc, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db, } from "../../firebaseConfig/firebase";
 import CrearAsistente from "./CrearAsistente";
 import "../Pacientes/Show.css"
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
-
 
 function PanelAdmin() {
   const [usuarios, setUsuarios] = useState([]);
@@ -15,10 +15,11 @@ function PanelAdmin() {
   const [modalShow, setModalShow] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [disabledRows] = useState([]);
 
   const userCollectiona = collection(db, "user");
   const userCollection = useRef(query(userCollectiona, orderBy("codigo")));
-
+  const auth = getAuth();
 
   const getUsuarios = useCallback((snapshot) => {
     const usuariosArray = snapshot.docs.map((doc) => ({
@@ -29,11 +30,20 @@ function PanelAdmin() {
     setIsLoading(false);
   }, []);
 
+  const disableUsuario = async (id) => {
+    const userDoc = doc(db, "user", id);
+    await updateDoc(userDoc, { rol: "Ks3n7p9Rv2wT" });
+  };
+
+  const enableUsuario = async (id) => {
+    const userDoc = doc(db, "user", id);
+    await updateDoc(userDoc, { rol: "yS3tEzgK9Qp7"});
+  };
+
   useEffect(() => {
     const unsubscribe = onSnapshot(userCollection.current, getUsuarios);
     return unsubscribe;
   }, [getUsuarios]);
-
 
   const searcher = (e) => {
     setSearch(e.target.value);
@@ -111,7 +121,8 @@ function PanelAdmin() {
                       <th onClick={() => sorting("apellidoConNombre")}>Apellido y Nombres</th>
                       <th onClick={() => sorting("correo")}>Email</th>
                       <th onClick={() => sorting("telefono")}>Telefono</th>
-                      <th onClick={() => sorting("fechaAlta")}>Fecha Alta</th>
+                      <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
+                      <th>Accion</th>
                     </tr>
                   </thead>
 
@@ -123,6 +134,31 @@ function PanelAdmin() {
                         <td> {usuario.correo} </td>
                         <td> {usuario.telefono} </td>
                         <td> {usuario.fechaAlta}</td>
+                        <td>         
+                        <button
+                              onClick={() => {
+                                disableUsuario(usuario.id);
+                              }}
+                              className="btn btn-danger"
+                              disabled={
+                                disabledRows.includes(usuario.id) ||
+                                usuario.rol === "Ks3n7p9Rv2wT" || usuario.rol === "RmTnUw1iPj5q"
+                              }
+                            >
+                              <i className="fa-solid fa-trash"></i>
+                              </button>
+                          <button
+                              onClick={() => {
+                                enableUsuario(usuario.id);
+                              }}
+                              className="btn btn-light"
+                              disabled={disabledRows.includes(usuario.id) || usuario.rol === "yS3tEzgK9Qp7" || usuario.rol === "RmTnUw1iPj5q"}
+                              style={{ marginLeft: "2px" }}
+                            >
+                              {" "}
+                              <i className="fa-solid fa-power-off"></i>{" "}
+                            </button>
+                          </td>
                       </tr>
                     ))}
                   </tbody>

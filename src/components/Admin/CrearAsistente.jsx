@@ -13,7 +13,7 @@ const CrearAsistente = (props) => {
   const [telefono, setTelefono] = useState('');
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
-  const [rol, setRol] = useState('asistente');
+  const [rol, setRol] = useState('yS3tEzgK9Qp7');
   const [foto, ] = useState('');
   const [error, setError] = useState('');
   const [editable] = useState(false);
