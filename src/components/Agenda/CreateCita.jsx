@@ -13,8 +13,6 @@ function CreateCita(props) {
   const [horaFin, setHoraFin] = useState("08:30");
   const [comentario, setComentario] = useState("");
   const [error, setError] = useState("");
-
-
   const [editable, setEditable] = useState(true);
   const [estadoOptions, setEstadoOptions] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
