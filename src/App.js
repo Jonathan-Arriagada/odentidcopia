@@ -48,7 +48,6 @@ function App() {
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
-
         </Routes>
       </BrowserRouter>
     </div>
