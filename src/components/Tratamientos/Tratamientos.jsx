@@ -413,8 +413,8 @@ function Tratamientos() {
     } catch (e) {
       window.alert(
         "Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde" +
-          e +
-          e.message
+        e +
+        e.message
       );
     }
   };
@@ -488,8 +488,8 @@ function Tratamientos() {
     } catch (e) {
       window.alert(
         "Hubo inconvenientes al tratar de eliminar  su cobro. Intentelo más tarde" +
-          e +
-          e.message
+        e +
+        e.message
       );
     }
   };
@@ -1003,7 +1003,6 @@ function Tratamientos() {
                         Apellido y Nombres
                       </th>
                       <th onClick={() => sorting("idc")}>DNI</th>
-                      <th onClick={() => sorting("cta")}>Cta</th>
                       <th onClick={() => sorting("tarifasTratamientos")}>
                         Tratamiento
                       </th>
@@ -1025,7 +1024,6 @@ function Tratamientos() {
                         <td>{results.length - index}</td>
                         <td> {tratamiento.apellidoConNombre} </td>
                         <td> {tratamiento.idc} </td>
-                        <td> {tratamiento.cta} </td>
                         <td> {tratamiento.tarifasTratamientos} </td>
                         <td> {tratamiento.pieza} </td>
                         <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
@@ -1074,11 +1072,11 @@ function Tratamientos() {
                                     );
                                     setRestoCobro(
                                       tratamiento.precio -
-                                        tratamiento.cobrosManuales.importeAbonado.reduce(
-                                          (total, importe) =>
-                                            total + Number(importe),
-                                          0
-                                        )
+                                      tratamiento.cobrosManuales.importeAbonado.reduce(
+                                        (total, importe) =>
+                                          total + Number(importe),
+                                        0
+                                      )
                                     );
                                   }}
                                 >
@@ -1169,6 +1167,7 @@ function Tratamientos() {
                     <table className="table__body">
                       <thead>
                         <tr>
+                          <th>Cta</th>
                           <th>Precio/Total</th>
                           <th>Plazo</th>
                           <th>Cuota</th>
@@ -1182,6 +1181,7 @@ function Tratamientos() {
                       <tbody>
                         {results.map((tratamiento) => (
                           <tr key={tratamiento.id}>
+                            <td> {tratamiento.cta} </td>
                             <td>{tratamiento.precio}</td>
                             <td>{tratamiento.plazo}</td>
                             <td>{tratamiento.cuota}</td>
@@ -1224,7 +1224,7 @@ function Tratamientos() {
                     <table className="table__body">
                       <thead>
                         <tr>
-                        <th>N°</th>
+                          <th>N°</th>
                           <th>Fecha Cobro</th>
                           <th>Metodo Pago</th>
                           <th>Importe abonado</th>
@@ -1257,7 +1257,7 @@ function Tratamientos() {
 
                             return (
                               <tr key={index}>
-                                <td>{index+1}</td>
+                                <td>{index + 1}</td>
                                 <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
                                 <td>{metodoPago.toString()}</td>
                                 <td>{importe.toString()}</td>

@@ -339,7 +339,6 @@ function Citas() {
                       <th onClick={() => sorting("apellidoConNombre")}>
                         Apellido y Nombres
                       </th>
-                      <th onClick={() => sorting("idc")}>DNI</th>
                       <th onClick={() => sorting("estado")}>Estado</th>
                       <th onClick={() => sorting("numero")}>Telefono</th>
                       <th>Notas</th>
@@ -354,7 +353,6 @@ function Citas() {
                         <td> {cita.horaInicio} </td>
                         <td> {cita.horaFin} </td>
                         <td> {cita.apellidoConNombre} </td>
-                        <td> {cita.idc} </td>
                         <td>
                           {" "}
                           <p
