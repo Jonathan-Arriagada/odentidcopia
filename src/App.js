@@ -4,16 +4,15 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Pacientes/Create";
 import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
-import { useContext, useEffect, useState} from "react";
+import { useContext, } from "react";
 import { AuthContext } from "./context/AuthContext";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "./firebaseConfig/firebase";
 import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
 import CreateTarifa from "./components/Tarifario/CreateTarifa";
 import Tratamientos from "./components/Tratamientos/Tratamientos";
 import PanelAdmin from "./components/Admin/PanelAdmin";
 import MiPerfil from "./components/Admin/MiPerfil";
+import History from "./components/HistoriaClinica/History.jsx";
 import Ingresos from "./components/Ingresos/Ingresos";
 
 
@@ -47,6 +46,7 @@ function App() {
             <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
+            <Route path="history" element={<RequireAuth><History /></RequireAuth>}/>
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
         </Routes>
       </BrowserRouter>

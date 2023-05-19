@@ -1100,10 +1100,6 @@ function Tratamientos() {
                                 onClick={() => {
                                   setModalShowEditTratamiento(true);
                                   setTratamiento(tratamiento);
-                                  setIdParaCobro(tratamiento.id);
-                                  setCodigoCobro(tratamiento.cta);
-                                  setTrataCobro(tratamiento.tarifasTratamientos);
-                                  setPacienteCobro(tratamiento.apellidoConNombre);
                                   setIdParam(tratamiento.id);
                                 }}
                               >

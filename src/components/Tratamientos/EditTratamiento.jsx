@@ -66,7 +66,6 @@ const EditTratamiento = (props) => {
   }
 
   const update = async (e) => {
-    e.preventDefault();
     const tratamientoRef = doc(db, "tratamientos", props.id);
     const tratamientoDoc = await getDoc(tratamientoRef);
     const tratamientoData = tratamientoDoc.data();

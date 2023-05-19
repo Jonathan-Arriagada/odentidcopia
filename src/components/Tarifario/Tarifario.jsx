@@ -1,13 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "../Navigation";
-import {
-  collection,
-  updateDoc,
-  doc,
-  orderBy,
-  query,
-  onSnapshot,
-} from "firebase/firestore";
+import {collection,updateDoc,doc,orderBy,query,onSnapshot} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
 import "../Pacientes/Show.css";
