@@ -44,6 +44,7 @@ export default function Formulario(props) {
   const [numero, setNumero] = useState("");
   const [fecha, setFecha] = useState("");
   const [sexo, setSexo] = useState("");
+  const [edad, setEdad] = useState("");
   const [lugarNacimiento, setLugarNacimiento] = useState("");
   const [procedencia, setProcedencia] = useState("");
   const [editable, setEditable] = useState(true);
@@ -52,8 +53,18 @@ export default function Formulario(props) {
   const [correo, setCorreo] = useState("");
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
   const [medicoAtendido, setMedicoAtendido] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-  const [isChecked1, setIsChecked1] = useState(false);
+  const [isChecked, setIsChecked] = useState({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+    6: false,
+    7: false,
+    8: false,
+    9: false,
+    10: false,
+  });
 
   const clientsCollection = collection(db, "clients");
 
@@ -68,6 +79,11 @@ export default function Formulario(props) {
 
   //Render:
 
+  const valorBusquedaOptionsJSX = valorBusquedaOptions.map((option, index) => (
+    <option key={`valorBusqueda-${index}`} value={option}>
+      {option}
+    </option>
+  ));
 
   useEffect(() => {
     const unsubscribe = [
@@ -93,25 +109,7 @@ export default function Formulario(props) {
     }
   }, [props.client]);
 
-  const store = async (e) => {
-    e.preventDefault();
-    await addDoc(clientsCollection, {
-      apellidoConNombre: apellidoConNombre,
-      idc: idc,
-      numero: numero,
-      fecha: fecha,
-    });
-  };
-
   const manejarValorSeleccionado = async (suggestion) => {
-    if (suggestion === "") {
-      setApellidoConNombre("");
-      setIdc("");
-      setNumero("");
-      setEditable(true);
-      return;
-    }
-
     const querySnapshot = await getDocs(
       query(collection(db, "clients"), where("valorBusqueda", "==", suggestion))
     );
@@ -166,11 +164,14 @@ export default function Formulario(props) {
                     manejarValorSeleccionado(e.target.value)
                   }
                   list="pacientes-list"
-                  multiple={false}                  
+                  multiple={false}
                 />
+                <datalist id="pacientes-list">
+                  {valorBusquedaOptionsJSX}
+                </datalist>
               </div>
 
-              <form onSubmit={store}>
+              <form>
                 <div className="row">
                   <div className="col mb-3">
                     <label className="form-label">Apellido y Nombres:</label>
@@ -192,16 +193,14 @@ export default function Formulario(props) {
                       disabled={!editable}
                     />
                   </div>
-                </div>
-
-                <div className="row">
-                  <div className="col mb-6">
-                    <label className="form-label">Fecha de Nacimiento:</label>
+                  <div className="col mb-3">
+                    <label className="form-label">Edad*</label>
                     <input
-                      value={fecha}
-                      onChange={(e) => setFecha(e.target.value)}
-                      type="date"
+                      value={edad}
+                      onChange={(e) => setEdad(e.target.value)}
+                      type="number"
                       className="form-control"
+                      required
                     />
                   </div>
                   <div className="col mb-3">
@@ -220,9 +219,17 @@ export default function Formulario(props) {
                     </select>
                   </div>
                 </div>
-                <hr />
-                <h3>Informacion del Contacto:</h3>
+
                 <div className="row">
+                  <div className="col mb-6">
+                    <label className="form-label">Fecha de Nacimiento:</label>
+                    <input
+                      value={fecha}
+                      onChange={(e) => setFecha(e.target.value)}
+                      type="date"
+                      className="form-control"
+                    />
+                  </div>
                   <div className="col mb-3">
                     <label className="form-label">Lugar Nacimiento:</label>
                     <input
@@ -232,7 +239,6 @@ export default function Formulario(props) {
                       className="form-control"
                     />
                   </div>
-
                   <div className="col mb-3">
                     <label className="form-label">Procedencia:</label>
                     <input
@@ -242,19 +248,7 @@ export default function Formulario(props) {
                       className="form-control"
                     />
                   </div>
-
-                  <div className="col mb-3">
-                    <label className="form-label">Teléfono:</label>
-                    <input
-                      value={numero || ""}
-                      onChange={(e) => setNumero(e.target.value)}
-                      type="number"
-                      className="form-control"
-                      disabled={!editable}
-                    />
-                  </div>
                 </div>
-
                 <div className="row">
                   <div className="col mb-3">
                     <label className="form-label">Direccion:</label>
@@ -265,7 +259,9 @@ export default function Formulario(props) {
                       className="form-control"
                     />
                   </div>
+                </div>
 
+                <div className="row">
                   <div className="col mb-3">
                     <label className="form-label">Ocupacion:</label>
                     <input
@@ -285,7 +281,52 @@ export default function Formulario(props) {
                       className="form-control"
                     />
                   </div>
+                  <div className="col mb-3">
+                    <label className="form-label">Teléfono:</label>
+                    <input
+                      value={numero || ""}
+                      onChange={(e) => setNumero(e.target.value)}
+                      type="number"
+                      className="form-control"
+                      disabled={!editable}
+                    />
+                  </div>
                 </div>
+
+                <hr />
+
+                <h3> En caso de emergencia comunicarse con:</h3>
+
+                <div className="row">
+                  <div className="col mb-3">
+                    <label className="form-label">Responsable:</label>
+                    <input
+                      value=""
+                      onChange=""
+                      type="text"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col mb-3">
+                    <label className="form-label">Nombre:</label>
+                    <input
+                      value=""
+                      onChange=""
+                      type="text"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col mb-3">
+                    <label className="form-label">Telefono:</label>
+                    <input
+                      value=""
+                      onChange=""
+                      type="number"
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   className="btn btn-primary"
@@ -303,7 +344,7 @@ export default function Formulario(props) {
           </div>
           <div className="container">
             <div className="col">
-              <form onSubmit={store}>
+              <form>
                 <div className="row">
                   <div className="col mb-3">
                     <label className="form-label">Apellido y Nombres:</label>
@@ -336,16 +377,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked1}
-                          onChange={(e) => setIsChecked1(e.target.checked)}
+                          checked={isChecked[1]}
+                          onChange={(e) =>setIsChecked({ ...isChecked, 1: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked1}
-                          onChange={(e) => setIsChecked1(!e.target.checked)}
+                          checked={!isChecked[1]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 1: !e.target.checked })}
                         />
                         No
                       </label>
@@ -355,8 +396,8 @@ export default function Formulario(props) {
                       onChange={(e) => setMedicoAtendido(e.target.value)}
                       type="text"
                       className="form-control"
-                      placeholder={isChecked1 ? "¿Qué especialidad?" : ""}
-                      disabled={!isChecked1}
+                      placeholder={isChecked[1] ? "¿Qué especialidad?" : ""}
+                      disabled={!isChecked[1]}
                     />
                   </div>
 
@@ -367,16 +408,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[6]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 6: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[6]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 6: !e.target.checked })}
                         />
                         No
                       </label>
@@ -391,19 +432,19 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[2]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 2: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
-                        />
+                          checked={!isChecked[2]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 2: !e.target.checked })}
+                          />
                         No
-                      </label>
+                     </label>
                     </label>
                     <input
                       value={direccion}
@@ -421,16 +462,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[7]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 7: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[7]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 7: !e.target.checked })}
                         />
                         No
                       </label>
@@ -445,16 +486,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[3]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 3: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[3]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 3: !e.target.checked })}
                         />
                         No
                       </label>
@@ -475,16 +516,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[8]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 8: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[8]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 8: !e.target.checked })}
                         />
                         No
                       </label>
@@ -501,16 +542,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[4]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 4: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[4]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 4: !e.target.checked })}
                         />
                         No
                       </label>
@@ -525,16 +566,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[9]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 9: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[9]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 9: !e.target.checked })}
                         />
                         No
                       </label>
@@ -550,16 +591,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[5]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 5: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[5]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 5: !e.target.checked })}
                         />
                         No
                       </label>
@@ -574,16 +615,16 @@ export default function Formulario(props) {
                       <label>
                         <input
                           type="checkbox"
-                          checked={isChecked}
-                          onChange={(e) => setIsChecked(e.target.checked)}
+                          checked={isChecked[10]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 10: e.target.checked })}
                         />
                         Sí
                       </label>
                       <label>
                         <input
                           type="checkbox"
-                          checked={!isChecked}
-                          onChange={(e) => setIsChecked(!e.target.checked)}
+                          checked={!isChecked[10]}
+                          onChange={(e) => setIsChecked({ ...isChecked, 10: !e.target.checked })}
                         />
                         No
                       </label>
