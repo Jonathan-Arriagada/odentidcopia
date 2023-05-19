@@ -126,7 +126,9 @@ function PanelAdmin() {
 
                   <tbody>
                     {results.map((usuario) => (
-                      <tr key={usuario.id}>
+                      <tr key={usuario.id}
+                      className={usuario.rol === "Ks3n7p9Rv2wT" ? "deleted-row" : usuario.rol === "RmTnUw1iPj5q" ? "admin-row" : ""}
+                      >
                         <td> {usuario.codigo} </td>
                         <td> {usuario.apellidoConNombre}</td>
                         <td> {usuario.correo} </td>
