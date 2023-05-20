@@ -301,14 +301,17 @@ function Tratamientos() {
     }
   }
 
-  function renderDateDiff(date1) {
+  /*function renderDateDiff(date1) {
+    SOLO EN TABLA
+    <td> {renderDateDiff(tratamiento.fecha)} </td>
+
     const diff = moment().diff(moment(date1), "years months days");
     const years = moment.duration(diff).years();
     const months = moment.duration(diff).months();
     const days = moment.duration(diff).days();
 
     return `${years}    .    ${months}    .    ${days} `;
-  }
+  }*/
 
   const handleCheckboxChange = (event) => {
     setSelectedCheckbox(event.target.name);
@@ -1012,8 +1015,6 @@ function Tratamientos() {
                       <th onClick={() => sorting("estadosTratamientos")}>
                         Estado Tratamiento
                       </th>
-                      <th>Y . M . D</th>
-
                       <th>Accion</th>
                     </tr>
                   </thead>
@@ -1045,7 +1046,6 @@ function Tratamientos() {
                             {tratamiento.estadosTratamientos}
                           </p>
                         </td>
-                        <td> {renderDateDiff(tratamiento.fecha)} </td>
 
                         <td>
                           <Dropdown>
