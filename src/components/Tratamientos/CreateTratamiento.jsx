@@ -138,6 +138,8 @@ function CreateTratamiento(props) {
         importeAbonado: [],
         tratamientoCobro: [],
         codigoTratamiento: [],
+        estadoCobro: [],
+        pacienteCobro: [],
       },
     });
     clearFields();

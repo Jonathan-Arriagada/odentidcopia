@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 const Create = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
-  const [edad, setEdad] = useState("");
+  const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [numero, setNumero] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [error, setError] = useState("");
@@ -18,7 +18,7 @@ const Create = (props) => {
     if (
       apellidoConNombre.trim() === "" ||
       idc.trim() === "" ||
-      edad.trim() === "" ||
+      fechaNacimiento.trim() === "" ||
       numero.trim() === ""
     ) {
       setError("Todos los campos son obligatorios");
@@ -47,7 +47,7 @@ const Create = (props) => {
   const clearFields = () => {
     setApellidoConNombre("");
     setIdc("");
-    setEdad("");
+    setFechaNacimiento("");
     setNumero("");
     setError("");
   };
@@ -56,7 +56,7 @@ const Create = (props) => {
     await addDoc(clientsCollection, {
       apellidoConNombre: apellidoConNombre,
       idc: idc,
-      edad: edad,
+      fechaNacimiento: fechaNacimiento,
       numero: numero,
       valorBusqueda: valorBusqueda,
     });
@@ -114,11 +114,11 @@ const Create = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Edad*</label>
+                  <label className="form-label">Fecha Nacimiento*</label>
                   <input
-                    value={edad}
-                    onChange={(e) => setEdad(e.target.value)}
-                    type="number"
+                    value={fechaNacimiento}
+                    onChange={(e) => setFechaNacimiento(e.target.value)}
+                    type="date"
                     className="form-control"
                     required
                   />

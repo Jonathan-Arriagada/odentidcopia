@@ -105,7 +105,7 @@ function CreateCita(props) {
       await addDoc(collection(db, "clients"), {
         apellidoConNombre: apellidoConNombre,
         idc: idc,
-        edad: 0,
+        fechaNacimiento: 0,
         numero: numero,
         valorBusqueda: apellidoConNombre + " " + idc
       });

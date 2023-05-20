@@ -33,8 +33,7 @@ const Navigation = () => {
                 <div className="profile">
                     <img src={currentUser.photoURL || profile } alt="profile" className="profile-img" />
                 </div>
-                <span>Odentid</span>
-                <span>{currentUser.email}</span>
+                <span>{currentUser.displayName}</span>
             </header>
             {isLoading && (
                 <>

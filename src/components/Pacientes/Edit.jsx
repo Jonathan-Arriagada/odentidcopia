@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 const Edit = (props) => {
     const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
     const [idc, setIdc] = useState(props.client.idc || "");
-    const [edad, setEdad] = useState(props.client.edad || "");
+    const [fechaNacimiento, setFechaNacimiento] = useState(props.client.fechaNacimiento || "");
     const [numero, setNumero] = useState(props.client.numero || "");
     const [valorBusqueda, setValorBusqueda] = useState("");
 
@@ -19,7 +19,7 @@ const Edit = (props) => {
   const newData = {
     apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
     idc: idc || clientData.idc,
-    edad: edad || clientData.edad,
+    fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
     numero: numero || clientData.numero,
     valorBusqueda: valorBusqueda || clientData.valorBusqueda, 
   };
@@ -68,11 +68,11 @@ const Edit = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Edad</label>
+                  <label className="form-label">Fecha Nacimiento</label>
                   <input
-                    defaultValue={props.client.edad}
-                    onChange={(e) => setEdad(e.currentTarget.value)}
-                    type="number"
+                    defaultValue={props.client.fechaNacimiento}
+                    onChange={(e) => setFechaNacimiento(e.currentTarget.value)}
+                    type="date"
                     className="form-control"
                   />
                 </div>

@@ -1,13 +1,15 @@
 import { useContext, useState } from "react";
 import "./Login.css";
 import logo from "../img/logo-odentid.png";
-import {signInWithEmailAndPassword,sendPasswordResetEmail, signOut} from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { db } from "../firebaseConfig/firebase";
 import { query, collection, where, getDocs } from "firebase/firestore";
 import { Modal } from "react-bootstrap";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +19,12 @@ const Login = () => {
   const [errorMsg, setErrorMsg] = useState(false);
   const navigate = useNavigate();
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = (e) => {
+    e.preventDefault();
+    setShowPassword(!showPassword);
+  };
 
   const { dispatch } = useContext(AuthContext);
 
@@ -33,7 +41,7 @@ const Login = () => {
               const doc = querySnapshot.docs[0];
 
               localStorage.setItem("rol", JSON.stringify(doc.data().rol));
-              
+
               if (doc.data().rol === "Ks3n7p9Rv2wT") {
                 // Rol bloqueado, no permitir el inicio de sesión
                 signOut(auth);
@@ -91,13 +99,20 @@ const Login = () => {
             />
             <label htmlFor="email">Email</label>
           </div>
-          <div className="password">
+          <div className="password" style={{ display: "flex"}}>
             <input
               onChange={(e) => setPassword(e.target.value)}
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
             />
             <label htmlFor="password">Contraseña</label>
+            <button
+              className="password-toggle"
+              style={{ border: "none", background: "transparent", cursor: "pointer", color: "#000", borderBottom: "1px solid #2BB1FF",borderRadius:"0px" }} // Agrega un margen de valor cero al botón
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
           {error && (
             <span className="error">Email o Contraseña incorrectos.</span>
