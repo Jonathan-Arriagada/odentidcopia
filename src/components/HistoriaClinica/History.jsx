@@ -146,6 +146,8 @@ export default function Formulario(props) {
     setOcupacion("");
     setCorreo("");
     setNumero("");
+    setResponsable("");
+    setTelefonoResponsable("");
     setNombreResponsable("");
     setError("");
   };
@@ -212,6 +214,9 @@ export default function Formulario(props) {
       setOcupacion(props.client.ocupacion);
       setCorreo(props.client.correo);
       setNumero(props.client.numero);
+      setResponsable(props.client.responsable);
+      setNombreResponsable(props.client.nombreResponsable);
+      setTelefonoResponsable(props.client.telefonoResponsable);
       setEditable(false);
     } else {
       setApellidoConNombre("");
@@ -240,6 +245,9 @@ export default function Formulario(props) {
       setOcupacion(data.ocupacion);
       setCorreo(data.correo);
       setNumero(data.numero);
+      setResponsable(data.responsable);
+      setNombreResponsable(data.nombreResponsable);
+      setTelefonoResponsable(data.telefonoResponsable);
       setEditable(false);
     }
   };
