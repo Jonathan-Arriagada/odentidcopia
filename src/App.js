@@ -50,7 +50,6 @@ function App() {
             <Route path="history" element={<RequireAuth><History /></RequireAuth>}/>
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
             <Route path="control" element={<Control />}/>
-
         </Routes>
       </BrowserRouter>
     </div>

@@ -9,6 +9,7 @@ import Create from "./Create";
 import CreateCita from "../Agenda/CreateCita";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
+import moment from "moment";
 
 
 const Show = () => {
@@ -121,7 +122,7 @@ const Show = () => {
                     <tr>
                       <th onClick={() => sorting("apellidoConNombre")}>Apellido Y Nombres</th>
                       <th onClick={() => sorting("idc")}>DNI</th>
-                      <th onClick={() => sorting("edad")}>Edad</th>
+                      <th onClick={() => sorting("fechaNacimiento")}>Fecha Nacimiento</th>
                       <th onClick={() => sorting("numero")}>Telefono</th>
                       <th>Accion</th>
                     </tr>
@@ -132,7 +133,7 @@ const Show = () => {
                       <tr key={client.id}>
                         <td> {client.apellidoConNombre} </td>
                         <td> {client.idc} </td>
-                        <td> {client.edad} </td>
+                        <td>{moment(client.fefechaNacimientocha).format("DD/MM/YY")}</td>
                         <td> {client.numero} </td>
                         <td>
                           <button
