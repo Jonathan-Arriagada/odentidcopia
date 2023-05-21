@@ -14,8 +14,6 @@ import PanelAdmin from "./components/Admin/PanelAdmin";
 import MiPerfil from "./components/Admin/MiPerfil";
 import History from "./components/HistoriaClinica/History.jsx";
 import Ingresos from "./components/Ingresos/Ingresos";
-import Control from "./components/HistoriaClinica/COntrol";
-
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -49,7 +47,7 @@ function App() {
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
             <Route path="history" element={<RequireAuth><History /></RequireAuth>}/>
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
-            <Route path="control" element={<Control />}/>
+
         </Routes>
       </BrowserRouter>
     </div>

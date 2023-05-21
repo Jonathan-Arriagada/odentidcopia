@@ -13,6 +13,9 @@ import {
   orderBy,
   getDocs,
   where,
+  getDoc,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
@@ -42,7 +45,7 @@ export default function Formulario(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
   const [numero, setNumero] = useState("");
-  const [fecha, setFecha] = useState("");
+  const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [sexo, setSexo] = useState("");
   const [edad, setEdad] = useState("");
   const [lugarNacimiento, setLugarNacimiento] = useState("");
@@ -51,8 +54,13 @@ export default function Formulario(props) {
   const [direccion, setDireccion] = useState("");
   const [ocupacion, setOcupacion] = useState("");
   const [correo, setCorreo] = useState("");
+  const [responsable, setResponsable] = useState("");
+  const [nombreResponsable, setNombreResponsable] = useState("");
+  const [telefonoResponsable, setTelefonoResponsable] = useState("");
+  const [error, setError] = useState("");
+  const [valorBusqueda, setValorBusqueda] = useState("");
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
-  const [medicoAtendido, setMedicoAtendido] = useState("");
+  const [medicoAtendido, setMedicoAtendido] = useState("");  
   const [isChecked, setIsChecked] = useState({
     1: false,
     2: false,
@@ -76,12 +84,99 @@ export default function Formulario(props) {
 
   const clientsCollection = collection(db, "clients");
 
+  const validateFields = async (e) => {
+    e.preventDefault();
+    if (
+      apellidoConNombre.trim() === "" ||
+      idc.trim() === "" ||
+      fechaNacimiento.trim() === "" ||
+      numero.trim() === ""
+    ) {
+      setError("Todos los campos son obligatorios");
+      setTimeout(clearError, 2000)
+      return false;
+    } else {
+      const querySnapshot = await getDocs(query(clientsCollection, where("idc", "==", idc)));
+      if (!querySnapshot.empty) {
+        setError("El DNI ya existe en la Base de Datos");
+        setTimeout(clearError, 2000)
+        return false;
+      } else {
+        setError("");
+        await store();
+        clearFields();
+        props.onHide();
+      }
+    }
+    return true;
+  };
+
+  const actualizateFields = async (e) => {
+    e.preventDefault();
+    const clientRef = doc(db, "clients", props.id);
+    const clientDoc = await getDoc(clientRef);
+    const clientData = clientDoc.data();
+
+    const newData = {
+      apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
+      idc: idc || clientData.idc,
+      fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
+      numero: numero || clientData.numero,
+      edad: edad || clientData.edad,
+      sexo: sexo || clientData.sexo,
+      lugarNacimiento: lugarNacimiento || clientData.lugarNacimiento,
+      procedencia: procedencia || clientData.procedencia,
+    };
+    await updateDoc(clientRef, newData);    
+  }
+
+  const clearError = () => {
+    setError("");
+  };
+
+  const clearFields = () => {
+    setApellidoConNombre("");
+    setIdc("");
+    setFechaNacimiento("");
+    setEdad("");
+    setSexo("");
+    setLugarNacimiento("");
+    setProcedencia("");
+    setDireccion("");
+    setOcupacion("");
+    setCorreo("");
+    setNumero("");
+    setNombreResponsable("");
+    setError("");
+  };
+
+  const store = async () => {
+    await addDoc(clientsCollection, {
+      apellidoConNombre: apellidoConNombre,
+      idc: idc,
+      fechaNacimiento: fechaNacimiento,
+      numero: numero,
+      edad: edad,
+      sexo: sexo,
+      lugarNacimiento: lugarNacimiento,
+      procedencia: procedencia,
+      direccion: direccion,
+      ocupacion: ocupacion,
+      correo: correo,      
+      responsable: responsable,
+      nombreResponsable: nombreResponsable,
+      telefonoResponsable: telefonoResponsable,
+      valorBusqueda: valorBusqueda,
+    });
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const updateOptionsPacientes = useCallback((snapshot) => {
-    const options = snapshot.docs.map((doc) => doc.data().valorBusqueda);
+  const updateOptionsPacientes = useCallback(snapshot => {
+    const options = snapshot.docs.map(doc => doc.data().valorBusqueda);
+    options.unshift("<---Ingreso manual--->");
     setValorBusquedaOptions(options);
   }, []);
 
@@ -108,6 +203,14 @@ export default function Formulario(props) {
     if (props.client) {
       setApellidoConNombre(props.client.apellidoConNombre);
       setIdc(props.client.idc);
+      setFechaNacimiento(props.client.fechaNacimiento);
+      setEdad(props.client.edad);
+      setSexo(props.client.sexo);
+      setLugarNacimiento(props.client.lugarNacimiento);
+      setProcedencia(props.client.procedencia);
+      setDireccion(props.client.direccion);
+      setOcupacion(props.client.ocupacion);
+      setCorreo(props.client.correo);
       setNumero(props.client.numero);
       setEditable(false);
     } else {
@@ -128,6 +231,14 @@ export default function Formulario(props) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
       setIdc(data.idc);
+      setFechaNacimiento(data.fechaNacimiento);
+      setEdad(data.edad);
+      setSexo(data.sexo);
+      setLugarNacimiento(data.lugarNacimiento);
+      setProcedencia(data.procedencia);
+      setDireccion(data.direccion);
+      setOcupacion(data.ocupacion);
+      setCorreo(data.correo);
       setNumero(data.numero);
       setEditable(false);
     }
@@ -144,10 +255,19 @@ export default function Formulario(props) {
             <Tab label="Control y Evolución" />
           </Tabs>
         </Box>
+
+        {/* FILIACION */}
+
         <TabPanel value={value} index={0}>
           <div className="container d-flex mb-3">
             <h1>Filiación</h1>
           </div>
+          <form>
+          {error && (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                )}
           <div className="container">
             <div className="col">
               <div
@@ -175,33 +295,44 @@ export default function Formulario(props) {
                   multiple={false}
                 />
                 <datalist id="pacientes-list">
+                <option value="">Ingreso manual</option>
                   {valorBusquedaOptionsJSX}
                 </datalist>
               </div>
 
-              <form>
+              
                 <div className="row">
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <label className="form-label">Apellido y Nombres:</label>
                     <input
                       value={apellidoConNombre || ""}
-                      onChange={(e) => setApellidoConNombre(e.target.value)}
+                      onChange={(e) => {
+                        setApellidoConNombre(e.target.value);
+                        setValorBusqueda(e.target.value + " " + idc);
+                      }}
                       type="text"
                       className="form-control m-1"
                       disabled={!editable}
+                      required
                     />
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <label className="form-label">DNI:</label>
                     <input
                       value={idc || ""}
-                      onChange={(e) => setIdc(e.target.value)}
+                      onChange={(e) => {
+                        setIdc(e.target.value);
+                        setValorBusqueda(
+                          apellidoConNombre + " " + e.target.value
+                        );
+                      }}
                       type="number"
                       className="form-control m-1"
                       disabled={!editable}
+                      required
                     />
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <label className="form-label">Edad*</label>
                     <input
                       value={edad}
@@ -211,13 +342,14 @@ export default function Formulario(props) {
                       required
                     />
                   </div>
-                  <div className="col-md-4">
+                  <div className="col-md-3">
                     <label className="form-label">Sexo:</label>
                     <select
                       value={sexo}
                       onChange={(e) => setSexo(e.target.value)}
                       multiple={false}
                       className="form-control m-1"
+                      required
                     >
                       <option value="" disabled>
                         Selecciona un genero
@@ -232,10 +364,11 @@ export default function Formulario(props) {
                   <div className="col mb-6">
                     <label className="form-label">Fecha de Nacimiento:</label>
                     <input
-                      value={fecha}
-                      onChange={(e) => setFecha(e.target.value)}
+                      value={fechaNacimiento}
+                      onChange={(e) => setFechaNacimiento(e.target.value)}
                       type="date"
                       className="form-control m-1"
+                      required
                     />
                   </div>
                   <div className="col-md-4">
@@ -245,6 +378,7 @@ export default function Formulario(props) {
                       onChange={(e) => setLugarNacimiento(e.target.value)}
                       type="text"
                       className="form-control m-1"
+                      required
                     />
                   </div>
                   <div className="col-md-4">
@@ -254,17 +388,19 @@ export default function Formulario(props) {
                       onChange={(e) => setProcedencia(e.target.value)}
                       type="text"
                       className="form-control m-1"
+                      required
                     />
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-4">
+                  <div className="col">
                     <label className="form-label">Direccion:</label>
                     <input
                       value={direccion}
                       onChange={(e) => setDireccion(e.target.value)}
                       type="text"
                       className="form-control m-1"
+                      required
                     />
                   </div>
                 </div>
@@ -276,7 +412,7 @@ export default function Formulario(props) {
                       value={ocupacion}
                       onChange={(e) => setOcupacion(e.target.value)}
                       type="text"
-                      className="form-control m-1"
+                      className="form-control m-1"              
                     />
                   </div>
 
@@ -296,7 +432,6 @@ export default function Formulario(props) {
                       onChange={(e) => setNumero(e.target.value)}
                       type="number"
                       className="form-control m-1"
-                      disabled={!editable}
                     />
                   </div>
                 </div>
@@ -309,8 +444,8 @@ export default function Formulario(props) {
                   <div className="col-md-4">
                     <label className="form-label">Responsable:</label>
                     <input
-                      value=""
-                      onChange=""
+                      value={responsable}
+                      onChange={(e) => setResponsable(e.target.value)}
                       type="text"
                       className="form-control m-1"
                     />
@@ -318,8 +453,8 @@ export default function Formulario(props) {
                   <div className="col-md-4">
                     <label className="form-label">Nombre:</label>
                     <input
-                      value=""
-                      onChange=""
+                      value={nombreResponsable}
+                      onChange={(e) => setNombreResponsable(e.target.value)}
                       type="text"
                       className="form-control m-1"
                     />
@@ -327,27 +462,38 @@ export default function Formulario(props) {
                   <div className="col-md-4">
                     <label className="form-label">Telefono:</label>
                     <input
-                      value=""
-                      onChange=""
+                      value={telefonoResponsable}
+                      onChange={(e) => setTelefonoResponsable(e.target.value)}
                       type="number"
                       className="form-control m-1"
                     />
                   </div>
                 </div>
-
+            
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  style={{ margin: "1px" }}
+                  onClick={validateFields}
+                  style={{ margin: "3px" }}
                 >
                   Crear
                 </button>
-              </form>
+                {/* <button
+                        type="update"
+                        className="btn btn-primary"
+                        onClick={actualizateFields}
+                        style={{ margin: "3px" }}>
+                  Actualizar
+                </button> */}
+              </div>
             </div>
-          </div>
+          </form>
         </TabPanel>
+
+        {/* ANTECEDENTES */}
+
         <TabPanel value={value} index={1}>
-          <div className="container mb-3">
+          <div className="container d-flex mb-3">
             <h1>Antecedentes</h1>
           </div>
           <div className="container">
@@ -455,7 +601,9 @@ export default function Formulario(props) {
                       onChange={(e) => setMedicoAtendido(e.target.value)}
                       type="text"
                       className="form-control m-1"
-                      placeholder={isChecked[2] ? "¿Qué especialidad?" : ""}
+                      placeholder={
+                        isChecked[2] ? "¿Psiquiatra o Psicologo?" : ""
+                      }
                       disabled={!isChecked[2]}
                     />
                   </div>
@@ -496,6 +644,8 @@ export default function Formulario(props) {
                     onChange={(e) => setDireccion(e.target.value)}
                     type="text"
                     className="form-control m-1"
+                    placeholder={isChecked[3] ? "¿Qué medicamento?" : ""}
+                    disabled={!isChecked[3]}
                   />
 
                   <label className="form-label">
@@ -534,6 +684,8 @@ export default function Formulario(props) {
                     onChange={(e) => setDireccion(e.target.value)}
                     type="text"
                     className="form-control m-1"
+                    placeholder={isChecked[4] ? "¿A cuál medicamento?" : ""}
+                    disabled={!isChecked[4]}
                   />
 
                   <label className="form-label">
@@ -1024,10 +1176,98 @@ export default function Formulario(props) {
             </form>
           </div>
         </TabPanel>
+
+        {/* CONTROL Y EVOLUCION */}
+
         <TabPanel value={value} index={2}>
           <div className="container d-flex mb-3">
             <h1>Control y Evolucion</h1>
           </div>
+          <form>
+    <div className="row">
+      <div className="d-flex col-md-4">
+        <label className="col-form-label me-5">Nombre:</label>
+        <input
+          value={apellidoConNombre || ""}
+          onChange={(e) => setApellidoConNombre(e.target.value)}
+          type="text"
+          className="form-control m-1"
+          disabled={!editable}
+        />
+      </div>
+      <div className="d-flex col-md-3">
+        <label className="col-form-label me-5">DNI:</label>
+        <input
+          value={idc || ""}
+          onChange={(e) => setIdc(e.target.value)}
+          type="number"
+          className="form-control m-1"
+          disabled={!editable}
+        />
+      </div>
+      </div>
+      <div className="row">
+      <div className="d-flex col-md-4">
+        <label className="col-form-label me-5">Tratamiento:</label>
+        <input
+          value={apellidoConNombre || ""}
+          onChange={(e) => setApellidoConNombre(e.target.value)}
+          type="text"
+          className="form-control m-1"
+          disabled={!editable}
+        />
+      </div>
+      <div className="d-flex col-md-2">
+        <label className="col-form-label me-5">Pieza:</label>
+        <input
+          value={idc || ""}
+          onChange={(e) => setIdc(e.target.value)}
+          type="number"
+          className="form-control m-1"
+          disabled={!editable}
+        />
+      </div>
+    </div>
+
+    <hr />
+
+          <div className="d-flex col-md-3">
+            <label className="col-form-label me-5">Doctor:</label>
+            <input
+              value={apellidoConNombre || ""}
+              onChange={(e) => setApellidoConNombre(e.target.value)}
+              type="text"
+              className="form-control m-1"
+              disabled={!editable}
+            />
+            </div>
+            <div className="d-flex col-md-3">
+            <label className="col-form-label me-5">Fecha:</label>
+            <input
+              value={apellidoConNombre || ""}
+              onChange={(e) => setApellidoConNombre(e.target.value)}
+              type="number"
+              className="form-control m-1"
+            />
+          </div>
+          <div className="d-flex col-md-6">
+            <label className="col-form-label me-5">Detalle:</label>
+            <textarea
+              value={apellidoConNombre || ""}
+              onChange={(e) => setApellidoConNombre(e.target.value)}
+              type="text"
+              className="form-control m-1"
+              style={{ height: "150px"}}
+            />
+          </div>
+          </form>
+          <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ margin: "1px" }}
+              >
+                Agregar
+              </button>
         </TabPanel>
       </Box>
     </div>
