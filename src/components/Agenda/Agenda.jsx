@@ -384,8 +384,7 @@ function Citas() {
                             }}
                             className="btn btn-danger"
                           >
-                            {" "}
-                            <i className="fa-solid fa-trash-can"></i>{" "}
+                            <i className="fa-solid fa-trash-can"></i>
                           </button>
                         </td>
                       </tr>
