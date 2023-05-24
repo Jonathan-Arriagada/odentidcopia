@@ -588,7 +588,7 @@ function Tratamientos() {
                       style={{ maxHeight: "34px" }}
                     >
                       <h1>Tratamientos</h1>
-                      {userType === '"RmTnUw1iPj5q"' ? (
+                      {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
                           className="btn btn-dark mx-2 btn-sm"
                           onClick={() => {

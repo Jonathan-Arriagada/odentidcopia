@@ -116,7 +116,7 @@ const Gastos = () => {
                                             style={{ maxHeight: "40px", marginLeft: "10px" }}
                                         >
                                             <h1>Gastos</h1>
-                                            {userType === '"RmTnUw1iPj5q"' ? (
+                                            {userType === process.env.REACT_APP_rolAdCon ? (
                                                 <button
                                                     className="btn btn-dark mx-2 btn-sm"
                                                     style={{ borderRadius: "5px" }}

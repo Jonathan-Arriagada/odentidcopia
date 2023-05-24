@@ -65,7 +65,7 @@ const EditGasto = (props) => {
     const gastoData = gastoDoc.data();
 
     const newData = {
-      fechaGasto: moment(fechaGasto).format('DD/MM/YY') || moment(gastoData.fechaGasto).format('DD/MM/YY'),
+      fechaGasto: fechaGasto || gastoData.fechaGasto,
       ruc: ruc || gastoData.ruc,
       proveedor: proveedor || gastoData.proveedor,
       tipoGasto: tipoGasto || gastoData.tipoGasto,

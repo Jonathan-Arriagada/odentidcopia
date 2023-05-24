@@ -107,7 +107,7 @@ function Tarifario() {
                       className="form-control m-2 w-25"
                     />
                     <div className="d-flex justify-content-end">
-                      {userType === '"RmTnUw1iPj5q"' ? (
+                      {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
                           variant="primary"
                           className="btn-blue m-2"
@@ -127,7 +127,7 @@ function Tarifario() {
                       <th onClick={() => sorting("codigo")}>Código</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
-                      {userType === '"RmTnUw1iPj5q"' ? <th>Accion</th> : null}
+                      {userType === process.env.REACT_APP_rolAdCon ? <th>Accion</th> : null}
                     </tr>
                   </thead>
 
@@ -140,7 +140,7 @@ function Tarifario() {
                         <td> {tarifa.codigo} </td>
                         <td> {tarifa.tratamiento}</td>
                         <td> {tarifa.tarifa} </td>
-                        {userType === '"RmTnUw1iPj5q"' ? (
+                        {userType === process.env.REACT_APP_rolAdCon ? (
                           <td>
                             <button
                               variant="primary"

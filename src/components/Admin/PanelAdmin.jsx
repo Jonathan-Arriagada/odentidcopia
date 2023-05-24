@@ -30,12 +30,12 @@ function PanelAdmin() {
 
   const disableUsuario = async (id) => {
     const userDoc = doc(db, "user", id);
-    await updateDoc(userDoc, { rol: "Ks3n7p9Rv2wT" });
+    await updateDoc(userDoc, { rol: process.env.REACT_APP_rolBloq });
   };
 
   const enableUsuario = async (id) => {
     const userDoc = doc(db, "user", id);
-    await updateDoc(userDoc, { rol: "yS3tEzgK9Qp7"});
+    await updateDoc(userDoc, { rol: process.env.REACT_APP_rolAsi});
   };
 
   useEffect(() => {
@@ -127,7 +127,7 @@ function PanelAdmin() {
                   <tbody>
                     {results.map((usuario) => (
                       <tr key={usuario.id}
-                      className={usuario.rol === "Ks3n7p9Rv2wT" ? "deleted-row" : usuario.rol === "RmTnUw1iPj5q" ? "admin-row" : ""}
+                      className={usuario.rol === process.env.REACT_APP_rolBloq ? "deleted-row" : usuario.rol === process.env.REACT_APP_rolAd ? "admin-row" : ""}
                       >
                         <td> {usuario.codigo} </td>
                         <td> {usuario.apellidoConNombre}</td>
@@ -142,7 +142,7 @@ function PanelAdmin() {
                               className="btn btn-danger"
                               disabled={
                                 disabledRows.includes(usuario.id) ||
-                                usuario.rol === "Ks3n7p9Rv2wT" || usuario.rol === "RmTnUw1iPj5q"
+                                usuario.rol === process.env.REACT_APP_rolBloq || usuario.rol === process.env.REACT_APP_rolAd
                               }
                             >
                               <i className="fa-solid fa-trash"></i>
@@ -152,7 +152,7 @@ function PanelAdmin() {
                                 enableUsuario(usuario.id);
                               }}
                               className="btn btn-light"
-                              disabled={disabledRows.includes(usuario.id) || usuario.rol === "yS3tEzgK9Qp7" || usuario.rol === "RmTnUw1iPj5q"}
+                              disabled={disabledRows.includes(usuario.id) || usuario.rol === process.env.REACT_APP_rolAsi || usuario.rol === process.env.REACT_APP_rolAd}
                               style={{ marginLeft: "2px" }}
                             >
                               {" "}

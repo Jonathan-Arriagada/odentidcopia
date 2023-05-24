@@ -27,7 +27,7 @@ function App() {
   function RequireAdmin({ children }) {
     const storedRole = localStorage.getItem('rol');
     
-    if (storedRole === '"RmTnUw1iPj5q"') {
+    if (storedRole === process.env.REACT_APP_rolAdCon) {
       return children;
     } else {
       return <Navigate to="/agenda" />;
