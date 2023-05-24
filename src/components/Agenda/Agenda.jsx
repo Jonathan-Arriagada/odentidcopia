@@ -14,6 +14,10 @@ import "../Utilidades/tablas.css";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
+import { FaSignOutAlt,FaDollarSign, FaEnvelope } from "react-icons/fa";
+import "../UpNav.css";
+import { getAuth, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 
 function Citas() {
@@ -38,6 +42,18 @@ function Citas() {
 
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
+
+  const logout = () => {
+    const auth = getAuth();
+    signOut(auth)
+    .then(() => {
+      localStorage.setItem("user", JSON.stringify(null));
+    })
+    .catch((error) => {
+      // Maneja cualquier error que ocurra durante el logout
+      console.log("Error durante el logout:", error);
+    });
+};
 
   const citasCollection = collection(db, "citas");
   const citasCollectionOrdenados = useRef(
@@ -202,7 +218,45 @@ function Citas() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
-          <div className="container mt-2 mw-100">
+          
+          <div className="w-100">
+            <nav className="navbar">
+    <div className="d-flex justify-content-between w-100 px-2">
+      <div className="search-bar w-75">
+        <input
+            value={search}
+            onChange={searcher}
+            type="text"
+            placeholder="Buscar por Apellido y Nombres o DNI..."
+            className="form-control m-2 w-25"
+            />
+      </div>
+      <div className="d-flex justify-content-between w-25 align-items-center">
+        <p className="fw-bold mb-0">Bienvenido al sistema Odentid</p>
+        <div className="d-flex">
+            <div className="notificacion">
+            <FaDollarSign className="icono"/>
+            <span class="badge rounded-pill bg-danger">
+                 2
+            </span>
+            </div>
+            <div className="notificacion">
+            <FaEnvelope className="icono"/>
+            <span class="badge rounded-pill bg-danger">
+                 5
+            </span>
+            </div>
+        </div>
+        <div className="notificacion">
+          <Link to="/" className="text-decoration-none" style={{color: "#b8b7b8"}} onClick={logout}>
+            <FaSignOutAlt className="icono"/>
+            <span>Logout</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  </nav>  
+          <div className="container mw-100 mt-2">
             <div className="row">
               <div className="col">
                 <div className="d-grid gap-2">
@@ -237,16 +291,6 @@ function Citas() {
                       >
                       </input>
                     )}
-                    <input
-                      value={search}
-                      onChange={searcher}
-                      type="text"
-                      placeholder="Buscar por Apellido, Nombre o DNI..."
-                      className="form-control m-2 w-25"
-                      style={{
-                        display: taparFiltro ? "none" : "block",
-                      }}
-                    />
 
                     <button
                       variant="primary"
@@ -393,6 +437,7 @@ function Citas() {
                   </tbody>
                 </table>
               </div>
+            </div>
             </div>
           </div>
         )}

@@ -23,6 +23,9 @@ import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
+import { FaSignOutAlt,FaDollarSign, FaEnvelope } from "react-icons/fa";
+import { getAuth, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
@@ -83,6 +86,18 @@ function Tratamientos() {
   const [restoCobro, setRestoCobro] = useState("");
   const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
+
+  const logout = () => {
+    const auth = getAuth();
+    signOut(auth)
+    .then(() => {
+      localStorage.setItem("user", JSON.stringify(null));
+    })
+    .catch((error) => {
+      // Maneja cualquier error que ocurra durante el logout
+      console.log("Error durante el logout:", error);
+    });
+};
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
   const estadosTratamientoCollection = useRef(
@@ -578,6 +593,43 @@ function Tratamientos() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
+          <div className="w-100">
+            <nav className="navbar">
+    <div className="d-flex justify-content-between w-100 px-2">
+      <div className="search-bar w-75">
+        <input
+            value={search}
+            onChange={searcher}
+            type="text"
+            placeholder="Buscar por Apellido y Nombres o DNI..."
+            className="form-control m-2 w-25"
+            />
+      </div>
+      <div className="d-flex justify-content-between w-25 align-items-center">
+        <p className="fw-bold mb-0">Bienvenido al sistema Odentid</p>
+        <div className="d-flex">
+            <div className="notificacion">
+            <FaDollarSign className="icono"/>
+            <span class="badge rounded-pill bg-danger">
+                 2
+            </span>
+            </div>
+            <div className="notificacion">
+            <FaEnvelope className="icono"/>
+            <span class="badge rounded-pill bg-danger">
+                 5
+            </span>
+            </div>
+        </div>
+        <div className="notificacion">
+        <Link to="/" className="text-decoration-none" style={{color: "#b8b7b8"}} onClick={logout}>
+          <FaSignOutAlt className="icono"/>
+          <span>Logout</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  </nav>
           <div className="container mt-2 mw-100">
             <div className="row">
               <div className="col">
@@ -610,20 +662,6 @@ function Tratamientos() {
                         disabled
                       ></input>
                     )}
-                    <input
-                      value={search}
-                      onChange={(e) => {
-                        searcher(e);
-                        setMostrarTabla(false);
-                        setMostrarVer(true);
-                      }}
-                      type="text"
-                      placeholder="Buscar por Apellido, Nombres o DNI..."
-                      className="form-control m-2 w-25"
-                      style={{
-                        display: taparFiltro ? "none" : "block",
-                      }}
-                    />
                     <button
                       variant="primary"
                       className="btn btn-success mx-1 btn-md"
@@ -1319,6 +1357,7 @@ function Tratamientos() {
                 )}
               </div>
             </div>
+          </div>
           </div>
         )}
       </div>

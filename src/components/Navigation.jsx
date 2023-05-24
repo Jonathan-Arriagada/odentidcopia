@@ -1,7 +1,7 @@
 import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
-import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt, FaStethoscope} from 'react-icons/fa';
+import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaStethoscope, FaChevronDown} from 'react-icons/fa';
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
@@ -12,10 +12,7 @@ const Navigation = () => {
     const { currentUser } = useContext(AuthContext);
     const [userType, setUserType] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-
-    const logout = () => {
-        localStorage.setItem("user", JSON.stringify(null));
-    };
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const type = localStorage.getItem("rol");
@@ -40,12 +37,19 @@ const Navigation = () => {
             {userType === '"RmTnUw1iPj5q"' ? ( <Link to="/admin" className="text-decoration-none link-light"><Nav title="Admin Panel" Icon={FaUserTie} /></Link>) : null}
             <Link to="/miPerfil" className="text-decoration-none link-light"><Nav title="Mi Perfil" Icon={FaUser} /></Link>
             <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
-            <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link>
+            <div className="sidebar">
+                <div className={open ? "sidebar-item open" : "sidebar-item"}>
+                    <div className="sidebar-title d-flex align-items-center justify-content-between">
+                        <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link><FaChevronDown className="toggle-btn" onClick={() => setOpen(!open)} />
+                    </div>
+                    <div className="sidebar-content">
+                        <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link> 
+                    </div>
+                </div>  
+            </div>               
             <Link to="/tarifas" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
             <Link to="/history" className="text-decoration-none link-light"><Nav title="Historial Clinico" Icon={FaBookMedical} /></Link>
-            <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /> </Link>
             <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Ingresos" Icon={FaDollarSign} /> </Link>
-            <Link to="/" className="text-decoration-none link-light" onClick={logout}><Nav title="Logout" Icon={FaSignOutAlt} /></Link>
             </>
             )}
         </div>

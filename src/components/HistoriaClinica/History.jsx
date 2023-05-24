@@ -60,7 +60,7 @@ export default function Formulario(props) {
   const [error, setError] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
-  const [medicoAtendido, setMedicoAtendido] = useState("");  
+  const [medicoAtendido, setMedicoAtendido] = useState("");
   const [isChecked, setIsChecked] = useState({
     1: false,
     2: false,
@@ -93,13 +93,15 @@ export default function Formulario(props) {
       numero.trim() === ""
     ) {
       setError("Todos los campos son obligatorios");
-      setTimeout(clearError, 2000)
+      setTimeout(clearError, 2000);
       return false;
     } else {
-      const querySnapshot = await getDocs(query(clientsCollection, where("idc", "==", idc)));
+      const querySnapshot = await getDocs(
+        query(clientsCollection, where("idc", "==", idc))
+      );
       if (!querySnapshot.empty) {
         setError("El DNI ya existe en la Base de Datos");
-        setTimeout(clearError, 2000)
+        setTimeout(clearError, 2000);
         return false;
       } else {
         setError("");
@@ -127,8 +129,8 @@ export default function Formulario(props) {
       lugarNacimiento: lugarNacimiento || clientData.lugarNacimiento,
       procedencia: procedencia || clientData.procedencia,
     };
-    await updateDoc(clientRef, newData);    
-  }
+    await updateDoc(clientRef, newData);
+  };
 
   const clearError = () => {
     setError("");
@@ -164,7 +166,7 @@ export default function Formulario(props) {
       procedencia: procedencia,
       direccion: direccion,
       ocupacion: ocupacion,
-      correo: correo,      
+      correo: correo,
       responsable: responsable,
       nombreResponsable: nombreResponsable,
       telefonoResponsable: telefonoResponsable,
@@ -176,8 +178,8 @@ export default function Formulario(props) {
     setValue(newValue);
   };
 
-  const updateOptionsPacientes = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => doc.data().valorBusqueda);
+  const updateOptionsPacientes = useCallback((snapshot) => {
+    const options = snapshot.docs.map((doc) => doc.data().valorBusqueda);
     options.unshift("<---Ingreso manual--->");
     setValorBusquedaOptions(options);
   }, []);
@@ -271,44 +273,43 @@ export default function Formulario(props) {
             <h1>Filiación</h1>
           </div>
           <form>
-          {error && (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
-                  </div>
-                )}
-          <div className="container">
-            <div className="col">
-              <div
-                className="col mb-3"
-                style={{
-                  background: "#23C9FF",
-                  padding: "6px",
-                  borderRadius: "20px",
-                }}
-              >
-                <label
-                  className="form-label"
-                  style={{ marginLeft: "15px", fontWeight: "bold" }}
-                >
-                  Buscador por Apellido, Nombre o DNI:
-                </label>
-                <input
-                  style={{ borderRadius: "100px" }}
-                  type="text"
-                  className="form-control m-1"
-                  onChangeCapture={(e) =>
-                    manejarValorSeleccionado(e.target.value)
-                  }
-                  list="pacientes-list"
-                  multiple={false}
-                />
-                <datalist id="pacientes-list">
-                <option value="">Ingreso manual</option>
-                  {valorBusquedaOptionsJSX}
-                </datalist>
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
               </div>
+            )}
+            <div className="container">
+              <div className="col">
+                <div
+                  className="col mb-3"
+                  style={{
+                    background: "#23C9FF",
+                    padding: "6px",
+                    borderRadius: "20px",
+                  }}
+                >
+                  <label
+                    className="form-label"
+                    style={{ marginLeft: "15px", fontWeight: "bold" }}
+                  >
+                    Buscador por Apellido, Nombre o DNI:
+                  </label>
+                  <input
+                    style={{ borderRadius: "100px" }}
+                    type="text"
+                    className="form-control m-1"
+                    onChangeCapture={(e) =>
+                      manejarValorSeleccionado(e.target.value)
+                    }
+                    list="pacientes-list"
+                    multiple={false}
+                  />
+                  <datalist id="pacientes-list">
+                    <option value="">Ingreso manual</option>
+                    {valorBusquedaOptionsJSX}
+                  </datalist>
+                </div>
 
-              
                 <div className="row">
                   <div className="col-md-3">
                     <label className="form-label">Apellido y Nombres:</label>
@@ -420,7 +421,7 @@ export default function Formulario(props) {
                       value={ocupacion}
                       onChange={(e) => setOcupacion(e.target.value)}
                       type="text"
-                      className="form-control m-1"              
+                      className="form-control m-1"
                     />
                   </div>
 
@@ -477,7 +478,7 @@ export default function Formulario(props) {
                     />
                   </div>
                 </div>
-            
+
                 <button
                   type="submit"
                   className="btn btn-primary"
@@ -1191,91 +1192,91 @@ export default function Formulario(props) {
           <div className="container d-flex mb-3">
             <h1>Control y Evolucion</h1>
           </div>
-          <form>
-    <div className="row">
-      <div className="d-flex col-md-4">
-        <label className="col-form-label me-5">Nombre:</label>
-        <input
-          value={apellidoConNombre || ""}
-          onChange={(e) => setApellidoConNombre(e.target.value)}
-          type="text"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-      <div className="d-flex col-md-3">
-        <label className="col-form-label me-5">DNI:</label>
-        <input
-          value={idc || ""}
-          onChange={(e) => setIdc(e.target.value)}
-          type="number"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-      </div>
-      <div className="row">
-      <div className="d-flex col-md-4">
-        <label className="col-form-label me-5">Tratamiento:</label>
-        <input
-          value={apellidoConNombre || ""}
-          onChange={(e) => setApellidoConNombre(e.target.value)}
-          type="text"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-      <div className="d-flex col-md-2">
-        <label className="col-form-label me-5">Pieza:</label>
-        <input
-          value={idc || ""}
-          onChange={(e) => setIdc(e.target.value)}
-          type="number"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-    </div>
-
-    <hr />
-
-          <div className="d-flex col-md-3">
-            <label className="col-form-label me-5">Doctor:</label>
-            <input
-              value={apellidoConNombre || ""}
-              onChange={(e) => setApellidoConNombre(e.target.value)}
-              type="text"
-              className="form-control m-1"
-              disabled={!editable}
-            />
+          <form className="container">
+            <div className="row">
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">Nombre:</label>
+                <input
+                  value={apellidoConNombre || ""}
+                  onChange={(e) => setApellidoConNombre(e.target.value)}
+                  type="text"
+                  className="form-control my-1 ms-2 w-100"
+                  disabled={!editable}
+                />
+              </div>
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">DNI:</label>
+                <input
+                  value={idc || ""}
+                  onChange={(e) => setIdc(e.target.value)}
+                  type="number"
+                  className="form-control m-1 w-100"
+                  disabled={!editable}
+                />
+              </div>
             </div>
-            <div className="d-flex col-md-3">
-            <label className="col-form-label me-5">Fecha:</label>
-            <input
-              value={apellidoConNombre || ""}
-              onChange={(e) => setApellidoConNombre(e.target.value)}
-              type="number"
-              className="form-control m-1"
-            />
-          </div>
-          <div className="d-flex col-md-6">
-            <label className="col-form-label me-5">Detalle:</label>
-            <textarea
-              value={apellidoConNombre || ""}
-              onChange={(e) => setApellidoConNombre(e.target.value)}
-              type="text"
-              className="form-control m-1"
-              style={{ height: "150px"}}
-            />
-          </div>
+            <div className="row">
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">Tratamiento:</label>
+                <input
+                  value={apellidoConNombre || ""}
+                  onChange={(e) => setApellidoConNombre(e.target.value)}
+                  type="text"
+                  className="form-control my-1 ms-2 w-100"
+                  disabled={!editable}
+                />
+              </div>
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">Pieza:</label>
+                <input
+                  value={idc || ""}
+                  onChange={(e) => setIdc(e.target.value)}
+                  type="number"
+                  className="form-control m-1 w-100"
+                  disabled={!editable}
+                />
+              </div>
+            </div>
+
+            <hr />
+
+            <div className="d-flex col-md-5">
+              <label className="col-form-label me-5 w-25">Doctor:</label>
+              <input
+                value={apellidoConNombre || ""}
+                onChange={(e) => setApellidoConNombre(e.target.value)}
+                type="text"
+                className="form-control m-1 w-100"
+                disabled={!editable}
+              />
+            </div>
+            <div className="d-flex col-md-5">
+              <label className="col-form-label me-5 w-25">Fecha:</label>
+              <input
+                value={apellidoConNombre || ""}
+                onChange={(e) => setApellidoConNombre(e.target.value)}
+                type="number"
+                className="form-control m-1 w-100"
+              />
+            </div>
+            <div className="d-flex col-md-5">
+              <label className="col-form-label me-5 w-25">Detalle:</label>
+              <textarea
+                value={apellidoConNombre || ""}
+                onChange={(e) => setApellidoConNombre(e.target.value)}
+                type="text"
+                className="form-control m-1"
+                style={{ height: "150px" }}
+              />
+            </div>
           </form>
           <button
-                type="submit"
-                className="btn btn-primary"
-                style={{ margin: "1px" }}
-              >
-                Agregar
-              </button>
+            type="submit"
+            className="btn btn-primary"
+            style={{ margin: "1px" }}
+          >
+            Agregar
+          </button>
         </TabPanel>
       </Box>
     </div>
