@@ -6,6 +6,10 @@ import CrearAsistente from "./CrearAsistente";
 import "../Pacientes/Show.css"
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
+import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import "../UpNav.css";
+import { getAuth, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 function PanelAdmin() {
   const [usuarios, setUsuarios] = useState([]);
@@ -18,6 +22,18 @@ function PanelAdmin() {
 
   const userCollectiona = collection(db, "user");
   const userCollection = useRef(query(userCollectiona, orderBy("codigo")));
+
+  const logout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+      })
+      .catch((error) => {
+        // Maneja cualquier error que ocurra durante el logout
+        console.log("Error durante el logout:", error);
+      });
+  };
 
   const getUsuarios = useCallback((snapshot) => {
     const usuariosArray = snapshot.docs.map((doc) => ({
@@ -35,7 +51,7 @@ function PanelAdmin() {
 
   const enableUsuario = async (id) => {
     const userDoc = doc(db, "user", id);
-    await updateDoc(userDoc, { rol: process.env.REACT_APP_rolAsi});
+    await updateDoc(userDoc, { rol: process.env.REACT_APP_rolAsi });
   };
 
   useEffect(() => {
@@ -83,59 +99,87 @@ function PanelAdmin() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
-          <div className="container mt-2 mw-100">
-            <div className="row">
-              <div className="col">
-                <div className="d-grid gap-2">
+          <div className="w-100">
+            <nav className="navbar">
+              <div className="d-flex justify-content-between w-100 px-2">
+                <div className="search-bar w-75">
+                  <input
+                    value={search}
+                    onChange={searcher}
+                    type="text"
+                    placeholder="Buscar por Apellido, Nombres o Codigo..."
+                    className="form-control m-2 w-25"
+                  />
+                </div>
+                <div className="d-flex justify-content-between w-25 align-items-center">
+                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
                   <div className="d-flex">
-                    <h1>Panel Administrador</h1>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <input
-                      value={search}
-                      onChange={searcher}
-                      type="text"
-                      placeholder="Buscar por Apellido, Nombres o Codigo..."
-                      className="form-control m-2 w-25"
-                    />
-                    <div className="d-flex justify-content-end">
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => {
-                          setModalShow(true);
-                        }}
-                      >
-                        Agregar Asistente
-                      </button>
+                    <div className="notificacion">
+                      <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                        <FaUser className="icono" />
+                      </Link>
                     </div>
-
+                    <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">
+                        5
+                      </span>
+                    </div>
+                  </div>
+                  <div className="notificacion">
+                    <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                      <FaSignOutAlt className="icono" />
+                      <span>Logout</span>
+                    </Link>
                   </div>
                 </div>
-                <table className="table__body">
-                  <thead>
-                    <tr>
-                      <th onClick={() => sorting("codigo")}>Código</th>
-                      <th onClick={() => sorting("apellidoConNombre")}>Apellido y Nombres</th>
-                      <th onClick={() => sorting("correo")}>Email</th>
-                      <th onClick={() => sorting("telefono")}>Telefono</th>
-                      <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
-                      <th>Accion</th>
-                    </tr>
-                  </thead>
+              </div>
+            </nav>
+            <div className="container mt-2 mw-100">
+              <div className="row">
+                <div className="col">
+                  <br></br>
+                  <div className="d-grid gap-2">
+                    <div className="d-flex justify-content-between">
+                      <h1>Panel Administrador</h1>
 
-                  <tbody>
-                    {results.map((usuario) => (
-                      <tr key={usuario.id}
-                      className={usuario.rol === process.env.REACT_APP_rolBloq ? "deleted-row" : usuario.rol === process.env.REACT_APP_rolAd ? "admin-row" : ""}
-                      >
-                        <td> {usuario.codigo} </td>
-                        <td> {usuario.apellidoConNombre}</td>
-                        <td> {usuario.correo} </td>
-                        <td> {usuario.telefono} </td>
-                        <td> {usuario.fechaAlta}</td>
-                        <td>         
+                      <div className="d-flex justify-content-end">
                         <button
+                          variant="primary"
+                          className="btn-blue m-2"
+                          onClick={() => {
+                            setModalShow(true);
+                          }}
+                        >
+                          Agregar Asistente
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <table className="table__body">
+                    <thead>
+                      <tr>
+                        <th onClick={() => sorting("codigo")}>Código</th>
+                        <th onClick={() => sorting("apellidoConNombre")}>Apellido y Nombres</th>
+                        <th onClick={() => sorting("correo")}>Email</th>
+                        <th onClick={() => sorting("telefono")}>Telefono</th>
+                        <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
+                        <th>Accion</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {results.map((usuario) => (
+                        <tr key={usuario.id}
+                          className={usuario.rol === process.env.REACT_APP_rolBloq ? "deleted-row" : usuario.rol === process.env.REACT_APP_rolAd ? "admin-row" : ""}
+                        >
+                          <td> {usuario.codigo} </td>
+                          <td> {usuario.apellidoConNombre}</td>
+                          <td> {usuario.correo} </td>
+                          <td> {usuario.telefono} </td>
+                          <td> {usuario.fechaAlta}</td>
+                          <td>
+                            <button
                               onClick={() => {
                                 disableUsuario(usuario.id);
                               }}
@@ -146,8 +190,8 @@ function PanelAdmin() {
                               }
                             >
                               <i className="fa-solid fa-trash"></i>
-                              </button>
-                          <button
+                            </button>
+                            <button
                               onClick={() => {
                                 enableUsuario(usuario.id);
                               }}
@@ -159,10 +203,11 @@ function PanelAdmin() {
                               <i className="fa-solid fa-power-off"></i>{" "}
                             </button>
                           </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
