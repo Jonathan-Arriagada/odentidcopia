@@ -266,7 +266,7 @@ function Citas() {
                       style={{ maxHeight: "40px", marginLeft: "10px" }}
                     >
                       <h1>Agenda</h1>
-                      {userType === '"RmTnUw1iPj5q"' ? (
+                      {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
                           className="btn btn-dark mx-2 btn-sm"
                           style={{ borderRadius: "5px" }}
@@ -428,8 +428,7 @@ function Citas() {
                             }}
                             className="btn btn-danger"
                           >
-                            {" "}
-                            <i className="fa-solid fa-trash-can"></i>{" "}
+                            <i className="fa-solid fa-trash-can"></i>
                           </button>
                         </td>
                       </tr>
