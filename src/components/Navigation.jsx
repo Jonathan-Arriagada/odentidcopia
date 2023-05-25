@@ -1,9 +1,9 @@
 import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
-import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaChevronDown } from 'react-icons/fa';
-import { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt,FaChevronDown , FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck } from 'react-icons/fa';
+import { useState, useContext,useCallback } from "react";
+import { Link,useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
 import { useEffect } from "react";
 
@@ -16,11 +16,13 @@ const Navigation = () => {
     const [open2, setOpen2] = useState(false);
     const [open3, setOpen3] = useState(false);
     const [isMouseMoving, setIsMouseMoving] = useState(false);
+    const navigate = useNavigate();
 
-    const logout = () => {
+    const logout = useCallback(() => {
         localStorage.setItem("user", JSON.stringify(null));
+        navigate("/");
         window.location.reload();
-    };
+      }, [navigate]);
 
     useEffect(() => {
         const type = localStorage.getItem("rol");
@@ -54,7 +56,7 @@ const Navigation = () => {
             clearTimeout(inactivityTimeout);
             document.removeEventListener("mousemove", handleMouseMove);
         };
-    }, [isMouseMoving]);
+    }, [isMouseMoving,logout]);
 
 
     return (
