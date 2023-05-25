@@ -48,12 +48,12 @@ function App() {
             <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
-            <Route path="history" element={<RequireAuth><History /></RequireAuth>}/>
+            <Route path="historial" element={<RequireAuth><History /></RequireAuth>}/>
+            <Route path="historial/:id" element={<RequireAuth><History /></RequireAuth>}/> 
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
             <Route path="gastos" element={<RequireAuth><Gastos /></RequireAuth>}/>
             <Route path="materiales" element={<RequireAuth><Materiales /></RequireAuth>}/>
-            <Route path="proveedores" element={<RequireAuth><Proveedores /></RequireAuth>}/>
-
+            <Route path="proveedores" element={<RequireAuth><Proveedores /></RequireAuth>}/>        
         </Routes>
       </BrowserRouter>
     </div>

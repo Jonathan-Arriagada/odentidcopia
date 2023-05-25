@@ -3,21 +3,20 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
-import Navigation from "../Navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  getDocs,
-  where,
   getDoc,
   doc,
   updateDoc,
+  getDocs,
+  query,
+  where,
+  collection,
+  addDoc,
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
+import { useNavigate, useParams } from "react-router-dom";
+import Navigation from "../Navigation";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -39,9 +38,7 @@ function TabPanel(props) {
   );
 }
 
-export default function Formulario(props) {
-  const [value, setValue] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+export default function History() {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idc, setIdc] = useState("");
   const [numero, setNumero] = useState("");
@@ -50,18 +47,17 @@ export default function Formulario(props) {
   const [edad, setEdad] = useState("");
   const [lugarNacimiento, setLugarNacimiento] = useState("");
   const [procedencia, setProcedencia] = useState("");
-  const [editable, setEditable] = useState(true);
   const [direccion, setDireccion] = useState("");
   const [ocupacion, setOcupacion] = useState("");
   const [correo, setCorreo] = useState("");
   const [responsable, setResponsable] = useState("");
   const [nombreResponsable, setNombreResponsable] = useState("");
   const [telefonoResponsable, setTelefonoResponsable] = useState("");
-  const [error, setError] = useState("");
-  const [valorBusqueda, setValorBusqueda] = useState("");
-  const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
+  const [error, setError] = useState("");  
+  const [editable, setEditable] = useState("")
+  const [value, setValue] = useState(0);
   const [medicoAtendido, setMedicoAtendido] = useState("");  
-  const [isChecked, setIsChecked] = useState({
+  const [isChecked, setIsChecked] = useState({    
     1: false,
     2: false,
     3: false,
@@ -81,6 +77,10 @@ export default function Formulario(props) {
     17: false,
     18: false,
   });
+ 
+  const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const clientsCollection = collection(db, "clients");
 
@@ -93,27 +93,32 @@ export default function Formulario(props) {
       numero.trim() === ""
     ) {
       setError("Todos los campos son obligatorios");
-      setTimeout(clearError, 2000)
+      setTimeout(clearError, 2000);
       return false;
     } else {
-      const querySnapshot = await getDocs(query(clientsCollection, where("idc", "==", idc)));
+      const querySnapshot = await getDocs(
+        query(clientsCollection, where("idc", "==", idc))
+      );
       if (!querySnapshot.empty) {
         setError("El DNI ya existe en la Base de Datos");
-        setTimeout(clearError, 2000)
+        setTimeout(clearError, 2000);
         return false;
       } else {
         setError("");
-        await store();
-        clearFields();
-        props.onHide();
+        await handleCrearClick();
+        navigate("/clients");
       }
     }
     return true;
   };
 
-  const actualizateFields = async (e) => {
+  const clearError = () => {
+    setError("");
+  };
+
+  const handleActualizarClick = async (e) => {
     e.preventDefault();
-    const clientRef = doc(db, "clients", props.id);
+    const clientRef = doc(db, "clients", id);
     const clientDoc = await getDoc(clientRef);
     const clientData = clientDoc.data();
 
@@ -126,33 +131,20 @@ export default function Formulario(props) {
       sexo: sexo || clientData.sexo,
       lugarNacimiento: lugarNacimiento || clientData.lugarNacimiento,
       procedencia: procedencia || clientData.procedencia,
+      direccion: direccion || clientData.direccion,
+      ocupacion: ocupacion || clientData.ocupacion,
+      correo: correo || clientData.correo,
+      responsable: responsable || clientData.responsable,
+      telefonoResponsable:
+        telefonoResponsable || clientData.telefonoResponsable,
+      nombreResponsable: nombreResponsable || clientData.nombreResponsable,
     };
-    await updateDoc(clientRef, newData);    
-  }
+    await updateDoc(clientRef, newData);
 
-  const clearError = () => {
-    setError("");
+    navigate("/clients");
   };
 
-  const clearFields = () => {
-    setApellidoConNombre("");
-    setIdc("");
-    setFechaNacimiento("");
-    setEdad("");
-    setSexo("");
-    setLugarNacimiento("");
-    setProcedencia("");
-    setDireccion("");
-    setOcupacion("");
-    setCorreo("");
-    setNumero("");
-    setResponsable("");
-    setTelefonoResponsable("");
-    setNombreResponsable("");
-    setError("");
-  };
-
-  const store = async () => {
+  const handleCrearClick = async () => {
     await addDoc(clientsCollection, {
       apellidoConNombre: apellidoConNombre,
       idc: idc,
@@ -164,92 +156,41 @@ export default function Formulario(props) {
       procedencia: procedencia,
       direccion: direccion,
       ocupacion: ocupacion,
-      correo: correo,      
+      correo: correo,
       responsable: responsable,
       nombreResponsable: nombreResponsable,
       telefonoResponsable: telefonoResponsable,
-      valorBusqueda: valorBusqueda,
     });
   };
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const getClientById = async (id) => {
+    const clientF = await getDoc(doc(db, "clients", id));
+    if (clientF.exists()) {
+      setApellidoConNombre(clientF.data().apellidoConNombre);
+      setIdc(clientF.data().idc);
+      setNumero(clientF.data().numero);
+      setFechaNacimiento(clientF.data().fechaNacimiento);
+      setSexo(clientF.data().sexo);
+      setEdad(clientF.data().edad);
+      setLugarNacimiento(clientF.data().lugarNacimiento);
+      setProcedencia(clientF.data().procedencia);
+      setDireccion(clientF.data().direccion);
+      setOcupacion(clientF.data().ocupacion);
+      setCorreo(clientF.data().correo);
+      setResponsable(clientF.data().responsable);
+      setNombreResponsable(clientF.data().nombreResponsable);
+      setTelefonoResponsable(clientF.data().telefonoResponsable);
+    } else {
+      console.log("No");
+    }
   };
 
-  const updateOptionsPacientes = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => doc.data().valorBusqueda);
-    options.unshift("<---Ingreso manual--->");
-    setValorBusquedaOptions(options);
-  }, []);
-
-  //Render:
-
-  const valorBusquedaOptionsJSX = valorBusquedaOptions.map((option, index) => (
-    <option key={`valorBusqueda-${index}`} value={option}>
-      {option}
-    </option>
-  ));
-
   useEffect(() => {
-    const unsubscribe = [
-      onSnapshot(
-        query(collection(db, "clients"), orderBy("valorBusqueda")),
-        updateOptionsPacientes
-      ),
-    ];
+    getClientById(id);
+  }, [])
 
-    return () => unsubscribe.forEach((fn) => fn());
-  }, [updateOptionsPacientes]);
-
-  useEffect(() => {
-    if (props.client) {
-      setApellidoConNombre(props.client.apellidoConNombre);
-      setIdc(props.client.idc);
-      setFechaNacimiento(props.client.fechaNacimiento);
-      setEdad(props.client.edad);
-      setSexo(props.client.sexo);
-      setLugarNacimiento(props.client.lugarNacimiento);
-      setProcedencia(props.client.procedencia);
-      setDireccion(props.client.direccion);
-      setOcupacion(props.client.ocupacion);
-      setCorreo(props.client.correo);
-      setNumero(props.client.numero);
-      setResponsable(props.client.responsable);
-      setNombreResponsable(props.client.nombreResponsable);
-      setTelefonoResponsable(props.client.telefonoResponsable);
-      setEditable(false);
-    } else {
-      setApellidoConNombre("");
-      setIdc("");
-      setNumero("");
-    }
-  }, [props.client]);
-
-  const manejarValorSeleccionado = async (suggestion) => {
-    const querySnapshot = await getDocs(
-      query(collection(db, "clients"), where("valorBusqueda", "==", suggestion))
-    );
-
-    const doc = querySnapshot.docs[0];
-
-    if (doc) {
-      const data = doc.data();
-      setApellidoConNombre(data.apellidoConNombre);
-      setIdc(data.idc);
-      setFechaNacimiento(data.fechaNacimiento);
-      setEdad(data.edad);
-      setSexo(data.sexo);
-      setLugarNacimiento(data.lugarNacimiento);
-      setProcedencia(data.procedencia);
-      setDireccion(data.direccion);
-      setOcupacion(data.ocupacion);
-      setCorreo(data.correo);
-      setNumero(data.numero);
-      setResponsable(data.responsable);
-      setNombreResponsable(data.nombreResponsable);
-      setTelefonoResponsable(data.telefonoResponsable);
-      setEditable(false);
-    }
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
@@ -258,7 +199,7 @@ export default function Formulario(props) {
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs value={value} onChange={handleChange}>
-            <Tab label="Filiación" />
+            <Tab label="Filiación"/>
             <Tab label="Antecedentes" />
             <Tab label="Control y Evolución" />
           </Tabs>
@@ -271,231 +212,205 @@ export default function Formulario(props) {
             <h1>Filiación</h1>
           </div>
           <form>
-          {error && (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
-                  </div>
-                )}
-          <div className="container">
-            <div className="col">
-              <div
-                className="col mb-3"
-                style={{
-                  background: "#23C9FF",
-                  padding: "6px",
-                  borderRadius: "20px",
-                }}
-              >
-                <label
-                  className="form-label"
-                  style={{ marginLeft: "15px", fontWeight: "bold" }}
-                >
-                  Buscador por Apellido, Nombre o DNI:
-                </label>
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+        <div className="container">
+          <div className="col">
+            <div className="row">
+              <div className="col-md-3">
+                <label className="form-label">Apellido y Nombres:</label>
                 <input
-                  style={{ borderRadius: "100px" }}
+                  value={apellidoConNombre}
+                  onChange={(e) => {
+                    setApellidoConNombre(e.target.value);
+                  }}
                   type="text"
                   className="form-control m-1"
-                  onChangeCapture={(e) =>
-                    manejarValorSeleccionado(e.target.value)
-                  }
-                  list="pacientes-list"
-                  multiple={false}
+                  required
                 />
-                <datalist id="pacientes-list">
-                <option value="">Ingreso manual</option>
-                  {valorBusquedaOptionsJSX}
-                </datalist>
               </div>
 
-              
-                <div className="row">
-                  <div className="col-md-3">
-                    <label className="form-label">Apellido y Nombres:</label>
-                    <input
-                      value={apellidoConNombre || ""}
-                      onChange={(e) => {
-                        setApellidoConNombre(e.target.value);
-                        setValorBusqueda(e.target.value + " " + idc);
-                      }}
-                      type="text"
-                      className="form-control m-1"
-                      disabled={!editable}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label">DNI:</label>
-                    <input
-                      value={idc || ""}
-                      onChange={(e) => {
-                        setIdc(e.target.value);
-                        setValorBusqueda(
-                          apellidoConNombre + " " + e.target.value
-                        );
-                      }}
-                      type="number"
-                      className="form-control m-1"
-                      disabled={!editable}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label">Edad*</label>
-                    <input
-                      value={edad}
-                      onChange={(e) => setEdad(e.target.value)}
-                      type="number"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label">Sexo:</label>
-                    <select
-                      value={sexo}
-                      onChange={(e) => setSexo(e.target.value)}
-                      multiple={false}
-                      className="form-control m-1"
-                      required
-                    >
-                      <option value="" disabled>
-                        Selecciona un genero
-                      </option>
-                      <option value="M">Masculino</option>
-                      <option value="F">Femenino</option>
-                    </select>
-                  </div>
-                </div>
+              <div className="col-md-3">
+                <label className="form-label">DNI:</label>
+                <input
+                  value={idc}
+                  onChange={(e) => {
+                    setIdc(e.target.value);
+                  }}
+                  type="number"
+                  className="form-control m-1"
+                  required
+                />
+              </div>
 
-                <div className="row">
-                  <div className="col mb-6">
-                    <label className="form-label">Fecha de Nacimiento:</label>
-                    <input
-                      value={fechaNacimiento}
-                      onChange={(e) => setFechaNacimiento(e.target.value)}
-                      type="date"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label className="form-label">Lugar Nacimiento:</label>
-                    <input
-                      value={lugarNacimiento}
-                      onChange={(e) => setLugarNacimiento(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label className="form-label">Procedencia:</label>
-                    <input
-                      value={procedencia}
-                      onChange={(e) => setProcedencia(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col">
-                    <label className="form-label">Direccion:</label>
-                    <input
-                      value={direccion}
-                      onChange={(e) => setDireccion(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-                </div>
+              <div className="col-md-3">
+                <label className="form-label">Edad*</label>
+                <input
+                  value={edad}
+                  onChange={(e) => setEdad(e.target.value)}
+                  type="number"
+                  className="form-control m-1"
+                  required
+                />
+              </div>
 
-                <div className="row">
-                  <div className="col-md-4">
-                    <label className="form-label">Ocupacion:</label>
-                    <input
-                      value={ocupacion}
-                      onChange={(e) => setOcupacion(e.target.value)}
-                      type="text"
-                      className="form-control m-1"              
-                    />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="form-label">Correo:</label>
-                    <input
-                      value={correo}
-                      onChange={(e) => setCorreo(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label className="form-label">Teléfono:</label>
-                    <input
-                      value={numero || ""}
-                      onChange={(e) => setNumero(e.target.value)}
-                      type="number"
-                      className="form-control m-1"
-                    />
-                  </div>
-                </div>
-
-                <hr />
-
-                <h3> En caso de emergencia comunicarse con:</h3>
-
-                <div className="row">
-                  <div className="col-md-4">
-                    <label className="form-label">Responsable:</label>
-                    <input
-                      value={responsable}
-                      onChange={(e) => setResponsable(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label className="form-label">Nombre:</label>
-                    <input
-                      value={nombreResponsable}
-                      onChange={(e) => setNombreResponsable(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                    />
-                  </div>
-                  <div className="col-md-4">
-                    <label className="form-label">Telefono:</label>
-                    <input
-                      value={telefonoResponsable}
-                      onChange={(e) => setTelefonoResponsable(e.target.value)}
-                      type="number"
-                      className="form-control m-1"
-                    />
-                  </div>
-                </div>
-            
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={validateFields}
-                  style={{ margin: "3px" }}
+              <div className="col-md-3">
+                <label className="form-label">Sexo:</label>
+                <select
+                  value={sexo}
+                  onChange={(e) => setSexo(e.target.value)}
+                  multiple={false}
+                  className="form-control m-1"
+                  required
                 >
-                  Crear
-                </button>
-                {/* <button
-                        type="update"
-                        className="btn btn-primary"
-                        onClick={actualizateFields}
-                        style={{ margin: "3px" }}>
-                  Actualizar
-                </button> */}
+                  <option value="" disabled>
+                    Selecciona un genero
+                  </option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Femenino</option>
+                </select>
               </div>
             </div>
-          </form>
+            <div className="row">
+              <div className="col mb-6">
+                <label className="form-label">Fecha de Nacimiento:</label>
+                <input
+                  value={fechaNacimiento}
+                  onChange={(e) => setFechaNacimiento(e.target.value)}
+                  type="date"
+                  className="form-control m-1"
+                  required
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label className="form-label">Lugar Nacimiento:</label>
+                <input
+                  value={lugarNacimiento}
+                  onChange={(e) => setLugarNacimiento(e.target.value)}
+                  type="text"
+                  className="form-control m-1"
+                  required
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label className="form-label">Procedencia:</label>
+                <input
+                  value={procedencia}
+                  onChange={(e) => setProcedencia(e.target.value)}
+                  type="text"
+                  className="form-control m-1"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col">
+                <label className="form-label">Direccion:</label>
+                <input
+                  value={direccion}
+                  onChange={(e) => setDireccion(e.target.value)}
+                  type="text"
+                  className="form-control m-1"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-4">
+                <label className="form-label">Ocupacion:</label>
+                <input
+                  value={ocupacion}
+                  onChange={(e) => setOcupacion(e.target.value)}
+                  type="text"
+                  className="form-control m-1"
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label className="form-label">Correo:</label>
+                <input
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
+                  type="text"
+                  className="form-control m-1"
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label className="form-label">Teléfono:</label>
+                <input
+                  value={numero || ""}
+                  onChange={(e) => setNumero(e.target.value)}
+                  type="number"
+                  className="form-control m-1"
+                />
+              </div>
+            </div>
+
+            <hr />
+
+            <h3> En caso de emergencia comunicarse con:</h3>
+
+            <div className="row">
+              <div className="col-md-4">
+                <label className="form-label">Responsable:</label>
+                <input
+                  value={responsable}
+                  onChange={(e) => setResponsable(e.target.value)}
+                  type="text"
+                  className="form-control m-1"
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label className="form-label">Nombre:</label>
+                <input
+                  value={nombreResponsable}
+                  onChange={(e) => setNombreResponsable(e.target.value)}
+                  type="text"
+                  className="form-control m-1"
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label className="form-label">Telefono:</label>
+                <input
+                  value={telefonoResponsable}
+                  onChange={(e) => setTelefonoResponsable(e.target.value)}
+                  type="number"
+                  className="form-control m-1"
+                />
+              </div>
+            </div>
+            {!id ? (
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ margin: "3px" }}
+                onClick={validateFields}
+              >
+                Crear
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ margin: "3px" }}
+                onClick={handleActualizarClick}
+              >
+                Actualizar
+              </button>
+            )}
+          </div>
+        </div>
+      </form>
         </TabPanel>
 
         {/* ANTECEDENTES */}

@@ -1,6 +1,13 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import "./Show.css";
@@ -10,9 +17,9 @@ import CreateCita from "../Agenda/CreateCita";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
-
-const Show = () => {
+const Show = (props) => {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShow, setModalShow] = useState(false);
@@ -24,7 +31,9 @@ const Show = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const clientsCollectiona = collection(db, "clients");
-  const clientsCollection = useRef(query(clientsCollectiona, orderBy("apellidoConNombre")));
+  const clientsCollection = useRef(
+    query(clientsCollectiona, orderBy("apellidoConNombre"))
+  );
 
   const getClients = useCallback((snapshot) => {
     const clientsArray = snapshot.docs.map((doc) => ({
@@ -43,7 +52,9 @@ const Show = () => {
   const deleteClient = async (id) => {
     const clientDoc = doc(db, "clients", id);
     await deleteDoc(clientDoc);
-    setClients((prevClients) => prevClients.filter((cliente) => cliente.id !== id));
+    setClients((prevClients) =>
+      prevClients.filter((cliente) => cliente.id !== id)
+    );
   };
 
   const searcher = (e) => {
@@ -65,8 +76,10 @@ const Show = () => {
   const sorting = (col) => {
     if (order === "ASC") {
       const sorted = [...clients].sort((a, b) => {
-        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
-        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        const valueA =
+          typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB =
+          typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
         return valueA > valueB ? 1 : -1;
       });
       setClients(sorted);
@@ -74,8 +87,10 @@ const Show = () => {
     }
     if (order === "DSC") {
       const sorted = [...clients].sort((a, b) => {
-        const valueA = typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
-        const valueB = typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
+        const valueA =
+          typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
+        const valueB =
+          typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
         return valueA < valueB ? 1 : -1;
       });
       setClients(sorted);
@@ -115,14 +130,17 @@ const Show = () => {
                       </button>
                     </div>
                   </div>
-
                 </div>
                 <table className="table__body">
                   <thead>
                     <tr>
-                      <th onClick={() => sorting("apellidoConNombre")}>Apellido Y Nombres</th>
+                      <th onClick={() => sorting("apellidoConNombre")}>
+                        Apellido Y Nombres
+                      </th>
                       <th onClick={() => sorting("idc")}>DNI</th>
-                      <th onClick={() => sorting("fechaNacimiento")}>Fecha Nacimiento</th>
+                      <th onClick={() => sorting("fechaNacimiento")}>
+                        Fecha Nacimiento
+                      </th>
                       <th onClick={() => sorting("numero")}>Telefono</th>
                       <th>Accion</th>
                     </tr>
@@ -133,7 +151,11 @@ const Show = () => {
                       <tr key={client.id}>
                         <td> {client.apellidoConNombre} </td>
                         <td> {client.idc} </td>
-                        <td>{moment(client.fefechaNacimientocha).format("DD/MM/YY")}</td>
+                        <td>
+                          {moment(client.fefechaNacimientocha).format(
+                            "DD/MM/YY"
+                          )}
+                        </td>
                         <td> {client.numero} </td>
                         <td>
                           <button
@@ -166,6 +188,13 @@ const Show = () => {
                           >
                             Crear Cita
                           </button>
+                          <Link to={`/historial/${client.id}`}>
+                            <button
+                              className="btn btn-warning"      
+                            >
+                              Historial
+                            </button>
+                          </Link>
                         </td>
                       </tr>
                     ))}

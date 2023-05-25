@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import { getAuth, EmailAuthProvider, reauthenticateWithCredential, updatePassword, signOut, } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -29,3 +29,12 @@ export const actualizarClave = updatePassword;
 export { updateProfile, updateEmail,onAuthStateChanged,sendPasswordResetEmail } from "firebase/auth";
 
 export const deslogear = signOut;
+
+export async function getClient(id){
+  const prodsCollectionRef = collection(db, "client");
+  const docRef = doc(prodsCollectionRef, id);
+
+  const docSnapshot = await getDoc(docRef);
+
+  return {...docSnapshot.data(), id: docSnapshot.id};
+}
