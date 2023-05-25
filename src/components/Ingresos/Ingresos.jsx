@@ -9,7 +9,7 @@ import "../Utilidades/tablas.css";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaDollarSign, FaEnvelope } from "react-icons/fa";
+import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import "../UpNav.css";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
@@ -33,15 +33,15 @@ const Ingresos = () => {
   const logout = () => {
     const auth = getAuth();
     signOut(auth)
-    .then(() => {
-      localStorage.setItem("user", JSON.stringify(null));
-    })
-    .catch((error) => {
-      // Maneja cualquier error que ocurra durante el logout
-      console.log("Error durante el logout:", error);
-    });
-};
- 
+      .then(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+      })
+      .catch((error) => {
+        // Maneja cualquier error que ocurra durante el logout
+        console.log("Error durante el logout:", error);
+      });
+  };
+
   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs.map((doc) => ({
       ...doc.data(),
@@ -263,198 +263,150 @@ const Ingresos = () => {
           <div className="w-100">
             <nav className="navbar">
               <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-75">
+                <div className="search-bar w-75" style={{ position: "relative" }}>
                   <input
                     value={search}
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Tratamiento, Paciente o Metodo Pago..."
                     className="form-control m-2 w-25"
-                    style={{
-                      display: taparFiltro ? "none" : "block",
-                    }}
                   />
+                  {taparFiltro && (
+                    <input
+                      className="form-control m-2 w-25"
+                      value="<-FILTRO ENTRE FECHAS APLICADO->"
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 1,
+                        textAlign: "center",
+                      }}
+                      disabled
+                    ></input>
+                  )}
                 </div>
                 <div className="d-flex justify-content-between w-25 align-items-center">
-                  <p className="fw-bold mb-0">Bienvenido al sistema Odentid</p>
+                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
                   <div className="d-flex">
                     <div className="notificacion">
-                      <FaDollarSign className="icono" />
-                      <span class="badge rounded-pill bg-danger">2</span>
+                      <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                        <FaUser className="icono" />
+                      </Link>
                     </div>
                     <div className="notificacion">
-                      <FaEnvelope className="icono" />
-                      <span class="badge rounded-pill bg-danger">5</span>
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">
+                        5
+                      </span>
                     </div>
                   </div>
                   <div className="notificacion">
-                  <Link to="/" className="text-decoration-none" style={{color: "#b8b7b8"}} onClick={logout}>
-                    <FaSignOutAlt className="icono"/>
-                    <span>Logout</span>
-                  </Link>
+                    <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                      <FaSignOutAlt className="icono" />
+                      <span>Logout</span>
+                    </Link>
                   </div>
                 </div>
               </div>
             </nav>
             <div className="container mt-2 mw-100">
               <div className="col">
+                <br></br>
                 <div className="row">
                   <div className="d-grid gap-2">
-                    <div className="d-flex">
-                      <h1>Ingresos</h1>
-                    </div>
                     <div className="d-flex justify-content-between">
-                      {taparFiltro && (
-                        <input
-                          className="form-control m-2 w-25"
-                          value="<-FILTRO ENTRE FECHAS APLICADO->"
-                          style={{ textAlign: "center" }}
-                          disabled
-                        ></input>
-                      )}
-                      <button
-                        variant="primary"
-                        className="btn btn-success mx-1 btn-md"
-                        style={{
-                          borderRadius: "12px",
-                          justifyContent: "center",
-                          verticalAlign: "center",
-                          alignSelf: "center",
-                          height: "45px",
-                        }}
-                        onClick={() => {
-                          setMostrarBotonesFechas(!mostrarBotonesFechas);
-                          setSearch("");
-                          setTaparFiltro(false);
-                        }}
-                      >
-                        <i
-                          className="fa-regular fa-calendar-check"
-                          style={{ transform: "scale(1.4)" }}
-                        ></i>
-                      </button>
-                      {mostrarBotonesFechas && (
-                        <div
+                      <div className="col d-flex justify-content-start">
+                        <h1>Ingresos</h1>
+
+                        <button
+                          variant="primary"
+                          className="btn btn-success mx-1 btn-md"
                           style={{
-                            display: "flex",
+                            borderRadius: "12px",
                             justifyContent: "center",
                             verticalAlign: "center",
-                            alignItems: "center",
+                            alignSelf: "center",
+                            height: "45px",
                           }}
-                        >
-                          <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
-                            onClick={() => {
-                              filtroFecha("Dia");
-                              setTaparFiltro(false);
-                            }}
-                          >
-                            Dia
-                          </button>
-                          <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
-                            onClick={() => {
-                              filtroFecha("Semana");
-                              setTaparFiltro(true);
-                            }}
-                          >
-                            Semana
-                          </button>
-                          <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
-                            onClick={() => {
-                              filtroFecha("Mes");
-                              setTaparFiltro(true);
-                            }}
-                          >
-                            Mes
-                          </button>
-                          <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
-                            onClick={() => {
-                              setModalSeleccionFechaShow(true);
-                            }}
-                          >
-                            Seleccionar
-                          </button>
-                        </div>
-                      )}
-
-                      <Modal
-                        show={modalSeleccionFechaShow}
-                        onHide={() => {
-                          setModalSeleccionFechaShow(false);
-                          setSelectedDate("");
-                          setTaparFiltro(false);
-                          setSearch("");
-                          setMostrarBotonesFechas(false);
-                        }}
-                      >
-                        <Modal.Header
-                          closeButton
                           onClick={() => {
-                            setModalSeleccionFechaShow(false);
-                            setSelectedDate("");
-                            setTaparFiltro(false);
+                            setMostrarBotonesFechas(!mostrarBotonesFechas);
                             setSearch("");
-                            setMostrarBotonesFechas(false);
+                            setTaparFiltro(false);
                           }}
                         >
-                          <Modal.Title>
-                            Seleccione una fecha para filtrar:
-                          </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Calendar
-                            defaultValue={moment().format("YYYY-MM-DD")}
-                            onChange={(date) => {
-                              const formattedDate =
-                                moment(date).format("YYYY-MM-DD");
-                              setSelectedDate(formattedDate);
-                            }}
-                            value={selectedDate}
-                          />
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              setSearch(selectedDate);
-                              setTaparFiltro(false);
-                              setModalSeleccionFechaShow(false);
-                              setMostrarBotonesFechas(false);
+                          <i
+                            className="fa-regular fa-calendar-check"
+                            style={{ transform: "scale(1.4)" }}
+                          ></i>
+                        </button>
+                        {mostrarBotonesFechas && (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              verticalAlign: "center",
+                              alignItems: "center",
                             }}
                           >
-                            Buscar Fecha
-                          </Button>
-                        </Modal.Footer>
-                      </Modal>
+                            <button
+                              style={{
+                                borderRadius: "7px",
+                                margin: "1px",
+                                height: "38px",
+                              }}
+                              className="btn btn-outline-dark"
+                              onClick={() => {
+                                filtroFecha("Dia");
+                                setTaparFiltro(false);
+                              }}
+                            >
+                              Dia
+                            </button>
+                            <button
+                              style={{
+                                borderRadius: "7px",
+                                margin: "1px",
+                                height: "38px",
+                              }}
+                              className="btn btn-outline-dark"
+                              onClick={() => {
+                                filtroFecha("Semana");
+                                setTaparFiltro(true);
+                              }}
+                            >
+                              Semana
+                            </button>
+                            <button
+                              style={{
+                                borderRadius: "7px",
+                                margin: "1px",
+                                height: "38px",
+                              }}
+                              className="btn btn-outline-dark"
+                              onClick={() => {
+                                filtroFecha("Mes");
+                                setTaparFiltro(true);
+                              }}
+                            >
+                              Mes
+                            </button>
+                            <button
+                              style={{
+                                borderRadius: "7px",
+                                margin: "1px",
+                                height: "38px",
+                              }}
+                              className="btn btn-outline-dark"
+                              onClick={() => {
+                                setModalSeleccionFechaShow(true);
+                              }}
+                            >
+                              Seleccionar
+                            </button>
+                          </div>
+                        )}
+                      </div>
                       <div className="col d-flex justify-content-end">
                         <div className="d-flex flex-column">
                           <h5>Cant Ingresos: {cantIngresos} </h5>
@@ -464,6 +416,63 @@ const Ingresos = () => {
                     </div>
                   </div>
                 </div>
+
+                <Modal
+                  show={modalSeleccionFechaShow}
+                  onHide={() => {
+                    setModalSeleccionFechaShow(false);
+                    setSelectedDate("");
+                    setTaparFiltro(false);
+                    setSearch("");
+                    setMostrarBotonesFechas(false);
+                  }}
+                >
+                  <Modal.Header
+                    closeButton
+                    onClick={() => {
+                      setModalSeleccionFechaShow(false);
+                      setSelectedDate("");
+                      setTaparFiltro(false);
+                      setSearch("");
+                      setMostrarBotonesFechas(false);
+                    }}
+                  >
+                    <Modal.Title>
+                      Seleccione una fecha para filtrar:
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Calendar
+                      defaultValue={moment().format("YYYY-MM-DD")}
+                      onChange={(date) => {
+                        const formattedDate =
+                          moment(date).format("YYYY-MM-DD");
+                        setSelectedDate(formattedDate);
+                      }}
+                      value={selectedDate}
+                    />
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        setSearch(selectedDate);
+                        setTaparFiltro(false);
+                        setModalSeleccionFechaShow(false);
+                        setMostrarBotonesFechas(false);
+                      }}
+                    >
+                      Buscar Fecha
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
 
                 <div className="row">
                   <table className="table__body">
@@ -497,21 +506,21 @@ const Ingresos = () => {
                               "";
                             const importe =
                               tratamiento.cobrosManuales.importeAbonado[
-                                index
+                              index
                               ] || "";
                             const metodoPago =
                               tratamiento.cobrosManuales.metodoPago[index] ||
                               "";
                             const cta =
                               tratamiento.cobrosManuales.codigoTratamiento[
-                                index
+                              index
                               ] || "";
                             const paciente =
                               tratamiento.cobrosManuales.pacienteCobro[index] ||
                               "";
                             const tratamientoz =
                               tratamiento.cobrosManuales.tratamientoCobro[
-                                index
+                              index
                               ] || "";
                             const estadoCobro =
                               tratamiento.cobrosManuales.estadoCobro[index] ||

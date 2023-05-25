@@ -11,7 +11,7 @@ import CrearGasto from "./CrearGasto";
 import TipoGasto from "./Parametros/TipoGasto";
 import moment from "moment";
 import { getAuth, signOut } from "firebase/auth";
-import { FaDollarSign, FaEnvelope, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 
@@ -35,13 +35,13 @@ const Gastos = () => {
     const logout = () => {
         const auth = getAuth();
         signOut(auth)
-        .then(() => {
-          localStorage.setItem("user", JSON.stringify(null));
-        })
-        .catch((error) => {
-          // Maneja cualquier error que ocurra durante el logout
-          console.log("Error durante el logout:", error);
-        });
+            .then(() => {
+                localStorage.setItem("user", JSON.stringify(null));
+            })
+            .catch((error) => {
+                // Maneja cualquier error que ocurra durante el logout
+                console.log("Error durante el logout:", error);
+            });
     };
 
     const getGastos = useCallback((snapshot) => {
@@ -121,46 +121,45 @@ const Gastos = () => {
                     <span className="loader position-absolute start-50 top-50 mt-3"></span>
                 ) : (
                     <div className="w-100">
-            <nav className="navbar">
-    <div className="d-flex justify-content-between w-100 px-2">
-      <div className="search-bar w-75">
-      <input
-                                            value={search}
-                                            onChange={searcher}
-                                            type="text"
-                                            placeholder="Buscar por Proveedor o RUC..."
-                                            className="form-control m-2 w-25"
-                                        />
-      </div>
-      <div className="d-flex justify-content-between w-25 align-items-center">
-        <p className="fw-bold mb-0">Bienvenido al sistema Odentid</p>
-        <div className="d-flex">
-            <div className="notificacion">
-            <FaDollarSign className="icono"/>
-            <span class="badge rounded-pill bg-danger">
-                 2
-            </span>
-            </div>
-            <div className="notificacion">
-            <FaEnvelope className="icono"/>
-            <span class="badge rounded-pill bg-danger">
-                 5
-            </span>
-            </div>
-        </div>
-        <div className="notificacion">
-        <Link to="/" className="text-decoration-none" style={{color: "#b8b7b8"}} onClick={logout}>
-          <FaSignOutAlt className="icono"/>
-          <span>Logout</span>
-          </Link>
-        </div>
-      </div>
-    </div>
-  </nav>
-                    <div className="container m-2 mw-100">
-                        <div className="row">
-                            <div className="col">
-                                <div className="d-grid gap-2">
+                        <nav className="navbar">
+                            <div className="d-flex justify-content-between w-100 px-2">
+                                <div className="search-bar w-75">
+                                    <input
+                                        value={search}
+                                        onChange={searcher}
+                                        type="text"
+                                        placeholder="Buscar por Proveedor o RUC..."
+                                        className="form-control m-2 w-25"
+                                    />
+                                </div>
+                                <div className="d-flex justify-content-between w-25 align-items-center">
+                                    <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
+                                    <div className="d-flex">
+                                        <div className="notificacion">
+                                            <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                                                <FaUser className="icono" />
+                                            </Link>
+                                        </div>
+                                        <div className="notificacion">
+                                            <FaBell className="icono" />
+                                            <span className="badge rounded-pill bg-danger">
+                                                5
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="notificacion">
+                                        <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                                            <FaSignOutAlt className="icono" />
+                                            <span>Logout</span>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                        <div className="container m-2 mw-100">
+                            <div className="row">
+                                <div className="col">
+                                    <br></br>
                                     <div className="d-flex justify-content-between">
                                         <div
                                             className="d-flex justify-content-center align-items-center"
@@ -179,7 +178,6 @@ const Gastos = () => {
                                                 </button>
                                             ) : null}
                                         </div>
-                                    </div>
                                         <div className="col d-flex justify-content-end">
                                             <button
                                                 variant="primary"
@@ -200,68 +198,69 @@ const Gastos = () => {
                                                 </div>
                                             )}
                                         </div>
+                                    </div>
 
-                                </div>
-                                <table className="table__body">
-                                    <thead>
-                                        <tr>
-                                            <th onClick={() => sorting("fechaGasto")}>Fecha</th>
-                                            <th onClick={() => sorting("ruc")}>RUC</th>
-                                            <th onClick={() => sorting("proveedor")}>Proveedor</th>
-                                            <th onClick={() => sorting("tipoGasto")}>Tipo</th>
-                                            <th onClick={() => sorting("comprobanteGasto")}>Comprobante</th>
-                                            <th onClick={() => sorting("cantArticulo")}>Cantidad</th>
-                                            <th onClick={() => sorting("umArticulo")}>U.M.</th>
-                                            <th onClick={() => sorting("cuentaArticulo")}>Cuenta</th>
-                                            <th onClick={() => sorting("descripArticulo")}>Descripcion</th>
-                                            <th onClick={() => sorting("precioUniArticulo")}>Precio Uni</th>
-                                            <th onClick={() => sorting("subTotalArticulo")}>SubTotal</th>
-                                            <th>Accion</th>
-                                        </tr>
-                                    </thead>
 
-                                    <tbody>
-                                        {results.map((gasto) => (
-                                            <tr key={gasto.id}>
-                                                <td>{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
-                                                <td> {gasto.ruc} </td>
-                                                <td> {gasto.proveedor} </td>
-                                                <td> {gasto.tipoGasto} </td>
-                                                <td> {gasto.comprobanteGasto} </td>
-                                                <td> {gasto.cantArticulo} </td>
-                                                <td> {gasto.umArticulo} </td>
-                                                <td> {gasto.cuentaArticulo} </td>
-                                                <td> {gasto.descripArticulo} </td>
-                                                <td> {gasto.precioUniArticulo} </td>
-                                                <td> {gasto.subTotalArticulo} </td>
-                                                <td>
-                                                    <button
-                                                        variant="primary"
-                                                        className="btn btn-success mx-1"
-                                                        onClick={() => {
-                                                            setModalShowEdit(true);
-                                                            setGasto(gasto);
-                                                            setIdParam(gasto.id);
-                                                        }}
-                                                    >
-                                                        <i className="fa-regular fa-pen-to-square"></i>
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            deleteGasto(gasto.id);
-                                                        }}
-                                                        className="btn btn-danger mx-1"
-                                                    >
-                                                        <i className="fa-solid fa-trash-can"></i>
-                                                    </button>
-                                                </td>
+                                    <table className="table__body">
+                                        <thead>
+                                            <tr>
+                                                <th onClick={() => sorting("fechaGasto")}>Fecha</th>
+                                                <th onClick={() => sorting("ruc")}>RUC</th>
+                                                <th onClick={() => sorting("proveedor")}>Proveedor</th>
+                                                <th onClick={() => sorting("tipoGasto")}>Tipo</th>
+                                                <th onClick={() => sorting("comprobanteGasto")}>Comprobante</th>
+                                                <th onClick={() => sorting("cantArticulo")}>Cantidad</th>
+                                                <th onClick={() => sorting("umArticulo")}>U.M.</th>
+                                                <th onClick={() => sorting("cuentaArticulo")}>Cuenta</th>
+                                                <th onClick={() => sorting("descripArticulo")}>Descripcion</th>
+                                                <th onClick={() => sorting("precioUniArticulo")}>Precio Uni</th>
+                                                <th onClick={() => sorting("subTotalArticulo")}>SubTotal</th>
+                                                <th>Accion</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+
+                                        <tbody>
+                                            {results.map((gasto) => (
+                                                <tr key={gasto.id}>
+                                                    <td>{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
+                                                    <td> {gasto.ruc} </td>
+                                                    <td> {gasto.proveedor} </td>
+                                                    <td> {gasto.tipoGasto} </td>
+                                                    <td> {gasto.comprobanteGasto} </td>
+                                                    <td> {gasto.cantArticulo} </td>
+                                                    <td> {gasto.umArticulo} </td>
+                                                    <td> {gasto.cuentaArticulo} </td>
+                                                    <td> {gasto.descripArticulo} </td>
+                                                    <td> {gasto.precioUniArticulo} </td>
+                                                    <td> {gasto.subTotalArticulo} </td>
+                                                    <td>
+                                                        <button
+                                                            variant="primary"
+                                                            className="btn btn-success mx-1"
+                                                            onClick={() => {
+                                                                setModalShowEdit(true);
+                                                                setGasto(gasto);
+                                                                setIdParam(gasto.id);
+                                                            }}
+                                                        >
+                                                            <i className="fa-regular fa-pen-to-square"></i>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                deleteGasto(gasto.id);
+                                                            }}
+                                                            className="btn btn-danger mx-1"
+                                                        >
+                                                            <i className="fa-solid fa-trash-can"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 )}
             </div>

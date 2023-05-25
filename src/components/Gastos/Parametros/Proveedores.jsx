@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
-import { FaDollarSign, FaEnvelope, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 
@@ -37,14 +37,14 @@ const Proveedores = () => {
   const logout = () => {
     const auth = getAuth();
     signOut(auth)
-    .then(() => {
-      localStorage.setItem("user", JSON.stringify(null));
-    })
-    .catch((error) => {
-      // Maneja cualquier error que ocurra durante el logout
-      console.log("Error durante el logout:", error);
-    });
-};
+      .then(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+      })
+      .catch((error) => {
+        // Maneja cualquier error que ocurra durante el logout
+        console.log("Error durante el logout:", error);
+      });
+  };
 
   const updateProveedoresFromSnapshot = useCallback((snapshot) => {
     const proveedoresArray = snapshot.docs.map((doc) => ({
@@ -172,24 +172,22 @@ const Proveedores = () => {
                   />
                 </div>
                 <div className="d-flex justify-content-between w-25 align-items-center">
-                  <p className="fw-bold mb-0">Bienvenido al sistema Odentid</p>
+                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
                   <div className="d-flex">
                     <div className="notificacion">
-                      <FaDollarSign className="icono" />
-                      <span class="badge rounded-pill bg-danger">2</span>
+                      <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                        <FaUser className="icono" />
+                      </Link>
                     </div>
                     <div className="notificacion">
-                      <FaEnvelope className="icono" />
-                      <span class="badge rounded-pill bg-danger">5</span>
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">
+                        5
+                      </span>
                     </div>
                   </div>
                   <div className="notificacion">
-                    <Link
-                      to="/"
-                      className="text-decoration-none"
-                      style={{ color: "#b8b7b8" }}
-                      onClick={logout}
-                    >
+                    <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
                       <FaSignOutAlt className="icono" />
                       <span>Logout</span>
                     </Link>
@@ -200,6 +198,7 @@ const Proveedores = () => {
             <div className="container mt-2 mw-100">
               <div className="row">
                 <div className="col">
+                  <br></br>
                   <div className="d-grid gap-2">
                     <div className="d-flex justify-content-between">
                       <div
@@ -208,9 +207,7 @@ const Proveedores = () => {
                       >
                         <h1>Proveedores</h1>
                       </div>
-                    </div>
-
-                    <div className="col d-flex justify-content-end">
+                      <div className="col d-flex justify-content-end">
                       <button
                         variant="primary"
                         className="btn-blue m-2"
@@ -221,6 +218,7 @@ const Proveedores = () => {
                       >
                         Nuevo
                       </button>
+                    </div>
                     </div>
                   </div>
 

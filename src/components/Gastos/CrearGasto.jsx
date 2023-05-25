@@ -273,8 +273,7 @@ const CrearGasto = (props) => {
         e.preventDefault();
         if (material === "") {
             setMaterial(modalAgregarArticulo[1]);
-        }
-        if (material.trim() === "" || um.trim() === "") {
+        }else if (material.trim() === "" || um.trim() === "") {
             setError("El Material/U.M. no puede estar vacío");
             return;
         }
