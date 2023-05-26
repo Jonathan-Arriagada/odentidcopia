@@ -12,6 +12,10 @@
 
 .navigation.active {
   width: max-content;
+  .submenu-container {
+    display: none;
+    content: "";
+  }
 }
 
 .navigation .menu {
@@ -92,15 +96,22 @@
   font-size: 15;
 }
 
-/*Estilo Sidebar*/
+/*Estilo Submenu*/
+.submenu-container {
+  background-color: #013b5f;
+  left: 15px;
+  font-size: 15px;
+  border-radius: 15px;
+  margin-top: 1px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  padding: 4px 10px;
+}
 .sidebar-title span i {
   display: inline-block;
   width: 1.5em;
-}
-
-.sidebar-title .nav {
-  cursor: default !important;
-  pointer-events: none !important;
 }
 
 .sidebar-title .toggle-btn {
@@ -131,5 +142,4 @@
   display: inline-block;
   width: 1.7em;
 }
-
 
