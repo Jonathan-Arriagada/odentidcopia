@@ -23,6 +23,9 @@ import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
+import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { getAuth, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
@@ -83,6 +86,18 @@ function Tratamientos() {
   const [restoCobro, setRestoCobro] = useState("");
   const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
+
+  const logout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+      })
+      .catch((error) => {
+        // Maneja cualquier error que ocurra durante el logout
+        console.log("Error durante el logout:", error);
+      });
+  };
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
   const estadosTratamientoCollection = useRef(
@@ -578,17 +593,67 @@ function Tratamientos() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
-          <div className="container mt-2 mw-100">
-            <div className="row">
-              <div className="col">
-                <div className="d-grid gap-2">
+          <div className="w-100">
+            <nav className="navbar">
+              <div className="d-flex justify-content-between w-100 px-2">
+                <div className="search-bar w-75" style={{ position: "relative" }}>
+                  <input
+                    value={search}
+                    onChange={searcher}
+                    type="text"
+                    placeholder="Buscar por Apellido y Nombres o DNI..."
+                    className="form-control m-2 w-25"
+                  />
+                  {taparFiltro && (
+                    <input
+                      className="form-control m-2 w-25"
+                      value="<-FILTRO ENTRE FECHAS APLICADO->"
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 1,
+                        textAlign: "center",
+                      }}
+                      disabled
+                    ></input>
+                  )}
+                </div>
+                <div className="d-flex justify-content-between w-25 align-items-center">
+                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                        <FaUser className="icono" />
+                      </Link>
+                    </div>
+                    <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">
+                        5
+                      </span>
+                    </div>
+                  </div>
+                  <div className="notificacion">
+                    <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                      <FaSignOutAlt className="icono" />
+                      <span>Logout</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </nav>
+            <div className="container mt-2 mw-100">
+              <div className="row">
+                <div className="col">
+                  <br></br>
                   <div className="d-flex justify-content-between">
                     <div
                       className="d-flex justify-content-center align-items-center"
                       style={{ maxHeight: "34px" }}
                     >
                       <h1>Tratamientos</h1>
-                      {userType === '"RmTnUw1iPj5q"' ? (
+                      {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
                           className="btn btn-dark mx-2 btn-sm"
                           onClick={() => {
@@ -598,119 +663,148 @@ function Tratamientos() {
                           <i className="fa-solid fa-gear"></i>
                         </button>
                       ) : null}
+                      <button
+                        variant="primary"
+                        className="btn btn-success mx-1 btn-md"
+                        style={{
+                          borderRadius: "12px",
+                          justifyContent: "center",
+                          verticalAlign: "center",
+                          alignSelf: "center",
+                          height: "45px",
+                        }}
+                        onClick={() => {
+                          setMostrarBotonesFechas(!mostrarBotonesFechas);
+                          setSearch("");
+                          setTaparFiltro(false);
+                        }}
+                      >
+                        <i
+                          className="fa-regular fa-calendar-check"
+                          style={{ transform: "scale(1.4)" }}
+                        ></i>
+                      </button>
+                      {mostrarBotonesFechas && (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            verticalAlign: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <button
+                            style={{
+                              borderRadius: "7px",
+                              margin: "1px",
+                              height: "38px",
+                            }}
+                            className="btn btn-outline-dark"
+                            onClick={() => {
+                              filtroFecha("Dia");
+                              setTaparFiltro(false);
+                            }}
+                          >
+                            Dia
+                          </button>
+                          <button
+                            style={{
+                              borderRadius: "7px",
+                              margin: "1px",
+                              height: "38px",
+                            }}
+                            className="btn btn-outline-dark"
+                            onClick={() => {
+                              filtroFecha("Semana");
+                              setTaparFiltro(true);
+                            }}
+                          >
+                            Semana
+                          </button>
+                          <button
+                            style={{
+                              borderRadius: "7px",
+                              margin: "1px",
+                              height: "38px",
+                            }}
+                            className="btn btn-outline-dark"
+                            onClick={() => {
+                              filtroFecha("Mes");
+                              setTaparFiltro(true);
+                            }}
+                          >
+                            Mes
+                          </button>
+                          <button
+                            style={{
+                              borderRadius: "7px",
+                              margin: "1px",
+                              height: "38px",
+                            }}
+                            className="btn btn-outline-dark"
+                            onClick={() => {
+                              setModalSeleccionFechaShow(true);
+                            }}
+                          >
+                            Seleccionar
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <div className="col d-flex justify-content-end">
+                      <button
+                        variant="primary"
+                        className="btn-blue m-2"
+                        onClick={() => setModalShowTratamiento(true)}
+                      >
+                        Agregar Tratamiento
+                      </button>
+                      <button
+                        variant="primary"
+                        className="btn-blue m-2"
+                        onClick={() => {
+                          setModalShowFiltros(true);
+                          setQuitarFiltro(true);
+                        }}
+                      >
+                        Filtros
+                      </button>
+                      {quitarFiltro && (
+                        <button
+                          variant="primary"
+                          className="btn-blue m-2"
+                          onClick={() => {
+                            setSearch("");
+                            setQuitarFiltro(false);
+                          }}
+                        >
+                          Limpiar Filtros
+                        </button>
+                      )}
+                      {mostrarAjustes && (
+                        <div className="d-flex">
+                          <button
+                            variant="secondary"
+                            className="btn-blue m-2"
+                            onClick={() =>
+                              setModalShowEstadosTratamientos(true)
+                            }
+                          >
+                            Estados Tratamientos
+                          </button>
+                          <button
+                            variant="secondary"
+                            className="btn-blue m-2"
+                            onClick={() => setModalShowEditPago(true)}
+                          >
+                            Estado Pago
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   <div className="d-flex justify-content-between">
-                    {taparFiltro && (
-                      <input
-                        className="form-control m-2 w-25"
-                        value="<-FILTRO ENTRE FECHAS APLICADO->"
-                        style={{ textAlign: "center" }}
-                        disabled
-                      ></input>
-                    )}
-                    <input
-                      value={search}
-                      onChange={(e) => {
-                        searcher(e);
-                        setMostrarTabla(false);
-                        setMostrarVer(true);
-                      }}
-                      type="text"
-                      placeholder="Buscar por Apellido, Nombres o DNI..."
-                      className="form-control m-2 w-25"
-                      style={{
-                        display: taparFiltro ? "none" : "block",
-                      }}
-                    />
-                    <button
-                      variant="primary"
-                      className="btn btn-success mx-1 btn-md"
-                      style={{
-                        borderRadius: "12px",
-                        justifyContent: "center",
-                        verticalAlign: "center",
-                        alignSelf: "center",
-                        height: "45px",
-                      }}
-                      onClick={() => {
-                        setMostrarBotonesFechas(!mostrarBotonesFechas);
-                        setSearch("");
-                        setTaparFiltro(false);
-                      }}
-                    >
-                      <i
-                        className="fa-regular fa-calendar-check"
-                        style={{ transform: "scale(1.4)" }}
-                      ></i>
-                    </button>
-                    {mostrarBotonesFechas && (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          verticalAlign: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => {
-                            filtroFecha("Dia");
-                            setTaparFiltro(false);
-                          }}
-                        >
-                          Dia
-                        </button>
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => {
-                            filtroFecha("Semana");
-                            setTaparFiltro(true);
-                          }}
-                        >
-                          Semana
-                        </button>
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => {
-                            filtroFecha("Mes");
-                            setTaparFiltro(true);
-                          }}
-                        >
-                          Mes
-                        </button>
-                        <button
-                          style={{
-                            borderRadius: "7px",
-                            margin: "1px",
-                            height: "38px",
-                          }}
-                          className="btn btn-outline-dark"
-                          onClick={() => {
-                            setModalSeleccionFechaShow(true);
-                          }}
-                        >
-                          Seleccionar
-                        </button>
-                      </div>
-                    )}
 
                     <Modal
                       show={modalSeleccionFechaShow}
@@ -768,555 +862,504 @@ function Tratamientos() {
                       </Modal.Footer>
                     </Modal>
 
-                    <div className="col d-flex justify-content-end">
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => setModalShowTratamiento(true)}
-                      >
-                        Agregar Tratamiento
-                      </button>
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => {
-                          setModalShowFiltros(true);
-                          setQuitarFiltro(true);
-                        }}
-                      >
-                        Filtros
-                      </button>
-                      {quitarFiltro && (
-                        <button
-                          variant="primary"
-                          className="btn-blue m-2"
-                          onClick={() => {
-                            setSearch("");
-                            setQuitarFiltro(false);
-                          }}
-                        >
-                          Limpiar Filtros
-                        </button>
-                      )}
 
-                      <Modal
-                        show={modalShowFiltros}
-                        onHide={() => {
-                          setSelectedCheckbox("");
-                          setParametroModal("");
-                          setSelectedCheckbox2("");
-                        }}
-                      >
-                        <Modal.Header
-                          closeButton
-                          onClick={() => {
-                            setModalShowFiltros(false);
-                            setSelectedCheckbox("");
-                            setSelectedCheckbox2("");
-                            setParametroModal("");
-                          }}
-                        >
-                          <Modal.Title>
-                            <h1 style={{ fontWeight: "bold" }}>
-                              Filtros Generales
-                            </h1>
-                          </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div>
-                            <label className="checkbox-label">
-                              <input
-                                type="checkbox"
-                                name="tarifasTratamientos"
-                                checked={
-                                  selectedCheckbox === "tarifasTratamientos"
-                                }
-                                onChange={handleCheckboxChange}
-                              />
-                              Filtrar Por Tratamiento
-                            </label>
-                            <br />
-                            <label className="checkbox-label">
-                              <input
-                                type="checkbox"
-                                name="fecha"
-                                checked={selectedCheckbox === "fecha"}
-                                onChange={handleCheckboxChange}
-                              />
-                              Filtrar Por Fecha
-                            </label>
-                            <br />
-                            <label className="checkbox-label">
-                              <input
-                                type="checkbox"
-                                name="estadoPago"
-                                checked={selectedCheckbox === "estadoPago"}
-                                onChange={handleCheckboxChange}
-                              />
-                              Filtrar Por Estado Pago
-                            </label>
-                            <br />
-                            <label className="checkbox-label">
-                              <input
-                                type="checkbox"
-                                name="estadosTratamientos"
-                                checked={
-                                  selectedCheckbox === "estadosTratamientos"
-                                }
-                                onChange={handleCheckboxChange}
-                              />
-                              Filtrar Por Estado Tratamiento
-                            </label>
-                          </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              setSelectedCheckbox(selectedCheckbox);
-                              handleTituloModal(selectedCheckbox);
-                              setModalShowFiltros2(true);
-                              setModalShowFiltros(false);
-                            }}
-                          >
-                            Seleccionar y Continuar
-                          </Button>
-                        </Modal.Footer>
-                      </Modal>
-
-                      <Modal
-                        show={modalShowFiltros2}
-                        onHide={() => {
-                          setModalShowFiltros2(false);
-                          setSelectedCheckbox2("");
-                        }}
-                      >
-                        <Modal.Header
-                          closeButton
-                          onClick={() => {
-                            setModalShowFiltros2(false);
-                            setParametroModal("");
-                            setSelectedCheckbox("");
-                            setSelectedCheckbox2("");
-                          }}
-                        >
-                          <Modal.Title>
-                            <h3 style={{ fontWeight: "bold" }}>
-                              Filtro Seleccionado :{" "}
-                            </h3>
-                            <h6>{tituloParametroModal}</h6>
-                          </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <div>
-                            {tratamientos
-                              .map((tratamiento) => tratamiento[parametroModal])
-                              .filter(
-                                (valor, index, self) =>
-                                  self.indexOf(valor) === index &&
-                                  valor !== "" &&
-                                  valor !== undefined &&
-                                  valor !== null
-                              )
-                              .map((parametroModal, index) => (
-                                <label className="checkbox-label" key={index}>
-                                  <input
-                                    type="checkbox"
-                                    name={parametroModal}
-                                    checked={
-                                      selectedCheckbox2 === parametroModal
-                                    }
-                                    onChange={handleCheckboxChange2}
-                                  />
-                                  {parametroModal}
-                                </label>
-                              ))}
-                          </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              setModalShowFiltros(true);
-                              handleTituloModal("");
-                              setModalShowFiltros2(false);
-                              setSelectedCheckbox("");
-                              setSelectedCheckbox2("");
-                              setParametroModal("");
-                            }}
-                          >
-                            Volver
-                          </Button>
-                          <Button
-                            variant="primary"
-                            onClick={() => {
-                              searcher(selectedCheckbox2);
-                              setModalShowFiltros2(false);
-                              setParametroModal("");
-                              setTituloParametroModal("");
-                              setSelectedCheckbox("");
-                              setSelectedCheckbox2("");
-                            }}
-                          >
-                            Aplicar Filtro
-                          </Button>
-                        </Modal.Footer>
-                      </Modal>
-                      {mostrarAjustes && (
-                        <div className="d-flex">
-                          <button
-                            variant="secondary"
-                            className="btn-blue m-2"
-                            onClick={() =>
-                              setModalShowEstadosTratamientos(true)
-                            }
-                          >
-                            Estados Tratamientos
-                          </button>
-                          <button
-                            variant="secondary"
-                            className="btn-blue m-2"
-                            onClick={() => setModalShowEditPago(true)}
-                          >
-                            Estado Pago
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <table className="table__body">
-                  <thead>
-                    <tr>
-                      <th>N°</th>
-                      <th onClick={() => sorting("apellido")}>
-                        Apellido y Nombres
-                      </th>
-                      <th onClick={() => sorting("idc")}>DNI</th>
-                      <th onClick={() => sorting("tarifasTratamientos")}>
-                        Tratamiento
-                      </th>
-                      <th onClick={() => sorting("pieza")}>Pieza</th>
-                      <th onClick={() => sorting("fecha")}>Fecha</th>
-                      <th onClick={() => sorting("estadoPago")}>Estado Pago</th>
-                      <th onClick={() => sorting("estadosTratamientos")}>
-                        Estado Tratamiento
-                      </th>
-                      <th>Accion</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {results.map((tratamiento, index) => (
-                      <tr key={tratamiento.id}>
-                        <td>{results.length - index}</td>
-                        <td> {tratamiento.apellidoConNombre} </td>
-                        <td> {tratamiento.idc} </td>
-                        <td> {tratamiento.tarifasTratamientos} </td>
-                        <td> {tratamiento.pieza} </td>
-                        <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
-                        <td>
-                          <p
-                            style={buscarEstilosPago(tratamiento.estadoPago)}
-                            className="status"
-                          >
-                            {tratamiento.estadoPago}
-                          </p>
-                        </td>
-                        <td>
-                          <p
-                            style={buscarEstilos(
-                              tratamiento.estadosTratamientos
-                            )}
-                            className="status"
-                          >
-                            {tratamiento.estadosTratamientos}
-                          </p>
-                        </td>
-
-                        <td>
-                          <Dropdown>
-                            <Dropdown.Toggle
-                              variant="primary"
-                              className="btn btn-secondary mx-1 btn-md"
-                              id="dropdown-actions"
-                            >
-                              <i className="fa-solid fa-list"> </i>
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                              {mostrarVer && (
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    ocultarTabla(tratamiento.codigo);
-                                    setIdParaCobro(tratamiento.id);
-                                    setCodigoCobro(tratamiento.cta);
-                                    setTrataCobro(
-                                      tratamiento.tarifasTratamientos
-                                    );
-                                    setPacienteCobro(
-                                      tratamiento.apellidoConNombre
-                                    );
-                                    setRestoCobro(
-                                      tratamiento.precio -
-                                      tratamiento.cobrosManuales.importeAbonado.reduce(
-                                        (total, importe) =>
-                                          total + Number(importe),
-                                        0
-                                      )
-                                    );
-                                  }}
-                                >
-                                  <i className="fa-regular fa-eye"></i> Ver
-                                </Dropdown.Item>
-                              )}
-                              {!mostrarVer && (
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    ocultarTabla("");
-                                    clearFieldsCobro("");
-                                  }}
-                                >
-                                  <i className="fa-regular fa-eye-slash"></i>{" "}
-                                  Ocultar
-                                </Dropdown.Item>
-                              )}
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setModalShowEditTratamiento(true);
-                                  setTratamiento(tratamiento);
-                                  setIdParam(tratamiento.id);
-                                }}
-                              >
-                                <i className="fa-regular fa-pen-to-square"></i>{" "}
-                                Editar
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() => {
-                                  setModalShowVerNotas([
-                                    true,
-                                    tratamiento.notas,
-                                  ]);
-                                }}
-                              >
-                                <i className="fa-regular fa-comment"></i> Ver
-                                Notas
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={() =>
-                                  deletetratamiento(tratamiento.id)
-                                }
-                              >
-                                <i className="fa-solid fa-trash-can"></i>{" "}
-                                Eliminar
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                {modalShowVerNotas[0] && (
-                  <Modal
-                    show={modalShowVerNotas[0]}
-                    size="lg"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                    onHide={() => setModalShowVerNotas([false, ""])}
-                  >
-                    <Modal.Header
-                      closeButton
-                      onClick={() => setModalShowVerNotas([false, ""])}
-                    >
-                      <Modal.Title>Comentarios</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <div className="container">
-                        <div className="col">
-                          <form>
-                            <div className="row">
-                              <div className="col mb-6">
-                                <p>{modalShowVerNotas[1]}</p>
-                              </div>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                    </Modal.Body>
-                  </Modal>
-                )}
-
-                {mostrarTabla && (
-                  <div style={{ marginTop: "30px" }}>
-                    <h4 style={{ textAlign: "left" }}>Pagos - Gestión Auto</h4>
-                    <table className="table__body">
-                      <thead>
-                        <tr>
-                          <th>Cta</th>
-                          <th>Precio/Total</th>
-                          <th>Plazo</th>
-                          <th>Cuota</th>
-                          <th>Resta</th>
-                          <th>Fecha Vto</th>
-                          <th>Estado Pago</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {results.map((tratamiento) => (
-                          <tr key={tratamiento.id}>
-                            <td> {tratamiento.cta} </td>
-                            <td>{tratamiento.precio}</td>
-                            <td>{tratamiento.plazo}</td>
-                            <td>{tratamiento.cuota}</td>
-                            <td>{tratamiento.plazo - tratamiento.cuota}</td>
-                            <td>
-                              {moment(tratamiento.fechaVencimiento).format(
-                                "DD/MM/YY"
-                              )}
-                            </td>
-                            <td style={{ display: "flex" }}>
-                              <span style={{ marginRight: "5px" }}>
-                                {tratamiento.estadoPago}
-                              </span>
-                              <ListaSeleccionEstadoPago
-                                tratamientoId={tratamiento.id}
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {mostrarTabla && (
-                  <div style={{ marginTop: "30px" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                    <Modal
+                      show={modalShowFiltros}
+                      onHide={() => {
+                        setSelectedCheckbox("");
+                        setParametroModal("");
+                        setSelectedCheckbox2("");
                       }}
                     >
-                      <h4 style={{ textAlign: "left", marginRight: "10px" }}>
-                        Cobros - Gestión Manual
-                      </h4>
-                      <h4>Saldo Restante: {restoCobro}</h4>
-                    </div>
+                      <Modal.Header
+                        closeButton
+                        onClick={() => {
+                          setModalShowFiltros(false);
+                          setSelectedCheckbox("");
+                          setSelectedCheckbox2("");
+                          setParametroModal("");
+                        }}
+                      >
+                        <Modal.Title>
+                          <h1 style={{ fontWeight: "bold" }}>
+                            Filtros Generales
+                          </h1>
+                        </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div>
+                          <label className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="tarifasTratamientos"
+                              checked={
+                                selectedCheckbox === "tarifasTratamientos"
+                              }
+                              onChange={handleCheckboxChange}
+                            />
+                            Filtrar Por Tratamiento
+                          </label>
+                          <br />
+                          <label className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="fecha"
+                              checked={selectedCheckbox === "fecha"}
+                              onChange={handleCheckboxChange}
+                            />
+                            Filtrar Por Fecha
+                          </label>
+                          <br />
+                          <label className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="estadoPago"
+                              checked={selectedCheckbox === "estadoPago"}
+                              onChange={handleCheckboxChange}
+                            />
+                            Filtrar Por Estado Pago
+                          </label>
+                          <br />
+                          <label className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              name="estadosTratamientos"
+                              checked={
+                                selectedCheckbox === "estadosTratamientos"
+                              }
+                              onChange={handleCheckboxChange}
+                            />
+                            Filtrar Por Estado Tratamiento
+                          </label>
+                        </div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            setSelectedCheckbox(selectedCheckbox);
+                            handleTituloModal(selectedCheckbox);
+                            setModalShowFiltros2(true);
+                            setModalShowFiltros(false);
+                          }}
+                        >
+                          Seleccionar y Continuar
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
 
-                    <table className="table__body">
-                      <thead>
-                        <tr>
-                          <th>N°</th>
-                          <th>Fecha Cobro</th>
-                          <th>Metodo Pago</th>
-                          <th>Importe abonado</th>
-                          <th>Accion</th>
-                          <th>
-                            {!pagoFinalizado && (
-                              <button
-                                className="btn btn-secondary mx-1 btn-md"
-                                onClick={() => {
-                                  setMostrarModalAgregarCobro([
-                                    true,
-                                    idParaCobro,
-                                  ]);
-                                }}
-                              >
-                                <i className="fa-solid fa-circle-plus"></i>
-                              </button>
-                            )}
-                          </th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {results.map((tratamiento) => (
-                          tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
-                            const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
-                            const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
-                            const metodoPago = tratamiento.cobrosManuales.metodoPago[index] || "";
-                            const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
-
-                            return (
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
-                                <td>{metodoPago.toString()}</td>
-                                <td>{importe.toString()}</td>
-                                <td>
-                                  {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
-                                    <>
-                                      <button
-                                        variant="primary"
-                                        className={`btn ${estadoCobro === "SIN COBRAR" ? "btn-success" : "btn-warning"} sm-1`}
-                                        onClick={(e) => {
-                                          if (estadoCobro === "SIN COBRAR") {
-                                            cambiarEstadoCobro(e, idParaCobro, index, "COBRADO");
-                                          } else {
-                                            cambiarEstadoCobro(e, idParaCobro, index, "SIN COBRAR");
-                                          }
-                                        }}
-                                        style={{ margin: "1px" }}
-                                      >
-                                        {estadoCobro === "SIN COBRAR" ? (
-                                          <>
-                                            Cobrar <i className="fa-solid fa-cart-shopping"></i>
-                                          </>
-                                        ) : (
-                                          "Descobrar"
-                                        )}
-                                      </button>
-                                      <button
-                                        variant="primary"
-                                        className="btn btn-secondary sm-1"
-                                        onClick={(e) => {
-                                          setIndexParaEditcobro(index)
-                                          setIdParaEditcobro(idParaCobro)
-                                          setMostrarModalEditarCobro([true, fecha, importe, metodoPago]);
-                                        }}
-                                        style={{ margin: "1px" }}
-                                      >
-                                        <i className="fa-regular fa-pen-to-square"></i>
-                                      </button>
-                                      <button
-                                        variant="primary"
-                                        className="btn btn-danger sm-1"
-                                        onClick={(e) => {
-                                          eliminarCobro(e, idParaCobro, index);
-                                        }}
-                                        style={{ margin: "1px" }}
-                                      >
-                                        <i className="fa-solid fa-trash-can"></i>
-                                      </button>
-                                    </>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })
-                        ))}
-                      </tbody>
-                    </table>
+                    <Modal
+                      show={modalShowFiltros2}
+                      onHide={() => {
+                        setModalShowFiltros2(false);
+                        setSelectedCheckbox2("");
+                      }}
+                    >
+                      <Modal.Header
+                        closeButton
+                        onClick={() => {
+                          setModalShowFiltros2(false);
+                          setParametroModal("");
+                          setSelectedCheckbox("");
+                          setSelectedCheckbox2("");
+                        }}
+                      >
+                        <Modal.Title>
+                          <h3 style={{ fontWeight: "bold" }}>
+                            Filtro Seleccionado :{" "}
+                          </h3>
+                          <h6>{tituloParametroModal}</h6>
+                        </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div>
+                          {tratamientos
+                            .map((tratamiento) => tratamiento[parametroModal])
+                            .filter(
+                              (valor, index, self) =>
+                                self.indexOf(valor) === index &&
+                                valor !== "" &&
+                                valor !== undefined &&
+                                valor !== null
+                            )
+                            .map((parametroModal, index) => (
+                              <label className="checkbox-label" key={index}>
+                                <input
+                                  type="checkbox"
+                                  name={parametroModal}
+                                  checked={
+                                    selectedCheckbox2 === parametroModal
+                                  }
+                                  onChange={handleCheckboxChange2}
+                                />
+                                {parametroModal}
+                              </label>
+                            ))}
+                        </div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            setModalShowFiltros(true);
+                            handleTituloModal("");
+                            setModalShowFiltros2(false);
+                            setSelectedCheckbox("");
+                            setSelectedCheckbox2("");
+                            setParametroModal("");
+                          }}
+                        >
+                          Volver
+                        </Button>
+                        <Button
+                          variant="primary"
+                          onClick={() => {
+                            searcher(selectedCheckbox2);
+                            setModalShowFiltros2(false);
+                            setParametroModal("");
+                            setTituloParametroModal("");
+                            setSelectedCheckbox("");
+                            setSelectedCheckbox2("");
+                          }}
+                        >
+                          Aplicar Filtro
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
                   </div>
-                )}
+
+                  <table className="table__body">
+                    <thead>
+                      <tr>
+                        <th>N°</th>
+                        <th onClick={() => sorting("apellido")}>
+                          Apellido y Nombres
+                        </th>
+                        <th onClick={() => sorting("idc")}>DNI</th>
+                        <th onClick={() => sorting("tarifasTratamientos")}>
+                          Tratamiento
+                        </th>
+                        <th onClick={() => sorting("pieza")}>Pieza</th>
+                        <th onClick={() => sorting("fecha")}>Fecha</th>
+                        <th onClick={() => sorting("estadoPago")}>Estado Pago</th>
+                        <th onClick={() => sorting("estadosTratamientos")}>
+                          Estado Tratamiento
+                        </th>
+                        <th>Accion</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {results.map((tratamiento, index) => (
+                        <tr key={tratamiento.id}>
+                          <td>{results.length - index}</td>
+                          <td> {tratamiento.apellidoConNombre} </td>
+                          <td> {tratamiento.idc} </td>
+                          <td> {tratamiento.tarifasTratamientos} </td>
+                          <td> {tratamiento.pieza} </td>
+                          <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
+                          <td>
+                            <p
+                              style={buscarEstilosPago(tratamiento.estadoPago)}
+                              className="status"
+                            >
+                              {tratamiento.estadoPago}
+                            </p>
+                          </td>
+                          <td>
+                            <p
+                              style={buscarEstilos(
+                                tratamiento.estadosTratamientos
+                              )}
+                              className="status"
+                            >
+                              {tratamiento.estadosTratamientos}
+                            </p>
+                          </td>
+
+                          <td>
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                variant="primary"
+                                className="btn btn-secondary mx-1 btn-md"
+                                id="dropdown-actions"
+                              >
+                                <i className="fa-solid fa-list"> </i>
+                              </Dropdown.Toggle>
+
+                              <Dropdown.Menu>
+                                {mostrarVer && (
+                                  <Dropdown.Item
+                                    onClick={() => {
+                                      ocultarTabla(tratamiento.codigo);
+                                      setIdParaCobro(tratamiento.id);
+                                      setCodigoCobro(tratamiento.cta);
+                                      setTrataCobro(
+                                        tratamiento.tarifasTratamientos
+                                      );
+                                      setPacienteCobro(
+                                        tratamiento.apellidoConNombre
+                                      );
+                                      setRestoCobro(
+                                        tratamiento.precio -
+                                        tratamiento.cobrosManuales.importeAbonado.reduce(
+                                          (total, importe) =>
+                                            total + Number(importe),
+                                          0
+                                        )
+                                      );
+                                    }}
+                                  >
+                                    <i className="fa-regular fa-eye"></i> Ver
+                                  </Dropdown.Item>
+                                )}
+                                {!mostrarVer && (
+                                  <Dropdown.Item
+                                    onClick={() => {
+                                      ocultarTabla("");
+                                      clearFieldsCobro("");
+                                    }}
+                                  >
+                                    <i className="fa-regular fa-eye-slash"></i>{" "}
+                                    Ocultar
+                                  </Dropdown.Item>
+                                )}
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setModalShowEditTratamiento(true);
+                                    setTratamiento(tratamiento);
+                                    setIdParam(tratamiento.id);
+                                  }}
+                                >
+                                  <i className="fa-regular fa-pen-to-square"></i>{" "}
+                                  Editar
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setModalShowVerNotas([
+                                      true,
+                                      tratamiento.notas,
+                                    ]);
+                                  }}
+                                >
+                                  <i className="fa-regular fa-comment"></i> Ver
+                                  Notas
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    deletetratamiento(tratamiento.id)
+                                  }
+                                >
+                                  <i className="fa-solid fa-trash-can"></i>{" "}
+                                  Eliminar
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  {modalShowVerNotas[0] && (
+                    <Modal
+                      show={modalShowVerNotas[0]}
+                      size="lg"
+                      aria-labelledby="contained-modal-title-vcenter"
+                      centered
+                      onHide={() => setModalShowVerNotas([false, ""])}
+                    >
+                      <Modal.Header
+                        closeButton
+                        onClick={() => setModalShowVerNotas([false, ""])}
+                      >
+                        <Modal.Title>Comentarios</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <div className="container">
+                          <div className="col">
+                            <form>
+                              <div className="row">
+                                <div className="col mb-6">
+                                  <p>{modalShowVerNotas[1]}</p>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                    </Modal>
+                  )}
+
+                  {mostrarTabla && (
+                    <div style={{ marginTop: "30px" }}>
+                      <h4 style={{ textAlign: "left" }}>Pagos - Gestión Auto</h4>
+                      <table className="table__body">
+                        <thead>
+                          <tr>
+                            <th>Cta</th>
+                            <th>Precio/Total</th>
+                            <th>Plazo</th>
+                            <th>Cuota</th>
+                            <th>Resta</th>
+                            <th>Fecha Vto</th>
+                            <th>Estado Pago</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {results.map((tratamiento) => (
+                            <tr key={tratamiento.id}>
+                              <td> {tratamiento.cta} </td>
+                              <td>{tratamiento.precio}</td>
+                              <td>{tratamiento.plazo}</td>
+                              <td>{tratamiento.cuota}</td>
+                              <td>{tratamiento.plazo - tratamiento.cuota}</td>
+                              <td>
+                                {moment(tratamiento.fechaVencimiento).format(
+                                  "DD/MM/YY"
+                                )}
+                              </td>
+                              <td style={{ display: "flex" }}>
+                                <span style={{ marginRight: "5px" }}>
+                                  {tratamiento.estadoPago}
+                                </span>
+                                <ListaSeleccionEstadoPago
+                                  tratamientoId={tratamiento.id}
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {mostrarTabla && (
+                    <div style={{ marginTop: "30px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <h4 style={{ textAlign: "left", marginRight: "10px" }}>
+                          Cobros - Gestión Manual
+                        </h4>
+                        <h4>Saldo Restante: {restoCobro}</h4>
+                      </div>
+
+                      <table className="table__body">
+                        <thead>
+                          <tr>
+                            <th>N°</th>
+                            <th>Fecha Cobro</th>
+                            <th>Metodo Pago</th>
+                            <th>Importe abonado</th>
+                            <th>Accion</th>
+                            <th>
+                              {!pagoFinalizado && (
+                                <button
+                                  className="btn btn-secondary mx-1 btn-md"
+                                  onClick={() => {
+                                    setMostrarModalAgregarCobro([
+                                      true,
+                                      idParaCobro,
+                                    ]);
+                                  }}
+                                >
+                                  <i className="fa-solid fa-circle-plus"></i>
+                                </button>
+                              )}
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {results.map((tratamiento) => (
+                            tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
+                              const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
+                              const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
+                              const metodoPago = tratamiento.cobrosManuales.metodoPago[index] || "";
+                              const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
+
+                              return (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
+                                  <td>{metodoPago.toString()}</td>
+                                  <td>{importe.toString()}</td>
+                                  <td>
+                                    {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
+                                      <>
+                                        <button
+                                          variant="primary"
+                                          className={`btn ${estadoCobro === "SIN COBRAR" ? "btn-success" : "btn-warning"} sm-1`}
+                                          onClick={(e) => {
+                                            if (estadoCobro === "SIN COBRAR") {
+                                              cambiarEstadoCobro(e, idParaCobro, index, "COBRADO");
+                                            } else {
+                                              cambiarEstadoCobro(e, idParaCobro, index, "SIN COBRAR");
+                                            }
+                                          }}
+                                          style={{ margin: "1px" }}
+                                        >
+                                          {estadoCobro === "SIN COBRAR" ? (
+                                            <>
+                                              Cobrar <i className="fa-solid fa-cart-shopping"></i>
+                                            </>
+                                          ) : (
+                                            "Descobrar"
+                                          )}
+                                        </button>
+                                        <button
+                                          variant="primary"
+                                          className="btn btn-secondary sm-1"
+                                          onClick={(e) => {
+                                            setIndexParaEditcobro(index)
+                                            setIdParaEditcobro(idParaCobro)
+                                            setMostrarModalEditarCobro([true, fecha, importe, metodoPago]);
+                                          }}
+                                          style={{ margin: "1px" }}
+                                        >
+                                          <i className="fa-regular fa-pen-to-square"></i>
+                                        </button>
+                                        <button
+                                          variant="primary"
+                                          className="btn btn-danger sm-1"
+                                          onClick={(e) => {
+                                            eliminarCobro(e, idParaCobro, index);
+                                          }}
+                                          style={{ margin: "1px" }}
+                                        >
+                                          <i className="fa-solid fa-trash-can"></i>
+                                        </button>
+                                      </>
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

@@ -1,12 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Navigation from "../Navigation";
-import {collection,updateDoc,doc,orderBy,query,onSnapshot} from "firebase/firestore";
+import { collection, updateDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
 import "../Pacientes/Show.css";
 import EditTarifa from "./EditTarifa";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
+import { FaSignOutAlt, FaBell, FaUser } from "react-icons/fa";
+import "../UpNav.css";
+import { getAuth, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
@@ -23,6 +27,18 @@ function Tarifario() {
   const tarifasCollection = useRef(
     query(tarifasCollectiona, orderBy("codigo"))
   );
+
+  const logout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+      })
+      .catch((error) => {
+        // Maneja cualquier error que ocurra durante el logout
+        console.log("Error durante el logout:", error);
+      });
+  };
 
   const [disabledRows] = useState([]);
 
@@ -90,24 +106,51 @@ function Tarifario() {
         <Navigation />
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
-        ) : (
+        ) : (<div className="w-100">
+          <nav className="navbar">
+            <div className="d-flex justify-content-between w-100 px-2">
+              <div className="search-bar w-75">
+                <input
+                  value={search}
+                  onChange={searcher}
+                  type="text"
+                  placeholder="Buscar por Codigo o Tratamiento..."
+                  className="form-control m-2 w-25"
+                />
+              </div>
+              <div className="d-flex justify-content-between w-25 align-items-center">
+                <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
+                <div className="d-flex">
+                  <div className="notificacion">
+                    <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                      <FaUser className="icono" />
+                    </Link>
+                  </div>
+                  <div className="notificacion">
+                    <FaBell className="icono" />
+                    <span className="badge rounded-pill bg-danger">
+                      5
+                    </span>
+                  </div>
+                </div>
+                <div className="notificacion">
+                  <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                    <FaSignOutAlt className="icono" />
+                    <span>Logout</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </nav>
           <div className="container mt-2 mw-100">
             <div className="row">
               <div className="col">
+                <br></br>
                 <div className="d-grid gap-2">
-                  <div className="d-flex">
-                    <h1>Tarifario</h1>
-                  </div>
                   <div className="d-flex justify-content-between">
-                    <input
-                      value={search}
-                      onChange={searcher}
-                      type="text"
-                      placeholder="Buscar por Codigo o Tratamiento..."
-                      className="form-control m-2 w-25"
-                    />
+                    <h1>Tarifario</h1>
                     <div className="d-flex justify-content-end">
-                      {userType === '"RmTnUw1iPj5q"' ? (
+                      {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
                           variant="primary"
                           className="btn-blue m-2"
@@ -121,13 +164,14 @@ function Tarifario() {
                     </div>
                   </div>
                 </div>
+
                 <table className="table__body">
                   <thead>
                     <tr>
                       <th onClick={() => sorting("codigo")}>Código</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
-                      {userType === '"RmTnUw1iPj5q"' ? <th>Accion</th> : null}
+                      {userType === process.env.REACT_APP_rolAdCon ? <th>Accion</th> : null}
                     </tr>
                   </thead>
 
@@ -140,7 +184,7 @@ function Tarifario() {
                         <td> {tarifa.codigo} </td>
                         <td> {tarifa.tratamiento}</td>
                         <td> {tarifa.tarifa} </td>
-                        {userType === '"RmTnUw1iPj5q"' ? (
+                        {userType === process.env.REACT_APP_rolAdCon ? (
                           <td>
                             <button
                               variant="primary"
@@ -190,6 +234,7 @@ function Tarifario() {
               </div>
             </div>
           </div>
+        </div>
         )}
       </div>
       <CreateTarifa show={modalShow} onHide={() => setModalShow(false)} />

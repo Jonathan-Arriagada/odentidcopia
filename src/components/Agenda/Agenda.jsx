@@ -14,6 +14,10 @@ import "../Utilidades/tablas.css";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
+import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import "../UpNav.css";
+import { getAuth, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 
 function Citas() {
@@ -38,6 +42,18 @@ function Citas() {
 
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
+
+  const logout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+      })
+      .catch((error) => {
+        // Maneja cualquier error que ocurra durante el logout
+        console.log("Error durante el logout:", error);
+      });
+  };
 
   const citasCollection = collection(db, "citas");
   const citasCollectionOrdenados = useRef(
@@ -202,17 +218,67 @@ function Citas() {
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
-          <div className="container mt-2 mw-100">
-            <div className="row">
-              <div className="col">
-                <div className="d-grid gap-2">
+          <div className="w-100">
+            <nav className="navbar">
+              <div className="d-flex justify-content-between w-100 px-2">
+                <div className="search-bar w-75" style={{ position: "relative" }}>
+                  <input
+                    value={search}
+                    onChange={searcher}
+                    type="text"
+                    placeholder="Buscar por Apellido y Nombres o DNI..."
+                    className="form-control m-2 w-25"
+                  />
+                  {taparFiltro && (
+                    <input
+                      className="form-control m-2 w-25"
+                      value="<-FILTRO ENTRE FECHAS APLICADO->"
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 1,
+                        textAlign: "center",
+                      }}
+                      disabled
+                    ></input>
+                  )}
+                </div>
+                <div className="d-flex justify-content-between w-25 align-items-center">
+                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                        <FaUser className="icono" />
+                      </Link>
+                    </div>
+                    <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">
+                        5
+                      </span>
+                    </div>
+                  </div>
+                  <div className="notificacion">
+                    <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                      <FaSignOutAlt className="icono" />
+                      <span>Logout</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </nav>
+            <div className="container mw-100 mt-2">
+              <div className="row">
+                <div className="col">
+                  <br></br>
                   <div className="d-flex justify-content-between">
                     <div
                       className="d-flex justify-content-center align-items-center"
                       style={{ maxHeight: "40px", marginLeft: "10px" }}
                     >
                       <h1>Agenda</h1>
-                      {userType === '"RmTnUw1iPj5q"' ? (
+                      {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
                           className="btn btn-dark mx-2 btn-sm"
                           style={{ borderRadius: "5px" }}
@@ -223,49 +289,29 @@ function Citas() {
                           <i className="fa-solid fa-gear"></i>
                         </button>
                       ) : null}
+
+                      <button
+                        variant="primary"
+                        className="btn btn-success mx-1 btn-md"
+                        style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center", alignSelf: "center", height: "45px" }}
+                        onClick={() => { setMostrarBotonesFechas(!mostrarBotonesFechas); setSearch(""); setTaparFiltro(false) }}
+                      >
+                        <i
+                          className="fa-regular fa-calendar-check"
+                          style={{ transform: "scale(1.4)" }}
+                        ></i>
+                      </button>
+                      {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
+                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
+                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
+                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
+                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
+                      </div>)}
                     </div>
                     <label>Citas Por Confirmar: {contador}</label>
                   </div>
 
                   <div className="d-flex justify-content-between">
-                    {taparFiltro && (
-                      <input
-                        className="form-control m-2 w-25"
-                        value="<-FILTRO ENTRE FECHAS APLICADO->"
-                        style={{ textAlign: "center" }}
-                        disabled
-                      >
-                      </input>
-                    )}
-                    <input
-                      value={search}
-                      onChange={searcher}
-                      type="text"
-                      placeholder="Buscar por Apellido, Nombre o DNI..."
-                      className="form-control m-2 w-25"
-                      style={{
-                        display: taparFiltro ? "none" : "block",
-                      }}
-                    />
-
-                    <button
-                      variant="primary"
-                      className="btn btn-success mx-1 btn-md"
-                      style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center", alignSelf: "center", height: "45px" }}
-                      onClick={() => { setMostrarBotonesFechas(!mostrarBotonesFechas); setSearch(""); setTaparFiltro(false) }}
-                    >
-                      <i
-                        className="fa-regular fa-calendar-check"
-                        style={{ transform: "scale(1.4)" }}
-                      ></i>
-                    </button>
-                    {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
-                      <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
-                    </div>)}
-
                     <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); setMostrarBotonesFechas(false) }}>
                       <Modal.Header closeButton onClick={() => {
                         setModalSeleccionFechaShow(false);
@@ -328,69 +374,69 @@ function Citas() {
                       )}
                     </div>
                   </div>
-                </div>
 
-                <table className="table__body">
-                  <thead>
-                    <tr>
-                      <th onClick={() => sorting("fecha")}>Fecha</th>
-                      <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
-                      <th onClick={() => sorting("horaFin")}>Hora Fin</th>
-                      <th onClick={() => sorting("apellidoConNombre")}>
-                        Apellido y Nombres
-                      </th>
-                      <th onClick={() => sorting("idc")}>DNI</th>
-                      <th onClick={() => sorting("estado")}>Estado</th>
-                      <th onClick={() => sorting("numero")}>Telefono</th>
-                      <th>Notas</th>
-                      <th>Accion</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {results.map((cita) => (
-                      <tr key={cita.id}>
-                        <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
-                        <td> {cita.horaInicio} </td>
-                        <td> {cita.horaFin} </td>
-                        <td> {cita.apellidoConNombre} </td>
-                        <td> {cita.idc} </td>
-                        <td>
-                          {" "}
-                          <p
-                            style={buscarEstilos(cita.estado)}
-                            className="status"
-                          >
-                            {cita.estado}
-                          </p>
-                        </td>
-                        <td> {cita.numero} </td>
-                        <td> {cita.comentario} </td>
-                        <td>
-                          <button
-                            variant="primary"
-                            className="btn btn-success mx-1"
-                            onClick={() => {
-                              setModalShowEditCita(true);
-                              setCita(cita);
-                              setIdParam(cita.id);
-                            }}
-                          >
-                            <i className="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <button
-                            onClick={() => {
-                              deleteCita(cita.id);
-                            }}
-                            className="btn btn-danger"
-                          >
-                            <i className="fa-solid fa-trash-can"></i>
-                          </button>
-                        </td>
+                  <table className="table__body">
+                    <thead>
+                      <tr>
+                        <th onClick={() => sorting("fecha")}>Fecha</th>
+                        <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
+                        <th onClick={() => sorting("horaFin")}>Hora Fin</th>
+                        <th onClick={() => sorting("apellidoConNombre")}>
+                          Apellido y Nombres
+                        </th>
+                        <th onClick={() => sorting("idc")}>DNI</th>
+                        <th onClick={() => sorting("estado")}>Estado</th>
+                        <th onClick={() => sorting("numero")}>Telefono</th>
+                        <th>Notas</th>
+                        <th>Accion</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+
+                    <tbody>
+                      {results.map((cita) => (
+                        <tr key={cita.id}>
+                          <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
+                          <td> {cita.horaInicio} </td>
+                          <td> {cita.horaFin} </td>
+                          <td> {cita.apellidoConNombre} </td>
+                          <td> {cita.idc} </td>
+                          <td>
+                            {" "}
+                            <p
+                              style={buscarEstilos(cita.estado)}
+                              className="status"
+                            >
+                              {cita.estado}
+                            </p>
+                          </td>
+                          <td> {cita.numero} </td>
+                          <td> {cita.comentario} </td>
+                          <td>
+                            <button
+                              variant="primary"
+                              className="btn btn-success mx-1"
+                              onClick={() => {
+                                setModalShowEditCita(true);
+                                setCita(cita);
+                                setIdParam(cita.id);
+                              }}
+                            >
+                              <i className="fa-regular fa-pen-to-square"></i>
+                            </button>
+                            <button
+                              onClick={() => {
+                                deleteCita(cita.id);
+                              }}
+                              className="btn btn-danger"
+                            >
+                              <i className="fa-solid fa-trash-can"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

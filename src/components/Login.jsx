@@ -9,6 +9,7 @@ import { db } from "../firebaseConfig/firebase";
 import { query, collection, where, getDocs } from "firebase/firestore";
 import { Modal } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import ReCAPTCHA from "react-google-recaptcha";
 
 
 const Login = () => {
@@ -16,54 +17,64 @@ const Login = () => {
   const [emailReseteo, setEmailReseteo] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [error2, setError2] = useState(false);
   const navigate = useNavigate();
   const [mostrarModal, setMostrarModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaResolved, setCaptchaResolved] = useState(false);
+  const { dispatch } = useContext(AuthContext);
 
   const togglePasswordVisibility = (e) => {
     e.preventDefault();
     setShowPassword(!showPassword);
   };
 
-  const { dispatch } = useContext(AuthContext);
+  const handleCaptchaResolved = () => {
+    setCaptchaResolved(true);
+  };
 
   const submit = (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        dispatch({ type: "LOGIN", payload: user });
-        const q = query(collection(db, "user"), where("correo", "==", email));
-        getDocs(q)
-          .then((querySnapshot) => {
-            if (querySnapshot.docs.length > 0) {
-              const doc = querySnapshot.docs[0];
+    if (captchaResolved) {
 
-              localStorage.setItem("rol", JSON.stringify(doc.data().rol));
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          dispatch({ type: "LOGIN", payload: user });
+          const q = query(collection(db, "user"), where("correo", "==", email));
+          getDocs(q)
+            .then((querySnapshot) => {
+              if (querySnapshot.docs.length > 0) {
+                const doc = querySnapshot.docs[0];
 
-              if (doc.data().rol === "Ks3n7p9Rv2wT") {
-                // Rol bloqueado, no permitir el inicio de sesión
-                signOut(auth);
-                console.log("El rol está bloqueado");
+                localStorage.setItem("rol", JSON.stringify(doc.data().rol));
+
+                if (doc.data().rol === process.env.REACT_APP_rolBloq) {
+                  // Rol bloqueado, no permitir el inicio de sesión
+                  signOut(auth);
+                  console.log("El rol está bloqueado");
+                } else {
+                  // Rol no bloqueado, redirigir al usuario a la página correspondiente
+                  navigate("/agenda");
+                }
               } else {
-                // Rol no bloqueado, redirigir al usuario a la página correspondiente
-                navigate("/agenda");
+                console.log("No se encontraron documentos");
               }
-            } else {
-              console.log("No se encontraron documentos");
-            }
-          })
-          .catch((error) => {
-            console.log("Error al obtener los documentos: ", error);
-          });
-      })
-      .catch((error) => {
-        setError(true);
-        const errorMessage = error.message;
-        setErrorMsg(errorMessage);
-      });
+            })
+            .catch((error) => {
+              console.log("Error al obtener los documentos: ", error);
+            });
+        })
+        .catch(() => {
+          setError(true);
+          setTimeout(clearError, 3000);
+        });
+    } else {
+      setError2(true)
+      setTimeout(clearError, 2000);
+    }
   };
+
 
   const pedirReseteoClave = (e) => {
     e.preventDefault();
@@ -85,12 +96,17 @@ const Login = () => {
     setMostrarModal(true);
   };
 
+  const clearError = () => {
+    setError("");
+    setError2("");
+  };
+
   return (
     <>
       <div className="login-page">
         <img className="logo" src={logo} alt="Odentid" />
 
-        <form>
+        <form onSubmit={submit}>
           <div className="email">
             <input
               onChange={(e) => setEmail(e.target.value)}
@@ -99,7 +115,7 @@ const Login = () => {
             />
             <label htmlFor="email">Email</label>
           </div>
-          <div className="password" style={{ display: "flex"}}>
+          <div className="password" style={{ display: "flex" }}>
             <input
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
@@ -108,19 +124,30 @@ const Login = () => {
             <label htmlFor="password">Contraseña</label>
             <button
               className="password-toggle"
-              style={{ border: "none", background: "transparent", cursor: "pointer", color: "#000", borderBottom: "1px solid #2BB1FF",borderRadius:"0px" }} // Agrega un margen de valor cero al botón
+              style={{ border: "none", background: "transparent", cursor: "pointer", color: "#000", borderBottom: "1px solid #2BB1FF", borderRadius: "0px" }} // Agrega un margen de valor cero al botón
               onClick={togglePasswordVisibility}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
           {error && (
-            <span className="error">Email o Contraseña incorrectos.</span>
+            <span className="error">Informacion de Sesion Incorrecta.</span>
           )}
-          {error && <span className="error">{errorMsg}</span>}
-          <button type="submit" onClick={submit}>
+
+          <div className="captcha" style={{ display: "flex", justifyContent: "center", alignItems: "center", transform: "scale(0.9)" }}>
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_captcha}
+              onChange={handleCaptchaResolved}
+            />
+          </div>
+          {error2 && (
+            <span className="error">Captcha Invalido.</span>
+          )}
+
+          <button type="submit">
             Iniciar Sesión
           </button>
+
           <button
             type="button"
             onClick={handleModal}

@@ -229,8 +229,8 @@ export default function History() {
   return (
     <div className="mainpage">
       <Navigation />
-      <Box sx={{ width: "100%" }}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+    
+        <Box sx={{ borderBottom: 1, borderColor: "divider", width: "100%" }}>
           <Tabs value={value} onChange={handleChange}>
             <Tab label="Filiación"/>
             <Tab label="Antecedentes" />
@@ -265,6 +265,38 @@ export default function History() {
                   required
                 />
               </div>
+            
+            <div className="container">
+              <div className="col">
+                <div
+                  className="col mb-3"
+                  style={{
+                    background: "#23C9FF",
+                    padding: "6px",
+                    borderRadius: "20px",
+                  }}
+                >
+                  <label
+                    className="form-label"
+                    style={{ marginLeft: "15px", fontWeight: "bold" }}
+                  >
+                    Buscador por Apellido, Nombre o DNI:
+                  </label>
+                  <input
+                    style={{ borderRadius: "100px" }}
+                    type="text"
+                    className="form-control m-1"
+                    onChangeCapture={(e) =>
+                      manejarValorSeleccionado(e.target.value)
+                    }
+                    list="pacientes-list"
+                    multiple={false}
+                  />
+                  <datalist id="pacientes-list">
+                    <option value="">Ingreso manual</option>
+                    {valorBusquedaOptionsJSX}
+                  </datalist>
+                </div>
 
               <div className="col-md-3">
                 <label className="form-label">DNI:</label>
@@ -442,6 +474,8 @@ export default function History() {
               </button>
             )}
           </div>
+        </div>
+        </div>
         </div>
       </form>
         </TabPanel>
@@ -1139,93 +1173,91 @@ export default function History() {
           <div className="container d-flex mb-3">
             <h1>Control y Evolucion</h1>
           </div>
-          <form>
-    <div className="row">
-      <div className="d-flex col-md-4">
-        <label className="col-form-label me-5">Nombre:</label>
-        <input
-          value={apellidoConNombre || ""}
-          onChange={(e) => setApellidoConNombre(e.target.value)}
-          type="text"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-      <div className="d-flex col-md-3">
-        <label className="col-form-label me-5">DNI:</label>
-        <input
-          value={idc || ""}
-          onChange={(e) => setIdc(e.target.value)}
-          type="number"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-      </div>
-      <div className="row">
-      <div className="d-flex col-md-4">
-        <label className="col-form-label me-5">Tratamiento:</label>
-        <input
-          value={apellidoConNombre || ""}
-          onChange={(e) => setApellidoConNombre(e.target.value)}
-          type="text"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-      <div className="d-flex col-md-2">
-        <label className="col-form-label me-5">Pieza:</label>
-        <input
-          value={idc || ""}
-          onChange={(e) => setIdc(e.target.value)}
-          type="number"
-          className="form-control m-1"
-          disabled={!editable}
-        />
-      </div>
-    </div>
-
-    <hr />
-
-          <div className="d-flex col-md-3">
-            <label className="col-form-label me-5">Doctor:</label>
-            <input
-              value={apellidoConNombre || ""}
-              onChange={(e) => setApellidoConNombre(e.target.value)}
-              type="text"
-              className="form-control m-1"
-              disabled={!editable}
-            />
+          <form className="container">
+            <div className="row">
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">Nombre:</label>
+                <input
+                  value={apellidoConNombre || ""}
+                  onChange={(e) => setApellidoConNombre(e.target.value)}
+                  type="text"
+                  className="form-control my-1 ms-2 w-100"
+                  disabled={!editable}
+                />
+              </div>
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">DNI:</label>
+                <input
+                  value={idc || ""}
+                  onChange={(e) => setIdc(e.target.value)}
+                  type="number"
+                  className="form-control m-1 w-100"
+                  disabled={!editable}
+                />
+              </div>
             </div>
-            <div className="d-flex col-md-3">
-            <label className="col-form-label me-5">Fecha:</label>
-            <input
-              value={apellidoConNombre || ""}
-              onChange={(e) => setApellidoConNombre(e.target.value)}
-              type="number"
-              className="form-control m-1"
-            />
-          </div>
-          <div className="d-flex col-md-6">
-            <label className="col-form-label me-5">Detalle:</label>
-            <textarea
-              value={apellidoConNombre || ""}
-              onChange={(e) => setApellidoConNombre(e.target.value)}
-              type="text"
-              className="form-control m-1"
-              style={{ height: "150px"}}
-            />
-          </div>
+            <div className="row">
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">Tratamiento:</label>
+                <input
+                  value={apellidoConNombre || ""}
+                  onChange={(e) => setApellidoConNombre(e.target.value)}
+                  type="text"
+                  className="form-control my-1 ms-2 w-100"
+                  disabled={!editable}
+                />
+              </div>
+              <div className="d-flex col-md-5">
+                <label className="col-form-label me-5 w-25">Pieza:</label>
+                <input
+                  value={idc || ""}
+                  onChange={(e) => setIdc(e.target.value)}
+                  type="number"
+                  className="form-control m-1 w-100"
+                  disabled={!editable}
+                />
+              </div>
+            </div>
+
+            <hr />
+
+            <div className="d-flex col-md-5">
+              <label className="col-form-label me-5 w-25">Doctor:</label>
+              <input
+                value={apellidoConNombre || ""}
+                onChange={(e) => setApellidoConNombre(e.target.value)}
+                type="text"
+                className="form-control m-1 w-100"
+                disabled={!editable}
+              />
+            </div>
+            <div className="d-flex col-md-5">
+              <label className="col-form-label me-5 w-25">Fecha:</label>
+              <input
+                value={apellidoConNombre || ""}
+                onChange={(e) => setApellidoConNombre(e.target.value)}
+                type="number"
+                className="form-control m-1 w-100"
+              />
+            </div>
+            <div className="d-flex col-md-5">
+              <label className="col-form-label me-5 w-25">Detalle:</label>
+              <textarea
+                value={apellidoConNombre || ""}
+                onChange={(e) => setApellidoConNombre(e.target.value)}
+                type="text"
+                className="form-control m-1"
+                style={{ height: "150px" }}
+              />
+            </div>
           </form>
           <button
-                type="submit"
-                className="btn btn-primary"
-                style={{ margin: "1px" }}
-              >
-                Agregar
-              </button>
+            type="submit"
+            className="btn btn-primary"
+            style={{ margin: "1px" }}
+          >
+            Agregar
+          </button>
         </TabPanel>
-      </Box>
-    </div>
-  );
-}
+        </div>
+  );}

@@ -6,7 +6,8 @@ import "../Utilidades/tablas.css";
 import moment from "moment";
 
 const CrearGasto = (props) => {
-    const [fechaGasto, setFechaGasto] = useState(moment(new Date()).format("YYYY-MM-DD"));
+    const hoy = moment(new Date()).format("YYYY-MM-DD");
+    const [fechaGasto, setFechaGasto] = useState("");
     const [ruc, setRuc] = useState("");
     const [proveedor, setProveedor] = useState("");
     const [tipoGasto, setTipoGasto] = useState("");
@@ -73,6 +74,11 @@ const CrearGasto = (props) => {
         return () => unsubscribe.forEach(fn => fn());
     }, [updateOptionsTipoGasto, updateOptionsProveedores, updateOptionsMateriales]);
 
+    useEffect(() => {
+        if (fechaGasto === "") {
+            setFechaGasto(hoy);
+        }
+    }, [fechaGasto, hoy]);
 
     const validateFields = async (e) => {
         e.preventDefault();
@@ -104,7 +110,7 @@ const CrearGasto = (props) => {
     };
 
     const clearFields = () => {
-        setFechaGasto("");
+        setFechaGasto("")
         setRuc("");
         setProveedor("");
         setTipoGasto("");
@@ -122,7 +128,6 @@ const CrearGasto = (props) => {
 
     const store = async () => {
         const querySnapshot = await getDocs(query(collection(db, "proveedores"), where("ruc", "==", ruc)));
-
         if (!querySnapshot.empty) {
             const batch = writeBatch(db);
             for (const producto of productos) {
@@ -273,8 +278,7 @@ const CrearGasto = (props) => {
         e.preventDefault();
         if (material === "") {
             setMaterial(modalAgregarArticulo[1]);
-        }
-        if (material.trim() === "" || um.trim() === "") {
+        } else if (material.trim() === "" || um.trim() === "") {
             setError("El Material/U.M. no puede estar vacío");
             return;
         }
@@ -313,7 +317,7 @@ const CrearGasto = (props) => {
                                         <div className="col mb-6">
                                             <label className="form-label">Fecha*</label>
                                             <input
-                                                defaultValue={moment().format("YYYY-MM-DD")}
+                                                defaultValue={hoy}
                                                 onChange={(e) => { setFechaGasto(e.target.value) }}
                                                 type="date"
                                                 className="form-control"
