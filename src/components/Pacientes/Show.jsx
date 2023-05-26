@@ -170,13 +170,14 @@ const Show = () => {
                   <br></br>
                   <div className="d-flex justify-content-between">
                     <h1>Pacientes</h1>
+                    <Link to="/historial" >
                     <button
                       variant="primary"
-                      className="btn-blue m-2"
-                      onClick={() => setModalShow(true)}
+                      className="btn-blue m-2"                    
                     >
                       Nuevo
                     </button>
+                    </Link>
                   </div>
                   <table className="table__body">
                     <thead>
