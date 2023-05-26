@@ -56,7 +56,11 @@ export default function History() {
   const [error, setError] = useState("");  
   const [editable, setEditable] = useState("")
   const [value, setValue] = useState(0);
-  const [medicoAtendido, setMedicoAtendido] = useState("");  
+  const [pregunta1, setPregunta1] = useState("");  
+  const [pregunta2, setPregunta2] = useState("");
+  const [pregunta3, setPregunta3] = useState("");
+  const [pregunta4, setPregunta4] = useState("");
+  const [pregunta5, setPregunta5] = useState("");
   const [isChecked, setIsChecked] = useState({    
     1: false,
     2: false,
@@ -135,9 +139,9 @@ export default function History() {
       ocupacion: ocupacion || clientData.ocupacion,
       correo: correo || clientData.correo,
       responsable: responsable || clientData.responsable,
-      telefonoResponsable:
-        telefonoResponsable || clientData.telefonoResponsable,
+      telefonoResponsable: telefonoResponsable || clientData.telefonoResponsable,
       nombreResponsable: nombreResponsable || clientData.nombreResponsable,
+      pregunta1: pregunta1 || clientData.pregunta1,
     };
     await updateDoc(clientRef, newData);
 
@@ -160,6 +164,7 @@ export default function History() {
       responsable: responsable,
       nombreResponsable: nombreResponsable,
       telefonoResponsable: telefonoResponsable,
+      pregunta1: pregunta1,
     });
   };
 
@@ -180,6 +185,7 @@ export default function History() {
       setResponsable(clientF.data().responsable);
       setNombreResponsable(clientF.data().nombreResponsable);
       setTelefonoResponsable(clientF.data().telefonoResponsable);
+      setPregunta1(clientF.data().pregunta1)
     } else {
       console.log("No");
     }
@@ -188,6 +194,33 @@ export default function History() {
   useEffect(() => {
     getClientById(id);
   }, [])
+
+  useEffect(() => {
+    if (apellidoConNombre) {
+      const obtenerDatosCliente = async () => {
+        try {
+          const querySnapshot = await db
+            .collection("clientes")
+            .where("apellidoConNombre", "==", apellidoConNombre)     
+            .get();
+
+          if (!querySnapshot.empty) {
+            const cliente = querySnapshot.docs[0].data();
+            setIsChecked(cliente.isChecked || {});
+            setPregunta1(cliente.pregunta1 || "");
+            setPregunta2(cliente.pregunta2 || "");
+            setPregunta3(cliente.pregunta3 || "");
+            setPregunta4(cliente.pregunta4 || "");
+            setPregunta5(cliente.pregunta5 || "");
+          }
+        } catch (error) {
+          console.error("Error al obtener los datos del cliente:", error);
+        }
+      };
+
+      obtenerDatosCliente();
+    }
+  }, [apellidoConNombre]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -478,8 +511,8 @@ export default function History() {
                       </label>
                     </label>
                     <input
-                      value={medicoAtendido}
-                      onChange={(e) => setMedicoAtendido(e.target.value)}
+                      value={pregunta1}
+                      onChange={(e) => setPregunta1(e.target.value)}
                       type="text"
                       className="form-control m-1"
                       placeholder={isChecked[1] ? "¿Qué especialidad?" : ""}
@@ -520,8 +553,8 @@ export default function History() {
                       </label>
                     </label>
                     <input
-                      value={medicoAtendido}
-                      onChange={(e) => setMedicoAtendido(e.target.value)}
+                      value={pregunta2}
+                      onChange={(e) => setPregunta2(e.target.value)}
                       type="text"
                       className="form-control m-1"
                       placeholder={
@@ -563,8 +596,8 @@ export default function History() {
                     </label>
                   </label>
                   <input
-                    value={direccion}
-                    onChange={(e) => setDireccion(e.target.value)}
+                    value={pregunta3}
+                    onChange={(e) => setPregunta3(e.target.value)}
                     type="text"
                     className="form-control m-1"
                     placeholder={isChecked[3] ? "¿Qué medicamento?" : ""}
@@ -603,8 +636,8 @@ export default function History() {
                     </label>
                   </label>
                   <input
-                    value={direccion}
-                    onChange={(e) => setDireccion(e.target.value)}
+                    value={pregunta4}
+                    onChange={(e) => setPregunta4(e.target.value)}
                     type="text"
                     className="form-control m-1"
                     placeholder={isChecked[4] ? "¿A cuál medicamento?" : ""}
@@ -623,7 +656,7 @@ export default function History() {
                         onChange={(e) =>
                           setIsChecked({
                             ...isChecked,
-                            5: e.target.checked,
+                            5: setPregunta5(e.target.checked),
                           })
                         }
                       />
@@ -637,7 +670,7 @@ export default function History() {
                         onChange={(e) =>
                           setIsChecked({
                             ...isChecked,
-                            5: !e.target.checked,
+                            5: setPregunta5(!e.target.checked),
                           })
                         }
                       />
