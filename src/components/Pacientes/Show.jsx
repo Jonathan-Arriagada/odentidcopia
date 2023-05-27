@@ -1,13 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  query,
-  orderBy,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query, orderBy} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import "./Show.css";
@@ -32,6 +25,7 @@ const Show = () => {
   const [idParam, setIdParam] = useState("");
   const [modalShowCita, setModalShowCita] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  
   const logout = () => {
     const auth = getAuth();
     signOut(auth)
@@ -170,88 +164,98 @@ const Show = () => {
                   <br></br>
                   <div className="d-flex justify-content-between">
                     <h1>Pacientes</h1>
-                    <Link to="/historial" >
                     <button
                       variant="primary"
-                      className="btn-blue m-2"                    
+                      className="btn-blue m-2"
+                      onClick={() => setModalShow(true)}
                     >
                       Nuevo
                     </button>
-                    </Link>
                   </div>
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th onClick={() => sorting("apellidoConNombre")}>
-                          Apellido Y Nombres
-                        </th>
-                        <th onClick={() => sorting("idc")}>DNI</th>
-                        <th onClick={() => sorting("fechaNacimiento")}>
-                          Fecha Nacimiento
-                        </th>
-                        <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th>Accion</th>
-                      </tr>
-                    </thead>
+                <table className="table__body">
+                  <thead>
+                    <tr>
+                      <th>N°</th>
+                      <th onClick={() => sorting("apellidoConNombre")}>
+                        Apellido Y Nombres
+                      </th>
+                      <th onClick={() => sorting("idc")}>DNI</th>
+                      <th onClick={() => sorting("fechaNacimiento")}>
+                        Fecha Nacimiento
+                      </th>
+                      <th onClick={() => sorting("numero")}>Telefono</th>
+                      <th>Accion</th>
+                    </tr>
+                  </thead>
 
-                    <tbody>
-                      {results.map((client) => (
-                        <tr key={client.id}>
-                          <td> {client.apellidoConNombre} </td>
-                          <td> {client.idc} </td>
-                          <td>
-                            {moment(client.fefechaNacimientocha).format(
-                              "DD/MM/YY"
-                            )}
-                          </td>
-                          <td> {client.numero}</td>
-                          <td>
+                  <tbody>
+                    {results.map((client, index) => (
+                      <tr key={client.id}>
+                        <td>{results.length - index}</td>
+                        <td>
+                          <Link to={`/historial/${client.id}`}>
+                            {client.apellidoConNombre}
+                          </Link>
+
+                        </td>
+                        <td> {client.idc} </td>
+                        <td>
+                          {moment(client.fefechaNacimientocha).format(
+                            "DD/MM/YY"
+                          )}
+                        </td>
+                        <td> {client.numero}</td>
+
+                        <td style={{ padding: "10px" }}>
+
+                          <button
+                            variant="primary"
+                            className="btn btn-success mx-1"
+                            onClick={() => {
+                              setModalShowEdit(true);
+                              setClient(client);
+                              setIdParam(client.id);
+                            }}
+                          >
+                            <i className="fa-regular fa-pen-to-square"></i>
+                          </button>
+                          <button
+                            onClick={() => {
+                              deleteClient(client.id);
+                            }}
+                            variant="primary"
+                            className="btn btn-danger mx-1"
+                          >
+                            <i className="fa-solid fa-trash-can"></i>
+                          </button>
+                          <Link to={`/historial/${client.id}`}>
                             <button
                               variant="primary"
-                              className="btn btn-success mx-1"
-                              onClick={() => {
-                                setModalShowEdit(true);
-                                setClient(client);
-                                setIdParam(client.id);
-                              }}
-                            >
-                              <i className="fa-regular fa-pen-to-square"></i>
+                              className="btn btn-blue mx-1">
+                              <i className="fa-solid fa-file-medical"></i>
                             </button>
-                            <button
-                              onClick={() => {
-                                deleteClient(client.id);
-                              }}
-                              className="btn btn-danger mx-1"
-                            >
-                              {" "}
-                              <i className="fa-solid fa-trash-can"></i>{" "}
-                            </button>
-                            <button
-                              variant="primary"
-                              className="btn-blue mx-1"
-                              onClick={() => {
-                                setModalShowCita(true);
-                                setClient(client);
-                              }}
-                            >
-                              Crear Cita
-                            </button>
-                            <Link to={`/historial/${client.id}`}>
-                              <button className="btn btn-warning">
-                                Historial
-                              </button>
-                            </Link>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </Link>
+                          <button
+                            variant="primary"
+                            className="btn btn-secondary mx-1"
+                            onClick={() => {
+                              setModalShowCita(true);
+                              setClient(client);
+                            }}
+                          >
+                            Crear Cita
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
+          </div>
         )}
-      </div>
+    </div >
 
       <CreateCita
         show={modalShowCita}

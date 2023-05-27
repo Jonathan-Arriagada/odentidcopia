@@ -3,7 +3,7 @@
   top: 0;
   display: flex;
   flex-direction: column;
-  width: 15%;
+  width: 18%;
   min-height: 100vh;
   color: white;
   background-color: #002f4d;
@@ -80,7 +80,7 @@
 .profile-img {
   height: 100%;
   aspect-ratio: 1;
-  border-radius: 50%;
+  border-radius: 40%;
   object-fit: cover;
 }
 

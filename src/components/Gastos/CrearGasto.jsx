@@ -68,7 +68,6 @@ const CrearGasto = (props) => {
             onSnapshot(query(collection(db, "tipoGasto"), orderBy("name")), updateOptionsTipoGasto),
             onSnapshot(query(collection(db, "proveedores"), orderBy("name")), updateOptionsProveedores),
             onSnapshot(query(collection(db, "materiales"), orderBy("name")), updateOptionsMateriales),
-
         ];
 
         return () => unsubscribe.forEach(fn => fn());

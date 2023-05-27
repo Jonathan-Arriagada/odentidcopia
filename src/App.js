@@ -30,7 +30,7 @@ function App() {
     if (storedRole === process.env.REACT_APP_rolAdCon) {
       return children;
     } else {
-      return <Navigate to="/agenda" />;
+      return <Navigate to="/clients" />;
     }
   }
 
