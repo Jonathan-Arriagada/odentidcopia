@@ -87,10 +87,6 @@ const Create = (props) => {
       pregunta16: ["",false],
       pregunta17: ["",false],
       pregunta18: ["",false],
-      tratamiento: "",
-      fecha: "",
-      doctor: "",
-      detalle: "",
     });
   };
 

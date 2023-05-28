@@ -10,6 +10,10 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import "../UpNav.css";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
+import TratamientosEspecif from "./TratamientosEspecif";
+import AgendaEspecif from "./AgendaEspecif";
+import IngresosEspecif from "./IngresosEspecif";
+import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,13 +50,7 @@ export default function History() {
   const [responsable, setResponsable] = useState("");
   const [nombreResponsable, setNombreResponsable] = useState("");
   const [telefonoResponsable, setTelefonoResponsable] = useState("");
-  const [fechaTratamiento, setFechaTratemiento] = useState("");
-  const [doctor, setDoctor] = useState("");
-  const [detalleTratamiento, setDetalleTratamiento] = useState("");
-  const [tratamientoControl, setTratamientoControl] = useState("");
-  const [pieza, setPieza] = useState("");
 
-  
   const [error, setError] = useState("");
   const [editable,] = useState("");
   const [value, setValue] = useState(0);
@@ -324,8 +322,13 @@ export default function History() {
       (opcion) => opcion.valorBusqueda === search
     );
     if (pacienteSeleccionado) {
-      getClientById(pacienteSeleccionado.id)
+      navigate(`/historial/${pacienteSeleccionado.id}`)
     }
+  };
+
+  const handleLimpiar = () => {
+    setSearch("")
+    navigate("/historial");
   };
 
   return (
@@ -337,28 +340,63 @@ export default function History() {
         <div className="w-100">
           <nav className="navbar">
             <div className="d-flex justify-content-between w-100 px-2">
-              <div className="search-bar w-75">
-                <input
-                  value={search}
-                  onChange={searcher}
-                  type="text"
-                  placeholder="Buscador de Pacientes..."
-                  className="form-control m-2 w-25"
-                  list="pacientes-list"
-                />
-                <datalist id="pacientes-list">
-                  {opcionesDePacientes.map((opcion, index) => (
-                    <option key={`pacientes-${index}`} value={opcion.valorBusqueda} />
-                  ))}
-                </datalist>
-                <button
-                  onClick={handleSearch}
-                  className="btn btn-primary"
-                  style={{ margin: "3px" }}
-                >
-                  Cargar Historial
-                </button>
-              </div>
+              <>
+                {!id ? (
+                  <div className="search-bar w-75">
+                    <input
+                      value={search}
+                      onChange={searcher}
+                      type="text"
+                      placeholder="Buscador de Pacientes..."
+                      className="form-control m-2 w-25"
+                      list="pacientes-list"
+                    />
+                    <datalist id="pacientes-list">
+                      {opcionesDePacientes.map((opcion, index) => (
+                        <option key={`pacientes-${index}`} value={opcion.valorBusqueda} />
+                      ))}
+                    </datalist>
+                    <button
+                      onClick={handleSearch}
+                      className="btn btn-primary"
+                      style={{ margin: "3px" }}
+                    >
+                      Cargar Historial
+                    </button>
+                  </div>
+                ) : (
+                  <div className="search-bar w-75">
+                    <input
+                      value={apellidoConNombre}
+                      onChange={searcher}
+                      type="text"
+                      placeholder="Buscador de Pacientes..."
+                      className="form-control m-2 w-25"
+                      list="pacientes-list"
+                    />
+                    <datalist id="pacientes-list">
+                      {opcionesDePacientes.map((opcion, index) => (
+                        <option key={`pacientes-${index}`} value={opcion.valorBusqueda} />
+                      ))}
+                    </datalist>
+                    <button
+                      className="btn btn-secondary"
+                      style={{ margin: "3px" }}
+                      disabled
+                    >
+                      Historial Cargado
+                    </button>
+                    <button
+                      onClick={handleLimpiar}
+                      className="btn btn-primary"
+                      style={{ margin: "3px" }}
+                    >
+                      Limpiar Registro
+                    </button>
+                  </div>
+                )}
+              </>
+
               <div className="d-flex justify-content-between w-25 align-items-center">
                 <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
                   Bienvenido al sistema Odentid
@@ -397,10 +435,9 @@ export default function History() {
               <Tabs value={value} onChange={handleChange}>
                 <Tab label="Historial Clinico" />
                 <Tab label="Control y Evolución" />
-                <Tab label="Tratamientos?" />
-                <Tab label="Citas?" />
-                <Tab label="Recetario?" />
-                <Tab label="Imagenes?" />
+                <Tab label="Citas" />
+                <Tab label="Tratamientos" />
+                <Tab label="Ingresos" />
 
               </Tabs>
             </Box>
@@ -1147,94 +1184,20 @@ export default function History() {
             {/* CONTROL Y EVOLUCION */}
 
             < TabPanel value={value} index={1} >
-              <div className="container d-flex mb-3">
-                <h1>Control y Evolucion</h1>
-              </div>
-              <form className="container">
-                <div className="row">
-                  <div className="d-flex col-md-5">
-                    <label className="col-form-label me-5 w-25">Nombre:</label>
-                    <input
-                      value={apellidoConNombre || ""}
-                      onChange={(e) => setApellidoConNombre(e.target.value)}
-                      type="text"
-                      className="form-control my-1 ms-2 w-100"
-                      disabled={!editable}
-                    />
-                  </div>
-                  <div className="d-flex col-md-5">
-                    <label className="col-form-label me-5 w-25">DNI:</label>
-                    <input
-                      value={idc || ""}
-                      onChange={(e) => setIdc(e.target.value)}
-                      type="number"
-                      className="form-control m-1 w-100"
-                      disabled={!editable}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="d-flex col-md-5">
-                    <label className="col-form-label me-5 w-25">Tratamiento:</label>
-                    <input
-                      value={tratamientoControl || ""}
-                      onChange={(e) => setTratamientoControl(e.target.value)}
-                      type="text"
-                      className="form-control my-1 ms-2 w-100"
-                      disabled={!editable}
-                    />
-                  </div>
-                  <div className="d-flex col-md-5">
-                    <label className="col-form-label me-5 w-25">Pieza:</label>
-                    <input
-                      value={pieza || ""}
-                      onChange={(e) => setPieza(e.target.value)}
-                      type="number"
-                      className="form-control m-1 w-100"
-                      disabled={!editable}
-                    />
-                  </div>
-                </div>
+              <ControlEvolucionEspecif id={id} />
+            </TabPanel >
 
-                <hr />
 
-                <div className="d-flex col-md-5">
-                  <label className="col-form-label me-5 w-25">Doctor:</label>
-                  <input
-                    value={doctor || ""}
-                    onChange={(e) => setDoctor(e.target.value)}
-                    type="text"
-                    className="form-control m-1 w-100"
-                    disabled={!editable}
-                  />
-                </div>
-                <div className="d-flex col-md-5">
-                  <label className="col-form-label me-5 w-25">Fecha:</label>
-                  <input
-                    value={fechaTratamiento || ""}
-                    onChange={(e) => setFechaTratemiento(e.target.value)}
-                    type="date"
-                    className="form-control m-1 w-100"
-                  />
-                </div>
-                <div className="d-flex col-md-5">
-                  <label className="col-form-label me-5 w-25">Detalle:</label>
-                  <textarea
-                    value={detalleTratamiento}
-                    onChange={(e) => setDetalleTratamiento(e.target.value)}
-                    type="text"
-                    className="form-control m-1"
-                    style={{ height: "150px" }}
-                  />
-                </div>
-              </form>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                style={{ margin: "1px" }}
-              >
-                Agregar
-              </button>
+            < TabPanel value={value} index={2} >
+              <AgendaEspecif id={id} />
+            </TabPanel >
+
+            < TabPanel value={value} index={3} >
+              <TratamientosEspecif id={id} />
+            </TabPanel >
+
+            < TabPanel value={value} index={4} >
+              <IngresosEspecif id={id} />
             </TabPanel >
           </Box >
         </div>

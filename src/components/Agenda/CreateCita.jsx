@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 
 function CreateCita(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
+  const [idPacienteCita, setIdPacienteCita] = useState("");
   const [idc, setIdc] = useState("");
   const [estado, setEstado] = useState("");
   const [numero, setNumero] = useState("");
@@ -48,7 +49,7 @@ function CreateCita(props) {
     const optionsHoraInicio = horarios.map((horario, index) => (
       <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
     ));
-   optionsHoraInicio.pop();
+    optionsHoraInicio.pop();
     setOptionsHoraInicio(optionsHoraInicio);
 
     if (horaInicio) {
@@ -57,7 +58,7 @@ function CreateCita(props) {
         .map((horario, index) => (
           <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
         ));
-        setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
+      setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
       setOptionsHoraFin(optionsHoraFin);
     }
   }, [horaInicio, horaFin]);
@@ -77,10 +78,12 @@ function CreateCita(props) {
       setApellidoConNombre(props.client.apellidoConNombre);
       setIdc(props.client.idc);
       setNumero(props.client.numero);
+      setIdPacienteCita(props.client.id)
       setEditable(false);
     } else {
       setApellidoConNombre("");
       setIdc("");
+      setIdPacienteCita("");
       setNumero("");
     }
   }, [props.client]);
@@ -92,6 +95,7 @@ function CreateCita(props) {
       await addDoc(citasCollection, {
         apellidoConNombre: apellidoConNombre,
         idc: idc,
+        idPacienteCita: idPacienteCita,
         estado: estado,
         numero: numero,
         fecha: fecha,
@@ -102,16 +106,45 @@ function CreateCita(props) {
       clearFields();
       props.onHide();
     } else {
-      await addDoc(collection(db, "clients"), {
+      const clientsRef = await addDoc(collection(db, "clients"), {
         apellidoConNombre: apellidoConNombre,
         idc: idc,
-        fechaNacimiento: 0,
+        fechaNacimiento: "",
         numero: numero,
-        valorBusqueda: apellidoConNombre + " " + idc
+        valorBusqueda: apellidoConNombre + " " + idc,
+        edad: "",
+        sexo: "",
+        lugarNacimiento: "",
+        procedencia: "",
+        direccion: "",
+        ocupacion: "",
+        correo: "",
+        responsable: "",
+        nombreResponsable: "",
+        telefonoResponsable: "",
+        pregunta1: ["",false],
+        pregunta2: ["",false],
+        pregunta3: ["",false],
+        pregunta4: ["",false],
+        pregunta5: ["",false],
+        pregunta6: ["",false],
+        pregunta7: ["",false],
+        pregunta8: ["",false],
+        pregunta9: ["",false],
+        pregunta10: ["",false],
+        pregunta11: ["",false],
+        pregunta12: ["",false],
+        pregunta13: ["",false],
+        pregunta14: ["",false],
+        pregunta15: ["",false],
+        pregunta16: ["",false],
+        pregunta17: ["",false],
+        pregunta18: ["",false],
       });
 
       await addDoc(citasCollection, {
         apellidoConNombre: apellidoConNombre,
+        idPacienteCita: clientsRef.id,
         idc: idc,
         estado: estado,
         numero: numero,
@@ -128,6 +161,7 @@ function CreateCita(props) {
   const manejarValorSeleccionado = async (suggestion) => {
     if (suggestion === "<---Ingreso manual--->" || suggestion === "") {
       setApellidoConNombre("");
+      setIdPacienteCita("")
       setIdc("");
       setNumero("");
       setEditable(true);
@@ -143,6 +177,7 @@ function CreateCita(props) {
     if (doc) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
+      setIdPacienteCita(doc.id)
       setIdc(data.idc);
       setNumero(data.numero);
       setEditable(false);
@@ -151,6 +186,7 @@ function CreateCita(props) {
 
   const clearFields = () => {
     setApellidoConNombre("");
+    setIdPacienteCita("");
     setIdc("");
     setNumero("");
     setEstado("");
@@ -169,15 +205,15 @@ function CreateCita(props) {
       numero.trim() === "" ||
       fecha.trim() === "" ||
       horaInicio.trim() === "" ||
-      horaFin.trim() === "" 
+      horaFin.trim() === ""
     ) {
       setError("Respeta los campos obligatorios *");
       setTimeout(clearError, 2000)
       return false;
     } else {
-        setError("");
-        store(e);
-      }
+      setError("");
+      store(e);
+    }
     return true;
   };
 
@@ -322,14 +358,14 @@ function CreateCita(props) {
                   />
                 </div>
               </div>
-              <div style={{ display: "flex"}}>
-              <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
-              {error && (
-                <div className="alert alert-danger" role="alert" style={{ margin: '10px' }}>
-                  {error}
-                </div>
-              )}
-            </div>
+              <div style={{ display: "flex" }}>
+                <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+                {error && (
+                  <div className="alert alert-danger" role="alert" style={{ margin: '10px' }}>
+                    {error}
+                  </div>
+                )}
+              </div>
             </form>
           </div>
         </div>

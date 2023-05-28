@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 function CreateTratamiento(props) {
   const [codigo, setCodigo] = useState(null);
   const [apellidoConNombre, setApellidoConNombre] = useState("");
+  const [idPaciente, setIdPaciente] = useState("");
   const [idc, setIdc] = useState("");
   const [cta, setCta] = useState("");
   const [precio, setPrecio] = useState("");
@@ -103,6 +104,7 @@ function CreateTratamiento(props) {
   const clearFields = () => {
     setCodigo("")
     setApellidoConNombre("")
+    setIdPaciente("")
     setIdc("")
     setCta("")
     setPrecio("")
@@ -121,6 +123,7 @@ function CreateTratamiento(props) {
      await addDoc(tratamientosCollection, {
       codigo: codigo,
       apellidoConNombre: apellidoConNombre,
+      idPaciente: idPaciente,
       idc: idc,
       cta: cta,
       precio: precio,
@@ -173,6 +176,7 @@ function CreateTratamiento(props) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
       setIdc(data.idc);
+      setIdPaciente(doc.id)
       setEditable(true);
     }
   };

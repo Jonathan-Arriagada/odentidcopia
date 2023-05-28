@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 const EditTratamiento = (props) => {
   const [codigo, ] = useState(props.tratamiento.codigo);
   const [apellidoConNombre, setApellidoConNombre] = useState(props.tratamiento.apellidoConNombre || "");
+  const [idPaciente, ] = useState(props.tratamiento.idPaciente || "");
   const [idc, setIdc] = useState(props.tratamiento.idc || "");
   const [tarifasTratamientos, setTarifasTratamientos] = useState(props.tratamiento.tarifasTratamientos || "");
   const [cta, setCta] = useState(props.tratamiento.cta || "");
@@ -73,6 +74,7 @@ const EditTratamiento = (props) => {
     const newData = {
       codigo: codigo || tratamientoData.codigo,
       apellidoConNombre: apellidoConNombre || tratamientoData.apellidoConNombre,
+      idPaciente: idPaciente || tratamientoData.idPaciente,
       idc: idc || tratamientoData.idc,
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
       cta: cta || tratamientoData.cta,
