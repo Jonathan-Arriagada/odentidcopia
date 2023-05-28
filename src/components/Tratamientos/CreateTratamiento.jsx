@@ -120,7 +120,7 @@ function CreateTratamiento(props) {
 
   const store = async (e) => {
     e.preventDefault();
-     await addDoc(tratamientosCollection, {
+    await addDoc(tratamientosCollection, {
       codigo: codigo,
       apellidoConNombre: apellidoConNombre,
       idPaciente: idPaciente,

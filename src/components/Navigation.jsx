@@ -1,7 +1,7 @@
 import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
-import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaSignOutAlt, FaTools, FaAngleLeft, FaUserTie, FaLaptopMedical, FaUser, FaBookMedical, FaDollarSign, FaFax, FaChevronDown, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck } from 'react-icons/fa';
+import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaSignOutAlt, FaTools, FaAngleLeft, FaUserTie, FaLaptopMedical, FaHeartbeat, FaUser, FaBookMedical, FaDollarSign, FaFax, FaChevronDown, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck } from 'react-icons/fa';
 import { useState, useContext, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
@@ -94,6 +94,8 @@ const Navigation = () => {
                         <div className="sidebar-content">
                             <Link to="/historial" className="text-decoration-none link-light"><Nav title="Historial Clinico" Icon={FaBookMedical} /></Link>
                             <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
+                            <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
+
                         </div>
                     </div>
 
