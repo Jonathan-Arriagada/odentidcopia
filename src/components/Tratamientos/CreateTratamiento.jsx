@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit,doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -19,12 +19,13 @@ function CreateTratamiento(props) {
   const [fechaVencimiento, setFechaVencimiento] = useState("");
   const [notas, setNotas] = useState("");
   const [error, setError] = useState("");
+  const [showBuscador, setShowBuscador] = useState(true);
 
   const [estadoOptionsTratamientos, setEstadoOptionsTratamientos] = useState([]);
   const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
 
-  const [editable, setEditable] = useState(true);
+  const [editable, setEditable] = useState(false);
 
   const tratamientosCollection = collection(db, "tratamientos");
 
@@ -177,9 +178,29 @@ function CreateTratamiento(props) {
       setApellidoConNombre(data.apellidoConNombre);
       setIdc(data.idc);
       setIdPaciente(doc.id)
-      setEditable(true);
+      setEditable(false);
     }
   };
+
+  useEffect(() => {
+    const fetchClient = async () => {
+      if (props.id) {
+        setShowBuscador(false);
+        const docRef = doc(db, 'clients', props.id);
+        const docSnapshot = await getDoc(docRef);
+
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          setApellidoConNombre(data.apellidoConNombre);
+          setIdc(data.idc);
+          setIdPaciente(props.id);
+          setEditable(false);
+        }
+      }
+    };
+
+    fetchClient();
+  }, [props.id]);
 
   return (
     <Modal
@@ -195,7 +216,7 @@ function CreateTratamiento(props) {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
+          {showBuscador && (<div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
             <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
             <input
               style={{ borderRadius: "150px" }}
@@ -208,7 +229,7 @@ function CreateTratamiento(props) {
             <datalist id="pacientes-list">
               {valorBusquedaOptionsJSX}
             </datalist>
-          </div>
+          </div>)}
 
           <form>
             <div className="row">
@@ -219,7 +240,7 @@ function CreateTratamiento(props) {
                   onChange={(e) => setApellidoConNombre(e.target.value)}
                   type="text"
                   className="form-control"
-                  disabled={editable}
+                  disabled={!editable}
                   required
                 />
               </div>
@@ -230,7 +251,7 @@ function CreateTratamiento(props) {
                   onChange={(e) => setIdc(e.target.value)}
                   type="number"
                   className="form-control"
-                  disabled={editable}
+                  disabled={!editable}
                   required
                 />
               </div>
@@ -269,7 +290,7 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col mb-">
+              <div className="col mb-2">
                 <label className="form-label">Cta</label>
                 <input
                   value={cta}

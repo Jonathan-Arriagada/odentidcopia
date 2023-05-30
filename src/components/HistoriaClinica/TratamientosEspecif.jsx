@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
+import CreateTratamiento from "../Tratamientos/CreateTratamiento";
 import EditTratamiento from "../Tratamientos/EditTratamiento";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
@@ -14,6 +15,7 @@ import { Modal, Button } from "react-bootstrap";
 function TratamientosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
+  const [modalShowCrearTratamiento, setModalShowCrearTratamiento] = useState(false);
   const [modalShowEditTratamiento, setModalShowEditTratamiento] = useState(false);
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
   const [order, setOrder] = useState("ASC");
@@ -45,7 +47,7 @@ function TratamientosEspecif(id) {
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
-  const [taparFiltro, setTaparFiltro] = useState(false);
+  const [, setTaparFiltro] = useState(false);
 
   const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
   const [indexParaEditcobro, setIndexParaEditcobro] = useState("");
@@ -655,18 +657,6 @@ function TratamientosEspecif(id) {
                             className="form-control m-2 w-25"
                             style={{ display: "none" }}
                           />
-                          {taparFiltro && (
-                            <input
-                              className="form-control m-2 w-25"
-                              value="<-FILTRO ENTRE FECHAS APLICADO->"
-                              style={{
-                                position: "absolute",
-                                zIndex: 1,
-                                textAlign: "center",
-                              }}
-                              disabled
-                            ></input>
-                          )}
                         </div>
                         <button
                           variant="primary"
@@ -690,10 +680,15 @@ function TratamientosEspecif(id) {
                             Limpiar Filtros
                           </button>
                         )}
+                        <button
+                          variant="primary"
+                          className="btn-blue m-2"
+                          onClick={() => setModalShowCrearTratamiento(true)}
+                        >
+                          Nuevo
+                        </button>
                       </div>
-
                       <div className="d-flex justify-content-between">
-
                         <Modal
                           show={modalSeleccionFechaShow}
                           onHide={() => {
@@ -766,6 +761,7 @@ function TratamientosEspecif(id) {
                               setSelectedCheckbox("");
                               setSelectedCheckbox2("");
                               setParametroModal("");
+                              setQuitarFiltro(false);
                             }}
                           >
                             <Modal.Title>
@@ -1255,7 +1251,10 @@ function TratamientosEspecif(id) {
           </>
         )}
       </div>
-
+      <CreateTratamiento
+        id={id.id}
+        show={modalShowCrearTratamiento}
+        onHide={() => setModalShowCrearTratamiento(false)} />
       <EditTratamiento
         id={idParam}
         tratamiento={tratamiento}

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc, getDocs, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where, orderBy, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -12,9 +12,10 @@ const Create = (props) => {
     const [fechaControlRealizado, setFechaControlRealizado] = useState('');
     const [detalleTratamiento, setDetalleTratamiento] = useState('');
     const [idPaciente, setIdPaciente] = useState('');
-    const [editable,] = useState('');
+    const [editable, setEditable] = useState(true);
     const [optionsPacientes, setOptionsPacientes] = useState([]);
     const [optionsTratamientos, setOptionsTratamientos] = useState([]);
+    const [showBuscador, setShowBuscador] = useState(true);
 
     const [error, setError] = useState("");
 
@@ -107,6 +108,25 @@ const Create = (props) => {
         });
     };
 
+    useEffect(() => {
+        const fetchClient = async () => {
+            if (props.id) {
+                setShowBuscador(false);
+                const docRef = doc(db, 'clients', props.id);
+                const docSnapshot = await getDoc(docRef);
+
+                if (docSnapshot.exists()) {
+                    const data = docSnapshot.data();
+                    setApellidoConNombre(data.apellidoConNombre);
+                    setIdc(data.idc);
+                    setIdPaciente(props.id);
+                    setEditable(false);
+                }
+            }
+        };
+
+        fetchClient();
+    }, [props.id]);
 
     return (
         <Modal
@@ -122,7 +142,7 @@ const Create = (props) => {
             </Modal.Header>
             <Modal.Body>
                 <div className="container">
-                    <div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
+                    {showBuscador && (<div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
                         <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
                         <input
                             style={{ borderRadius: "150px" }}
@@ -135,7 +155,7 @@ const Create = (props) => {
                         <datalist id="pacientes-list">
                             {optionsPacientes}
                         </datalist>
-                    </div>
+                    </div>)}
 
                     <form onSubmit={validateFields}>
                         {error && (
