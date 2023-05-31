@@ -210,7 +210,8 @@ const Show = () => {
 
                           <button
                             variant="primary"
-                            className="btn btn-success mx-1"
+                            className="btn btn-success btn-sm"
+                            style={{margin:"1px", borderRadius:"10px"}}
                             onClick={() => {
                               setModalShowEdit(true);
                               setClient(client);
@@ -224,20 +225,25 @@ const Show = () => {
                               deleteClient(client.id);
                             }}
                             variant="primary"
-                            className="btn btn-danger mx-1"
+                            className="btn btn-danger btn-sm"
+                            style={{margin:"1px", borderRadius:"10px"}}
                           >
                             <i className="fa-solid fa-trash-can"></i>
                           </button>
+               
                           <Link to={`/historial/${client.id}`}>
                             <button
                               variant="primary"
-                              className="btn btn-blue mx-1">
-                              <i className="fa-solid fa-file-medical"></i>
+                              className="btn btn-blue btn-sm"
+                              style={{margin:"1px", borderRadius:"10px"}}
+                              >
+                              Historial <i className="fa-solid fa-file-medical"></i> 
                             </button>
                           </Link>
                           <button
                             variant="primary"
-                            className="btn btn-secondary mx-1"
+                            className="btn btn-secondary btn-sm"
+                            style={{margin:"1px", borderRadius:"10px"}}
                             onClick={() => {
                               setModalShowCita(true);
                               setClient(client);

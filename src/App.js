@@ -50,7 +50,7 @@ function App() {
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
             <Route path="historial" element={<RequireAuth><History /></RequireAuth>}/>
-            <Route path="controlEvoluciones" element={<RequireAuth><ControlEvolucion /></RequireAuth>}/>        
+            <Route path="controlEvoluciones" element={<RequireAuth><ControlEvolucion /></RequireAuth>}/>         
             <Route path="historial/:id" element={<RequireAuth><History /></RequireAuth>}/> 
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
             <Route path="gastos" element={<RequireAuth><Gastos /></RequireAuth>}/>

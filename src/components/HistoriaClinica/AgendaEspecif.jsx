@@ -190,11 +190,26 @@ function AgendaEspecif(id) {
         ) : (
           <>
             {noHayCitas ? (
-              <div className="container mt-2 mw-100" >
-                <div className="row">
-                  <h1>Este paciente no ha agendado Citas aún</h1>
+              !id.id ? (
+                <div className="container mt-2 mw-100" >
+                  <div className="row">
+                    <h1>No se ha seleccionado un Paciente.</h1>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="container mt-2 mw-100" >
+                  <div className="row">
+                    <h1>Este paciente no ha agendado Citas aún</h1>
+                    <button
+                      variant="primary"
+                      className="btn-blue w-25 m-auto mt-5"
+                      onClick={() => setModalShowCrearCita(true)}
+                    >
+                      Crear Nueva Cita
+                    </button>
+                  </div>
+                </div>
+              )
             ) : (
               <div className="w-100">
                 <div className="container mw-100 mt-2">
@@ -204,7 +219,7 @@ function AgendaEspecif(id) {
                       <div className="d-flex justify-content-between">
                         <div
                           className="d-flex justify-content-center align-items-center"
-                          style={{ maxHeight: "40px"}}
+                          style={{ maxHeight: "40px" }}
                         >
                           <h3>Citas agendadas por este Paciente</h3>
 
@@ -228,14 +243,14 @@ function AgendaEspecif(id) {
                           </div>)}
                         </div>
                         <div className="col d-flex align-items-center justify-content-end">
-                        <button
+                          <button
                             variant="primary"
                             className="btn-blue m-2"
                             onClick={() => setModalShowCrearCita(true)}
                           >
                             Nueva
                           </button>
-                          <label>Citas Por Confirmar: {contador}</label>  
+                          <label>Citas Por Confirmar: {contador}</label>
                         </div>
 
                       </div>
