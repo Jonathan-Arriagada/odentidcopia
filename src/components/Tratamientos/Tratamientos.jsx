@@ -27,6 +27,7 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
 
+
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
