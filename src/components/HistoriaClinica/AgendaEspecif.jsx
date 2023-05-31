@@ -53,6 +53,8 @@ function AgendaEspecif(id) {
     setCitas(citasArray);
     if (citasArray.length === 0) {
       setNoHayCitas(true)
+    } else {
+      setNoHayCitas(false)
     }
     setIsLoading(false);
   }, [id]);

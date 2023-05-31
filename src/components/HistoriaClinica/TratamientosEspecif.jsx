@@ -147,6 +147,8 @@ function TratamientosEspecif(id) {
     setTratamientos(tratamientosArray);
     if (tratamientosArray.length === 0) {
       setNoHayPacientes(true)
+    } else {
+      setNoHayPacientes(false)
     }
     setIsLoading(false);
   }, [id]);

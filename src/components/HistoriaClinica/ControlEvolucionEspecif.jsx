@@ -43,6 +43,7 @@ function ControlEvolucionEspecif(id, props) {
       setControles(controlesArray);
       setApellidoPaciente(controlesArray[0].apellidoConNombre);
       setIdcPaciente(controlesArray[0].idc)
+      setnoHayControles(false);
     }
     setIsLoading(false);
   }, [id]);

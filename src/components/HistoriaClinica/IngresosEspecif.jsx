@@ -36,6 +36,8 @@ function IngresosEspecif(id) {
     setTratamientos(tratamientosArray);
     if (tratamientosArray.length === 0) {
       setNoHayIngresos(true)
+    } else {
+      setNoHayIngresos(false)
     }
     setIsLoading(false);
   }, [id]);
