@@ -32,12 +32,14 @@ function ControlEvolucion(id) {
         ...doc.data(),
         id: doc.id,
       }));
+      if (controlesArray.length === 0) {
+        setnoHayControles(true);       
+      }
+     else{ 
     setControles(controlesArray);
     setApellidoPaciente(controlesArray[0].apellidoConNombre);
     setIdcPaciente(controlesArray[0].idc)
-    if (controlesArray.length === 0) {
-      setnoHayControles(true)
-    }
+  }
     setIsLoading(false);
   }, [id]);
 
@@ -91,7 +93,14 @@ function ControlEvolucion(id) {
             {noHayControles ? (
               <div className="container mt-2 mw-100" >
                 <div className="row">
-                  <h1>A este paciente no se le han registrado Controles y Evoluciones aún</h1>
+                  <h1>A este paciente no se le han registrado Controles y Evoluciones aún.</h1>                  
+                  <button
+                            variant="primary"
+                            className="btn-blue w-25 m-auto mt-5"
+                            onClick={() => setModalShowCrearControl(true)}
+                          >
+                            Nuevo
+                          </button>
                 </div>
               </div>
             ) : (
