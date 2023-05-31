@@ -1,8 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+:root {
+  --color-primary: #003057;
+  --color-secondary: #003057;
+  --color-accent: #00C5C1;
+  --color-text: #003057;
+  --color-light-text: #8D93AB;
+  --color-border: #E9E9E9;
+  --color-background: #FBFBFF;
+  --color-forms: #F9F9F9;
+  --color-grey-element: #E6E6E6;
+  --color-white: #FFFFFF;
+  --color-background-green: #F1FCFC;
+  --color-transparent: #FFFFFF00;
+  --color-popup-semitransparent:#FFFFFFCC;
+}
 
+@font-face {
+  font-family: 'Goldplay';
+  src: url('../fonts/Goldplay/Goldplay-Regular.ttf') format('truetype');
+}
 
 body {
-  font-family: 'Raleway';
+  font-family: 'Goldplay';
 }
 
 .mainpage {
@@ -218,4 +236,11 @@ input[type="file"]::before {
 #textoIntroHistory {
   font-weight: bold;
   color: black;
+}
+
+.circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #0d6efd;
 }

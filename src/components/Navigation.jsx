@@ -83,7 +83,7 @@ const Navigation = () => {
 
 
     return (
-        <div className={`navigation ${isActive && "active"}`}>
+        <div className={`navigation ${isActive && "active"}`} style={{ fontFamily: 'Goldplay' }}>
         <div className={`menu ${isActive && "active"}`} onClick={() => setIsActive(!isActive)}>
             <FaAngleLeft className="menu-icon" />
         </div>
