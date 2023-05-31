@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Goldplay';
+  src: url('./fonts/Goldplay/Goldplay-Regular.ttf') format('truetype');
+}
+
 .navigation {
   position: sticky;
   top: 0;

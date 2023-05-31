@@ -207,7 +207,7 @@ function ControlEvolucionEspecif(id, props) {
                       <div className="form-control_history justify-content-center align-content-center">
                         <div className="container">
                           {results.map((control, index) => (
-                            <div className="col-4 bg" key={control.id}>
+                            <div className="col-6 bg" key={control.id}>
                               <div className="row mb-2">
                                 <div className="col-2 sm-2 d-flex align-items-center">
                                   <label id="textoIntroHistory">Doctor:</label>
@@ -215,7 +215,7 @@ function ControlEvolucionEspecif(id, props) {
                                 <div className="col-2 sm-2">
                                   <input type="text" value={control.doctor}
                                     disabled
-                                    style={{ textAlign: "center", backgroundColor: "white", border: "0" }} />
+                                    style={{backgroundColor: "white", border: "0" }} />
                                 </div>
                               </div>
 
@@ -227,7 +227,7 @@ function ControlEvolucionEspecif(id, props) {
                                   <input
                                     type="text"
                                     value={moment(control.fechaControlRealizado).format("DD/MM/YY")}
-                                    style={{ textAlign: "center", backgroundColor: "white", border: "0" }}
+                                    style={{ backgroundColor: "white", border: "0" }}
                                     disabled
                                   />
                                 </div>
@@ -241,11 +241,11 @@ function ControlEvolucionEspecif(id, props) {
                                   <textarea
                                     type="text"
                                     value={control.detalleTratamiento}
-                                    style={{ textAlign: "justify", height: '150px', width: "150%", backgroundColor: "#e8f0fa" }}
-                                    className="form-control m-2"
+                                    style={{ textAlign: "justify", height: '150px', width: "100%", backgroundColor: "#e8f0fa" }}
+                                    className="form-control my-2"
                                     disabled
                                   />
-                                  <div className="col-12 d-flex justify-content-end">
+                                  <div className="d-flex justify-content-end">
                                     <button
                                       variant="primary"
                                       className="btn btn-success mx-1"
@@ -262,7 +262,7 @@ function ControlEvolucionEspecif(id, props) {
                                         deleteControl(control.id);
                                       }}
                                       variant="primary"
-                                      className="btn btn-danger mx-1"
+                                      className="btn btn-danger ms-1"
                                     >
                                       <i className="fa-solid fa-trash-can"></i>
                                     </button>

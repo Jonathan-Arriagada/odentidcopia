@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Goldplay';
+    src: url('./fonts/Goldplay/Goldplay-Regular.ttf') format('truetype');
+}
+  
+body {
+    font-family: 'Goldplay';
+}
+
 .login-page{
     position: relative;
     display: flex;

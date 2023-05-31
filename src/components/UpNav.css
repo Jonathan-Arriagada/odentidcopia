@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Goldplay';
+  src: url('./fonts/Goldplay/Goldplay-Regular.ttf') format('truetype');
+}
+
+
 .navbar {
     background-color: #f4f3f4;
     color: #b8b7b8;
