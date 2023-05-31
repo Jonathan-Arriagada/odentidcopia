@@ -11,6 +11,7 @@ import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
+import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 
 function TratamientosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);
@@ -66,6 +67,7 @@ function TratamientosEspecif(id) {
   const [restoCobro, setRestoCobro] = useState("");
   const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
+  const [modalShowCrearControl, setModalShowCrearControl] = useState(false);
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
   const estadosTratamientoCollection = useRef(query(estadosTratamientoCollectiona));
@@ -1057,6 +1059,14 @@ function TratamientosEspecif(id) {
                                       Notas
                                     </Dropdown.Item>
                                     <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowCrearControl(true);
+                                        setTratamiento(tratamiento);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-comment"></i> Evolucionar
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
                                       onClick={() =>
                                         deletetratamiento(tratamiento.id)
                                       }
@@ -1270,6 +1280,10 @@ function TratamientosEspecif(id) {
         id={id.id}
         show={modalShowCrearTratamiento}
         onHide={() => setModalShowCrearTratamiento(false)} />
+      <CrearControlEvolucion
+        tratamiento={tratamiento}
+        show={modalShowCrearControl}
+        onHide={() => setModalShowCrearControl(false)} />
       <EditTratamiento
         id={idParam}
         tratamiento={tratamiento}

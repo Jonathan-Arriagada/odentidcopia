@@ -1,21 +1,25 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import { collection, addDoc, getDocs, query, where, orderBy, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import { AuthContext } from "../../context/AuthContext"
 
-const Create = (props) => {
+const CrearControlEvolucion = (props) => {
     const [apellidoConNombre, setApellidoConNombre] = useState('');
     const [idc, setIdc] = useState('');
     const [tratamientoControl, setTratamientoControl] = useState('');
     const [pieza, setPieza] = useState('');
-    const [doctor, setDoctor] = useState('');
     const [fechaControlRealizado, setFechaControlRealizado] = useState('');
     const [detalleTratamiento, setDetalleTratamiento] = useState('');
     const [idPaciente, setIdPaciente] = useState('');
     const [editable, setEditable] = useState(true);
+    const [editable2, setEditable2] = useState(true);
     const [optionsPacientes, setOptionsPacientes] = useState([]);
     const [optionsTratamientos, setOptionsTratamientos] = useState([]);
     const [showBuscador, setShowBuscador] = useState(true);
+    const [ocultar, setOcultar] = useState(false);
+    const { currentUser } = useContext(AuthContext);
+
 
     const [error, setError] = useState("");
 
@@ -23,14 +27,14 @@ const Create = (props) => {
 
     const updateOptionsPacientes = useCallback(snapshot => {
         const options = snapshot.docs.map(doc => (
-            <option key={`valorBusqueda-${doc.id}`} value={doc.valorBusqueda}>{doc.data().valorBusqueda}</option>
+            <option key={`valorBusqueda-${doc.id}`} value={doc.data().valorBusqueda}>{doc.data().valorBusqueda}</option>
         ));
         setOptionsPacientes(options);
     }, []);
 
     const updateOptionsTratamientos = useCallback(snapshot => {
         const options2 = snapshot.docs.map(doc => (
-            <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tarifasTratamientos}</option>
+            <option key={`tarifasTratamientos-${doc.id}`} value={doc.data().tarifasTratamientos}>{doc.data().tarifasTratamientos}</option>
         ));
         setOptionsTratamientos(options2);
     }, []);
@@ -75,7 +79,6 @@ const Create = (props) => {
         setTratamientoControl("");
         setPieza("");
         setFechaControlRealizado("");
-        setDoctor("");
         setDetalleTratamiento("");
         setError("");
     };
@@ -103,14 +106,14 @@ const Create = (props) => {
             fechaControlRealizado: fechaControlRealizado,
             tratamientoControl: tratamientoControl,
             pieza: pieza,
-            doctor: doctor,
+            doctor: currentUser.displayName,
             detalleTratamiento: detalleTratamiento,
         });
     };
 
     useEffect(() => {
         const fetchClient = async () => {
-            if (props.id) {
+            if (props.id && !props.tratamiento) {
                 setShowBuscador(false);
                 const docRef = doc(db, 'clients', props.id);
                 const docSnapshot = await getDoc(docRef);
@@ -123,10 +126,21 @@ const Create = (props) => {
                     setEditable(false);
                 }
             }
+            if (props.tratamiento && !props.id) {
+                setShowBuscador(false);
+                setApellidoConNombre(props.tratamiento.apellidoConNombre);
+                setIdc(props.tratamiento.idc);
+                setIdPaciente(props.tratamiento.idPaciente);
+                setTratamientoControl(props.tratamiento.tarifasTratamientos);
+                setPieza(props.tratamiento.pieza)
+                setEditable(false);
+                setEditable2(false);
+                setOcultar(true);
+            }
         };
 
         fetchClient();
-    }, [props.id]);
+    }, [props.id, props.tratamiento]);
 
     return (
         <Modal
@@ -164,40 +178,43 @@ const Create = (props) => {
                             </div>
                         )}
                         <br></br>
-                        <div className="row">
-                            <div className="col mb-6">
-                                <label className="form-label">Apellido y Nombres:</label>
-                                <input
-                                    value={apellidoConNombre}
-                                    onChange={(e) => setApellidoConNombre(e.target.value)}
-                                    type="text"
-                                    className="form-control"
-                                    disabled={!editable}
-                                    required
-                                />
-                            </div>
-                            <div className="col mb-6">
-                                <label className="form-label">DNI:</label>
-                                <input
-                                    value={idc}
-                                    onChange={(e) => setIdc(e.target.value)}
-                                    type="number"
-                                    className="form-control"
-                                    disabled={!editable}
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div className="row">
+                        {!ocultar && (
+                            <div className="row">
+                                <div className="col mb-6">
+                                    <label className="form-label">Apellido y Nombres:</label>
+                                    <input
+                                        value={apellidoConNombre ?? ''}
+                                        onChange={(e) => setApellidoConNombre(e.target.value)}
+                                        type="text"
+                                        className="form-control"
+                                        disabled={!editable}
+                                        required
+                                    />
+                                </div>
+                                <div className="col mb-6">
+                                    <label className="form-label">DNI:</label>
+                                    <input
+                                        value={idc ?? ''}
+                                        onChange={(e) => setIdc(e.target.value)}
+                                        type="number"
+                                        className="form-control"
+                                        disabled={!editable}
+                                        required
+                                    />
+                                </div>
+                            </div>)}
+                        {!ocultar && (<div className="row">
                             <div className="col mb-6">
                                 <label className="form-label">Tratamiento:</label>
                                 <select
-                                    value={tratamientoControl}
+                                    value={tratamientoControl ?? ''}
                                     onChange={(e) => {
                                         setTratamientoControl(e.target.value)
                                     }}
                                     className="form-control"
                                     multiple={false}
+                                    disabled={!editable2}
+
                                     required
                                 >
                                     <option value="">Selecciona un Tratamiento</option>
@@ -207,22 +224,23 @@ const Create = (props) => {
                             <div className="col mb-6">
                                 <label className="form-label">Pieza:</label>
                                 <input
-                                    value={pieza}
+                                    value={pieza ?? ''}
                                     onChange={(e) => setPieza(e.target.value)}
+                                    disabled={!editable2}
                                     type="number"
                                     className="form-control m-1 w-100"
                                 />
                             </div>
-                        </div>
+                        </div>)}
 
-                        <hr />
+                        {!ocultar && (<hr />)}
 
                         <div className="row">
                             <div className="d-flex col-md-8">
                                 <label className="col-form-label me-5 w-25">Doctor:</label>
                                 <input
-                                    value={doctor}
-                                    onChange={(e) => setDoctor(e.target.value)}
+                                    value={currentUser.displayName}
+                                    disabled
                                     type="text"
                                     className="form-control m-1 w-100"
                                 />
@@ -230,7 +248,7 @@ const Create = (props) => {
                             <div className="d-flex col-md-8">
                                 <label className="col-form-label me-5 w-25">Fecha:</label>
                                 <input
-                                    value={fechaControlRealizado}
+                                    value={fechaControlRealizado ?? ''}
                                     onChange={(e) => setFechaControlRealizado(e.target.value)}
                                     type="date"
                                     className="form-control m-1 w-100"
@@ -264,4 +282,4 @@ const Create = (props) => {
     );
 };
 
-export default Create;
+export default CrearControlEvolucion;

@@ -361,7 +361,7 @@ export default function History() {
                       className="btn btn-primary"
                       style={{ margin: "3px" }}
                     >
-                      <i class="fa-solid fa-magnifying-glass"></i>
+                      <i className="fa-solid fa-magnifying-glass"></i>
                     </button>
                   </div>
                 ) : (
@@ -384,14 +384,14 @@ export default function History() {
                       style={{ margin: "3px" }}
                       disabled
                     >
-                      <i class="fa-solid fa-magnifying-glass"></i>
+                      <i className="fa-solid fa-magnifying-glass"></i>
                     </button>
                     <button
                       onClick={handleLimpiar}
                       className="btn btn-primary"
                       style={{ margin: "3px" }}
                     >
-                      <i class="fa-regular fa-circle-xmark"></i>
+                      <i className="fa-regular fa-circle-xmark"></i>
                     </button>
                   </div>
                 )}

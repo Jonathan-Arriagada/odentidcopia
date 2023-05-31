@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query, orderBy, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import "../Pacientes/Show.css";
 import EditControlEvolucion from "../ControlEvolucion/EditControlEvolucion";
@@ -8,11 +8,12 @@ import "../Utilidades/loader.css";
 import moment from "moment";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 
-function ControlEvolucion(id) {
+function ControlEvolucionEspecif(id, props) {
   const [controles, setControles] = useState([]);
   const [apellidoPaciente, setApellidoPaciente] = useState([]);
   const [idcPaciente, setIdcPaciente] = useState([]);
-
+  const [tratamientoPaciente, setTratamientoPaciente] = useState([]);
+  const [piezaPaciente, setPiezaPaciente] = useState([]);
   const [modalShowEditar, setModalShowEditar] = useState(false);
   //const [order, setOrder] = useState("ASC");
   const [control, setControl] = useState([]);
@@ -20,10 +21,13 @@ function ControlEvolucion(id) {
   const [isLoading, setIsLoading] = useState(true);
   const [modalShowCrearControl, setModalShowCrearControl] = useState(false);
   const [noHayControles, setnoHayControles] = useState(false);
+  const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
+  const [optionsPiezasTratamientos, setOptionsPiezasTratamientos] = useState([]);
+
 
   const controlesCollectiona = collection(db, "controlEvoluciones");
-  const controlesCollection = useRef(query(controlesCollectiona, orderBy("fechaControlRealizado", "desc"))
-  );
+  const controlesCollection = useRef(query(controlesCollectiona, orderBy("fechaControlRealizado", "desc")));
+
 
   const getControles = useCallback((snapshot) => {
     const controlesArray = snapshot.docs
@@ -43,10 +47,25 @@ function ControlEvolucion(id) {
     setIsLoading(false);
   }, [id]);
 
+  const updateOptionsTarifasTratamientos = useCallback((snapshot) => {
+    const filteredDocs = snapshot.docs.filter((doc) => doc.data().idPaciente === id.id);
+    const options2 = filteredDocs.map(doc => (
+      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tarifasTratamientos}</option>
+    ));
+    const options3 = filteredDocs.map(doc => (
+      <option key={`pieza-${doc.id}`} value={doc.pieza}>{doc.data().pieza}</option>
+    ));
+    setOptionsTarifasTratamientos(options2);
+    setOptionsPiezasTratamientos(options3);
+  }, [id]);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(controlesCollection.current, getControles);
-    return unsubscribe;
-  }, [getControles]);
+    const unsubscribe = [
+      onSnapshot(controlesCollection.current, getControles),
+      onSnapshot(query(collection(db, "tratamientos")), updateOptionsTarifasTratamientos),
+    ];
+    return () => unsubscribe.forEach(fn => fn());
+  }, [getControles, updateOptionsTarifasTratamientos]);
 
   const deleteControl = async (id) => {
     const clientDoc = doc(db, "controlEvoluciones", id);
@@ -152,9 +171,16 @@ function ControlEvolucion(id) {
                             <label id="textoIntroHistory">Tratamientos:</label>
                           </div>
                           <div className="col-2 sm-4">
-                            <select value={apellidoPaciente} multiple={false} required>
-                              <option value="">____________________________</option>
-                              {/*TODO actualizar opciones*/}
+                            <select value={tratamientoPaciente}
+                              multiple={false}
+                              onChange={(e) => {
+                                setTratamientoPaciente(e.target.value)
+                              }}
+                              required
+                              style={{ textAlign: "center" }}
+                            >
+                              <option value=""></option>
+                              {optionsTarifasTratamientos}
                             </select>
                           </div>
                         </div>
@@ -163,9 +189,14 @@ function ControlEvolucion(id) {
                             <label id="textoIntroHistory">Pieza:</label>
                           </div>
                           <div className="col-2 sm-4">
-                            <select value={apellidoPaciente} multiple={false} required>
-                              <option value="">____________________________</option>
-                              {/*TODO actualizar opciones*/}
+                            <select value={piezaPaciente}
+                              onChange={(e) => {
+                                setPiezaPaciente(e.target.value)
+                              }}
+                              multiple={false} required
+                              style={{ width: "130px", textAlign: "center" }}>
+                              <option value=""></option>
+                              {optionsPiezasTratamientos}
                             </select>
                           </div>
                         </div>
@@ -176,13 +207,15 @@ function ControlEvolucion(id) {
                       <div className="form-control_history justify-content-center align-content-center">
                         <div className="container">
                           {results.map((control, index) => (
-                            <tr key={control.id}>
+                            <div className="col-4 bg" key={control.id}>
                               <div className="row mb-2">
                                 <div className="col-2 sm-2 d-flex align-items-center">
                                   <label id="textoIntroHistory">Doctor:</label>
                                 </div>
                                 <div className="col-2 sm-2">
-                                  <input type="text" value={control.doctor} disabled style={{ textAlign: "center", backgroundColor: "white", border: "0" }} />
+                                  <input type="text" value={control.doctor}
+                                    disabled
+                                    style={{ textAlign: "center", backgroundColor: "white", border: "0" }} />
                                 </div>
                               </div>
 
@@ -239,7 +272,7 @@ function ControlEvolucion(id) {
                               <br></br>
                               <br></br>
 
-                            </tr>
+                            </div>
                           ))}
                         </div>
                       </div>
@@ -266,4 +299,4 @@ function ControlEvolucion(id) {
   );
 };
 
-export default ControlEvolucion;
+export default ControlEvolucionEspecif;

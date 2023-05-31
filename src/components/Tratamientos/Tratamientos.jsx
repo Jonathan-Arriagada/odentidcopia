@@ -1,14 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore";
+import {collection, query, orderBy, onSnapshot, deleteDoc, doc, getDoc, updateDoc} from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
@@ -32,24 +23,20 @@ function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShowTratamiento, setModalShowTratamiento] = useState(false);
-  const [modalShowEditTratamiento, setModalShowEditTratamiento] =
-    useState(false);
+  const [modalShowEditTratamiento, setModalShowEditTratamiento] = useState(false);
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
   const [order, setOrder] = useState("ASC");
   const [tratamiento, setTratamiento] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] =
-    useState(false);
+  const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] = useState(false);
   const [modalShowEditPago, setModalShowEditPago] = useState(false);
   const [estadoTratamiento, setEstadoTratamiento] = useState([]);
   const [estadoPago, setEstadoPago] = useState([]);
 
   const tratamientosCollectiona = collection(db, "tratamientos");
-  const tratamientosCollection = useRef(
-    query(tratamientosCollectiona, orderBy("codigo", "desc"))
-  );
+  const tratamientosCollection = useRef(query(tratamientosCollectiona, orderBy("codigo", "desc")));
 
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [mostrarVer, setMostrarVer] = useState(true);
@@ -101,9 +88,7 @@ function Tratamientos() {
   };
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
-  const estadosTratamientoCollection = useRef(
-    query(estadosTratamientoCollectiona)
-  );
+  const estadosTratamientoCollection = useRef(query(estadosTratamientoCollectiona));
 
   const estadosPagoCollectiona = collection(db, "estadoPago");
   const estadosPagoCollection = useRef(query(estadosPagoCollectiona));
