@@ -250,11 +250,20 @@ function IngresosEspecif(id) {
         ) : (
           <>
             {noHayIngresos ? (
-              <div className="container mt-2 mw-100" >
-                <div className="row">
-                  <h1>A Este paciente no se le han registrado Ingresos aún</h1>
+              !id.id ? (
+                <div className="container mt-2 mw-100" >
+                  <div className="row">
+                    <h1>No se ha seleccionado un Paciente.</h1>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="container mt-2 mw-100" >
+                  <div className="row">
+                    <h1>A Este paciente no se le han registrado Ingresos aún</h1>
+                    <h3>Para registrar Ingresos diríjase a Tratamientos</h3>
+                  </div>
+                </div>
+              )
             ) : (
               <div className="w-100">
                 <div className="container mt-2 mw-100">

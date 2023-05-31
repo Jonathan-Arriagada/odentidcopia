@@ -544,11 +544,26 @@ function TratamientosEspecif(id) {
         ) : (
           <>
             {noHayPacientes ? (
-              <div className="container mt-2 mw-100" >
-                <div className="row">
-                  <h1>Este paciente no ha realizado Tratamientos aún</h1>
+              !id.id ? (
+                <div className="container mt-2 mw-100" >
+                  <div className="row">
+                    <h1>No se ha seleccionado un Paciente.</h1>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="container mt-2 mw-100" >
+                  <div className="row">
+                    <h1>Este paciente no ha realizado Tratamientos aún</h1>
+                    <button
+                      variant="primary"
+                      className="btn-blue w-25 m-auto mt-5"
+                      onClick={() => setModalShowCrearTratamiento(true)}
+                    >
+                      Crear Nuevo Tratamiento
+                    </button>
+                  </div>
+                </div>
+              )
             ) : (
               <div className="w-100">
                 <div className="container mt-2 mw-100">
