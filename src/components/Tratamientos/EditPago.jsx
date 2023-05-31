@@ -62,6 +62,11 @@ const EditPago = ({ show, onHide }) => {
       return;
     }
 
+    if (color.trim() === '') {
+      setError('El color no puede estar vacío');
+      return;
+    }
+
     const stateToUpdate = estadosTratamientos[editIndex];
     const newState = { name: estadoTratamientos, color: color };
     setDoc(doc(estadosTratamientosCollection, stateToUpdate.id), newState)
@@ -101,20 +106,17 @@ const EditPago = ({ show, onHide }) => {
           </div>
           <div className="mb-3">
             <label className="form-label">Color</label>
-            <select
-              className="form-select"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-            >
-              <option value="">Selecciona un color</option>
-              <option value="red">Rojo</option>
-              <option value="blue">Azul</option>
-              <option value="green">Verde</option>
-              <option value="yellow">Amarillo</option>
-              <option value="orange">Naranja</option>
-              <option value="grey">Gris</option>
-              <option value="purple">Purpura</option>
-            </select>
+            <div className="justify-content-center align-items-center" style={{ display: "flex" }}>
+              <label className="form-label" style={{ marginRight: "8px" }}>Selecciona un color para Estado Pago:</label>
+              <div className="color-input-container">
+                <input
+                  type="color"
+                  className="color-input"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                />
+              </div>
+            </div>
           </div>
           <button className="btn btn-primary" type="submit">
             {editIndex !== null ? 'Actualizar' : 'Crear'}

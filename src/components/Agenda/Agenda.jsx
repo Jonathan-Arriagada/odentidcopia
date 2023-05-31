@@ -112,28 +112,10 @@ function Citas() {
 
   const buscarEstilos = (estadoParam) => {
     const colorEncontrado = estados.find((e) => e.name === estadoParam);
-    if (colorEncontrado) {
-      switch (colorEncontrado.color) {
-        case "yellow":
-          return { backgroundColor: "#F7D33B" };
-        case "red":
-          return { backgroundColor: "#E53E3E" };
-        case "green":
-          return { backgroundColor: "#48BB78" };
-        case "blue":
-          return { backgroundColor: "#3182CE" };
-        case "orange":
-          return { backgroundColor: "#ED8936" };
-        case "purple":
-          return { backgroundColor: "#805AD5", color: "#fff" };
-        case "grey":
-          return { backgroundColor: "#A0AEC0" };
-        default:
-          return {};
-      }
+    if (colorEncontrado && colorEncontrado.color !== "") {
+      return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
     };
   }
-
 
   function funcMostrarAjustes() {
     if (mostrarAjustes) {
@@ -400,13 +382,12 @@ function Citas() {
                           <td> {cita.horaFin} </td>
                           <td> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
-                          <td>
-                            {" "}
+                          <td style={{ display: "flex" }}>
+                            {cita.estado}
                             <p
                               style={buscarEstilos(cita.estado)}
-                              className="status"
+                              className="color-preview justify-content-center align-items-center"
                             >
-                              {cita.estado}
                             </p>
                           </td>
                           <td> {cita.numero} </td>

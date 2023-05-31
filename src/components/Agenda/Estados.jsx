@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
+import "../UpNav.css";
 
 const Estados = ({ show, onHide }) => {
   const [editIndex, setEditIndex] = useState(null);
@@ -68,6 +69,10 @@ const Estados = ({ show, onHide }) => {
       setError("El estado no puede estar vacío");
       return;
     }
+    if (color.trim() === '') {
+      setError('El color no puede estar vacío');
+      return;
+    }
     const stateToUpdate = estados[editIndex];
     const newState = { name: estado, color: color };
     setDoc(doc(estadosCollection, stateToUpdate.id), newState).then(() => {
@@ -112,21 +117,19 @@ const Estados = ({ show, onHide }) => {
           </div>
           <div className="mb-3">
             <label className="form-label">Color</label>
-            <select
-              className="form-select"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-            >
-              <option value="">Selecciona un color</option>
-              <option value="red">Rojo</option>
-              <option value="blue">Azul</option>
-              <option value="green">Verde</option>
-              <option value="yellow">Amarillo</option>
-              <option value="orange">Naranja</option>
-              <option value="grey">Gris</option>
-              <option value="purple">Purple</option>
-            </select>
+            <div className="justify-content-center align-items-center" style={{ display: "flex" }}>
+              <label className="form-label" style={{ marginRight: "8px" }}>Selecciona un color para el Estado:</label>
+              <div className="color-input-container">
+                <input
+                  type="color"
+                  className="color-input"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                />
+              </div>
+            </div>
           </div>
+
           <button className="btn btn-primary" type="submit">
             {editIndex !== null ? "Actualizar" : "Crear"}
           </button>
@@ -165,7 +168,7 @@ const Estados = ({ show, onHide }) => {
           ))}
         </div>
       </Modal.Body>
-    </Modal>
+    </Modal >
   );
 };
 
