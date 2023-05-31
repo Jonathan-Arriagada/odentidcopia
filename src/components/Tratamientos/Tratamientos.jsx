@@ -879,6 +879,7 @@ function Tratamientos() {
                           setSelectedCheckbox("");
                           setSelectedCheckbox2("");
                           setParametroModal("");
+                          setQuitarFiltro(false);
                         }}
                       >
                         <Modal.Title>

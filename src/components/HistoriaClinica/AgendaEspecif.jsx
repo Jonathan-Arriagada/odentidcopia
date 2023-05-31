@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
 import "../Pacientes/Show.css";
+import CreateCita from "../Agenda/CreateCita";
 import EditCita from "../Agenda/EditCita";
 import "../Utilidades/loader.css";
 import "../Utilidades/tablas.css";
@@ -14,6 +15,7 @@ import { Modal, Button } from "react-bootstrap";
 function AgendaEspecif(id) {
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");
+  const [modalShowCrearCita, setModalShowCrearCita] = useState(false);
   const [modalShowEditCita, setModalShowEditCita] = useState(false);
   const [cita, setCita] = useState([]);
   const [idParam, setIdParam] = useState("");
@@ -26,7 +28,7 @@ function AgendaEspecif(id) {
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
-  const [taparFiltro, setTaparFiltro] = useState(false);
+  const [, setTaparFiltro] = useState(false);
 
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
@@ -36,8 +38,8 @@ function AgendaEspecif(id) {
 
   const getCitas = useCallback((snapshot) => {
     const citasArray = snapshot.docs
-    .filter((doc) => doc.data().idPacienteCita === id.id)
-    .map((doc) => ({
+      .filter((doc) => doc.data().idPacienteCita === id.id)
+      .map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
@@ -202,10 +204,10 @@ function AgendaEspecif(id) {
                       <div className="d-flex justify-content-between">
                         <div
                           className="d-flex justify-content-center align-items-center"
-                          style={{ maxHeight: "40px", marginLeft: "10px" }}
+                          style={{ maxHeight: "40px"}}
                         >
                           <h3>Citas agendadas por este Paciente</h3>
-                         
+
 
                           <button
                             variant="primary"
@@ -225,7 +227,17 @@ function AgendaEspecif(id) {
                             <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
                           </div>)}
                         </div>
-                        <label>Citas Por Confirmar: {contador}</label>
+                        <div className="col d-flex align-items-center justify-content-end">
+                        <button
+                            variant="primary"
+                            className="btn-blue m-2"
+                            onClick={() => setModalShowCrearCita(true)}
+                          >
+                            Nueva
+                          </button>
+                          <label>Citas Por Confirmar: {contador}</label>  
+                        </div>
+
                       </div>
 
                       <div className="d-flex justify-content-between">
@@ -271,18 +283,6 @@ function AgendaEspecif(id) {
                             style={{ display: "none" }}
                             className="form-control m-2 w-25"
                           />
-                          {taparFiltro && (
-                            <input
-                              className="form-control m-2 w-25"
-                              value="<-FILTRO ENTRE FECHAS APLICADO->"
-                              style={{
-                                position: "absolute",
-                                zIndex: 1,
-                                textAlign: "center",
-                              }}
-                              disabled
-                            ></input>
-                          )}
                         </div>
                       </div>
 
@@ -355,7 +355,10 @@ function AgendaEspecif(id) {
           </>
         )}
       </div>
-
+      <CreateCita
+        id={id.id}
+        show={modalShowCrearCita}
+        onHide={() => setModalShowCrearCita(false)} />
       <EditCita
         id={idParam}
         cita={cita}

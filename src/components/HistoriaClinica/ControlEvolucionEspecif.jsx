@@ -5,18 +5,20 @@ import { db } from "../../firebaseConfig/firebase";
 import "../Pacientes/Show.css";
 import EditControlEvolucion from "../ControlEvolucion/EditControlEvolucion";
 import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import moment from "moment";
-import { Modal } from "react-bootstrap";
+import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 
 function ControlEvolucion(id) {
   const [controles, setControles] = useState([]);
+  const [apellidoPaciente, setApellidoPaciente] = useState([]);
+  const [idcPaciente, setIdcPaciente] = useState([]);
+
   const [modalShowEditar, setModalShowEditar] = useState(false);
-  const [order, setOrder] = useState("ASC");
+  //const [order, setOrder] = useState("ASC");
   const [control, setControl] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [modalShowVerDetalle, setModalShowVerDetalle] = useState(false);
+  const [modalShowCrearControl, setModalShowCrearControl] = useState(false);
   const [noHayControles, setnoHayControles] = useState(false);
 
   const controlesCollectiona = collection(db, "controlEvoluciones");
@@ -31,6 +33,8 @@ function ControlEvolucion(id) {
         id: doc.id,
       }));
     setControles(controlesArray);
+    setApellidoPaciente(controlesArray[0].apellidoConNombre);
+    setIdcPaciente(controlesArray[0].idc)
     if (controlesArray.length === 0) {
       setnoHayControles(true)
     }
@@ -52,7 +56,7 @@ function ControlEvolucion(id) {
 
   let results = controles;
 
-  const sorting = (col) => {
+  /*const sorting = (col) => {
     if (order === "ASC") {
       const sorted = [...controles].sort((a, b) => {
         const valueA =
@@ -75,7 +79,7 @@ function ControlEvolucion(id) {
       setControles(sorted);
       setOrder("ASC");
     }
-  };
+  };*/
 
   return (
     <>
@@ -98,115 +102,143 @@ function ControlEvolucion(id) {
                       <br></br>
                       <div className="d-flex justify-content-between">
                         <h3>Control y Evoluciones del Paciente</h3>
+                        <div className="col d-flex align-items-center justify-content-end">
+                          <button
+                            variant="primary"
+                            className="btn-blue m-2"
+                            onClick={() => setModalShowCrearControl(true)}
+                          >
+                            Nuevo
+                          </button>
+                        </div>
                       </div>
-                      <table className="table__body">
-                        <thead>
-                          <tr>
-                            <th>N°</th>
-                            <th onClick={() => sorting("apellidoConNombre")}>
-                              Apellido Y Nombres
-                            </th>
-                            <th onClick={() => sorting("idc")}>DNI</th>
-                            <th onClick={() => sorting("tratamiento")}>Tratamiento</th>
-                            <th onClick={() => sorting("pieza")}>Pieza</th>
-                            <th onClick={() => sorting("doctor")}>Doctor</th>
-                            <th onClick={() => sorting("fechaControlRealizado")}>Fecha</th>
-                            <th>Accion</th>
-                          </tr>
-                        </thead>
 
-                        <tbody>
+                      <div className="form-control_history">
+                        <div className="row mb-3">
+                          <div className="col-2 sm-2">
+                            <label id="textoIntroHistory">IDC:</label>
+                          </div>
+                          <div className="col-2 sm-2">
+                            {idcPaciente}
+                          </div>
+                        </div>
+                        <div className="row mb-3">
+                          <div className="col-2 sm-2">
+                            <label id="textoIntroHistory">Nombre:</label>
+                          </div>
+                          <div className="col-2 sm-4">
+                            {apellidoPaciente}
+                          </div>
+                        </div>
+                        <div className="row mb-3">
+                          <div className="col-2 sm-2">
+                            <label id="textoIntroHistory">Tratamientos:</label>
+                          </div>
+                          <div className="col-2 sm-4">
+                            <select value={apellidoPaciente} multiple={false} required>
+                              <option value="">____________________________</option>
+                              {/*TODO actualizar opciones*/}
+                            </select>
+                          </div>
+                        </div>
+                        <div className="row mb-3">
+                          <div className="col-2 sm-2">
+                            <label id="textoIntroHistory">Pieza:</label>
+                          </div>
+                          <div className="col-2 sm-4">
+                            <select value={apellidoPaciente} multiple={false} required>
+                              <option value="">____________________________</option>
+                              {/*TODO actualizar opciones*/}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <hr></hr>
+
+                      <div className="form-control_history justify-content-center align-content-center">
+                        <div className="container">
                           {results.map((control, index) => (
                             <tr key={control.id}>
-                              <td>{results.length - index}</td>
-                              <td> {control.apellidoConNombre} </td>
-                              <td> {control.idc} </td>
-                              <td> {control.tratamientoControl} </td>
-                              <td> {control.pieza} </td>
-                              <td> {control.doctor} </td>
-                              <td>
-                                {moment(control.fechaControlRealizado).format(
-                                  "DD/MM/YY"
-                                )}
-                              </td>
+                              <div className="row mb-2">
+                                <div className="col-2 sm-2 d-flex align-items-center">
+                                  <label id="textoIntroHistory">Doctor:</label>
+                                </div>
+                                <div className="col-2 sm-2">
+                                  <input type="text" value={control.doctor} disabled style={{ textAlign: "center", backgroundColor: "white", border: "0" }} />
+                                </div>
+                              </div>
 
-                              <td style={{ padding: "10px" }}>
-                                <button
-                                  variant="primary"
-                                  className="btn btn-secondary mx-1"
-                                  onClick={() => {
-                                    setModalShowVerDetalle([
-                                      true,
-                                      control.detalleTratamiento,
-                                    ]);
-                                  }}>
-                                  <i className="fa-regular fa-comment"></i> Ver
-                                  Notas
-                                </button>
-                                <button
-                                  variant="primary"
-                                  className="btn btn-success mx-1"
-                                  onClick={() => {
-                                    setModalShowEditar(true);
-                                    setControl(control);
-                                    setIdParam(control.id);
-                                  }}
-                                >
-                                  <i className="fa-regular fa-pen-to-square"></i>
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    deleteControl(control.id);
-                                  }}
-                                  variant="primary"
-                                  className="btn btn-danger mx-1"
-                                >
-                                  <i className="fa-solid fa-trash-can"></i>
-                                </button>
-                              </td>
+                              <div className="row mb-2">
+                                <div className="col-2 sm-2 d-flex align-items-center">
+                                  <label id="textoIntroHistory">Fecha:</label>
+                                </div>
+                                <div className="col-2 sm-2">
+                                  <input
+                                    type="text"
+                                    value={moment(control.fechaControlRealizado).format("DD/MM/YY")}
+                                    style={{ textAlign: "center", backgroundColor: "white", border: "0" }}
+                                    disabled
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="row mb-4">
+                                <div className="col-2 sm-2">
+                                  <label id="textoIntroHistory" style={{ marginTop: "15px" }}>Detalle:</label>
+                                </div>
+                                <div className="col-10 sm-10">
+                                  <textarea
+                                    type="text"
+                                    value={control.detalleTratamiento}
+                                    style={{ textAlign: "justify", height: '150px', width: "150%", backgroundColor: "#e8f0fa" }}
+                                    className="form-control m-2"
+                                    disabled
+                                  />
+                                  <div className="col-12 d-flex justify-content-end">
+                                    <button
+                                      variant="primary"
+                                      className="btn btn-success mx-1"
+                                      onClick={() => {
+                                        setModalShowEditar(true);
+                                        setControl(control);
+                                        setIdParam(control.id);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-pen-to-square"></i>
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        deleteControl(control.id);
+                                      }}
+                                      variant="primary"
+                                      className="btn btn-danger mx-1"
+                                    >
+                                      <i className="fa-solid fa-trash-can"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <br></br>
+                              <br></br>
+
                             </tr>
                           ))}
-                        </tbody>
-                      </table>
-                      {modalShowVerDetalle[0] && (
-                        <Modal
-                          show={modalShowVerDetalle[0]}
-                          size="lg"
-                          aria-labelledby="contained-modal-title-vcenter"
-                          centered
-                          onHide={() => setModalShowVerDetalle([false, ""])}
-                        >
-                          <Modal.Header
-                            closeButton
-                            onClick={() => setModalShowVerDetalle([false, ""])}
-                          >
-                            <Modal.Title>Detalle</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            <div className="container">
-                              <div className="col">
-                                <form>
-                                  <div className="row">
-                                    <div className="col mb-6">
-                                      <p>{modalShowVerDetalle[1]}</p>
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
-                            </div>
-                          </Modal.Body>
-                        </Modal>
-                      )}
-
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
           </>
-        )}
-      </div>
-
+        )
+        }
+      </div >
+      <CrearControlEvolucion
+        id={id.id}
+        show={modalShowCrearControl}
+        onHide={() => setModalShowCrearControl(false)} />
       <EditControlEvolucion
         id={idParam}
         control={control}

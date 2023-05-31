@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -20,6 +20,7 @@ function CreateCita(props) {
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
   const [, setHorariosAtencion] = useState([]);
+  const [showBuscador, setShowBuscador] = useState(true);
 
   const citasCollection = collection(db, "citas");
 
@@ -88,6 +89,27 @@ function CreateCita(props) {
     }
   }, [props.client]);
 
+  useEffect(() => {
+    const fetchClient = async () => {
+      if (props.id) {
+        setShowBuscador(false);
+        const docRef = doc(db, 'clients', props.id);
+        const docSnapshot = await getDoc(docRef);
+
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          setApellidoConNombre(data.apellidoConNombre);
+          setIdc(data.idc);
+          setNumero(data.numero);
+          setIdPacienteCita(props.id);
+          setEditable(false);
+        }
+      }
+    };
+
+    fetchClient();
+  }, [props.id]);
+
   const store = async (e) => {
     e.preventDefault();
     const querySnapshot = await getDocs(query(collection(db, "clients"), where("idc", "==", idc)));
@@ -122,24 +144,24 @@ function CreateCita(props) {
         responsable: "",
         nombreResponsable: "",
         telefonoResponsable: "",
-        pregunta1: ["",false],
-        pregunta2: ["",false],
-        pregunta3: ["",false],
-        pregunta4: ["",false],
-        pregunta5: ["",false],
-        pregunta6: ["",false],
-        pregunta7: ["",false],
-        pregunta8: ["",false],
-        pregunta9: ["",false],
-        pregunta10: ["",false],
-        pregunta11: ["",false],
-        pregunta12: ["",false],
-        pregunta13: ["",false],
-        pregunta14: ["",false],
-        pregunta15: ["",false],
-        pregunta16: ["",false],
-        pregunta17: ["",false],
-        pregunta18: ["",false],
+        pregunta1: ["", false],
+        pregunta2: ["", false],
+        pregunta3: ["", false],
+        pregunta4: ["", false],
+        pregunta5: ["", false],
+        pregunta6: ["", false],
+        pregunta7: ["", false],
+        pregunta8: ["", false],
+        pregunta9: ["", false],
+        pregunta10: ["", false],
+        pregunta11: ["", false],
+        pregunta12: ["", false],
+        pregunta13: ["", false],
+        pregunta14: ["", false],
+        pregunta15: ["", false],
+        pregunta16: ["", false],
+        pregunta17: ["", false],
+        pregunta18: ["", false],
       });
 
       await addDoc(citasCollection, {
@@ -236,7 +258,7 @@ function CreateCita(props) {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            <div className="col mb-3" style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px" }}>
+            {showBuscador && (<div className="col mb-3" style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px" }}>
               <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold" }}>Buscador por Apellido, Nombre o DNI:</label>
               <input
                 style={{ borderRadius: "100px" }}
@@ -250,7 +272,7 @@ function CreateCita(props) {
                 <option value="">Ingreso manual</option>
                 {valorBusquedaOptionsJSX}
               </datalist>
-            </div>
+            </div>)}
 
             <form>
               <div className="row">
@@ -291,7 +313,7 @@ function CreateCita(props) {
                   />
                 </div>
 
-                <div className="col mb-3">
+                <div className="col mb-3 align-content-mb-start fa-align-left">
                   <label className="form-label">Estado*</label>
                   <select
                     value={estado}
