@@ -30,7 +30,6 @@ function GestionPagosTratamientos() {
 
   const guardarSeleccion = async (id) => {
     const tratamientosCollection = collection(db, "tratamientos");
-    console.log(tratamientosCollection)
       await tratamientosCollection.doc(id).update({
         estadoPago: selectedOption,
       });

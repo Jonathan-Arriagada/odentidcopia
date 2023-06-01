@@ -3,17 +3,15 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
-import "../Pacientes/Show.css";
 import CrearControlEvolucion from "./CrearControlEvolucion"
 import EditControlEvolucion from "./EditControlEvolucion";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import moment from "moment";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import "../UpNav.css";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Modal } from "react-bootstrap";
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 const ControlEvolucion = () => {
     const [controles, setControles] = useState([]);

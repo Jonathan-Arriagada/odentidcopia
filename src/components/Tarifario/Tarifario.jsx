@@ -3,14 +3,12 @@ import Navigation from "../Navigation";
 import { collection, updateDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
-import "../Pacientes/Show.css";
 import EditTarifa from "./EditTarifa";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import { FaSignOutAlt, FaBell, FaUser } from "react-icons/fa";
-import "../UpNav.css";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);

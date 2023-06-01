@@ -49,7 +49,6 @@ const EditClave = (props) => {
                  })
              })
              .catch((error) => {
-                 console.log(error);
                  setNewPassword("");
                  setConfirmPassword("");
                  setError("");

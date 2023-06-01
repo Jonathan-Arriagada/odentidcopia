@@ -5,20 +5,17 @@ import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import CreateTratamiento from "./CreateTratamiento";
 import EditTratamiento from "./EditTratamiento";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import EstadosTratamientos from "./EstadosTratamientos";
 import EditPago from "./EditPago";
 import ListaSeleccionEstadoPago from "./ListaSeleccionEstadoPago";
 import moment from "moment";
 import Calendar from "react-calendar";
-import { Dropdown } from "react-bootstrap";
-import { Modal, Button } from "react-bootstrap";
+import { Dropdown, Modal, Button } from "react-bootstrap";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import "../UpNav.css";
-
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
@@ -109,7 +106,6 @@ function Tratamientos() {
   const buscarEstilos = (estadoParam) => {
     const colorEncontrado = estadoTratamiento.find((e) => e.name === estadoParam);
     if (colorEncontrado && colorEncontrado.color !== "") {
-      console.log(colorEncontrado.color)
       return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
     };
   }
@@ -117,7 +113,6 @@ function Tratamientos() {
   const buscarEstilosPago = (estadoParam) => {
     const colorEncontrado = estadoPago.find((e) => e.name === estadoParam);
     if (colorEncontrado && colorEncontrado.color !== "") {
-      console.log(colorEncontrado.color)
       return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
     };
   }
@@ -1024,27 +1019,27 @@ function Tratamientos() {
                           <td> {tratamiento.tarifasTratamientos} </td>
                           <td> {tratamiento.pieza} </td>
                           <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
-                          <td>
-                            <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <td style={{ paddingBottom: "0" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {tratamiento.estadoPago || ""}
                               {tratamiento.estadoPago && (
-                              <p
-                                style={buscarEstilosPago(tratamiento.estadoPago)}
-                                className="color-preview"
-                              ></p>
+                                <p
+                                  style={buscarEstilosPago(tratamiento.estadoPago)}
+                                  className="color-preview"
+                                ></p>
                               )}
 
-                            </p>
+                            </div>
                           </td>
 
-                          <td>
-                          <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <td style={{ paddingBottom: "0" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {tratamiento.estadosTratamientos}
                               <p
                                 style={buscarEstilos(tratamiento.estadosTratamientos)}
                                 className="color-preview"
                               ></p>
-                            </p>
+                            </div>
 
                           </td>
 

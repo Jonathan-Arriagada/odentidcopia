@@ -7,13 +7,13 @@ import { db } from "../../firebaseConfig/firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../Navigation";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import "../UpNav.css";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
+import "../Main.css"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

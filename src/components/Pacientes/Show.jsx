@@ -1,19 +1,18 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { collection, deleteDoc, doc, onSnapshot, query, orderBy} from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
-import "./Show.css";
 import Edit from "./Edit";
 import Create from "./Create";
 import CreateCita from "../Agenda/CreateCita";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import moment from "moment";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import "../UpNav.css";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
+import { Dropdown } from "react-bootstrap";
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -25,7 +24,7 @@ const Show = () => {
   const [idParam, setIdParam] = useState("");
   const [modalShowCita, setModalShowCita] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const logout = () => {
     const auth = getAuth();
     signOut(auth)
@@ -172,96 +171,101 @@ const Show = () => {
                       Nuevo
                     </button>
                   </div>
-                <table className="table__body">
-                  <thead>
-                    <tr>
-                      <th>N°</th>
-                      <th onClick={() => sorting("apellidoConNombre")}>
-                        Apellido Y Nombres
-                      </th>
-                      <th onClick={() => sorting("idc")}>DNI</th>
-                      <th onClick={() => sorting("fechaNacimiento")}>
-                        Fecha Nacimiento
-                      </th>
-                      <th onClick={() => sorting("numero")}>Telefono</th>
-                      <th>Accion</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {results.map((client, index) => (
-                      <tr key={client.id}>
-                        <td>{results.length - index}</td>
-                        <td>
-                          <Link to={`/historial/${client.id}`}>
-                            {client.apellidoConNombre}
-                          </Link>
-
-                        </td>
-                        <td> {client.idc} </td>
-                        <td>
-                          {moment(client.fefechaNacimientocha).format(
-                            "DD/MM/YY"
-                          )}
-                        </td>
-                        <td> {client.numero}</td>
-
-                        <td style={{ padding: "10px" }}>
-
-                          <button
-                            variant="primary"
-                            className="btn btn-success btn-sm"
-                            style={{margin:"1px", borderRadius:"10px"}}
-                            onClick={() => {
-                              setModalShowEdit(true);
-                              setClient(client);
-                              setIdParam(client.id);
-                            }}
-                          >
-                            <i className="fa-regular fa-pen-to-square"></i>
-                          </button>
-                          <button
-                            onClick={() => {
-                              deleteClient(client.id);
-                            }}
-                            variant="primary"
-                            className="btn btn-danger btn-sm"
-                            style={{margin:"1px", borderRadius:"10px"}}
-                          >
-                            <i className="fa-solid fa-trash-can"></i>
-                          </button>
-               
-                          <Link to={`/historial/${client.id}`}>
-                            <button
-                              variant="primary"
-                              className="btn btn-blue btn-sm"
-                              style={{margin:"1px", borderRadius:"10px"}}
-                              >
-                              Historial <i className="fa-solid fa-file-medical"></i> 
-                            </button>
-                          </Link>
-                          <button
-                            variant="primary"
-                            className="btn btn-secondary btn-sm"
-                            style={{margin:"1px", borderRadius:"10px"}}
-                            onClick={() => {
-                              setModalShowCita(true);
-                              setClient(client);
-                            }}
-                          >
-                            Crear Cita
-                          </button>
-                        </td>
+                  <table className="table__body">
+                    <thead>
+                      <tr>
+                        <th>N°</th>
+                        <th onClick={() => sorting("apellidoConNombre")}>
+                          Apellido Y Nombres
+                        </th>
+                        <th onClick={() => sorting("idc")}>DNI</th>
+                        <th onClick={() => sorting("fechaNacimiento")}>
+                          Fecha Nacimiento
+                        </th>
+                        <th onClick={() => sorting("numero")}>Telefono</th>
+                        <th>Accion</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+
+                    <tbody>
+                      {results.map((client, index) => (
+                        <tr key={client.id}>
+                          <td>{results.length - index}</td>
+                          <td>
+                            <Link to={`/historial/${client.id}`}>
+                              {client.apellidoConNombre}
+                            </Link>
+
+                          </td>
+                          <td> {client.idc} </td>
+                          <td>
+                            {moment(client.fefechaNacimientocha).format(
+                              "DD/MM/YY"
+                            )}
+                          </td>
+                          <td> {client.numero}</td>
+
+                          <td style={{ padding: "10px" }}>
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                variant="primary"
+                                className="btn btn-secondary mx-1 btn-md"
+                                id="dropdown-actions"
+                              >
+                                <i className="fa-solid fa-list"> </i>
+                              </Dropdown.Toggle>
+
+                              <Dropdown.Menu>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setModalShowEdit(true);
+                                    setClient(client);
+                                    setIdParam(client.id);
+                                  }}
+                                >
+                                  <i className="fa-regular fa-pen-to-square"></i>
+                                  Editar
+                                </Dropdown.Item>
+
+                                <Dropdown.Item>
+                                  <Link to={`/historial/${client.id}`} style={{textDecoration: "none", color:"#212529"}}>
+                                    <i className="fa-solid fa-file-medical"></i>
+                                    Historial Clinico
+                                  </Link>
+                                </Dropdown.Item>
+
+
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setModalShowCita(true);
+                                    setClient(client);
+                                  }}
+                                >
+                                  <i class="fa-solid fa-plus"></i>
+                                  Crear Cita
+                                </Dropdown.Item>
+
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    deleteClient(client.id);
+                                  }}
+                                >
+                                  <i className="fa-solid fa-trash-can"></i>
+                                  Eliminar
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          </div>
         )}
-    </div >
+      </div >
 
       <CreateCita
         show={modalShowCita}

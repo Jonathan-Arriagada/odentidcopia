@@ -235,7 +235,7 @@ const Materiales = () => {
                                                     <td>{material.um}</td>
                                                     <td>
                                                         <button
-                                                            className="btn btn-primary mx-1 btn-sm"
+                                                            className="btn btn-success mx-1 btn-sm"
                                                             onClick={() => { setModalShowGestionMateriales(true); handleEdit(index) }}
                                                         >
                                                             <i className="fa-solid fa-edit"></i>

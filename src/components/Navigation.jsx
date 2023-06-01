@@ -1,4 +1,3 @@
-import "./Navigation.css";
 import profile from "../img/profile.png";
 import Nav from "./zNavIcons/Nav";
 import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt,FaChevronDown , FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax } from 'react-icons/fa';
@@ -7,6 +6,7 @@ import { Link,useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import "./Main.css"
 
 const Navigation = () => {
     const [isActive, setIsActive] = useState(false);

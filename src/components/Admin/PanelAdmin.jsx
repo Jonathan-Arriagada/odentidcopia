@@ -3,13 +3,11 @@ import Navigation from "../Navigation";
 import { collection, orderBy, query, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { db, } from "../../firebaseConfig/firebase";
 import CrearAsistente from "./CrearAsistente";
-import "../Pacientes/Show.css"
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import "../UpNav.css";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
+import "../Utilidades/tablas.css";
+import "../Main.css"
 
 function PanelAdmin() {
   const [usuarios, setUsuarios] = useState([]);

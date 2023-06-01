@@ -8,10 +8,8 @@ import EditCita from "../Agenda/EditCita";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
-import "../Pacientes/Show.css";
-import "../Utilidades/loader.css";
+import "../Main.css"
 import "../Utilidades/tablas.css";
-import "../UpNav.css";
 
 function AgendaEspecif(id) {
   const [citas, setCitas] = useState([]);
@@ -294,8 +292,9 @@ function AgendaEspecif(id) {
                               <td> {cita.horaFin} </td>
                               <td> {cita.apellidoConNombre} </td>
                               <td> {cita.idc} </td>
-                              <td style={{ display: "flex" }}>
-                                {cita.estado}
+                              <td style={{ display: "flex", marginTop: "8px"}}>
+                                {cita.estado}                              
+
                                 <p
                                   style={buscarEstilos(cita.estado)}
                                   className="color-preview justify-content-center align-items-center"

@@ -80,6 +80,7 @@ function CreateCita(props) {
       setIdc(props.client.idc);
       setNumero(props.client.numero);
       setIdPacienteCita(props.client.id)
+      setShowBuscador(false)
       setEditable(false);
     } else {
       setApellidoConNombre("");
@@ -313,7 +314,7 @@ function CreateCita(props) {
                   />
                 </div>
 
-                <div className="col mb-3 align-content-mb-start fa-align-left">
+                <div className="col mb-3">
                   <label className="form-label">Estado*</label>
                   <select
                     value={estado}

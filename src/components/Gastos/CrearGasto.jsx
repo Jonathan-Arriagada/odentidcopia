@@ -2,8 +2,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import { collection, getDocs, query, where, onSnapshot, orderBy, doc, writeBatch, addDoc, limit } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
-import "../Utilidades/tablas.css";
 import moment from "moment";
+import "../Utilidades/tablas.css";
 
 const CrearGasto = (props) => {
     const hoy = moment(new Date()).format("YYYY-MM-DD");

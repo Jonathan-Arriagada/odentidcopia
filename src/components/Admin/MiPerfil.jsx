@@ -6,13 +6,11 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
 import Navigation from "../Navigation";
 import EditClave from "./EditClave";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
-import "../Pacientes/Show.css";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import "../UpNav.css";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
+import "../Utilidades/tablas.css";
+import "../Main.css"
 
 const MiPerfil = () => {
   const [user, setUser] = useState("");

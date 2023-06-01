@@ -2,18 +2,17 @@ import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
-import "../Pacientes/Show.css";
 import EditControlEvolucion from "../ControlEvolucion/EditControlEvolucion";
-import "../Utilidades/loader.css";
 import moment from "moment";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
+import "../Main.css"
 
 function ControlEvolucionEspecif(id, props) {
-  const [controles, setControles] = useState([]);
-  const [apellidoPaciente, setApellidoPaciente] = useState([]);
-  const [idcPaciente, setIdcPaciente] = useState([]);
-  const [tratamientoPaciente, setTratamientoPaciente] = useState([]);
-  const [piezaPaciente, setPiezaPaciente] = useState([]);
+  const [controles, setControles] = useState("");
+  const [apellidoPaciente, setApellidoPaciente] = useState("");
+  const [idcPaciente, setIdcPaciente] = useState("");
+  const [tratamientoPaciente, setTratamientoPaciente] = useState("");
+  const [piezaPaciente, setPiezaPaciente] = useState("");
   const [modalShowEditar, setModalShowEditar] = useState(false);
   //const [order, setOrder] = useState("ASC");
   const [control, setControl] = useState([]);
@@ -56,8 +55,19 @@ function ControlEvolucionEspecif(id, props) {
     const options3 = filteredDocs.map(doc => (
       <option key={`pieza-${doc.id}`} value={doc.pieza}>{doc.data().pieza}</option>
     ));
+    options2.sort((a, b) => {
+      const trataA = a.props.value;
+      const trataB = b.props.value;
+      return trataB - trataA;
+    });
+    options3.sort((a, b) => {
+      const piezaA = a.props.value;
+      const piezaB = b.props.value;
+      return piezaB - piezaA;
+    });
     setOptionsTarifasTratamientos(options2);
     setOptionsPiezasTratamientos(options3);
+
   }, [id]);
 
   useEffect(() => {
@@ -76,32 +86,22 @@ function ControlEvolucionEspecif(id, props) {
     );
   };
 
-  let results = controles;
 
-  /*const sorting = (col) => {
-    if (order === "ASC") {
-      const sorted = [...controles].sort((a, b) => {
-        const valueA =
-          typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
-        const valueB =
-          typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
-        return valueA > valueB ? 1 : -1;
-      });
-      setControles(sorted);
-      setOrder("DSC");
-    }
-    if (order === "DSC") {
-      const sorted = [...controles].sort((a, b) => {
-        const valueA =
-          typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
-        const valueB =
-          typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
-        return valueA < valueB ? 1 : -1;
-      });
-      setControles(sorted);
-      setOrder("ASC");
-    }
-  };*/
+  var results = controles;
+  if ((tratamientoPaciente === "Todos" && piezaPaciente === "Todos") || (tratamientoPaciente === "" && piezaPaciente === "")) {
+    results = controles;
+  }
+  else if (tratamientoPaciente && (piezaPaciente === "Todos" || piezaPaciente === "")) {
+    results = controles.filter((doc) => doc.tratamientoControl === tratamientoPaciente);
+  }
+  else if (piezaPaciente && (tratamientoPaciente === "Todos" || tratamientoPaciente === "")) {
+    results = controles.filter((doc) => doc.pieza === piezaPaciente);
+  }
+  else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
+    results = controles.filter((doc) => doc.pieza === piezaPaciente && doc.tratamientoControl === tratamientoPaciente);
+  }
+
+
 
   return (
     <>
@@ -180,7 +180,7 @@ function ControlEvolucionEspecif(id, props) {
                               required
                               style={{ textAlign: "center" }}
                             >
-                              <option value=""></option>
+                              <option value="Todos">Todos</option>
                               {optionsTarifasTratamientos}
                             </select>
                           </div>
@@ -196,7 +196,7 @@ function ControlEvolucionEspecif(id, props) {
                               }}
                               multiple={false} required
                               style={{ width: "130px", textAlign: "center" }}>
-                              <option value=""></option>
+                              <option value="Todos">Todos</option>
                               {optionsPiezasTratamientos}
                             </select>
                           </div>
@@ -207,67 +207,76 @@ function ControlEvolucionEspecif(id, props) {
 
                       <div className="form-control_history align-content-center">
                         <div className="container">
-                          {results.map((control, index) => (
+                          {results.map((control,) => (
                             <div className="row w-75 border mt-2 rounded justify-content-center" key={control.id}>
-                             
-  													<div className="col-3 col-sm-3 border-end p-3 bg-body-secondary">
-                                  <input
-                                    type="text"
-                                    value={moment(control.fechaControlRealizado).format("DD/MM/YY")}
-                                    style={{ border: "0", fontWeight:"bold" }}
-                                    className="bg-body-secondary"
-                                    disabled
-                                  />
+
+                              <div className="col-3 col-sm-3 border-end p-3 bg-body-secondary">
+                                <input
+                                  type="text"
+                                  value={moment(control.fechaControlRealizado).format("DD/MM/YY")}
+                                  style={{ border: "0", fontWeight: "bold" }}
+                                  className="bg-body-secondary"
+                                  disabled
+                                />
                                 <input type="text" value={control.doctor}
-                                    disabled
-                                    className="bg-body-secondary"
-                                    style={{border: "0", fontWeight:"bold" }} />
+                                  disabled
+                                  className="bg-body-secondary"
+                                  style={{ border: "0", fontWeight: "bold" }} />
                                 <div className="d-flex justify-content-start mt-2">
-                                    <button
-                                      variant="primary"
-                                      className="btn btn-success btn-sm"
-                                      onClick={() => {
-                                        setModalShowEditar(true);
-                                        setControl(control);
-                                        setIdParam(control.id);
-                                      }}
-                                    >
-                                      <i className="fa-regular fa-pen-to-square"></i>
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        deleteControl(control.id);
-                                      }}
-                                      variant="primary"
-                                      className="btn btn-danger ms-1 btn-sm"
-                                    >
-                                      <i className="fa-solid fa-trash-can"></i>
-                                    </button>
-                                  </div>
-                              </div>
-  
-                                
-                                <div className="col-9 p-3 bg-body-tertiary ">
-                                   
-                                  <input type="text" value={control.tratamientoControl}
-                                    disabled
-                                    className="bg-body-tertiary"
-                                    style={{ border: "0", fontWeight:"bold" }} />
-                                  <span className="mx-2">|</span>
-                                  <input type="text" value={control.pieza}
-                                    disabled
-                                    className="bg-body-tertiary"
-                                    style={{backgroundColor: "white", border: "0", fontWeight:"bold" }} />
-                                
-                                  <input
-                                    type="text"
-                                    value={control.detalleTratamiento}
-                                    disabled
-                                    className="mt-2 bg-body-tertiary"
-                                    style={{border: "0", width: "100%"}}
-                                  />
+                                  <span
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "blue",
+                                      cursor: "pointer",
+                                      marginRight: "4px",
+                                    }}
+                                    onClick={() => {
+                                      setModalShowEditar(true);
+                                      setControl(control);
+                                      setIdParam(control.id);
+                                    }}
+                                  >
+                                    Editar
+                                  </span>
+                                  <span
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "red",
+                                      cursor: "pointer",
+                                      marginLeft: "4px",
+                                    }}
+                                    onClick={() => {
+                                      deleteControl(control.id);
+
+                                    }}
+                                  >
+                                    Eliminar
+                                  </span>
                                 </div>
-                              
+                              </div>
+
+
+                              <div className="col-9 p-3 bg-body-tertiary ">
+
+                                <input type="text" value={control.tratamientoControl}
+                                  disabled
+                                  className="bg-body-tertiary"
+                                  style={{ border: "0", fontWeight: "bold" }} />
+                                <span className="mx-2">|</span>
+                                <input type="text" value={control.pieza}
+                                  disabled
+                                  className="bg-body-tertiary"
+                                  style={{ backgroundColor: "white", border: "0", fontWeight: "bold" }} />
+
+                                <input
+                                  type="text"
+                                  value={control.detalleTratamiento}
+                                  disabled
+                                  className="mt-2 bg-body-tertiary"
+                                  style={{ border: "0", width: "100%" }}
+                                />
+                              </div>
+
                               <br></br>
                               <br></br>
 

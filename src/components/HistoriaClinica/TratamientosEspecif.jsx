@@ -4,15 +4,14 @@ import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import CreateTratamiento from "../Tratamientos/CreateTratamiento";
 import EditTratamiento from "../Tratamientos/EditTratamiento";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import ListaSeleccionEstadoPago from "../Tratamientos/ListaSeleccionEstadoPago";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
-import "../UpNav.css";
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 function TratamientosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);
@@ -91,7 +90,6 @@ function TratamientosEspecif(id) {
   const buscarEstilos = (estadoParam) => {
     const colorEncontrado = estadoTratamiento.find((e) => e.name === estadoParam);
     if (colorEncontrado && colorEncontrado.color !== "") {
-      console.log(colorEncontrado.color)
       return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
     };
   }
@@ -99,7 +97,6 @@ function TratamientosEspecif(id) {
   const buscarEstilosPago = (estadoParam) => {
     const colorEncontrado = estadoPago.find((e) => e.name === estadoParam);
     if (colorEncontrado && colorEncontrado.color !== "") {
-      console.log(colorEncontrado.color)
       return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
     };
   }
@@ -940,28 +937,27 @@ function TratamientosEspecif(id) {
                               <td> {tratamiento.tarifasTratamientos} </td>
                               <td> {tratamiento.pieza} </td>
                               <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
-                              <td>
-                            <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {tratamiento.estadoPago || ""}
-                              {tratamiento.estadoPago && (
-                              <p
-                                style={buscarEstilosPago(tratamiento.estadoPago)}
-                                className="color-preview"
-                              ></p>
-                              )}
+                              <td style={{ paddingBottom: "0" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                  {tratamiento.estadoPago || ""}
+                                  {tratamiento.estadoPago && (
+                                    <p
+                                      style={buscarEstilosPago(tratamiento.estadoPago)}
+                                      className="color-preview"
+                                    ></p>
+                                  )}
 
-                            </p>
-                          </td>
-                          <td>
-                          <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {tratamiento.estadosTratamientos}
-                              <p
-                                style={buscarEstilos(tratamiento.estadosTratamientos)}
-                                className="color-preview"
-                              ></p>
-                            </p>
-
-                          </td>
+                                </div>
+                              </td>
+                              <td style={{ paddingBottom: "0" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                  {tratamiento.estadosTratamientos}
+                                  <p
+                                    style={buscarEstilos(tratamiento.estadosTratamientos)}
+                                    className="color-preview"
+                                  ></p>
+                                </div>
+                              </td>
 
                               <td>
                                 <Dropdown>

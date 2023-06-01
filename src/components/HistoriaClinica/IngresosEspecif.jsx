@@ -2,12 +2,11 @@ import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
-import "../Pacientes/Show.css";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 function IngresosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);

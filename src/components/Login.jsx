@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import "./Login.css";
 import logo from "../img/logo-odentid.png";
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
@@ -10,6 +9,7 @@ import { query, collection, where, getDocs } from "firebase/firestore";
 import { Modal } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
+import "./Main.css"
 
 
 const Login = () => {
@@ -55,7 +55,7 @@ const Login = () => {
                   console.log("El rol está bloqueado");
                 } else {
                   // Rol no bloqueado, redirigir al usuario a la página correspondiente
-                  navigate("/agenda");
+                  navigate("/clients");
                 }
               } else {
                 console.log("No se encontraron documentos");
@@ -120,7 +120,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
               id="password"
-              autocomplete="current-password"
+              autoComplete="current-password"
             />
             <label htmlFor="password">Contraseña</label>
             <button
@@ -145,7 +145,7 @@ const Login = () => {
             <span className="error">Captcha Invalido.</span>
           )}
 
-          <button type="submit">
+          <button className="button-login" type="submit">
             Iniciar Sesión
           </button>
 
@@ -175,7 +175,7 @@ const Login = () => {
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
-          <Modal.Header>
+          <Modal.Header closeButton onClick={() => {setMostrarModal(false)}}>
             <Modal.Title>Reestablecer Clave</Modal.Title>
           </Modal.Header>
           <Modal.Body>

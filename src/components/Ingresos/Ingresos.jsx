@@ -3,16 +3,14 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
-import "../Pacientes/Show.css";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import "../UpNav.css";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 const Ingresos = () => {
   const [tratamientos, setTratamientos] = useState([]);

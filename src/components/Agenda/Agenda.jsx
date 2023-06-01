@@ -5,19 +5,17 @@ import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
 import CreateCita from "./CreateCita";
 import Navigation from "../Navigation";
-import "../Pacientes/Show.css";
 import EditCita from "./EditCita";
 import Estados from "./Estados";
 import HorariosAtencionCitas from "./HorariosAtencionCitas";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import moment from "moment";
 import Calendar from "react-calendar";
-import { Modal, Button } from "react-bootstrap";
+import { Dropdown, Modal, Button } from "react-bootstrap";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import "../UpNav.css";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 
 function Citas() {
@@ -38,6 +36,7 @@ function Citas() {
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
   const [taparFiltro, setTaparFiltro] = useState(false);
   const [userType, setUserType] = useState("");
+  const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
 
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
@@ -352,7 +351,6 @@ function Citas() {
                         <th onClick={() => sorting("idc")}>DNI</th>
                         <th onClick={() => sorting("estado")}>Estado</th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th>Notas</th>
                         <th>Accion</th>
                       </tr>
                     </thead>
@@ -365,7 +363,7 @@ function Citas() {
                           <td> {cita.horaFin} </td>
                           <td> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
-                          <td style={{ display: "flex" }}>
+                          <td style={{ display: "flex", marginTop: "8px"}}>
                             {cita.estado}
                             <p
                               style={buscarEstilos(cita.estado)}
@@ -374,32 +372,83 @@ function Citas() {
                             </p>
                           </td>
                           <td> {cita.numero} </td>
-                          <td> {cita.comentario} </td>
                           <td>
-                            <button
-                              variant="primary"
-                              className="btn btn-success mx-1"
-                              onClick={() => {
-                                setModalShowEditCita(true);
-                                setCita(cita);
-                                setIdParam(cita.id);
-                              }}
-                            >
-                              <i className="fa-regular fa-pen-to-square"></i>
-                            </button>
-                            <button
-                              onClick={() => {
-                                deleteCita(cita.id);
-                              }}
-                              className="btn btn-danger"
-                            >
-                              <i className="fa-solid fa-trash-can"></i>
-                            </button>
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                variant="primary"
+                                className="btn btn-secondary mx-1 btn-md"
+                                id="dropdown-actions"
+                              >
+                                <i className="fa-solid fa-list"> </i>
+                              </Dropdown.Toggle>
+
+                              <Dropdown.Menu>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setModalShowEditCita(true);
+                                    setCita(cita);
+                                    setIdParam(cita.id);
+                                  }}
+                                >
+                                  <i className="fa-regular fa-pen-to-square"></i>
+                                  Editar
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => {
+                                    setModalShowVerNotas([
+                                      true,
+                                      cita.comentario
+                                    ]);
+                                  }}
+                                >
+                                  <i className="fa-regular fa-comment"></i> Ver
+                                  Notas
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    deleteCita(cita.id)
+                                  }
+                                >
+                                  <i className="fa-solid fa-trash-can"></i>
+                                  Eliminar
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+
+                  {modalShowVerNotas[0] && (
+                    <Modal
+                      show={modalShowVerNotas[0]}
+                      size="md"
+                      aria-labelledby="contained-modal-title-vcenter"
+                      centered
+                      onHide={() => setModalShowVerNotas([false, ""])}
+                    >
+                      <Modal.Header
+                        closeButton
+                        onClick={() => setModalShowVerNotas([false, ""])}
+                      >
+                        <Modal.Title>Comentarios</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <div className="container">
+                          <div className="col">
+                            <form>
+                              <div className="row">
+                                <div className="col mb-6">
+                                  <p>{modalShowVerNotas[1]}</p>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </Modal.Body>
+                    </Modal>
+                  )}
                 </div>
               </div>
             </div>

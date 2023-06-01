@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import Navigation from "../../Navigation.jsx";
-import {
-  addDoc,
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  query,
-  orderBy,
-} from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
@@ -238,7 +230,7 @@ const Proveedores = () => {
                           <td>{proveedor.name}</td>
                           <td>
                             <button
-                              className="btn btn-primary mx-1 btn-sm"
+                              className="btn btn-success mx-1 btn-sm"
                               onClick={() => {
                                 setModalShowGestionProveedores(true);
                                 handleEdit(index);

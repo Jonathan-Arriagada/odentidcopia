@@ -3,9 +3,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
-import "../Pacientes/Show.css"
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import EditGasto from "./EditGasto";
 import CrearGasto from "./CrearGasto";
 import TipoGasto from "./Parametros/TipoGasto";
@@ -13,7 +10,8 @@ import moment from "moment";
 import { getAuth, signOut } from "firebase/auth";
 import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
+import "../Main.css"
+import "../Utilidades/tablas.css";
 
 const Gastos = () => {
     const [gastos, setGastos] = useState([]);
