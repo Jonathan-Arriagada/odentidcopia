@@ -205,51 +205,27 @@ function ControlEvolucionEspecif(id, props) {
 
                       <hr></hr>
 
-                      <div className="form-control_history justify-content-center align-content-center">
+                      <div className="form-control_history align-content-center">
                         <div className="container">
                           {results.map((control, index) => (
-                            <div className="col-6 bg" key={control.id}>
-                              <div className="row mb-2">
-                                <div className="col-2 sm-2 d-flex align-items-center">
-                                  <label id="textoIntroHistory">Doctor:</label>
-                                </div>
-                                <div className="col-2 sm-2">
-                                  <input type="text" value={control.doctor}
-                                    disabled
-                                    style={{backgroundColor: "white", border: "0" }} />
-                                </div>
-                              </div>
-
-                              <div className="row mb-2">
-                                <div className="col-2 sm-2 d-flex align-items-center">
-                                  <label id="textoIntroHistory">Fecha:</label>
-                                </div>
-                                <div className="col-2 sm-2">
+                            <div className="row w-75 border mt-2 rounded justify-content-center" key={control.id}>
+                             
+  													<div className="col-3 col-sm-3 border-end p-3 bg-body-secondary">
                                   <input
                                     type="text"
                                     value={moment(control.fechaControlRealizado).format("DD/MM/YY")}
-                                    style={{ backgroundColor: "white", border: "0" }}
+                                    style={{ border: "0", fontWeight:"bold" }}
+                                    className="bg-body-secondary"
                                     disabled
                                   />
-                                </div>
-                              </div>
-
-                              <div className="row mb-4">
-                                <div className="col-2 sm-2">
-                                  <label id="textoIntroHistory" style={{ marginTop: "15px" }}>Detalle:</label>
-                                </div>
-                                <div className="col-10 sm-10">
-                                  <textarea
-                                    type="text"
-                                    value={control.detalleTratamiento}
-                                    style={{ textAlign: "justify", height: '150px', width: "100%", backgroundColor: "#e8f0fa" }}
-                                    className="form-control my-2"
+                                <input type="text" value={control.doctor}
                                     disabled
-                                  />
-                                  <div className="d-flex justify-content-end">
+                                    className="bg-body-secondary"
+                                    style={{border: "0", fontWeight:"bold" }} />
+                                <div className="d-flex justify-content-start mt-2">
                                     <button
                                       variant="primary"
-                                      className="btn btn-success mx-1"
+                                      className="btn btn-success btn-sm"
                                       onClick={() => {
                                         setModalShowEditar(true);
                                         setControl(control);
@@ -263,13 +239,35 @@ function ControlEvolucionEspecif(id, props) {
                                         deleteControl(control.id);
                                       }}
                                       variant="primary"
-                                      className="btn btn-danger ms-1"
+                                      className="btn btn-danger ms-1 btn-sm"
                                     >
                                       <i className="fa-solid fa-trash-can"></i>
                                     </button>
                                   </div>
-                                </div>
                               </div>
+  
+                                
+                                <div className="col-9 p-3 bg-body-tertiary ">
+                                   
+                                  <input type="text" value={control.tratamientoControl}
+                                    disabled
+                                    className="bg-body-tertiary"
+                                    style={{ border: "0", fontWeight:"bold" }} />
+                                  <span className="mx-2">|</span>
+                                  <input type="text" value={control.pieza}
+                                    disabled
+                                    className="bg-body-tertiary"
+                                    style={{backgroundColor: "white", border: "0", fontWeight:"bold" }} />
+                                
+                                  <input
+                                    type="text"
+                                    value={control.detalleTratamiento}
+                                    disabled
+                                    className="mt-2 bg-body-tertiary"
+                                    style={{border: "0", width: "100%"}}
+                                  />
+                                </div>
+                              
                               <br></br>
                               <br></br>
 
