@@ -1027,10 +1027,13 @@ function Tratamientos() {
                           <td>
                             <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {tratamiento.estadoPago || ""}
+                              {tratamiento.estadoPago && (
                               <p
                                 style={buscarEstilosPago(tratamiento.estadoPago)}
                                 className="color-preview"
                               ></p>
+                              )}
+
                             </p>
                           </td>
 

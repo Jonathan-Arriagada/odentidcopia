@@ -31,7 +31,6 @@ function Citas() {
   const [modalShowEstados, setModalShowEstados] = useState(false);
   const [modalShowHorarios, setModalShowHorarios] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [contador, setContador] = useState(0);
   const [estados, setEstados] = useState([]);
   const [mostrarAjustes, setMostrarAjustes] = useState(false);
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
@@ -87,27 +86,12 @@ function Citas() {
 
 
   useEffect(() => {
-    const unsubscribeCitas = onSnapshot(
-      citasCollectionOrdenados.current,
-      (snapshot) => {
-        getCitas(snapshot);
-        const citasPorConfirmar = snapshot.docs.filter(
-          (doc) => doc.data().estado === "Por Confirmar"
-        );
-        setContador(citasPorConfirmar.length);
-      }
-    );
-    const unsubscribeEstados = onSnapshot(
-      estadosCollection.current,
-      getEstados
-    );
+    const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => { getCitas(snapshot) });
+    const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
     const type = localStorage.getItem("rol");
     setUserType(type);
 
-    return () => {
-      unsubscribeCitas();
-      unsubscribeEstados();
-    };
+    return () => { unsubscribeCitas(); unsubscribeEstados() };
   }, [getCitas, getEstados]);
 
   const buscarEstilos = (estadoParam) => {
@@ -290,7 +274,6 @@ function Citas() {
                         <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
                       </div>)}
                     </div>
-                    <label>Citas Por Confirmar: {contador}</label>
                   </div>
 
                   <div className="d-flex justify-content-between">

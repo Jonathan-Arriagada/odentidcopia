@@ -120,6 +120,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? "text" : "password"}
               id="password"
+              autocomplete="current-password"
             />
             <label htmlFor="password">Contraseña</label>
             <button

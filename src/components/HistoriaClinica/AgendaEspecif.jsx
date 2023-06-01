@@ -3,14 +3,15 @@ import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
-import "../Pacientes/Show.css";
 import CreateCita from "../Agenda/CreateCita";
 import EditCita from "../Agenda/EditCita";
-import "../Utilidades/loader.css";
-import "../Utilidades/tablas.css";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
+import "../Pacientes/Show.css";
+import "../Utilidades/loader.css";
+import "../Utilidades/tablas.css";
+import "../UpNav.css";
 
 function AgendaEspecif(id) {
   const [citas, setCitas] = useState([]);
@@ -23,7 +24,6 @@ function AgendaEspecif(id) {
   const [isLoading, setIsLoading] = useState(true);
   const [noHayCitas, setNoHayCitas] = useState(false);
 
-  const [contador, setContador] = useState(0);
   const [estados, setEstados] = useState([]);
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -68,50 +68,17 @@ function AgendaEspecif(id) {
   }, []);
 
 
-
   useEffect(() => {
-    const unsubscribeCitas = onSnapshot(
-      citasCollectionOrdenados.current,
-      (snapshot) => {
-        getCitas(snapshot);
-        const citasPorConfirmar = snapshot.docs.filter(
-          (doc) => doc.data().estado === "Por Confirmar"
-        );
-        setContador(citasPorConfirmar.length);
-      }
-    );
-    const unsubscribeEstados = onSnapshot(
-      estadosCollection.current,
-      getEstados
-    );
+    const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => {getCitas(snapshot)});
+    const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
 
-    return () => {
-      unsubscribeCitas();
-      unsubscribeEstados();
-    };
+    return () => { unsubscribeCitas(); unsubscribeEstados()};
   }, [getCitas, getEstados]);
 
   const buscarEstilos = (estadoParam) => {
     const colorEncontrado = estados.find((e) => e.name === estadoParam);
-    if (colorEncontrado) {
-      switch (colorEncontrado.color) {
-        case "yellow":
-          return { backgroundColor: "#F7D33B" };
-        case "red":
-          return { backgroundColor: "#E53E3E" };
-        case "green":
-          return { backgroundColor: "#48BB78" };
-        case "blue":
-          return { backgroundColor: "#3182CE" };
-        case "orange":
-          return { backgroundColor: "#ED8936" };
-        case "purple":
-          return { backgroundColor: "#805AD5", color: "#fff" };
-        case "grey":
-          return { backgroundColor: "#A0AEC0" };
-        default:
-          return {};
-      }
+    if (colorEncontrado && colorEncontrado.color !== "") {
+      return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
     };
   }
 
@@ -252,7 +219,6 @@ function AgendaEspecif(id) {
                           >
                             Nueva
                           </button>
-                          <label>Citas Por Confirmar: {contador}</label>
                         </div>
 
                       </div>
@@ -328,13 +294,12 @@ function AgendaEspecif(id) {
                               <td> {cita.horaFin} </td>
                               <td> {cita.apellidoConNombre} </td>
                               <td> {cita.idc} </td>
-                              <td>
-                                {" "}
+                              <td style={{ display: "flex" }}>
+                                {cita.estado}
                                 <p
                                   style={buscarEstilos(cita.estado)}
-                                  className="status"
+                                  className="color-preview justify-content-center align-items-center"
                                 >
-                                  {cita.estado}
                                 </p>
                               </td>
                               <td> {cita.numero} </td>

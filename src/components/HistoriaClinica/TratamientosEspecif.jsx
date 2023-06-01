@@ -12,6 +12,7 @@ import Calendar from "react-calendar";
 import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
+import "../UpNav.css";
 
 function TratamientosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);
@@ -88,54 +89,20 @@ function TratamientosEspecif(id) {
   };
 
   const buscarEstilos = (estadoParam) => {
-    const colorEncontrado = estadoTratamiento.find(
-      (e) => e.name === estadoParam
-    );
-    if (colorEncontrado) {
-      switch (colorEncontrado.color) {
-        case "yellow":
-          return { backgroundColor: "#F7D33B" };
-        case "red":
-          return { backgroundColor: "#E53E3E" };
-        case "green":
-          return { backgroundColor: "#48BB78" };
-        case "blue":
-          return { backgroundColor: "#3182CE" };
-        case "orange":
-          return { backgroundColor: "#ED8936" };
-        case "purple":
-          return { backgroundColor: "#805AD5", color: "#fff" };
-        case "grey":
-          return { backgroundColor: "#A0AEC0" };
-        default:
-          return {};
-      }
-    }
-  };
+    const colorEncontrado = estadoTratamiento.find((e) => e.name === estadoParam);
+    if (colorEncontrado && colorEncontrado.color !== "") {
+      console.log(colorEncontrado.color)
+      return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
+    };
+  }
 
   const buscarEstilosPago = (estadoParam) => {
     const colorEncontrado = estadoPago.find((e) => e.name === estadoParam);
-    if (colorEncontrado) {
-      switch (colorEncontrado.color) {
-        case "yellow":
-          return { backgroundColor: "#F7D33B" };
-        case "red":
-          return { backgroundColor: "#E53E3E" };
-        case "green":
-          return { backgroundColor: "#48BB78" };
-        case "blue":
-          return { backgroundColor: "#3182CE" };
-        case "orange":
-          return { backgroundColor: "#ED8936" };
-        case "purple":
-          return { backgroundColor: "#805AD5", color: "#fff" };
-        case "grey":
-          return { backgroundColor: "#A0AEC0" };
-        default:
-          return {};
-      }
-    }
-  };
+    if (colorEncontrado && colorEncontrado.color !== "") {
+      console.log(colorEncontrado.color)
+      return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
+    };
+  }
 
   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs
@@ -974,23 +941,27 @@ function TratamientosEspecif(id) {
                               <td> {tratamiento.pieza} </td>
                               <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
                               <td>
-                                <p
-                                  style={buscarEstilosPago(tratamiento.estadoPago)}
-                                  className="status"
-                                >
-                                  {tratamiento.estadoPago}
-                                </p>
-                              </td>
-                              <td>
-                                <p
-                                  style={buscarEstilos(
-                                    tratamiento.estadosTratamientos
-                                  )}
-                                  className="status"
-                                >
-                                  {tratamiento.estadosTratamientos}
-                                </p>
-                              </td>
+                            <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {tratamiento.estadoPago || ""}
+                              {tratamiento.estadoPago && (
+                              <p
+                                style={buscarEstilosPago(tratamiento.estadoPago)}
+                                className="color-preview"
+                              ></p>
+                              )}
+
+                            </p>
+                          </td>
+                          <td>
+                          <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {tratamiento.estadosTratamientos}
+                              <p
+                                style={buscarEstilos(tratamiento.estadosTratamientos)}
+                                className="color-preview"
+                              ></p>
+                            </p>
+
+                          </td>
 
                               <td>
                                 <Dropdown>
