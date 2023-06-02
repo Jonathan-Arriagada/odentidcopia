@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import logo from "../img/logo-odentid.png";
+import background from "../img/login-background.png"
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
 import { useNavigate } from "react-router-dom";
@@ -103,7 +104,18 @@ const Login = () => {
 
   return (
     <>
+    <div className="login">
+      <div className="background-container">
+        <img className="background-image" alt="Background" src={background} />
+        <div className="text-overlay">
+          <h1 className="welcome-text">
+            <span>Bienvenido a</span>
+            <span>la plataforma Odentid</span>
+          </h1>
+        </div>
+      </div>
       <div className="login-page">
+        
         <img className="logo" src={logo} alt="Odentid" />
 
         <form onSubmit={submit}>
@@ -166,6 +178,7 @@ const Login = () => {
             </span>
           </button>
         </form>
+      </div>
       </div>
 
       {mostrarModal && (
