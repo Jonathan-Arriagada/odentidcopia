@@ -3,7 +3,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
-import CrearControlEvolucion from "./CrearControlEvolucion"
 import EditControlEvolucion from "./EditControlEvolucion";
 import moment from "moment";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
@@ -15,7 +14,6 @@ import "../../style/Main.css";
 const ControlEvolucion = () => {
     const [controles, setControles] = useState([]);
     const [search, setSearch] = useState("");
-    const [modalShowCrear, setModalShowCrear] = useState(false);
     const [modalShowEditar, setModalShowEditar] = useState(false);
     const [order, setOrder] = useState("ASC");
     const [control, setControl] = useState([]);
@@ -159,13 +157,6 @@ const ControlEvolucion = () => {
                                     <br></br>
                                     <div className="d-flex justify-content-between">
                                         <h1>Control y Evoluciones</h1>
-                                        <button
-                                            variant="primary"
-                                            className="btn-blue m-2"
-                                            onClick={() => setModalShowCrear(true)}
-                                        >
-                                            Nuevo
-                                        </button>
                                     </div>
                                     <table className="table__body">
                                         <thead>
@@ -273,7 +264,6 @@ const ControlEvolucion = () => {
                 )}
             </div >
 
-            <CrearControlEvolucion show={modalShowCrear} onHide={() => setModalShowCrear(false)} />
             <EditControlEvolucion
                 id={idParam}
                 control={control}

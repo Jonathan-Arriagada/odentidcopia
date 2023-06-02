@@ -173,7 +173,7 @@ const Login = () => {
               padding: "0",
             }}
           >
-            <span style={{ textDecoration: "underline", cursor: "pointer" }}>
+            <span style={{ cursor: "pointer" }}>
               Olvidé mi Clave
             </span>
           </button>

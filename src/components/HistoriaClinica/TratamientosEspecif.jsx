@@ -12,7 +12,7 @@ import { Modal, Button } from "react-bootstrap";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 import "../../style/Main.css";
 
-function TratamientosEspecif(id) {
+function TratamientosEspecif(props) {
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShowCrearTratamiento, setModalShowCrearTratamiento] = useState(false);
@@ -102,7 +102,7 @@ function TratamientosEspecif(id) {
 
   const getTratamientos = useCallback((snapshot) => {
     const tratamientosArray = snapshot.docs
-      .filter((doc) => doc.data().idPaciente === id.id)
+      .filter((doc) => doc.data().idPaciente === props.id)
       .map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -114,7 +114,7 @@ function TratamientosEspecif(id) {
       setNoHayPacientes(false)
     }
     setIsLoading(false);
-  }, [id]);
+  }, [props.id]);
 
   const getEstadoTratamientos = useCallback((snapshot) => {
     const estadoTratamientoArray = snapshot.docs.map((doc) => ({
@@ -511,7 +511,7 @@ function TratamientosEspecif(id) {
         ) : (
           <>
             {noHayPacientes ? (
-              !id.id ? (
+              !props.id ? (
                 <div className="container mt-2 mw-100" >
                   <div className="row">
                     <h1>No se ha seleccionado un Paciente.</h1>
@@ -1026,13 +1026,11 @@ function TratamientosEspecif(id) {
                                       <i className="fa-regular fa-comment"></i> Ver
                                       Notas
                                     </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() => {
-                                        setModalShowCrearControl(true);
-                                        setTratamiento(tratamiento);
-                                      }}
+                                    <Dropdown.Item   onClick={() => {
+                                      props.openControlYEvolucion(1, tratamiento)
+                                     }}
                                     >
-                                      <i className="fa-regular fa-comment"></i> Evolucionar
+                                      <i class="fa-solid fa-chart-line"></i> Evolucionar
                                     </Dropdown.Item>
                                     <Dropdown.Item
                                       onClick={() =>
@@ -1245,7 +1243,7 @@ function TratamientosEspecif(id) {
         )}
       </div>
       <CreateTratamiento
-        id={id.id}
+        id={props.id}
         show={modalShowCrearTratamiento}
         onHide={() => setModalShowCrearTratamiento(false)} />
       <CrearControlEvolucion
