@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import { AuthContext } from "../../context/AuthContext"
 
 const Edit = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.control.apellidoConNombre || '');
   const [idc, setIdc] = useState(props.control.idc || '');
   const [tratamientoControl, setTratamientoControl] = useState(props.control.tratamientoControl || '');
   const [pieza, setPieza] = useState(props.control.pieza || '');
-  const [doctor, setDoctor] = useState(props.control.doctor || '');
   const [fechaControlRealizado, setFechaControlRealizado] = useState(props.control.fechaControlRealizado || '');
   const [detalleTratamiento, setDetalleTratamiento] = useState(props.control.detalleTratamiento || '');
+  const { currentUser } = useContext(AuthContext);
+
 
   const update = async (e) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ const Edit = (props) => {
       idc: idc || controlData.idc,
       tratamientoControl: tratamientoControl || controlData.tratamientoControl,
       pieza: pieza || controlData.pieza,
-      doctor: doctor || controlData.doctor,
+      doctor: currentUser.displayName,
       fechaControlRealizado: fechaControlRealizado || controlData.fechaControlRealizado,
       detalleTratamiento: detalleTratamiento || controlData.detalleTratamiento,
     };
@@ -56,6 +58,7 @@ const Edit = (props) => {
                       onChange={(e) => setApellidoConNombre(e.target.value)}
                       type="text"
                       className="form-control"
+                      disabled
                     />
                   </div>
                   <div className="col mb-6">
@@ -65,6 +68,7 @@ const Edit = (props) => {
                       onChange={(e) => setIdc(e.target.value)}
                       type="number"
                       className="form-control"
+                      disabled
                     />
                   </div>
                 </div>
@@ -77,6 +81,7 @@ const Edit = (props) => {
                         setTratamientoControl(e.target.value)
                       }}
                       className="form-control"
+                      disabled
                     >
                     </input>
                   </div>
@@ -87,6 +92,7 @@ const Edit = (props) => {
                       onChange={(e) => setPieza(e.target.value)}
                       type="number"
                       className="form-control m-1 w-100"
+                      disabled
                     />
                   </div>
                 </div>
@@ -97,10 +103,10 @@ const Edit = (props) => {
                   <div className="d-flex col-md-8">
                     <label className="col-form-label me-5 w-25">Doctor:</label>
                     <input
-                      defaultValue={props.control.doctor}
-                      onChange={(e) => setDoctor(e.target.value)}
+                      value={currentUser.displayName}
                       type="text"
                       className="form-control m-1 w-100"
+                      disabled
                     />
                   </div>
                   <div className="d-flex col-md-8">

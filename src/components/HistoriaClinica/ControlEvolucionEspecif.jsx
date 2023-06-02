@@ -7,19 +7,19 @@ import moment from "moment";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 import "../../style/Main.css";
 
-function ControlEvolucionEspecif(id, props) {
+function ControlEvolucionEspecif(props) {
   const [controles, setControles] = useState("");
   const [apellidoPaciente, setApellidoPaciente] = useState("");
   const [idcPaciente, setIdcPaciente] = useState("");
   const [tratamientoPaciente, setTratamientoPaciente] = useState("");
   const [piezaPaciente, setPiezaPaciente] = useState("");
   const [modalShowEditar, setModalShowEditar] = useState(false);
-  //const [order, setOrder] = useState("ASC");
   const [control, setControl] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [modalShowCrearControl, setModalShowCrearControl] = useState(false);
   const [noHayControles, setnoHayControles] = useState(false);
+  const [mostrarBuscadores, setMostrarBuscadores] = useState(true);
   const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
   const [optionsPiezasTratamientos, setOptionsPiezasTratamientos] = useState([]);
 
@@ -30,7 +30,14 @@ function ControlEvolucionEspecif(id, props) {
 
   const getControles = useCallback((snapshot) => {
     const controlesArray = snapshot.docs
-      .filter((doc) => doc.data().idPaciente === id.id)
+      .filter((doc) => {
+        if (props.tratamiento) {
+          setMostrarBuscadores(false);
+          return doc.data().codigoTratamiento === props.tratamiento.codigo;
+        } else {
+          return doc.data().idPaciente === props.id;
+        }
+      })
       .map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -45,10 +52,10 @@ function ControlEvolucionEspecif(id, props) {
       setnoHayControles(false);
     }
     setIsLoading(false);
-  }, [id]);
+  }, [props]);
 
   const updateOptionsTarifasTratamientos = useCallback((snapshot) => {
-    const filteredDocs = snapshot.docs.filter((doc) => doc.data().idPaciente === id.id);
+    const filteredDocs = snapshot.docs.filter((doc) => doc.data().idPaciente === props.id);
     const options2 = filteredDocs.map(doc => (
       <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tarifasTratamientos}</option>
     ));
@@ -68,7 +75,7 @@ function ControlEvolucionEspecif(id, props) {
     setOptionsTarifasTratamientos(options2);
     setOptionsPiezasTratamientos(options3);
 
-  }, [id]);
+  }, [props.id]);
 
   useEffect(() => {
     const unsubscribe = [
@@ -86,21 +93,21 @@ function ControlEvolucionEspecif(id, props) {
     );
   };
 
-
   var results = controles;
-  if ((tratamientoPaciente === "Todos" && piezaPaciente === "Todos") || (tratamientoPaciente === "" && piezaPaciente === "")) {
-    results = controles;
+  if (mostrarBuscadores) {
+    if ((tratamientoPaciente === "Todos" && piezaPaciente === "Todos") || (tratamientoPaciente === "" && piezaPaciente === "")) {
+      results = controles;
+    }
+    else if (tratamientoPaciente && (piezaPaciente === "Todos" || piezaPaciente === "")) {
+      results = controles.filter((doc) => doc.tratamientoControl === tratamientoPaciente);
+    }
+    else if (piezaPaciente && (tratamientoPaciente === "Todos" || tratamientoPaciente === "")) {
+      results = controles.filter((doc) => doc.pieza === piezaPaciente);
+    }
+    else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
+      results = controles.filter((doc) => doc.pieza === piezaPaciente && doc.tratamientoControl === tratamientoPaciente);
+    }
   }
-  else if (tratamientoPaciente && (piezaPaciente === "Todos" || piezaPaciente === "")) {
-    results = controles.filter((doc) => doc.tratamientoControl === tratamientoPaciente);
-  }
-  else if (piezaPaciente && (tratamientoPaciente === "Todos" || tratamientoPaciente === "")) {
-    results = controles.filter((doc) => doc.pieza === piezaPaciente);
-  }
-  else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
-    results = controles.filter((doc) => doc.pieza === piezaPaciente && doc.tratamientoControl === tratamientoPaciente);
-  }
-
 
 
   return (
@@ -111,7 +118,7 @@ function ControlEvolucionEspecif(id, props) {
         ) : (
           <>
             {noHayControles ? (
-              !id.id ? (
+              !props.id ? (
                 <div className="container mt-2 mw-100" >
                   <div className="row">
                     <h1>No se ha seleccionado un Paciente.</h1>
@@ -121,13 +128,6 @@ function ControlEvolucionEspecif(id, props) {
                 <div className="container mt-2 mw-100" >
                   <div className="row">
                     <h1>A este paciente no se le han registrado Controles y Evoluciones aún.</h1>
-                    <button
-                      variant="primary"
-                      className="btn-blue w-25 m-auto mt-5"
-                      onClick={() => setModalShowCrearControl(true)}
-                    >
-                      Crear Nuevo Control
-                    </button>
                   </div>
                 </div>
               )
@@ -139,7 +139,7 @@ function ControlEvolucionEspecif(id, props) {
                       <br></br>
                       <div className="d-flex justify-content-between">
                         <h3>Control y Evoluciones del Paciente</h3>
-                        <div className="col d-flex align-items-center justify-content-end">
+                        {!mostrarBuscadores && (<div className="col d-flex align-items-center justify-content-end">
                           <button
                             variant="primary"
                             className="btn-blue m-2"
@@ -147,7 +147,7 @@ function ControlEvolucionEspecif(id, props) {
                           >
                             Nuevo
                           </button>
-                        </div>
+                        </div>)}
                       </div>
 
                       <div className="form-control_history">
@@ -167,7 +167,7 @@ function ControlEvolucionEspecif(id, props) {
                             {apellidoPaciente}
                           </div>
                         </div>
-                        <div className="row mb-3">
+                        {mostrarBuscadores && (<div className="row mb-3">
                           <div className="col-2 sm-2">
                             <label id="textoIntroHistory">Tratamientos:</label>
                           </div>
@@ -184,8 +184,8 @@ function ControlEvolucionEspecif(id, props) {
                               {optionsTarifasTratamientos}
                             </select>
                           </div>
-                        </div>
-                        <div className="row mb-3">
+                        </div>)}
+                        {mostrarBuscadores && (<div className="row mb-3">
                           <div className="col-2 sm-2">
                             <label id="textoIntroHistory">Pieza:</label>
                           </div>
@@ -201,6 +201,14 @@ function ControlEvolucionEspecif(id, props) {
                             </select>
                           </div>
                         </div>
+                        )}
+                        {!mostrarBuscadores && (
+                          <div>
+                            <br></br>
+                            <h3>Evolucionando Tratamiento Especifico!</h3>
+                          </div>
+
+                        )}
                       </div>
 
                       <hr></hr>
@@ -294,7 +302,8 @@ function ControlEvolucionEspecif(id, props) {
         }
       </div >
       <CrearControlEvolucion
-        id={id.id}
+        id={props.id}
+        tratamiento={props.tratamiento}
         show={modalShowCrearControl}
         onHide={() => setModalShowCrearControl(false)} />
       <EditControlEvolucion

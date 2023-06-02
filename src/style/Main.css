@@ -30,6 +30,11 @@ h1 {
   letter-spacing: 1px;
   font-weight: 600;
 }
+h3 {
+  color: var(--color-primario-normal) !important;
+  letter-spacing: 1px !important;
+  font-weight: 600 !important;
+}
 #boton-main {
   background: var(--color-estilo-main);
   color: var(--color-white);

@@ -12,6 +12,7 @@ const CrearControlEvolucion = (props) => {
     const [fechaControlRealizado, setFechaControlRealizado] = useState('');
     const [detalleTratamiento, setDetalleTratamiento] = useState('');
     const [idPaciente, setIdPaciente] = useState('');
+    const [codigoTratamiento, setCodigoTratamiento] = useState(0);
     const [editable, setEditable] = useState(true);
     const [editable2, setEditable2] = useState(true);
     const [optionsPacientes, setOptionsPacientes] = useState([]);
@@ -87,7 +88,6 @@ const CrearControlEvolucion = (props) => {
         const querySnapshot = await getDocs(
             query(collection(db, "clients"), where("valorBusqueda", "==", suggestion))
         );
-
         const doc = querySnapshot.docs[0];
 
         if (doc) {
@@ -103,6 +103,7 @@ const CrearControlEvolucion = (props) => {
             apellidoConNombre: apellidoConNombre,
             idc: idc,
             idPaciente: idPaciente,
+            codigoTratamiento: codigoTratamiento,
             fechaControlRealizado: fechaControlRealizado,
             tratamientoControl: tratamientoControl,
             pieza: pieza,
@@ -126,13 +127,14 @@ const CrearControlEvolucion = (props) => {
                     setEditable(false);
                 }
             }
-            if (props.tratamiento && !props.id) {
+            if (props.tratamiento) {
                 setShowBuscador(false);
                 setApellidoConNombre(props.tratamiento.apellidoConNombre);
                 setIdc(props.tratamiento.idc);
                 setIdPaciente(props.tratamiento.idPaciente);
                 setTratamientoControl(props.tratamiento.tarifasTratamientos);
                 setPieza(props.tratamiento.pieza)
+                setCodigoTratamiento(props.tratamiento.codigo)
                 setEditable(false);
                 setEditable2(false);
                 setOcultar(true);

@@ -50,6 +50,7 @@ export default function History() {
   const [responsable, setResponsable] = useState("");
   const [nombreResponsable, setNombreResponsable] = useState("");
   const [telefonoResponsable, setTelefonoResponsable] = useState("");
+  const [tratamiento, setTratamiento] = useState("");
 
   const [error, setError] = useState("");
   const [editable,] = useState("");
@@ -83,6 +84,11 @@ export default function History() {
   const navigate = useNavigate();
 
   const clientsCollection = collection(db, "clients");
+
+  const openControlYEvolucion = (nro, tratamiento) => {
+    setValue(nro);
+    setTratamiento(tratamiento)
+  };
 
   const updateOpcionesPacientes = useCallback(snapshot => {
     const pacientesOptions = snapshot.docs.map((doc, index) => ({
@@ -308,6 +314,8 @@ export default function History() {
 
   const handleChange = (_, newValue) => {
     setValue(newValue);
+    setTratamiento("")
+
   };
   const handleClickSiguiente = () => {
     setMostrarAntecedentes(!mostrarAntecedentes)
@@ -1191,7 +1199,7 @@ export default function History() {
             {/* CONTROL Y EVOLUCION */}
 
             < TabPanel value={value} index={1} >
-              <ControlEvolucionEspecif id={id} />
+              <ControlEvolucionEspecif id={id} tratamiento={tratamiento}/>
             </TabPanel >
 
 
@@ -1200,7 +1208,7 @@ export default function History() {
             </TabPanel >
 
             < TabPanel value={value} index={3} >
-              <TratamientosEspecif id={id} />
+              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion}/>
             </TabPanel >
 
             < TabPanel value={value} index={4} >
