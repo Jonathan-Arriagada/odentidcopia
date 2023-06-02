@@ -144,7 +144,7 @@ const ControlEvolucion = () => {
                                         <Link
                                             to="/"
                                             className="text-decoration-none"
-                                            style={{ color: "#b8b7b8" }}
+                                            style={{ color: "#8D93AB" }}
                                             onClick={logout}
                                         >
                                             <FaSignOutAlt className="icono" />

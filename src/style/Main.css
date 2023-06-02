@@ -13,7 +13,7 @@
   --color-border: #E9E9E9;
   --color-background: #FBFBFF;
   --color-white: #FFFFFF;
---color-black: #000000;
+  --color-black: #000000;
 
 }
 
@@ -49,7 +49,7 @@ body {
 }
 
 .btn-blue:hover {
-  background-color: var(--color-estilo-main);;
+  background-color: var(--color-estilo-main);
 }
 
 /*<!------------Inicia estilos tablas---------------->*/
@@ -133,7 +133,7 @@ tbody tr.hide {
   transform: translateX(100%);
 }
 
-tbody tr:hover {
+tbody tr:not(.admin-row):hover {
   background-color: var(--color-forms) !important;
 }
 
@@ -144,7 +144,24 @@ tbody tr.hide td p {
   font: 0 / 0 sans-serif;
   transition: .2s ease-in-out .5s;
 }
+
 /*<!------------Termina estilos tablas---------------->*/
+
+/*ESTILOS TABPANELS*/
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root {
+  font-family: 'Goldplay' !important;
+  font-weight: bolder !important;
+  color: var(--color-light-text) !important;
+}
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: var(--color-primario-fuerte) !important;
+  font-weight: bold !important;
+  font-family: 'Goldplay' !important;
+}
+.css-1aquho2-MuiTabs-indicator {
+  background-color:var(--color-estilo-main) !important;
+}
+
 
 /*<!--ESTILOS PARA TARIFARIO--> (NO HACE FALTA REVISAR COLORES AQUI)*/
 .deleted-row {
@@ -397,7 +414,8 @@ input[type="file"]::before {
 /*ESTILOS UPNAV.CSS*/
 .navbar {
   background-color: var(--color-forms);
-  color: var(--color-light-text);
+  color: var(--color-light-text) !important;
+  font-weight: 700 !important;
 }
 
 .search-bar {
@@ -416,6 +434,8 @@ input[type="file"]::before {
 .icono {
   font-size: 20px;
   margin-right: 10px;
+  color: var(--color-light-text);
+  
 }
 
 .notificacion {

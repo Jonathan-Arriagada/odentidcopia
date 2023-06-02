@@ -408,7 +408,6 @@ export default function History() {
                     <Link
                       to="/miPerfil"
                       className="text-decoration-none"
-                      style={{ color: "#8D93AB" }}
                     >
                       <FaUser className="icono" />
                     </Link>
@@ -434,7 +433,7 @@ export default function History() {
           </nav>
           <Box sx={{ width: "100%" }} >
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs value={value} onChange={handleChange}>
+              <Tabs value={value} onChange={handleChange} >
                 <Tab label="Historial Clinico" />
                 <Tab label="Control y Evolución" />
                 <Tab label="Citas" />

@@ -132,7 +132,6 @@ const Show = () => {
                       <Link
                         to="/miPerfil"
                         className="text-decoration-none"
-                        style={{ color: "#b8b7b8" }}
                       >
                         <FaUser className="icono" />
                       </Link>
@@ -146,7 +145,7 @@ const Show = () => {
                     <Link
                       to="/"
                       className="text-decoration-none"
-                      style={{ color: "#b8b7b8" }}
+                      style={{ color: "#8D93AB" }}
                       onClick={logout}
                     >
                       <FaSignOutAlt className="icono" />

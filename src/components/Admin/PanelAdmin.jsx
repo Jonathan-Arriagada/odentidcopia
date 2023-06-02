@@ -112,7 +112,7 @@ function PanelAdmin() {
                   <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
                   <div className="d-flex">
                     <div className="notificacion">
-                      <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                      <Link to="/miPerfil" className="text-decoration-none">
                         <FaUser className="icono" />
                       </Link>
                     </div>
@@ -124,7 +124,7 @@ function PanelAdmin() {
                     </div>
                   </div>
                   <div className="notificacion">
-                    <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                    <Link to="/" className="text-decoration-none" style={{ color: "#8D93AB" }} onClick={logout}>
                       <FaSignOutAlt className="icono" />
                       <span>Logout</span>
                     </Link>
