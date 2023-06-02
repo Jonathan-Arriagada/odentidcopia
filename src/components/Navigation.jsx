@@ -6,7 +6,7 @@ import { Link,useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import "./Main.css"
+import "../style/Main.css";
 
 const Navigation = () => {
     const [isActive, setIsActive] = useState(false);

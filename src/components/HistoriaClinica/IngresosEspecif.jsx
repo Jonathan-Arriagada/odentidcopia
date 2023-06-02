@@ -5,8 +5,7 @@ import { db } from "../../firebaseConfig/firebase";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 function IngresosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);

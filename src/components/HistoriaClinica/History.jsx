@@ -13,7 +13,7 @@ import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
-import "../Main.css"
+import "../../style/Main.css";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -358,7 +358,8 @@ export default function History() {
                     </datalist>
                     <button
                       onClick={handleSearch}
-                      className="btn btn-primary"
+                      className="btn"
+                      id="boton-main"
                       style={{ margin: "3px" }}
                     >
                       <i className="fa-solid fa-magnifying-glass"></i>
@@ -388,7 +389,8 @@ export default function History() {
                     </button>
                     <button
                       onClick={handleLimpiar}
-                      className="btn btn-primary"
+                      className="btn"
+                      id="boton-main"
                       style={{ margin: "3px" }}
                     >
                       <i className="fa-regular fa-circle-xmark"></i>
@@ -406,7 +408,6 @@ export default function History() {
                     <Link
                       to="/miPerfil"
                       className="text-decoration-none"
-                      style={{ color: "#b8b7b8" }}
                     >
                       <FaUser className="icono" />
                     </Link>
@@ -420,7 +421,7 @@ export default function History() {
                   <Link
                     to="/"
                     className="text-decoration-none"
-                    style={{ color: "#b8b7b8" }}
+                    style={{ color: "#8D93AB" }}
                     onClick={logout}
                   >
                     <FaSignOutAlt className="icono" />
@@ -432,7 +433,7 @@ export default function History() {
           </nav>
           <Box sx={{ width: "100%" }} >
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs value={value} onChange={handleChange}>
+              <Tabs value={value} onChange={handleChange} >
                 <Tab label="Historial Clinico" />
                 <Tab label="Control y Evolución" />
                 <Tab label="Citas" />
@@ -631,9 +632,11 @@ export default function History() {
                             </div>
                           </div>
                           <button
-                            className="btn btn-primary"
-                            style={{ margin: "3px" }}
+                            className="btn"
+                            id="boton-main"
+                            style={{ margin: "3px"}}
                             onClick={handleClickSiguiente}
+
                           >
                             Siguiente
                           </button>
@@ -1138,8 +1141,9 @@ export default function History() {
                         {!id ? (
                           <div id="botones">
                             <button
-                              className="btn btn-primary"
+                              className="btn"
                               style={{ margin: "3px" }}
+                              id="boton-main"
                               onClick={handleClickSiguiente}
                             >
                               Anterior
@@ -1147,7 +1151,8 @@ export default function History() {
 
                             <button
                               type="submit"
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={validateFields}
                             >
@@ -1157,7 +1162,8 @@ export default function History() {
                         ) : (
                           <div id="botones">
                             <button
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={handleClickSiguiente}
                             >
@@ -1165,7 +1171,8 @@ export default function History() {
                             </button>
                             <button
                               type="submit"
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={handleActualizarClick}
                             >

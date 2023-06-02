@@ -1,27 +1,39 @@
 :root {
-  --color-primary: #003057;
-  --color-secondary: #003057;
-  --color-accent: #00C5C1;
-  --color-text: #003057;
+  --color-primario-normal: #003057;
+  --color-primario-fuerte: #011e30;
+  --color-estilo-main: #00C5C1;
+  --color-texto-oscuro: #003057;
   --color-light-text: #8D93AB;
-  --color-border: #E9E9E9;
-  --color-background: #FBFBFF;
   --color-forms: #F9F9F9;
   --color-grey-element: #E6E6E6;
-  --color-white: #FFFFFF;
   --color-background-green: #F1FCFC;
-  --color-transparent: #FFFFFF00;
-  --color-popup-semitransparent: #FFFFFFCC;
+  --color-transparente: #FFFFFF00;
+  --color-popup-semitransparente: #FFFFFFCC;
+
+  --color-border: #E9E9E9;
+  --color-background: #FBFBFF;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+
 }
 
 @font-face {
   font-family: 'Goldplay';
-  src: url('./fonts/Goldplay/Goldplay-Regular.ttf') format('truetype');
+  src: url('../components/fonts/Goldplay/Goldplay-Regular.ttf') format('truetype');
 }
 
 body {
   font-family: 'Goldplay';
   overflow-x: hidden;
+}
+h1 {
+  color: var(--color-primario-normal) !important;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+#boton-main {
+  background: var(--color-estilo-main);
+  color: var(--color-white);
 }
 
 .mainpage {
@@ -32,8 +44,8 @@ body {
 }
 
 .btn-blue {
-  background-color: #00dbfe;
-  color: #fff;
+  background-color: var(--color-estilo-main);
+  color: var(--color-white);
   border: none;
   padding: 5px 25px;
   border-radius: 10px;
@@ -42,12 +54,34 @@ body {
 }
 
 .btn-blue:hover {
-  background-color: #00c5e7;
+  background-color: var(--color-estilo-main);
+}
+
+/*<!------------Inicia estilos tablas---------------->*/
+/*Aplica estilo a todas las td hijas de table*/
+table.table__body td,
+th {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+table.table__body_history td:not(#thHistory) {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+
+#tablaTratamientos {
+  @media (min-width: 1400px) {
+    max-width: 1600px;
+  }
 }
 
 .table__body {
   max-height: calc(89% - 1.6rem);
-  background-color: #fffb;
+  background-color: var(--color-white);
   margin: .8rem auto;
   border-radius: .4rem;
   overflow: auto;
@@ -85,17 +119,18 @@ thead th {
   position: sticky;
   top: 0;
   left: 0;
-  background-color: #f8fafc;
+  background-color: var(--color-border);
   cursor: pointer;
   text-transform: capitalize;
-  color: #9da8af;
+  color: var(--color-light-text);
+  text-align: center;
 }
 
 
 tbody tr {
   --delay: .1s;
   transition: .5s ease-in-out var(--delay), background-color 0s;
-  border-bottom: 1px solid #cecece
+  border-bottom: 1px solid var(--color-grey-element)
 }
 
 tbody tr.hide {
@@ -103,8 +138,8 @@ tbody tr.hide {
   transform: translateX(100%);
 }
 
-tbody tr:hover {
-  background-color: rgba(206, 206, 206, 0.493) !important;
+tbody tr:not(.admin-row):hover {
+  background-color: var(--color-forms) !important;
 }
 
 
@@ -115,16 +150,25 @@ tbody tr.hide td p {
   transition: .2s ease-in-out .5s;
 }
 
-.status {
-  border-radius: 2rem;
-  text-align: center;
-  padding: .4rem 0;
-  margin-bottom: 0;
-  font-weight: bold;
+/*<!------------Termina estilos tablas---------------->*/
+
+/*ESTILOS TABPANELS*/
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root {
+  font-family: 'Goldplay' !important;
+  font-weight: bolder !important;
+  color: var(--color-light-text) !important;
+}
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: var(--color-primario-fuerte) !important;
+  font-weight: bold !important;
+  font-family: 'Goldplay' !important;
+}
+.css-1aquho2-MuiTabs-indicator {
+  background-color:var(--color-estilo-main) !important;
 }
 
 
-/*<!--ESTILOS PARA TARIFARIO-->*/
+/*<!--ESTILOS PARA TARIFARIO--> (NO HACE FALTA REVISAR COLORES AQUI)*/
 .deleted-row {
   background-color: #8f8c8c;
   color: #f2f2f2;
@@ -176,10 +220,10 @@ tbody tr.hide td p {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1;
-  color: #69707a;
-  background-color: #fff;
+  color: var(--color-light-text);
+  background-color: var(--color-white);
   background-clip: padding-box;
-  border: 1px solid #c5ccd6;
+  border: 1px solid var(--color-grey-element);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -193,7 +237,7 @@ tbody tr.hide td p {
 }
 
 .nav-borders .nav-link {
-  color: #69707a;
+  color: var(--color-light-text);
   border-bottom-width: 0.125rem;
   border-bottom-style: solid;
   border-bottom-color: transparent;
@@ -223,9 +267,9 @@ input[type="file"]::before {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1;
-  color: #69707a;
+  color: var(--color-light-text);
   text-align: left;
-  background-color: #fff;
+  background-color: var(--color-white);
   background-clip: padding-box;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -236,14 +280,7 @@ input[type="file"]::before {
 
 #textoIntroHistory {
   font-weight: bold;
-  color: black;
-}
-
-.circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #0d6efd;
+  color: var(--color-black);
 }
 
 /*ESTILOS LOGIN.CSS*/
@@ -329,7 +366,7 @@ input[type="file"]::before {
   font-size: 13px;
   top: 18px;
   left: 3px;
-  color: #000;
+  color: var(--color-black);
   transition: 0.2s ease;
 }
 
@@ -348,11 +385,11 @@ input[type="file"]::before {
 }
 
 .login-page form button {
-  background-color: #2BB1FF;
+  background-color: var(--color-estilo-main);
   border: none;
   border-radius: 20px;
   margin-top: 20px;
-  color: white;
+  color: var(--color-white);
   padding: 10px;
   cursor: pointer;
 }
@@ -415,7 +452,7 @@ input[type="file"]::before {
 .loader {
   width: 48px;
   height: 48px;
-  border: 5px solid #002f4d;
+  border: 5px solid var(--color-primario-normal);
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;
@@ -437,8 +474,9 @@ input[type="file"]::before {
 
 /*ESTILOS UPNAV.CSS*/
 .navbar {
-  background-color: #f4f3f4;
-  color: #b8b7b8;
+  background-color: var(--color-forms);
+  color: var(--color-light-text) !important;
+  font-weight: 700 !important;
 }
 
 .search-bar {
@@ -451,11 +489,14 @@ input[type="file"]::before {
   border: none;
   border-radius: 4px;
   margin-right: 10px;
+  background-color: var(--color-forms);
 }
 
 .icono {
   font-size: 20px;
   margin-right: 10px;
+  color: var(--color-light-text);
+  
 }
 
 .notificacion {
@@ -506,8 +547,8 @@ input[type="file"]::before {
   flex-direction: column;
   width: 18%;
   min-height: 100vh;
-  color: white;
-  background-color: #002f4d;
+  color: var(--color-white);
+  background-color: var(--color-primario-normal);
   padding: 5px 10px;
 }
 
@@ -556,7 +597,7 @@ input[type="file"]::before {
   content: "";
   height: 1px;
   width: 88%;
-  background-color: white;
+  background-color: var(--color-white);
   bottom: 0;
 }
 
@@ -575,7 +616,7 @@ input[type="file"]::before {
   height: 50px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background-color: lightgray;
+  background-color: var(--color-light-text);
 }
 
 .profile-img {
@@ -621,11 +662,11 @@ input[type="file"]::before {
 
 .sidebar-item.open>.sidebar-content {
   height: auto;
-  background-color: #011e30;
+  background-color: var(--color-primario-fuerte);
 }
 
 .sidebar-item.plain {
-  color: #fff;
+  color: var(--color-white);
   text-decoration: none;
 }
 
@@ -636,4 +677,168 @@ input[type="file"]::before {
 .sidebar-item.plain i {
   display: inline-block;
   width: 1.7em;
+}
+
+/*ESTILO PARA CHECKKBOXS*/
+.checkbox-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 5px;
+  transform: scale(1.5);
+
+}
+
+/*ESTILO PARA CALENDAR        (NO HACE FALTA REVISAR COLORES AQUI)*/
+.react-calendar {
+  width: 350px;
+  max-width: 100%;
+  background: var(--color-white);
+  border: 1px solid #a0a096;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.125em;
+}
+
+.react-calendar--doubleView {
+  width: 700px;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer {
+  display: flex;
+  margin: -0.5em;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer>* {
+  width: 50%;
+  margin: 0.5em;
+}
+
+.react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.react-calendar button {
+  margin: 0;
+  border: 0;
+  outline: none;
+}
+
+.react-calendar button:enabled:hover {
+  cursor: pointer;
+}
+
+.react-calendar__navigation {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  height: 44px;
+  margin-bottom: 1em;
+}
+
+.react-calendar__navigation span {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.react-calendar__navigation button {
+  font-weight: bold;
+  min-width: 44px;
+  background: none;
+  font-size: large;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #e6e6e6;
+}
+
+.react-calendar__navigation button[disabled] {
+  background-color: #f0f0f0;
+}
+
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.75em;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 0.5em;
+}
+
+.react-calendar__month-view__weekNumbers {
+  font-weight: bold;
+}
+
+.react-calendar__month-view__weekNumbers .react-calendar__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  padding: calc(0.75em / 0.75) calc(0.5em / 0.75);
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: #d10000;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #757575;
+}
+
+.react-calendar__year-view .react-calendar__tile,
+.react-calendar__decade-view .react-calendar__tile,
+.react-calendar__century-view .react-calendar__tile {
+  padding: 2em 0.5em;
+}
+
+.react-calendar__tile {
+  max-width: 100%;
+  text-align: center;
+  padding: 0.75em 0.5em;
+  background: none;
+}
+
+.react-calendar__tile:disabled {
+  background-color: #f0f0f0;
+}
+
+.react-calendar__tile:enabled:hover {
+  background: #a9d4ff;
+}
+
+.react-calendar__tile:enabled:focus {
+  background-color: #1087ff;
+}
+
+.react-calendar__tile--now {
+  background: #ffff76;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background: #ffffa9;
+}
+
+.react-calendar__tile--hasActive {
+  background: #76baff;
+}
+
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus {
+  background: #a9d4ff;
+}
+
+.react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: #e6e6e6;
 }

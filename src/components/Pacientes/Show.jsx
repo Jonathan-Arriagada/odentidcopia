@@ -11,8 +11,7 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Dropdown } from "react-bootstrap";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -133,7 +132,6 @@ const Show = () => {
                       <Link
                         to="/miPerfil"
                         className="text-decoration-none"
-                        style={{ color: "#b8b7b8" }}
                       >
                         <FaUser className="icono" />
                       </Link>
@@ -147,7 +145,7 @@ const Show = () => {
                     <Link
                       to="/"
                       className="text-decoration-none"
-                      style={{ color: "#b8b7b8" }}
+                      style={{ color: "#8D93AB" }}
                       onClick={logout}
                     >
                       <FaSignOutAlt className="icono" />

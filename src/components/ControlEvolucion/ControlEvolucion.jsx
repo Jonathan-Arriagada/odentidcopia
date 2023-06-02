@@ -10,8 +10,7 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Modal } from "react-bootstrap";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 const ControlEvolucion = () => {
     const [controles, setControles] = useState([]);
@@ -145,7 +144,7 @@ const ControlEvolucion = () => {
                                         <Link
                                             to="/"
                                             className="text-decoration-none"
-                                            style={{ color: "#b8b7b8" }}
+                                            style={{ color: "#8D93AB" }}
                                             onClick={logout}
                                         >
                                             <FaSignOutAlt className="icono" />
