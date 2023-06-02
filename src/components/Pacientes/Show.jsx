@@ -113,17 +113,17 @@ const Show = () => {
         ) : (
           <div className="w-100">
             <nav className="navbar">
-              <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-75">
+              <div className="d-flex justify-content-between px-2 w-100" >
+                <div className="search-bar w-50">
                   <input
                     value={search}
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Apellido y Nombres o DNI..."
-                    className="form-control m-2 w-25"
+                    className="form-control m-2"
                   />
                 </div>
-                <div className="d-flex justify-content-between w-25 align-items-center">
+                <div className="d-flex justify-content-between align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
                     Bienvenido al sistema Odentid
                   </p>

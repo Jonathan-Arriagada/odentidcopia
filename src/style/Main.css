@@ -9,7 +9,6 @@
   --color-background-green: #F1FCFC;
   --color-transparente: #FFFFFF00;
   --color-popup-semitransparente: #FFFFFFCC;
-
   --color-border: #E9E9E9;
   --color-background: #FBFBFF;
   --color-white: #FFFFFF;
@@ -432,7 +431,7 @@ input[type="file"]::before {
   z-index: 1;
 }
 
-.welcome-text {
+.welcome-text span {
   color: #ffffff;
   font-size: 48px;
   font-weight: bold;
@@ -490,6 +489,7 @@ input[type="file"]::before {
   border-radius: 4px;
   margin-right: 10px;
   background-color: var(--color-forms);
+  width: 40%;
 }
 
 .icono {
@@ -497,6 +497,19 @@ input[type="file"]::before {
   margin-right: 10px;
   color: var(--color-light-text);
   
+}
+
+.right-navbar {
+  width: 25%;
+}
+
+@media (max-width: 1440px) and (max-height: 768px) {
+  .right-navbar {
+    width: 35%;
+  }
+  .navigation {
+    width: 40%
+  }
 }
 
 .notificacion {
