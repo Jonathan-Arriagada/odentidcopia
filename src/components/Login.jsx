@@ -9,7 +9,7 @@ import { query, collection, where, getDocs } from "firebase/firestore";
 import { Modal } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
-import "./Main.css"
+import "../style/Main.css";
 
 
 const Login = () => {

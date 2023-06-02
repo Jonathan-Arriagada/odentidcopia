@@ -6,8 +6,7 @@ import CrearAsistente from "./CrearAsistente";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import "../Utilidades/tablas.css";
-import "../Main.css"
+import "../../style/Main.css"
 
 function PanelAdmin() {
   const [usuarios, setUsuarios] = useState([]);

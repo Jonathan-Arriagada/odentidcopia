@@ -10,8 +10,7 @@ import Calendar from "react-calendar";
 import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 function TratamientosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);

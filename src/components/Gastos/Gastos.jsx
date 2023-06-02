@@ -10,8 +10,7 @@ import moment from "moment";
 import { getAuth, signOut } from "firebase/auth";
 import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 const Gastos = () => {
     const [gastos, setGastos] = useState([]);

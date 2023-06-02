@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy, } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
-import "../Main.css"
+import "../../style/Main.css";
 
 const Estados = ({ show, onHide }) => {
   const [editIndex, setEditIndex] = useState(null);

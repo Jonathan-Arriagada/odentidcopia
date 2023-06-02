@@ -14,8 +14,7 @@ import { Dropdown, Modal, Button } from "react-bootstrap";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);

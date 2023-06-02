@@ -5,7 +5,7 @@ import { db } from "../../firebaseConfig/firebase";
 import EditControlEvolucion from "../ControlEvolucion/EditControlEvolucion";
 import moment from "moment";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
-import "../Main.css"
+import "../../style/Main.css";
 
 function ControlEvolucionEspecif(id, props) {
   const [controles, setControles] = useState("");

@@ -11,8 +11,7 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Dropdown } from "react-bootstrap";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 const Show = () => {
   const [clients, setClients] = useState([]);

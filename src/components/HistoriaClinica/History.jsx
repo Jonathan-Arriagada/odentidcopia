@@ -13,7 +13,7 @@ import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
-import "../Main.css"
+import "../../style/Main.css";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

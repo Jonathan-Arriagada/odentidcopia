@@ -7,8 +7,7 @@ import EditTarifa from "./EditTarifa";
 import { FaSignOutAlt, FaBell, FaUser } from "react-icons/fa";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
