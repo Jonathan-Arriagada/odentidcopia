@@ -25,7 +25,11 @@
 body {
   font-family: 'Goldplay';
 }
-
+h1 {
+  color: var(--color-primario-normal) !important;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
 #boton-main {
   background: var(--color-estilo-main);
   color: var(--color-white);
