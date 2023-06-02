@@ -358,7 +358,8 @@ export default function History() {
                     </datalist>
                     <button
                       onClick={handleSearch}
-                      className="btn btn-primary"
+                      className="btn"
+                      id="boton-main"
                       style={{ margin: "3px" }}
                     >
                       <i className="fa-solid fa-magnifying-glass"></i>
@@ -388,7 +389,8 @@ export default function History() {
                     </button>
                     <button
                       onClick={handleLimpiar}
-                      className="btn btn-primary"
+                      className="btn"
+                      id="boton-main"
                       style={{ margin: "3px" }}
                     >
                       <i className="fa-regular fa-circle-xmark"></i>
@@ -406,7 +408,7 @@ export default function History() {
                     <Link
                       to="/miPerfil"
                       className="text-decoration-none"
-                      style={{ color: "#b8b7b8" }}
+                      style={{ color: "#8D93AB" }}
                     >
                       <FaUser className="icono" />
                     </Link>
@@ -420,7 +422,7 @@ export default function History() {
                   <Link
                     to="/"
                     className="text-decoration-none"
-                    style={{ color: "#b8b7b8" }}
+                    style={{ color: "#8D93AB" }}
                     onClick={logout}
                   >
                     <FaSignOutAlt className="icono" />
@@ -631,9 +633,11 @@ export default function History() {
                             </div>
                           </div>
                           <button
-                            className="btn btn-primary"
-                            style={{ margin: "3px" }}
+                            className="btn"
+                            id="boton-main"
+                            style={{ margin: "3px"}}
                             onClick={handleClickSiguiente}
+
                           >
                             Siguiente
                           </button>
@@ -1138,8 +1142,9 @@ export default function History() {
                         {!id ? (
                           <div id="botones">
                             <button
-                              className="btn btn-primary"
+                              className="btn"
                               style={{ margin: "3px" }}
+                              id="boton-main"
                               onClick={handleClickSiguiente}
                             >
                               Anterior
@@ -1147,7 +1152,8 @@ export default function History() {
 
                             <button
                               type="submit"
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={validateFields}
                             >
@@ -1157,7 +1163,8 @@ export default function History() {
                         ) : (
                           <div id="botones">
                             <button
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={handleClickSiguiente}
                             >
@@ -1165,7 +1172,8 @@ export default function History() {
                             </button>
                             <button
                               type="submit"
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={handleActualizarClick}
                             >
