@@ -301,7 +301,7 @@ input[type="file"]::before {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  left: 20%;
+  left: 20% !important;
   top: 3%;
   margin: auto;
   margin-top: 45px;
@@ -564,7 +564,7 @@ input[type="file"]::before {
   top: 0;
   display: flex;
   flex-direction: column;
-  width: 18%;
+  width: 22% !important;
   min-height: 100vh;
   color: var(--color-white);
   background-color: var(--color-primario-normal);
