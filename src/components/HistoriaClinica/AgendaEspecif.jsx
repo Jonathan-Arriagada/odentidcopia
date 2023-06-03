@@ -8,8 +8,7 @@ import EditCita from "../Agenda/EditCita";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 function AgendaEspecif(id) {
   const [citas, setCitas] = useState([]);

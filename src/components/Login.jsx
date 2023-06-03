@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import logo from "../img/logo-odentid.png";
+import background from "../img/login-background.png"
 import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig/firebase";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,7 @@ import { query, collection, where, getDocs } from "firebase/firestore";
 import { Modal } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
-import "./Main.css"
+import "../style/Main.css";
 
 
 const Login = () => {
@@ -103,10 +104,20 @@ const Login = () => {
 
   return (
     <>
-      <div className="login-page">
+    <div className="login">
+      <div className="background-container">
+        <img className="background-image" alt="Background" src={background} />
+        <div className="text-overlay">
+          <h1 className="welcome-text">
+            <span>Bienvenido a</span>
+            <span>la plataforma Odentid</span>
+          </h1>
+        </div>
+      </div>
+      <div className="login-page" style={{transform: "scale(0.96)"}}>
         <img className="logo" src={logo} alt="Odentid" />
-
         <form onSubmit={submit}>
+        <h3 style={{textAlign: "left", margin:"-15px 0 5px 0"}}>Ingresar</h3>
           <div className="email">
             <input
               onChange={(e) => setEmail(e.target.value)}
@@ -161,11 +172,12 @@ const Login = () => {
               padding: "0",
             }}
           >
-            <span style={{ textDecoration: "underline", cursor: "pointer" }}>
+            <span style={{ cursor: "pointer" }}>
               Olvidé mi Clave
             </span>
           </button>
         </form>
+      </div>
       </div>
 
       {mostrarModal && (

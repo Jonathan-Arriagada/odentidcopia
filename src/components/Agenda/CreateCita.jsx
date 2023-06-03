@@ -259,7 +259,7 @@ function CreateCita(props) {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            {showBuscador && (<div className="col mb-3" style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px" }}>
+            {showBuscador && (<div className="col mb-3" style={{ background: "#00C5C1", padding: "6px", borderRadius: "20px" }}>
               <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold" }}>Buscador por Apellido, Nombre o DNI:</label>
               <input
                 style={{ borderRadius: "100px" }}

@@ -9,8 +9,7 @@ import { Modal, Button } from "react-bootstrap";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 const Ingresos = () => {
   const [tratamientos, setTratamientos] = useState([]);
@@ -261,13 +260,13 @@ const Ingresos = () => {
           <div className="w-100">
             <nav className="navbar">
               <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-75" style={{ position: "relative" }}>
+                <div className="search-bar w-50" style={{ position: "relative" }}>
                   <input
                     value={search}
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Tratamiento, Paciente o Metodo Pago..."
-                    className="form-control m-2 w-25"
+                    className="form-control m-2"
                   />
                   {taparFiltro && (
                     <input
@@ -284,23 +283,31 @@ const Ingresos = () => {
                     ></input>
                   )}
                 </div>
-                <div className="d-flex justify-content-between w-25 align-items-center">
-                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>Bienvenido al sistema Odentid</p>
+                <div className="d-flex justify-content-between align-items-center right-navbar">
+                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
+                    Bienvenido al sistema Odentid
+                  </p>
                   <div className="d-flex">
                     <div className="notificacion">
-                      <Link to="/miPerfil" className="text-decoration-none" style={{ color: "#b8b7b8" }}>
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
                         <FaUser className="icono" />
                       </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">
-                        5
-                      </span>
+                      <span className="badge rounded-pill bg-danger">5</span>
                     </div>
                   </div>
                   <div className="notificacion">
-                    <Link to="/" className="text-decoration-none" style={{ color: "#b8b7b8" }} onClick={logout}>
+                    <Link
+                      to="/"
+                      className="text-decoration-none"
+                      style={{ color: "#8D93AB" }}
+                      onClick={logout}
+                    >
                       <FaSignOutAlt className="icono" />
                       <span>Logout</span>
                     </Link>

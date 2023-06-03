@@ -13,7 +13,7 @@ import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
-import "../Main.css"
+import "../../style/Main.css";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,6 +50,7 @@ export default function History() {
   const [responsable, setResponsable] = useState("");
   const [nombreResponsable, setNombreResponsable] = useState("");
   const [telefonoResponsable, setTelefonoResponsable] = useState("");
+  const [tratamiento, setTratamiento] = useState("");
 
   const [error, setError] = useState("");
   const [editable,] = useState("");
@@ -83,6 +84,11 @@ export default function History() {
   const navigate = useNavigate();
 
   const clientsCollection = collection(db, "clients");
+
+  const openControlYEvolucion = (nro, tratamiento) => {
+    setValue(nro);
+    setTratamiento(tratamiento)
+  };
 
   const updateOpcionesPacientes = useCallback(snapshot => {
     const pacientesOptions = snapshot.docs.map((doc, index) => ({
@@ -308,6 +314,8 @@ export default function History() {
 
   const handleChange = (_, newValue) => {
     setValue(newValue);
+    setTratamiento("")
+
   };
   const handleClickSiguiente = () => {
     setMostrarAntecedentes(!mostrarAntecedentes)
@@ -342,13 +350,13 @@ export default function History() {
             <div className="d-flex justify-content-between w-100 px-2">
               <>
                 {!id ? (
-                  <div className="search-bar w-75">
+                  <div className="search-bar w-25">
                     <input
                       value={search}
                       onChange={searcher}
                       type="text"
                       placeholder="Buscador de Pacientes..."
-                      className="form-control m-2 w-25"
+                      className="form-control m-2"
                       list="pacientes-list"
                     />
                     <datalist id="pacientes-list">
@@ -358,20 +366,21 @@ export default function History() {
                     </datalist>
                     <button
                       onClick={handleSearch}
-                      className="btn btn-primary"
+                      className="btn"
+                      id="boton-main"
                       style={{ margin: "3px" }}
                     >
                       <i className="fa-solid fa-magnifying-glass"></i>
                     </button>
                   </div>
                 ) : (
-                  <div className="search-bar w-75">
+                  <div className="search-bar w-25">
                     <input
                       value={apellidoConNombre}
                       onChange={searcher}
                       type="text"
                       placeholder="Buscador de Pacientes..."
-                      className="form-control m-2 w-25"
+                      className="form-control m-2"
                       list="pacientes-list"
                     />
                     <datalist id="pacientes-list">
@@ -388,7 +397,8 @@ export default function History() {
                     </button>
                     <button
                       onClick={handleLimpiar}
-                      className="btn btn-primary"
+                      className="btn"
+                      id="boton-main"
                       style={{ margin: "3px" }}
                     >
                       <i className="fa-regular fa-circle-xmark"></i>
@@ -397,42 +407,41 @@ export default function History() {
                 )}
               </>
 
-              <div className="d-flex justify-content-between w-25 align-items-center">
-                <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
-                  Bienvenido al sistema Odentid
-                </p>
-                <div className="d-flex">
+              <div className="d-flex justify-content-between align-items-center right-navbar">
+                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
+                    Bienvenido al sistema Odentid
+                  </p>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                        <FaUser className="icono" />
+                      </Link>
+                    </div>
+                    <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">5</span>
+                    </div>
+                  </div>
                   <div className="notificacion">
                     <Link
-                      to="/miPerfil"
+                      to="/"
                       className="text-decoration-none"
-                      style={{ color: "#b8b7b8" }}
+                      style={{ color: "#8D93AB" }}
+                      onClick={logout}
                     >
-                      <FaUser className="icono" />
+                      <FaSignOutAlt className="icono" />
+                      <span>Logout</span>
                     </Link>
                   </div>
-                  <div className="notificacion">
-                    <FaBell className="icono" />
-                    <span className="badge rounded-pill bg-danger">5</span>
-                  </div>
                 </div>
-                <div className="notificacion">
-                  <Link
-                    to="/"
-                    className="text-decoration-none"
-                    style={{ color: "#b8b7b8" }}
-                    onClick={logout}
-                  >
-                    <FaSignOutAlt className="icono" />
-                    <span>Logout</span>
-                  </Link>
-                </div>
-              </div>
             </div>
           </nav>
           <Box sx={{ width: "100%" }} >
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs value={value} onChange={handleChange}>
+              <Tabs value={value} onChange={handleChange} >
                 <Tab label="Historial Clinico" />
                 <Tab label="Control y Evolución" />
                 <Tab label="Citas" />
@@ -631,9 +640,11 @@ export default function History() {
                             </div>
                           </div>
                           <button
-                            className="btn btn-primary"
-                            style={{ margin: "3px" }}
+                            className="btn"
+                            id="boton-main"
+                            style={{ margin: "3px"}}
                             onClick={handleClickSiguiente}
+
                           >
                             Siguiente
                           </button>
@@ -1138,8 +1149,9 @@ export default function History() {
                         {!id ? (
                           <div id="botones">
                             <button
-                              className="btn btn-primary"
+                              className="btn"
                               style={{ margin: "3px" }}
+                              id="boton-main"
                               onClick={handleClickSiguiente}
                             >
                               Anterior
@@ -1147,7 +1159,8 @@ export default function History() {
 
                             <button
                               type="submit"
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={validateFields}
                             >
@@ -1157,7 +1170,8 @@ export default function History() {
                         ) : (
                           <div id="botones">
                             <button
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={handleClickSiguiente}
                             >
@@ -1165,7 +1179,8 @@ export default function History() {
                             </button>
                             <button
                               type="submit"
-                              className="btn btn-primary"
+                              className="btn"
+                              id="boton-main"
                               style={{ margin: "3px" }}
                               onClick={handleActualizarClick}
                             >
@@ -1184,7 +1199,7 @@ export default function History() {
             {/* CONTROL Y EVOLUCION */}
 
             < TabPanel value={value} index={1} >
-              <ControlEvolucionEspecif id={id} />
+              <ControlEvolucionEspecif id={id} tratamiento={tratamiento}/>
             </TabPanel >
 
 
@@ -1193,7 +1208,7 @@ export default function History() {
             </TabPanel >
 
             < TabPanel value={value} index={3} >
-              <TratamientosEspecif id={id} />
+              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion}/>
             </TabPanel >
 
             < TabPanel value={value} index={4} >

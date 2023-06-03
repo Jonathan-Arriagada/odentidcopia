@@ -11,8 +11,7 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Dropdown } from "react-bootstrap";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -114,17 +113,17 @@ const Show = () => {
         ) : (
           <div className="w-100">
             <nav className="navbar">
-              <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-75">
+              <div className="d-flex justify-content-between px-2 w-100" >
+                <div className="search-bar w-50">
                   <input
                     value={search}
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Apellido y Nombres o DNI..."
-                    className="form-control m-2 w-25"
+                    className="form-control m-2"
                   />
                 </div>
-                <div className="d-flex justify-content-between w-25 align-items-center">
+                <div className="d-flex justify-content-between align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
                     Bienvenido al sistema Odentid
                   </p>
@@ -133,7 +132,6 @@ const Show = () => {
                       <Link
                         to="/miPerfil"
                         className="text-decoration-none"
-                        style={{ color: "#b8b7b8" }}
                       >
                         <FaUser className="icono" />
                       </Link>
@@ -147,7 +145,7 @@ const Show = () => {
                     <Link
                       to="/"
                       className="text-decoration-none"
-                      style={{ color: "#b8b7b8" }}
+                      style={{ color: "#8D93AB" }}
                       onClick={logout}
                     >
                       <FaSignOutAlt className="icono" />

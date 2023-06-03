@@ -3,20 +3,17 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
-import CrearControlEvolucion from "./CrearControlEvolucion"
 import EditControlEvolucion from "./EditControlEvolucion";
 import moment from "moment";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Modal } from "react-bootstrap";
-import "../Main.css"
-import "../Utilidades/tablas.css";
+import "../../style/Main.css";
 
 const ControlEvolucion = () => {
     const [controles, setControles] = useState([]);
     const [search, setSearch] = useState("");
-    const [modalShowCrear, setModalShowCrear] = useState(false);
     const [modalShowEditar, setModalShowEditar] = useState(false);
     const [order, setOrder] = useState("ASC");
     const [control, setControl] = useState([]);
@@ -113,43 +110,42 @@ const ControlEvolucion = () => {
                     <div className="w-100">
                         <nav className="navbar">
                             <div className="d-flex justify-content-between w-100 px-2">
-                                <div className="search-bar w-75">
+                                <div className="search-bar w-50">
                                     <input
                                         value={search}
                                         onChange={searcher}
                                         type="text"
                                         placeholder="Buscar por Apellido y Nombres o DNI..."
-                                        className="form-control m-2 w-25"
+                                        className="form-control m-2"
                                     />
                                 </div>
-                                <div className="d-flex justify-content-between w-25 align-items-center">
+                                <div className="d-flex justify-content-between align-items-center right-navbar">
                                     <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
                                         Bienvenido al sistema Odentid
                                     </p>
                                     <div className="d-flex">
                                         <div className="notificacion">
-                                            <Link
-                                                to="/miPerfil"
-                                                className="text-decoration-none"
-                                                style={{ color: "#b8b7b8" }}
-                                            >
-                                                <FaUser className="icono" />
-                                            </Link>
+                                        <Link
+                                            to="/miPerfil"
+                                            className="text-decoration-none"
+                                        >
+                                            <FaUser className="icono" />
+                                        </Link>
                                         </div>
                                         <div className="notificacion">
-                                            <FaBell className="icono" />
-                                            <span className="badge rounded-pill bg-danger">5</span>
+                                        <FaBell className="icono" />
+                                        <span className="badge rounded-pill bg-danger">5</span>
                                         </div>
                                     </div>
                                     <div className="notificacion">
                                         <Link
-                                            to="/"
-                                            className="text-decoration-none"
-                                            style={{ color: "#b8b7b8" }}
-                                            onClick={logout}
+                                        to="/"
+                                        className="text-decoration-none"
+                                        style={{ color: "#8D93AB" }}
+                                        onClick={logout}
                                         >
-                                            <FaSignOutAlt className="icono" />
-                                            <span>Logout</span>
+                                        <FaSignOutAlt className="icono" />
+                                        <span>Logout</span>
                                         </Link>
                                     </div>
                                 </div>
@@ -161,13 +157,6 @@ const ControlEvolucion = () => {
                                     <br></br>
                                     <div className="d-flex justify-content-between">
                                         <h1>Control y Evoluciones</h1>
-                                        <button
-                                            variant="primary"
-                                            className="btn-blue m-2"
-                                            onClick={() => setModalShowCrear(true)}
-                                        >
-                                            Nuevo
-                                        </button>
                                     </div>
                                     <table className="table__body">
                                         <thead>
@@ -275,7 +264,6 @@ const ControlEvolucion = () => {
                 )}
             </div >
 
-            <CrearControlEvolucion show={modalShowCrear} onHide={() => setModalShowCrear(false)} />
             <EditControlEvolucion
                 id={idParam}
                 control={control}
