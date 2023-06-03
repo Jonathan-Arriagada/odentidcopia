@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 const Edit = (props) => {
     const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
@@ -9,22 +10,40 @@ const Edit = (props) => {
     const [fechaNacimiento, setFechaNacimiento] = useState(props.client.fechaNacimiento || "");
     const [numero, setNumero] = useState(props.client.numero || "");
     const [valorBusqueda, setValorBusqueda] = useState("");
+    
+    const update = async (e) => {
+      e.preventDefault();
+    
+      Swal.fire({
+        title: '¿Desea guardar los cambios?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        denyButtonText: `No guardar`,
+        cancelButtonText: 'Cancelar',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const clientRef = doc(db, "clients", props.id);
+          const clientDoc = await getDoc(clientRef);
+          const clientData = clientDoc.data();
+    
+          const newData = {
+            apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
+            idc: idc || clientData.idc,
+            fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
+            numero: numero || clientData.numero,
+            valorBusqueda: valorBusqueda || clientData.valorBusqueda,
+          };
 
-  const update = async (e) => {
-    e.preventDefault();
-    const clientRef = doc(db, "clients", props.id);
-    const clientDoc = await getDoc(clientRef);
-    const clientData = clientDoc.data();
-  
-  const newData = {
-    apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
-    idc: idc || clientData.idc,
-    fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
-    numero: numero || clientData.numero,
-    valorBusqueda: valorBusqueda || clientData.valorBusqueda, 
-  };
-  await updateDoc(clientRef, newData);
-  };
+          Swal.fire('¡Guardado!', '', 'success');
+    
+          await updateDoc(clientRef, newData);    
+        
+        } else if (result.isDenied) {
+          Swal.fire('Cambios no guardados.', '', 'info');
+        }
+      });
+    };
 
   return (
     <Modal
@@ -87,8 +106,8 @@ const Edit = (props) => {
                 </div>
                 <button
                   type="submit"
-                  onClick={() => {
-                    props.onHide();
+                  onClick={() => {                    
+                    props.onHide();        
                   }}
                   className="btn btn-primary"
                 >

@@ -7,6 +7,7 @@ import { AuthContext } from "../context/AuthContext"
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../style/Main.css";
+import Swal from "sweetalert2";
 
 const Navigation = () => {
     const [isActive, setIsActive] = useState(false);
@@ -26,6 +27,20 @@ const Navigation = () => {
         navigate("/");
         window.location.reload();
       }, [navigate]);
+
+    const confirmLogout = (e) => {
+        e.preventDefault();       
+        Swal.fire({
+          title: '¿Desea cerrar sesión?',
+          showDenyButton: true,         
+          confirmButtonText: 'Si, cerrar sesión',
+          denyButtonText: `No, seguir logueado`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            logout();         
+          }
+        });
+      };
 
     useEffect(() => {
         const type = localStorage.getItem("rol");
@@ -134,7 +149,7 @@ const Navigation = () => {
                     </div>
                 </div>
 
-                <Link to="/" className="text-decoration-none link-light" onClick={logout}><Nav title="Salir" Icon={FaSignOutAlt} /></Link>
+                <Link to="/" className="text-decoration-none link-light" onClick={confirmLogout}><Nav title="Salir" Icon={FaSignOutAlt} /></Link>
 
             </>
         )}

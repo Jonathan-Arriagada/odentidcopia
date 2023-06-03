@@ -6,6 +6,7 @@ import EditControlEvolucion from "../ControlEvolucion/EditControlEvolucion";
 import moment from "moment";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 import "../../style/Main.css";
+import Swal from "sweetalert2";
 
 function ControlEvolucionEspecif(props) {
   const [controles, setControles] = useState("");
@@ -92,6 +93,28 @@ function ControlEvolucionEspecif(props) {
       prevControl.filter((control) => control.id !== id)
     );
   };
+
+  const confirmeDelete = (id) => {
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "No podra revertir la accion",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si' ,
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteControl(id)
+        Swal.fire(
+          '¡Borrado!',
+          'Control y evolucion borrada.',
+          'success'
+        )
+      }
+    })
+}
 
   var results = controles;
   if (mostrarBuscadores) {
@@ -254,8 +277,7 @@ function ControlEvolucionEspecif(props) {
                                       marginLeft: "4px",
                                     }}
                                     onClick={() => {
-                                      deleteControl(control.id);
-
+                                      confirmeDelete(control.id);
                                     }}
                                   >
                                     Eliminar

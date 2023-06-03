@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit,doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 function CreateTratamiento(props) {
   const [codigo, setCodigo] = useState(null);
@@ -78,6 +79,13 @@ function CreateTratamiento(props) {
     getCodigo();
   }, [tratamientosCollection]);
 
+  const confirm = () => {
+    Swal.fire({
+      title: '¡Tratamiento agregado!',
+      icon: 'success',
+    })
+  }
+
   const validateFields = (e) => {
     if (
       apellidoConNombre.trim() === "" ||
@@ -93,7 +101,7 @@ function CreateTratamiento(props) {
       return false;
     } else {
       setError("");
-      store(e);
+      store(e);   
     }
     return true;
   };
@@ -148,6 +156,7 @@ function CreateTratamiento(props) {
     });
     clearFields();
     props.onHide();
+    confirm();
   };
 
   async function buscarTratamiento(tratamiento) {

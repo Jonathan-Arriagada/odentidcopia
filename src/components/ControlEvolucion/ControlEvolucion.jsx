@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Modal } from "react-bootstrap";
 import "../../style/Main.css";
+import Swal from "sweetalert2";
 
 const ControlEvolucion = () => {
     const [controles, setControles] = useState([]);
@@ -58,6 +59,28 @@ const ControlEvolucion = () => {
             prevControl.filter((control) => control.id !== id)
         );
     };
+
+    const confirmeDelete = (id) => {
+        Swal.fire({
+          title: '¿Esta seguro?',
+          text: "No podra revertir la accion",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Si' ,
+          cancelButtonText: 'No'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteControl(id)
+            Swal.fire(
+              '¡Borrado!',
+              'Control y evolucion borrada.',
+              'success'
+            )
+          }
+        })
+    }
 
     const searcher = (e) => {
         setSearch(e.target.value);
@@ -215,7 +238,7 @@ const ControlEvolucion = () => {
                                                         </button>
                                                         <button
                                                             onClick={() => {
-                                                                deleteControl(control.id);
+                                                                confirmeDelete(control.id);
                                                             }}
                                                             variant="primary"
                                                             className="btn btn-danger mx-1"
