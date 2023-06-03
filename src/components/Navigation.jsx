@@ -115,7 +115,7 @@ const Navigation = () => {
 
                 <div className={open2 ? "sidebar-item open" : "sidebar-item"}>
                     <div className="sidebar-title d-flex align-items-center justify-content-between">
-                        <Nav title="Gestion Financiera" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />
+                        <Nav title="Gestion Economia" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />
                     </div>
                     <div className="sidebar-content">
                         <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Gastos" Icon={FaShoppingCart} /> </Link>
