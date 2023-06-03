@@ -304,7 +304,8 @@ input[type="file"]::before {
   left: 20%;
   top: 3%;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 45px;
+  margin-top: 0px;
   background: linear-gradient(45deg, #00c6c2, #2bb1ff);
   width: 400px;
   aspect-ratio: 1;
@@ -505,7 +506,7 @@ input[type="file"]::before {
 }
 
 .right-navbar {
-  width: 25%;
+  width: 28%;
 }
 
 @media (max-width: 1440px) and (max-height: 768px) {
