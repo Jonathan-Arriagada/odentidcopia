@@ -114,7 +114,7 @@ const Login = () => {
           </h1>
         </div>
       </div>
-      <div className="login-page">
+      <div className="login-page" style={{transform: "scale(0.96)"}}>
         <img className="logo" src={logo} alt="Odentid" />
         <form onSubmit={submit}>
         <h3 style={{textAlign: "left", margin:"-15px 0 5px 0"}}>Ingresar</h3>
