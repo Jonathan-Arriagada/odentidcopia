@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import Navigation from "../../Navigation.jsx";
-import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
@@ -163,8 +163,8 @@ const Proveedores = () => {
                     className="form-control m-2"
                   />
                 </div>
-                <div className="d-flex justify-content-between align-items-center right-navbar">
-                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
+                <div className="col d-flex justify-content-end align-items-center right-navbar">
+                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
                     Bienvenido al sistema Odentid
                   </p>
                   <div className="d-flex">
@@ -208,17 +208,17 @@ const Proveedores = () => {
                         <h1>Proveedores</h1>
                       </div>
                       <div className="col d-flex justify-content-end">
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => {
-                          setEditIndex(null);
-                          setModalShowGestionProveedores(true);
-                        }}
-                      >
-                        Nuevo
-                      </button>
-                    </div>
+                        <button
+                          variant="primary"
+                          className="btn-blue m-2"
+                          onClick={() => {
+                            setEditIndex(null);
+                            setModalShowGestionProveedores(true);
+                          }}
+                        >
+                          Nuevo
+                        </button>
+                      </div>
                     </div>
                   </div>
 

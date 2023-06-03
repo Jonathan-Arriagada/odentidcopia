@@ -129,33 +129,33 @@ const Gastos = () => {
                                         className="form-control m-2"
                                     />
                                 </div>
-                                <div className="d-flex justify-content-between align-items-center right-navbar">
-                                    <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
+                                <div className="col d-flex justify-content-end align-items-center right-navbar">
+                                    <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
                                         Bienvenido al sistema Odentid
                                     </p>
                                     <div className="d-flex">
                                         <div className="notificacion">
-                                        <Link
-                                            to="/miPerfil"
-                                            className="text-decoration-none"
-                                        >
-                                            <FaUser className="icono" />
-                                        </Link>
+                                            <Link
+                                                to="/miPerfil"
+                                                className="text-decoration-none"
+                                            >
+                                                <FaUser className="icono" />
+                                            </Link>
                                         </div>
                                         <div className="notificacion">
-                                        <FaBell className="icono" />
-                                        <span className="badge rounded-pill bg-danger">5</span>
+                                            <FaBell className="icono" />
+                                            <span className="badge rounded-pill bg-danger">5</span>
                                         </div>
                                     </div>
                                     <div className="notificacion">
                                         <Link
-                                        to="/"
-                                        className="text-decoration-none"
-                                        style={{ color: "#8D93AB" }}
-                                        onClick={logout}
+                                            to="/"
+                                            className="text-decoration-none"
+                                            style={{ color: "#8D93AB" }}
+                                            onClick={logout}
                                         >
-                                        <FaSignOutAlt className="icono" />
-                                        <span>Logout</span>
+                                            <FaSignOutAlt className="icono" />
+                                            <span>Logout</span>
                                         </Link>
                                     </div>
                                 </div>

@@ -283,8 +283,8 @@ const Ingresos = () => {
                     ></input>
                   )}
                 </div>
-                <div className="d-flex justify-content-between align-items-center right-navbar">
-                  <p className="fw-bold mb-0" style={{ marginLeft: "-20px" }}>
+                <div className="col d-flex justify-content-end align-items-center right-navbar">
+                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
                     Bienvenido al sistema Odentid
                   </p>
                   <div className="d-flex">
