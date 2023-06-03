@@ -115,10 +115,9 @@ const Login = () => {
         </div>
       </div>
       <div className="login-page">
-        
         <img className="logo" src={logo} alt="Odentid" />
-
         <form onSubmit={submit}>
+        <h3 style={{textAlign: "left", margin:"-15px 0 5px 0"}}>Ingresar</h3>
           <div className="email">
             <input
               onChange={(e) => setEmail(e.target.value)}
