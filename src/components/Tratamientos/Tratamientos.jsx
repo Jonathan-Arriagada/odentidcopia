@@ -533,7 +533,7 @@ function Tratamientos() {
     }
   };
 
-
+  
   return (
     <>
       <div className="mainpage">
@@ -1111,6 +1111,12 @@ function Tratamientos() {
                                   <i className="fa-regular fa-comment"></i> Ver
                                   Notas
                                 </Dropdown.Item>
+                                <Dropdown.Item>
+                                <Link to={`/historial/${tratamiento.idPaciente}`} style={{textDecoration: "none", color:"#212529"}}>
+                                    <i className="fa-solid fa-file-medical"></i>
+                                    Evolucionar
+                                  </Link>
+                                  </Dropdown.Item>
                                 <Dropdown.Item
                                   onClick={() =>
                                     deletetratamiento(tratamiento.id)
@@ -1481,3 +1487,5 @@ function Tratamientos() {
 }
 
 export default Tratamientos;
+
+

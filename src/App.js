@@ -52,6 +52,7 @@ function App() {
             <Route path="historial" element={<RequireAuth><History /></RequireAuth>}/>
             <Route path="controlEvoluciones" element={<RequireAuth><ControlEvolucion /></RequireAuth>}/>         
             <Route path="historial/:id" element={<RequireAuth><History /></RequireAuth>}/> 
+            <Route path="historial/:idPaciente" element={<RequireAuth><History /></RequireAuth>}/> 
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
             <Route path="gastos" element={<RequireAuth><Gastos /></RequireAuth>}/>
             <Route path="materiales" element={<RequireAuth><Materiales /></RequireAuth>}/>
