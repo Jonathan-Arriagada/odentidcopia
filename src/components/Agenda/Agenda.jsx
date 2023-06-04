@@ -207,7 +207,7 @@ function Citas() {
           <div className="w-100">
             <nav className="navbar">
               <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-50" style={{ position: "relative" }}>
+                <div className="search-bar" style={{ position: "relative" }}>
                   <input
                     value={search}
                     onChange={searcher}
@@ -274,7 +274,7 @@ function Citas() {
                       <h1>Agenda</h1>
                       {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
-                          className="btn btn-dark mx-2 btn-sm"
+                          className="btn grey mx-2 btn-sm"
                           style={{ borderRadius: "5px" }}
                           onClick={() => {
                             funcMostrarAjustes(true);
@@ -283,10 +283,16 @@ function Citas() {
                           <i className="fa-solid fa-gear"></i>
                         </button>
                       ) : null}
-
+                                            <button
+                        variant="primary"
+                        className="btn-blue m-2"
+                        onClick={() => setModalShowCita(true)}
+                      >
+                        Agregar Cita
+                      </button>
                       <button
                         variant="primary"
-                        className="btn btn-success mx-1 btn-md"
+                        className="btn greenWater without mx-1 btn-md ms-3 me-3"
                         style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center", alignSelf: "center", height: "45px" }}
                         onClick={() => { setMostrarBotonesFechas(!mostrarBotonesFechas); setSearch(""); setTaparFiltro(false) }}
                       >
@@ -296,13 +302,13 @@ function Citas() {
                         ></i>
                       </button>
                       {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
-                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
-                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
-                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
-                        <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
+                        <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
+                        <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
+                        <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
+                        <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
                       </div>)}
                     </div>
-                  </div>
+                  
 
                   <div className="d-flex justify-content-between">
                     <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); setMostrarBotonesFechas(false) }}>
@@ -340,25 +346,19 @@ function Citas() {
                     </Modal>
 
                     <div className="col d-flex justify-content-end">
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => setModalShowCita(true)}
-                      >
-                        Agregar Cita
-                      </button>
+
                       {mostrarAjustes && (
                         <div className="d-flex">
                           <button
                             variant="secondary"
-                            className="btn-blue m-2"
+                            className="btn-blue me-2"
                             onClick={() => setModalShowEstados(true)}
                           >
                             Estados
                           </button>
                           <button
                             variant="tertiary"
-                            className="btn-blue m-2"
+                            className="btn-blue me-2"
                             onClick={() => setModalShowHorarios(true)}
                           >
                             Horarios Atencion
@@ -367,7 +367,7 @@ function Citas() {
                       )}
                     </div>
                   </div>
-
+                  </div>
                   <table className="table__body">
                     <thead>
                       <tr>

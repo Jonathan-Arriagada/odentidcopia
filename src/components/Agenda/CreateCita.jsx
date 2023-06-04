@@ -1,7 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  getDocs,
+  where,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import { FaSearch } from "react-icons/fa";
 
 function CreateCita(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
@@ -24,54 +35,74 @@ function CreateCita(props) {
 
   const citasCollection = collection(db, "citas");
 
-  const updateOptionsEstado = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => doc.data().name);
+  const updateOptionsEstado = useCallback((snapshot) => {
+    const options = snapshot.docs.map((doc) => doc.data().name);
     setEstadoOptions(options);
   }, []);
 
-  const updateOptionsPacientes = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => doc.data().valorBusqueda);
+  const updateOptionsPacientes = useCallback((snapshot) => {
+    const options = snapshot.docs.map((doc) => doc.data().valorBusqueda);
     options.unshift("<---Ingreso manual--->");
     setValorBusquedaOptions(options);
   }, []);
 
   //Render:
   const estadoOptionsJSX = estadoOptions.map((option, index) => (
-    <option key={`estado-${index}`} value={option}>{option}</option>
+    <option key={`estado-${index}`} value={option}>
+      {option}
+    </option>
   ));
   const valorBusquedaOptionsJSX = valorBusquedaOptions.map((option, index) => (
-    <option key={`valorBusqueda-${index}`} value={option}>{option}</option>
+    <option key={`valorBusqueda-${index}`} value={option}>
+      {option}
+    </option>
   ));
 
-  const updateOptionsHorarios = useCallback(snapshot => {
-    const horarios = snapshot.docs.map(doc => doc.data());
-    setHorariosAtencion(horarios);
+  const updateOptionsHorarios = useCallback(
+    (snapshot) => {
+      const horarios = snapshot.docs.map((doc) => doc.data());
+      setHorariosAtencion(horarios);
 
-    const optionsHoraInicio = horarios.map((horario, index) => (
-      <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
-    ));
-    optionsHoraInicio.pop();
-    setOptionsHoraInicio(optionsHoraInicio);
+      const optionsHoraInicio = horarios.map((horario, index) => (
+        <option key={`horarioInicio-${index}`} value={horario.id}>
+          {horario.name}
+        </option>
+      ));
+      optionsHoraInicio.pop();
+      setOptionsHoraInicio(optionsHoraInicio);
 
-    if (horaInicio) {
-      const optionsHoraFin = horarios
-        .filter(horario => horario.name > horaInicio)
-        .map((horario, index) => (
-          <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
-        ));
-      setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
-      setOptionsHoraFin(optionsHoraFin);
-    }
-  }, [horaInicio, horaFin]);
+      if (horaInicio) {
+        const optionsHoraFin = horarios
+          .filter((horario) => horario.name > horaInicio)
+          .map((horario, index) => (
+            <option key={`horarioFin-${index}`} value={horario.id}>
+              {horario.name}
+            </option>
+          ));
+        setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
+        setOptionsHoraFin(optionsHoraFin);
+      }
+    },
+    [horaInicio, horaFin]
+  );
 
   useEffect(() => {
     const unsubscribe = [
-      onSnapshot(query(collection(db, "clients"), orderBy("valorBusqueda")), updateOptionsPacientes),
-      onSnapshot(query(collection(db, "estados"), orderBy("name")), updateOptionsEstado),
-      onSnapshot(query(collection(db, "horariosAtencion"), orderBy("name")), updateOptionsHorarios),
+      onSnapshot(
+        query(collection(db, "clients"), orderBy("valorBusqueda")),
+        updateOptionsPacientes
+      ),
+      onSnapshot(
+        query(collection(db, "estados"), orderBy("name")),
+        updateOptionsEstado
+      ),
+      onSnapshot(
+        query(collection(db, "horariosAtencion"), orderBy("name")),
+        updateOptionsHorarios
+      ),
     ];
 
-    return () => unsubscribe.forEach(fn => fn());
+    return () => unsubscribe.forEach((fn) => fn());
   }, [updateOptionsPacientes, updateOptionsEstado, updateOptionsHorarios]);
 
   useEffect(() => {
@@ -79,8 +110,8 @@ function CreateCita(props) {
       setApellidoConNombre(props.client.apellidoConNombre);
       setIdc(props.client.idc);
       setNumero(props.client.numero);
-      setIdPacienteCita(props.client.id)
-      setShowBuscador(false)
+      setIdPacienteCita(props.client.id);
+      setShowBuscador(false);
       setEditable(false);
     } else {
       setApellidoConNombre("");
@@ -94,7 +125,7 @@ function CreateCita(props) {
     const fetchClient = async () => {
       if (props.id) {
         setShowBuscador(false);
-        const docRef = doc(db, 'clients', props.id);
+        const docRef = doc(db, "clients", props.id);
         const docSnapshot = await getDoc(docRef);
 
         if (docSnapshot.exists()) {
@@ -113,7 +144,9 @@ function CreateCita(props) {
 
   const store = async (e) => {
     e.preventDefault();
-    const querySnapshot = await getDocs(query(collection(db, "clients"), where("idc", "==", idc)));
+    const querySnapshot = await getDocs(
+      query(collection(db, "clients"), where("idc", "==", idc))
+    );
     if (!querySnapshot.empty) {
       await addDoc(citasCollection, {
         apellidoConNombre: apellidoConNombre,
@@ -184,7 +217,7 @@ function CreateCita(props) {
   const manejarValorSeleccionado = async (suggestion) => {
     if (suggestion === "<---Ingreso manual--->" || suggestion === "") {
       setApellidoConNombre("");
-      setIdPacienteCita("")
+      setIdPacienteCita("");
       setIdc("");
       setNumero("");
       setEditable(true);
@@ -200,7 +233,7 @@ function CreateCita(props) {
     if (doc) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
-      setIdPacienteCita(doc.id)
+      setIdPacienteCita(doc.id);
       setIdc(data.idc);
       setNumero(data.numero);
       setEditable(false);
@@ -231,7 +264,7 @@ function CreateCita(props) {
       horaFin.trim() === ""
     ) {
       setError("Respeta los campos obligatorios *");
-      setTimeout(clearError, 2000)
+      setTimeout(clearError, 2000);
       return false;
     } else {
       setError("");
@@ -245,13 +278,21 @@ function CreateCita(props) {
   };
 
   return (
-    <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-      <Modal.Header closeButton onClick={() => {
-        setEditable(true);
-        setApellidoConNombre("");
-        setIdc("");
-        setNumero("");
-      }}>
+    <Modal
+      {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header
+        closeButton
+        onClick={() => {
+          setEditable(true);
+          setApellidoConNombre("");
+          setIdc("");
+          setNumero("");
+        }}
+      >
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cita</h1>
         </Modal.Title>
@@ -259,21 +300,34 @@ function CreateCita(props) {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            {showBuscador && (<div className="col mb-3" style={{ background: "#00C5C1", padding: "6px", borderRadius: "20px" }}>
-              <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold" }}>Buscador por Apellido, Nombre o DNI:</label>
-              <input
-                style={{ borderRadius: "100px" }}
-                type="text"
-                className="form-control"
-                onChangeCapture={(e) => manejarValorSeleccionado(e.target.value)}
-                list="pacientes-list"
-                multiple={false}
-              />
-              <datalist id="pacientes-list">
-                <option value="">Ingreso manual</option>
-                {valorBusquedaOptionsJSX}
-              </datalist>
-            </div>)}
+            {showBuscador && (
+              <div className="col mb-3" style={{ position: "relative" }}>
+                <input
+                  placeholder="Buscador por Apellido, Nombre o DNI"
+                  type="text"
+                  className="form-control"
+                  onChangeCapture={(e) =>
+                    manejarValorSeleccionado(e.target.value)
+                  }
+                  list="pacientes-list"
+                  multiple={false}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "10px",
+                    transform: "translateY(-60%)",
+                  }}
+                >
+                  <FaSearch />
+                </span>
+                <datalist id="pacientes-list">
+                  <option value="">Ingreso manual</option>
+                  {valorBusquedaOptionsJSX}
+                </datalist>
+              </div>
+            )}
 
             <form>
               <div className="row">
@@ -347,8 +401,7 @@ function CreateCita(props) {
                   <label className="form-label">Hora Inicio*</label>
                   <select
                     value={horaInicio}
-                    onChange={(e) =>
-                      setHoraInicio(e.target.value)}
+                    onChange={(e) => setHoraInicio(e.target.value)}
                     className="form-control"
                     multiple={false}
                     required
@@ -382,9 +435,20 @@ function CreateCita(props) {
                 </div>
               </div>
               <div style={{ display: "flex" }}>
-                <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+                <button
+                  type="submit"
+                  onClick={validateFields}
+                  className="btn btn-primary"
+                  style={{ margin: "1px" }}
+                >
+                  Agregar
+                </button>
                 {error && (
-                  <div className="alert alert-danger" role="alert" style={{ margin: '10px' }}>
+                  <div
+                    className="alert alert-danger"
+                    role="alert"
+                    style={{ margin: "10px" }}
+                  >
                     {error}
                   </div>
                 )}
@@ -392,9 +456,8 @@ function CreateCita(props) {
             </form>
           </div>
         </div>
-
       </Modal.Body>
-    </Modal >
+    </Modal>
   );
 }
 

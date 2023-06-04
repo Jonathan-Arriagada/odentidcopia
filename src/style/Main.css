@@ -40,6 +40,37 @@ h3 {
   color: var(--color-white);
 }
 
+.button-main {
+  background: var(--color-estilo-main);
+  color: var(--color-white);
+}
+
+.button-main:hover{
+  background-color: var(--color-estilo-main);  
+  color: var(--color-white);
+}
+
+.grey{
+  color: var(--color-light-text)
+}
+
+.greenWater{
+  color: var(--color-estilo-main);
+}
+
+.without{
+  outline: none;
+  border: none;
+  background-color: var(--color-white);  
+}
+
+.without:hover{
+  background-color: var(--color-white);  
+  color: var(--color-estilo-main);
+  outline: none;
+  border: none;
+}
+
 .mainpage {
   display: flex;
   min-height: 100vh;
@@ -493,9 +524,9 @@ input[type="file"]::before {
   padding: 5px;
   border: none;
   border-radius: 4px;
-  margin-right: 10px;
+  margin-right: 1px;
   background-color: var(--color-forms);
-  width: 40%;
+  width: 291px;
 }
 
 .icono {

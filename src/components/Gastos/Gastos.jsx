@@ -173,7 +173,7 @@ const Gastos = () => {
                                             <h1>Gastos</h1>
                                             {userType === process.env.REACT_APP_rolAdCon ? (
                                                 <button
-                                                    className="btn btn-dark mx-2 btn-sm"
+                                                    className="btn grey mx-2 btn-sm"
                                                     style={{ borderRadius: "5px" }}
                                                     onClick={() => {
                                                         funcMostrarAjustes(true);
@@ -183,10 +183,10 @@ const Gastos = () => {
                                                 </button>
                                             ) : null}
                                         </div>
-                                        <div className="col d-flex justify-content-end">
+                                        <div className="col d-flex justify-content-start">
                                             <button
                                                 variant="primary"
-                                                className="btn-blue m-2"
+                                                className="btn button-main m-2"
                                                 onClick={() => setModalShow(true)}
                                             >
                                                 Nuevo
@@ -195,7 +195,7 @@ const Gastos = () => {
                                                 <div className="d-flex">
                                                     <button
                                                         variant="secondary"
-                                                        className="btn-blue m-2"
+                                                        className="btn button-main m-2"
                                                         onClick={() => setModalShowTipoGasto(true)}
                                                     >
                                                         Tipo Gasto

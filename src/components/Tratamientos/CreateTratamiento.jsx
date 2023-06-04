@@ -3,6 +3,7 @@ import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit,d
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
+import { FaSearch } from "react-icons/fa";
 
 function CreateTratamiento(props) {
   const [codigo, setCodigo] = useState(null);
@@ -225,20 +226,34 @@ function CreateTratamiento(props) {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          {showBuscador && (<div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
-            <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
-            <input
-              style={{ borderRadius: "150px" }}
-              type="text"
-              className="form-control"
-              onChangeCapture={(e) => manejarValorSeleccionado(e.target.value)}
-              list="pacientes-list"
-              multiple={false}
-            />
-            <datalist id="pacientes-list">
-              {valorBusquedaOptionsJSX}
-            </datalist>
-          </div>)}
+          {showBuscador && (
+    <div className="col mb-3" style={{ position: "relative" }}>
+          <input
+            placeholder="Buscador por Apellido, Nombre o DNI"
+            type="text"
+            className="form-control"
+            onChangeCapture={(e) =>
+              manejarValorSeleccionado(e.target.value)
+            }
+            list="pacientes-list"
+            multiple={false}
+          />
+          <span
+            style={{
+              position: "absolute",
+              top: "50%",
+              right: "10px",
+              transform: "translateY(-60%)",
+            }}
+          >
+            <FaSearch />
+          </span>
+          <datalist id="pacientes-list">
+            <option value="">Ingreso manual</option>
+            {valorBusquedaOptionsJSX}
+          </datalist>
+        </div>
+          )}
 
           <form>
             <div className="row">

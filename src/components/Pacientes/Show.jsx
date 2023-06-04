@@ -138,7 +138,7 @@ const Show = () => {
           <div className="w-100">
             <nav className="navbar">
               <div className="d-flex justify-content-between px-2 w-100" >
-                <div className="search-bar w-50">
+                <div className="search-bar">
                   <input
                     value={search}
                     onChange={searcher}
@@ -183,11 +183,11 @@ const Show = () => {
               <div className="row">
                 <div className="col">
                   <br></br>
-                  <div className="d-flex justify-content-between">
-                    <h1>Pacientes</h1>
+                  <div className="d-flex justify-content-start">
+                    <h1 className="me-2">Pacientes</h1>
                     <button
                       variant="primary"
-                      className="btn-blue m-2"
+                      className="btn button-main m-2"
                       onClick={() => setModalShow(true)}
                     >
                       Nuevo

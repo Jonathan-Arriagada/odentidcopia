@@ -192,7 +192,7 @@ function AgendaEspecif(id) {
 
                           <button
                             variant="primary"
-                            className="btn btn-success mx-1 btn-md"
+                            className="btn greenWater without mx-1 btn-md ms-3 me-3"
                             style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center", alignSelf: "center", height: "45px" }}
                             onClick={() => { setMostrarBotonesFechas(!mostrarBotonesFechas); setSearch(""); setTaparFiltro(false) }}
                           >
@@ -202,10 +202,10 @@ function AgendaEspecif(id) {
                             ></i>
                           </button>
                           {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
-                            <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
-                            <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
-                            <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
-                            <button style={{ borderRadius: "7px", margin: "1px", height: "38px", }} className="btn btn-outline-dark" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
+                            <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
+                            <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
+                            <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
+                            <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
                           </div>)}
                         </div>
                         <div className="col d-flex align-items-center justify-content-end">

@@ -633,7 +633,7 @@ function Tratamientos() {
                       <h1>Tratamientos</h1>
                       {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
-                          className="btn btn-dark mx-2 btn-sm"
+                          className="btn grey mx-2 btn-sm"
                           onClick={() => {
                             funcMostrarAjustes(true);
                           }}
@@ -643,7 +643,7 @@ function Tratamientos() {
                       ) : null}
                       <button
                         variant="primary"
-                        className="btn btn-success mx-1 btn-md"
+                        className="btn greenWater without mx-1 btn-md"
                         style={{
                           borderRadius: "12px",
                           justifyContent: "center",
@@ -672,12 +672,7 @@ function Tratamientos() {
                           }}
                         >
                           <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               filtroFecha("Dia");
                               setTaparFiltro(false);
@@ -686,12 +681,7 @@ function Tratamientos() {
                             Dia
                           </button>
                           <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
+                          style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               filtroFecha("Semana");
                               setTaparFiltro(true);
@@ -700,12 +690,7 @@ function Tratamientos() {
                             Semana
                           </button>
                           <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
+                          style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               filtroFecha("Mes");
                               setTaparFiltro(true);
@@ -714,12 +699,7 @@ function Tratamientos() {
                             Mes
                           </button>
                           <button
-                            style={{
-                              borderRadius: "7px",
-                              margin: "1px",
-                              height: "38px",
-                            }}
-                            className="btn btn-outline-dark"
+                           style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               setModalSeleccionFechaShow(true);
                             }}
