@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
@@ -15,6 +15,8 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css"
 import Swal from "sweetalert2";
+import { AuthContext } from "../../context/AuthContext";
+import profile from "../../img/profile.png";
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -35,10 +37,11 @@ function Citas() {
   const [taparFiltro, setTaparFiltro] = useState(false);
   const [userType, setUserType] = useState("");
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
-
+  const { currentUser, } = useContext(AuthContext);
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
   const navigate = useNavigate()
+  
 
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
@@ -248,7 +251,7 @@ const confirmLogout = (e) => {
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
-                        <FaUser className="icono" />
+                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
                     </div>
                     <div className="notificacion">

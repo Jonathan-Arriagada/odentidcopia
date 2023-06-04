@@ -1,4 +1,4 @@
-import profile from "../img/profile.png";
+
 import Nav from "./zNavIcons/Nav";
 import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt,FaChevronDown , FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax } from 'react-icons/fa';
 import { useState, useContext,useCallback } from "react";
