@@ -15,7 +15,7 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
 import "../../style/Main.css"
-
+import Swal from "sweetalert2";
 
 function Citas() {
   const [citas, setCitas] = useState([]);
@@ -112,6 +112,28 @@ function Citas() {
     await deleteDoc(citaDoc);
     setCitas((prevCitas) => prevCitas.filter((cita) => cita.id !== id));
   };
+
+  const confirmeDelete = (id) => {
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "No podra revertir la accion",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si' ,
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteCita(id)
+        Swal.fire(
+          '¡Borrado!',
+          'Cita eliminada.',
+          'success'
+        )
+      }
+    })
+}
 
   const searcher = (e) => {
     setSearch(e.target.value);
@@ -413,7 +435,7 @@ function Citas() {
                                 </Dropdown.Item>
                                 <Dropdown.Item
                                   onClick={() =>
-                                    deleteCita(cita.id)
+                                    confirmeDelete(cita.id)
                                   }
                                 >
                                   <i className="fa-solid fa-trash-can"></i>

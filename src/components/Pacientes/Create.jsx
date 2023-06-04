@@ -2,6 +2,7 @@ import React, { useState, } from "react";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import Swal from "sweetalert2";
 
 const Create = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
@@ -13,6 +14,13 @@ const Create = (props) => {
   const [error, setError] = useState("");
 
   const clientsCollection = collection(db, "clients");
+
+  const confirm = () => {
+    Swal.fire({
+      title: '¡Cliente agregado!',
+      icon: 'success',
+    })
+  }
 
   const validateFields = async (e) => {
     e.preventDefault();
@@ -33,9 +41,10 @@ const Create = (props) => {
         return false;
       } else {
         setError("");
-        await store();
+        await store();       
         clearFields();
         props.onHide();
+        confirm();
       }
     }
     return true;
@@ -190,7 +199,7 @@ const Create = (props) => {
                 </div>
                 <button
                   type="submit"
-                  onClick={validateFields}
+                  onClick={validateFields}                  
                   className="btn btn-primary"
                 >
                   Agregar

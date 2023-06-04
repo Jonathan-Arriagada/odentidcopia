@@ -15,6 +15,7 @@ import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { getAuth, signOut } from "firebase/auth";
 import { Link } from "react-router-dom";
 import "../../style/Main.css";
+import Swal from "sweetalert2";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
@@ -168,6 +169,28 @@ function Tratamientos() {
       prevTratamientos.filter((tratamiento) => tratamiento.id !== id)
     );
   };
+
+  const confirmeDelete = (id) => {
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "No podra revertir la accion",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si' ,
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deletetratamiento(id)
+        Swal.fire(
+          '¡Borrado!',
+          'El tratamiento ha sido borrado.',
+          'success'
+        )
+      }
+    })
+  }
 
   const searcher = (e) => {
     if (typeof e === "string") {
@@ -516,7 +539,7 @@ function Tratamientos() {
     }
   };
 
-
+  
   return (
     <>
       <div className="mainpage">
@@ -1104,7 +1127,7 @@ function Tratamientos() {
                                 </Dropdown.Item>
                                 <Dropdown.Item
                                   onClick={() =>
-                                    deletetratamiento(tratamiento.id)
+                                    confirmeDelete(tratamiento.id)
                                   }
                                 >
                                   <i className="fa-solid fa-trash-can"></i>{" "}
@@ -1446,3 +1469,5 @@ function Tratamientos() {
 }
 
 export default Tratamientos;
+
+

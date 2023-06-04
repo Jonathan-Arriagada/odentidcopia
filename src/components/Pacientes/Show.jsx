@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { Dropdown } from "react-bootstrap";
 import "../../style/Main.css";
+import Swal from "sweetalert2";
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -23,6 +24,7 @@ const Show = () => {
   const [idParam, setIdParam] = useState("");
   const [modalShowCita, setModalShowCita] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
 
   const logout = () => {
     const auth = getAuth();
@@ -62,6 +64,28 @@ const Show = () => {
       prevClients.filter((cliente) => cliente.id !== id)
     );
   };
+
+  const confirmeDelete = (id) => {
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "No podra revertir la accion",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si' ,
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteClient(id)
+        Swal.fire(
+          '¡Borrado!',
+          'El cliente ha sido borrado.',
+          'success'
+        )
+      }
+    })
+  }
 
   const searcher = (e) => {
     setSearch(e.target.value);
@@ -245,7 +269,7 @@ const Show = () => {
 
                                 <Dropdown.Item
                                   onClick={() => {
-                                    deleteClient(client.id);
+                                    confirmeDelete(client.id);
                                   }}
                                 >
                                   <i className="fa-solid fa-trash-can"></i>
