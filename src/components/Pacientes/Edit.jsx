@@ -4,26 +4,28 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const Edit = (props) => {
-    const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
-    const [idc, setIdc] = useState(props.client.idc || "");
-    const [fechaNacimiento, setFechaNacimiento] = useState(props.client.fechaNacimiento || "");
-    const [numero, setNumero] = useState(props.client.numero || "");
-    const [valorBusqueda, setValorBusqueda] = useState("");
+  const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
+  const [tipoIdc, setTipoIdc] = useState(props.client.tipoIdc || "dni");
+  const [idc, setIdc] = useState(props.client.idc || "");
+  const [fechaNacimiento, setFechaNacimiento] = useState(props.client.fechaNacimiento || "");
+  const [numero, setNumero] = useState(props.client.numero || "");
+  const [valorBusqueda, setValorBusqueda] = useState("");
 
   const update = async (e) => {
     e.preventDefault();
     const clientRef = doc(db, "clients", props.id);
     const clientDoc = await getDoc(clientRef);
     const clientData = clientDoc.data();
-  
-  const newData = {
-    apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
-    idc: idc || clientData.idc,
-    fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
-    numero: numero || clientData.numero,
-    valorBusqueda: valorBusqueda || clientData.valorBusqueda, 
-  };
-  await updateDoc(clientRef, newData);
+
+    const newData = {
+      apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
+      tipoIdc: tipoIdc || clientData.tipoIdc,
+      idc: idc || clientData.idc,
+      fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
+      numero: numero || clientData.numero,
+      valorBusqueda: valorBusqueda || clientData.valorBusqueda,
+    };
+    await updateDoc(clientRef, newData);
   };
 
   return (
@@ -56,17 +58,43 @@ const Edit = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">DNI</label>
-                  <input
-                    defaultValue={props.client.idc}
-                    onChange={(e) => {
-                      setIdc(e.target.value)
-                      setValorBusqueda((apellidoConNombre || props.client.apellidoConNombre) + " " + e.target.value);
-                    }}
-                    type="number"
-                    className="form-control"
-                  />
+                  <label className="form-label">IDC*</label>
+                  <div style={{ display: "flex" }}>
+                    <select
+                      value={tipoIdc}
+                      onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                      className="form-control-tipoIDC"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="dni">DNI</option>
+                      <option value="ce">CE</option>
+                      <option value="ruc">RUC</option>
+                      <option value="pas">PAS</option>
+
+                    </select>
+                    <input
+                      defaultValue={props.client.idc}
+                      onChange={(e) => {
+                        setIdc(e.target.value)
+                        setValorBusqueda((apellidoConNombre || props.client.apellidoConNombre) + " " + e.target.value);
+                      }}
+                      type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                      minLength={tipoIdc === "dni" ? 8 : undefined}
+                      maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                      onKeyDown={(e) => {
+                        const maxLength = e.target.maxLength;
+                        const currentValue = e.target.value;
+                        if (maxLength && currentValue.length >= maxLength) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="form-control"
+                    />
+                  </div>
                 </div>
+
                 <div className="mb-3">
                   <label className="form-label">Fecha Nacimiento</label>
                   <input

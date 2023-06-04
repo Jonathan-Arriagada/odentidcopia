@@ -1,12 +1,14 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit,doc, getDoc } from "firebase/firestore";
+import React, { useState, useCallback, useEffect, useContext } from "react";
+import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import { AuthContext } from "../../context/AuthContext"
 
 function CreateTratamiento(props) {
   const [codigo, setCodigo] = useState(null);
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idPaciente, setIdPaciente] = useState("");
+  const [tipoIdc, setTipoIdc] = useState("dni");
   const [idc, setIdc] = useState("");
   const [cta, setCta] = useState("");
   const [precio, setPrecio] = useState("");
@@ -20,6 +22,7 @@ function CreateTratamiento(props) {
   const [notas, setNotas] = useState("");
   const [error, setError] = useState("");
   const [showBuscador, setShowBuscador] = useState(true);
+  const { currentUser } = useContext(AuthContext);
 
   const [estadoOptionsTratamientos, setEstadoOptionsTratamientos] = useState([]);
   const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
@@ -28,6 +31,7 @@ function CreateTratamiento(props) {
   const [editable, setEditable] = useState(false);
 
   const tratamientosCollection = collection(db, "tratamientos");
+  const controlesCollection = collection(db, "controlEvoluciones")
 
   const updateOptionsEstadosTratamientos = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => doc.data().name);
@@ -106,6 +110,7 @@ function CreateTratamiento(props) {
     setCodigo("")
     setApellidoConNombre("")
     setIdPaciente("")
+    setTipoIdc("dni")
     setIdc("")
     setCta("")
     setPrecio("")
@@ -125,6 +130,7 @@ function CreateTratamiento(props) {
       codigo: codigo,
       apellidoConNombre: apellidoConNombre,
       idPaciente: idPaciente,
+      tipoIdc: tipoIdc,
       idc: idc,
       cta: cta,
       precio: precio,
@@ -138,13 +144,24 @@ function CreateTratamiento(props) {
       notas: notas,
       cobrosManuales: {
         fechaCobro: [],
-        metodoPago: [],
         importeAbonado: [],
         tratamientoCobro: [],
         codigoTratamiento: [],
         estadoCobro: [],
         pacienteCobro: [],
       },
+    });
+    await addDoc(controlesCollection, {
+      codigo: codigo,
+      apellidoConNombre: apellidoConNombre,
+      idPaciente: idPaciente,
+      tipoIdc: tipoIdc,
+      idc: idc,
+      tarifasTratamientos: tarifasTratamientos,
+      pieza: pieza,
+      fecha: fecha,
+      notas: "1° Tratamiento Iniciado: " + notas,
+      doctor: currentUser.displayName,
     });
     clearFields();
     props.onHide();
@@ -176,6 +193,7 @@ function CreateTratamiento(props) {
     if (doc) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
+      setTipoIdc(data.tipoIdc);
       setIdc(data.idc);
       setIdPaciente(doc.id)
       setEditable(false);
@@ -192,6 +210,7 @@ function CreateTratamiento(props) {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
           setApellidoConNombre(data.apellidoConNombre);
+          setTipoIdc(data.tipoIdc);
           setIdc(data.idc);
           setIdPaciente(props.id);
           setEditable(false);
@@ -217,7 +236,7 @@ function CreateTratamiento(props) {
       <Modal.Body>
         <div className="container">
           {showBuscador && (<div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
-            <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
+            <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o IDC:</label>
             <input
               style={{ borderRadius: "150px" }}
               type="text"
@@ -244,16 +263,41 @@ function CreateTratamiento(props) {
                   required
                 />
               </div>
-              <div className="col mb-3">
-                <label className="form-label">DNI*</label>
-                <input
-                  value={idc}
-                  onChange={(e) => setIdc(e.target.value)}
-                  type="number"
-                  className="form-control"
-                  disabled={!editable}
-                  required
-                />
+              <div className="mb-3">
+                <label className="form-label">IDC*</label>
+                <div style={{ display: "flex" }}>
+                  <select
+                    value={tipoIdc}
+                    onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                    className="form-control-tipoIDC"
+                    multiple={false}
+                    style={{ width: "fit-content" }}
+                    required
+                  >
+                    <option value="dni">DNI</option>
+                    <option value="ce">CE</option>
+                    <option value="ruc">RUC</option>
+                    <option value="pas">PAS</option>
+
+                  </select>
+                  <input
+                    value={idc}
+                    onChange={(e) => setIdc(e.target.value)}
+                    type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                    minLength={tipoIdc === "dni" ? 8 : undefined}
+                    maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                    onKeyDown={(e) => {
+                      const maxLength = e.target.maxLength;
+                      const currentValue = e.target.value;
+                      if (maxLength && currentValue.length >= maxLength) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="form-control"
+                    disabled={!editable}
+                    required
+                  />
+                </div>
               </div>
             </div>
 

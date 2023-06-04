@@ -913,7 +913,7 @@ function TratamientosEspecif(props) {
                             <th onClick={() => sorting("apellido")}>
                               Apellido y Nombres
                             </th>
-                            <th onClick={() => sorting("idc")}>DNI</th>
+                            <th onClick={() => sorting("idc")}>IDC</th>
                             <th onClick={() => sorting("tarifasTratamientos")}>
                               Tratamiento
                             </th>
@@ -1026,9 +1026,9 @@ function TratamientosEspecif(props) {
                                       <i className="fa-regular fa-comment"></i> Ver
                                       Notas
                                     </Dropdown.Item>
-                                    <Dropdown.Item   onClick={() => {
+                                    <Dropdown.Item onClick={() => {
                                       props.openControlYEvolucion(1, tratamiento)
-                                     }}
+                                    }}
                                     >
                                       <i class="fa-solid fa-chart-line"></i> Evolucionar
                                     </Dropdown.Item>

@@ -115,7 +115,7 @@ const ControlEvolucion = () => {
                                         value={search}
                                         onChange={searcher}
                                         type="text"
-                                        placeholder="Buscar por Apellido y Nombres o DNI..."
+                                        placeholder="Buscar por Apellido y Nombres o IDC..."
                                         className="form-control m-2"
                                     />
                                 </div>
@@ -165,7 +165,7 @@ const ControlEvolucion = () => {
                                                 <th onClick={() => sorting("apellidoConNombre")}>
                                                     Apellido Y Nombres
                                                 </th>
-                                                <th onClick={() => sorting("idc")}>DNI</th>
+                                                <th onClick={() => sorting("idc")}>IDC</th>
                                                 <th onClick={() => sorting("tratamiento")}>Tratamiento</th>
                                                 <th onClick={() => sorting("pieza")}>Pieza</th>
                                                 <th onClick={() => sorting("doctor")}>Doctor</th>
