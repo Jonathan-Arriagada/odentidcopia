@@ -152,9 +152,9 @@ function Tarifario() {
               <div className="col">
                 <br></br>
                 <div className="d-grid gap-2">
-                  <div className="d-flex justify-content-between">
-                    <h1>Tarifario</h1>
-                    <div className="d-flex justify-content-end">
+                  <div className="d-flex justify-content-start">
+                    <h1 className="me-2">Tarifario</h1>
+                    <div className="d-flex justify-content-start">
                       {userType === process.env.REACT_APP_rolAdCon ? (
                         <button
                           variant="primary"

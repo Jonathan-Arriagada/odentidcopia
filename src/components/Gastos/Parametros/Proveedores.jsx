@@ -154,12 +154,12 @@ const Proveedores = () => {
           <div className="w-100">
             <nav className="navbar">
               <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-50">
+                <div className="search-bar">
                   <input
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Denominacion/Proveedor o RUC..."
+                    placeholder="Buscar por Denominacion/Proveedor/RUC..."
                     className="form-control m-2"
                   />
                 </div>
@@ -205,9 +205,9 @@ const Proveedores = () => {
                         className="d-flex justify-content-center align-items-center"
                         style={{ maxHeight: "40px", marginLeft: "10px" }}
                       >
-                        <h1>Proveedores</h1>
+                        <h1 className="me-2">Proveedores</h1>
                       </div>
-                      <div className="col d-flex justify-content-end">
+                      <div className="col d-flex justify-content-star">
                         <button
                           variant="primary"
                           className="btn-blue m-2"

@@ -6,6 +6,7 @@ import { AuthContext } from "../../context/AuthContext"
 
 const CrearControlEvolucion = (props) => {
     const [apellidoConNombre, setApellidoConNombre] = useState('');
+    const [tipoIdc, setTipoIdc] = useState("dni");
     const [idc, setIdc] = useState('');
     const [tratamientoControl, setTratamientoControl] = useState('');
     const [pieza, setPieza] = useState('');
@@ -75,6 +76,7 @@ const CrearControlEvolucion = (props) => {
 
     const clearFields = () => {
         setApellidoConNombre("");
+        setTipoIdc("dni")
         setIdc("");
         setIdPaciente("");
         setTratamientoControl("");
@@ -93,6 +95,7 @@ const CrearControlEvolucion = (props) => {
         if (doc) {
             const data = doc.data();
             setApellidoConNombre(data.apellidoConNombre);
+            setTipoIdc(data.tipoIdc);
             setIdc(data.idc);
             setIdPaciente(doc.id)
         }
@@ -101,6 +104,7 @@ const CrearControlEvolucion = (props) => {
     const store = async () => {
         await addDoc(controlesCollection, {
             apellidoConNombre: apellidoConNombre,
+            tipoIdc: tipoIdc,
             idc: idc,
             idPaciente: idPaciente,
             codigoTratamiento: codigoTratamiento,
@@ -122,6 +126,7 @@ const CrearControlEvolucion = (props) => {
                 if (docSnapshot.exists()) {
                     const data = docSnapshot.data();
                     setApellidoConNombre(data.apellidoConNombre);
+                    setTipoIdc(data.tipoIdc);
                     setIdc(data.idc);
                     setIdPaciente(props.id);
                     setEditable(false);
@@ -130,6 +135,7 @@ const CrearControlEvolucion = (props) => {
             if (props.tratamiento) {
                 setShowBuscador(false);
                 setApellidoConNombre(props.tratamiento.apellidoConNombre);
+                setTipoIdc(props.tratamiento.tipoIdc);
                 setIdc(props.tratamiento.idc);
                 setIdPaciente(props.tratamiento.idPaciente);
                 setTratamientoControl(props.tratamiento.tarifasTratamientos);
@@ -159,7 +165,7 @@ const CrearControlEvolucion = (props) => {
             <Modal.Body>
                 <div className="container">
                     {showBuscador && (<div className="col sm-6 " style={{ background: "#23C9FF", padding: "6px", borderRadius: "20px", width: "60%" }}>
-                        <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o DNI:</label>
+                        <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold", fontSize: "14px" }}>Buscador por Apellido, Nombre o IDC:</label>
                         <input
                             style={{ borderRadius: "150px" }}
                             type="text"
@@ -194,15 +200,40 @@ const CrearControlEvolucion = (props) => {
                                     />
                                 </div>
                                 <div className="col mb-6">
-                                    <label className="form-label">DNI:</label>
-                                    <input
-                                        value={idc ?? ''}
-                                        onChange={(e) => setIdc(e.target.value)}
-                                        type="number"
-                                        className="form-control"
-                                        disabled={!editable}
-                                        required
-                                    />
+                                    <label className="form-label">IDC*</label>
+                                    <div style={{ display: "flex" }}>
+                                        <select
+                                            value={tipoIdc}
+                                            onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                                            className="form-control-tipoIDC"
+                                            multiple={false}
+                                            style={{ width: "fit-content" }}
+                                            required
+                                        >
+                                            <option value="dni">DNI</option>
+                                            <option value="ce">CE</option>
+                                            <option value="ruc">RUC</option>
+                                            <option value="pas">PAS</option>
+
+                                        </select>
+                                        <input
+                                            value={idc ?? ''}
+                                            onChange={(e) => setIdc(e.target.value)}
+                                            type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                                            minLength={tipoIdc === "dni" ? 8 : undefined}
+                                            maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                                            onKeyDown={(e) => {
+                                                const maxLength = e.target.maxLength;
+                                                const currentValue = e.target.value;
+                                                if (maxLength && currentValue.length >= maxLength) {
+                                                    e.preventDefault();
+                                                }
+                                            }}
+                                            className="form-control"
+                                            disabled={!editable}
+                                            required
+                                        />
+                                    </div>
                                 </div>
                             </div>)}
                         {!ocultar && (<div className="row">

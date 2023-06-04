@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  getDocs,
+  where,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import { FaSearch } from "react-icons/fa";
 
 function CreateCita(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idPacienteCita, setIdPacienteCita] = useState("");
   const [idc, setIdc] = useState("");
+  const [tipoIdc, setTipoIdc] = useState("dni");
   const [estado, setEstado] = useState("");
   const [numero, setNumero] = useState("");
   const [fecha, setFecha] = useState("");
@@ -24,66 +36,88 @@ function CreateCita(props) {
 
   const citasCollection = collection(db, "citas");
 
-  const updateOptionsEstado = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => doc.data().name);
+  const updateOptionsEstado = useCallback((snapshot) => {
+    const options = snapshot.docs.map((doc) => doc.data().name);
     setEstadoOptions(options);
   }, []);
 
-  const updateOptionsPacientes = useCallback(snapshot => {
-    const options = snapshot.docs.map(doc => doc.data().valorBusqueda);
+  const updateOptionsPacientes = useCallback((snapshot) => {
+    const options = snapshot.docs.map((doc) => doc.data().valorBusqueda);
     options.unshift("<---Ingreso manual--->");
     setValorBusquedaOptions(options);
   }, []);
 
   //Render:
   const estadoOptionsJSX = estadoOptions.map((option, index) => (
-    <option key={`estado-${index}`} value={option}>{option}</option>
+    <option key={`estado-${index}`} value={option}>
+      {option}
+    </option>
   ));
   const valorBusquedaOptionsJSX = valorBusquedaOptions.map((option, index) => (
-    <option key={`valorBusqueda-${index}`} value={option}>{option}</option>
+    <option key={`valorBusqueda-${index}`} value={option}>
+      {option}
+    </option>
   ));
 
-  const updateOptionsHorarios = useCallback(snapshot => {
-    const horarios = snapshot.docs.map(doc => doc.data());
-    setHorariosAtencion(horarios);
+  const updateOptionsHorarios = useCallback(
+    (snapshot) => {
+      const horarios = snapshot.docs.map((doc) => doc.data());
+      setHorariosAtencion(horarios);
 
-    const optionsHoraInicio = horarios.map((horario, index) => (
-      <option key={`horarioInicio-${index}`} value={horario.id}>{horario.name}</option>
-    ));
-    optionsHoraInicio.pop();
-    setOptionsHoraInicio(optionsHoraInicio);
+      const optionsHoraInicio = horarios.map((horario, index) => (
+        <option key={`horarioInicio-${index}`} value={horario.id}>
+          {horario.name}
+        </option>
+      ));
+      optionsHoraInicio.pop();
+      setOptionsHoraInicio(optionsHoraInicio);
 
-    if (horaInicio) {
-      const optionsHoraFin = horarios
-        .filter(horario => horario.name > horaInicio)
-        .map((horario, index) => (
-          <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
-        ));
-      setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
-      setOptionsHoraFin(optionsHoraFin);
-    }
-  }, [horaInicio, horaFin]);
+      if (horaInicio) {
+        const optionsHoraFin = horarios
+          .filter((horario) => horario.name > horaInicio)
+          .map((horario, index) => (
+            <option key={`horarioFin-${index}`} value={horario.id}>
+              {horario.name}
+            </option>
+          ));
+        setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
+        setOptionsHoraFin(optionsHoraFin);
+      }
+    },
+    [horaInicio, horaFin]
+  );
 
   useEffect(() => {
     const unsubscribe = [
-      onSnapshot(query(collection(db, "clients"), orderBy("valorBusqueda")), updateOptionsPacientes),
-      onSnapshot(query(collection(db, "estados"), orderBy("name")), updateOptionsEstado),
-      onSnapshot(query(collection(db, "horariosAtencion"), orderBy("name")), updateOptionsHorarios),
+      onSnapshot(
+        query(collection(db, "clients"), orderBy("valorBusqueda")),
+        updateOptionsPacientes
+      ),
+      onSnapshot(
+        query(collection(db, "estados"), orderBy("name")),
+        updateOptionsEstado
+      ),
+      onSnapshot(
+        query(collection(db, "horariosAtencion"), orderBy("name")),
+        updateOptionsHorarios
+      ),
     ];
 
-    return () => unsubscribe.forEach(fn => fn());
+    return () => unsubscribe.forEach((fn) => fn());
   }, [updateOptionsPacientes, updateOptionsEstado, updateOptionsHorarios]);
 
   useEffect(() => {
     if (props.client) {
       setApellidoConNombre(props.client.apellidoConNombre);
+      setTipoIdc(props.client.tipoIdc);
       setIdc(props.client.idc);
       setNumero(props.client.numero);
-      setIdPacienteCita(props.client.id)
-      setShowBuscador(false)
+      setIdPacienteCita(props.client.id);
+      setShowBuscador(false);
       setEditable(false);
     } else {
       setApellidoConNombre("");
+      setTipoIdc("dni")
       setIdc("");
       setIdPacienteCita("");
       setNumero("");
@@ -94,12 +128,13 @@ function CreateCita(props) {
     const fetchClient = async () => {
       if (props.id) {
         setShowBuscador(false);
-        const docRef = doc(db, 'clients', props.id);
+        const docRef = doc(db, "clients", props.id);
         const docSnapshot = await getDoc(docRef);
 
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
           setApellidoConNombre(data.apellidoConNombre);
+          setTipoIdc(data.tipoIdc);
           setIdc(data.idc);
           setNumero(data.numero);
           setIdPacienteCita(props.id);
@@ -113,10 +148,13 @@ function CreateCita(props) {
 
   const store = async (e) => {
     e.preventDefault();
-    const querySnapshot = await getDocs(query(collection(db, "clients"), where("idc", "==", idc)));
+    const querySnapshot = await getDocs(
+      query(collection(db, "clients"), where("idc", "==", idc))
+    );
     if (!querySnapshot.empty) {
       await addDoc(citasCollection, {
         apellidoConNombre: apellidoConNombre,
+        tipoIdc: tipoIdc,
         idc: idc,
         idPacienteCita: idPacienteCita,
         estado: estado,
@@ -132,6 +170,7 @@ function CreateCita(props) {
       const clientsRef = await addDoc(collection(db, "clients"), {
         apellidoConNombre: apellidoConNombre,
         idc: idc,
+        tipoIdc: tipoIdc,
         fechaNacimiento: "",
         numero: numero,
         valorBusqueda: apellidoConNombre + " " + idc,
@@ -168,6 +207,7 @@ function CreateCita(props) {
       await addDoc(citasCollection, {
         apellidoConNombre: apellidoConNombre,
         idPacienteCita: clientsRef.id,
+        tipoIdc: tipoIdc,
         idc: idc,
         estado: estado,
         numero: numero,
@@ -185,6 +225,7 @@ function CreateCita(props) {
     if (suggestion === "<---Ingreso manual--->" || suggestion === "") {
       setApellidoConNombre("");
       setIdPacienteCita("")
+      setTipoIdc("dni")
       setIdc("");
       setNumero("");
       setEditable(true);
@@ -201,6 +242,7 @@ function CreateCita(props) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
       setIdPacienteCita(doc.id)
+      setTipoIdc(data.tipoIdc);
       setIdc(data.idc);
       setNumero(data.numero);
       setEditable(false);
@@ -210,6 +252,7 @@ function CreateCita(props) {
   const clearFields = () => {
     setApellidoConNombre("");
     setIdPacienteCita("");
+    setTipoIdc("dni")
     setIdc("");
     setNumero("");
     setEstado("");
@@ -231,7 +274,7 @@ function CreateCita(props) {
       horaFin.trim() === ""
     ) {
       setError("Respeta los campos obligatorios *");
-      setTimeout(clearError, 2000)
+      setTimeout(clearError, 2000);
       return false;
     } else {
       setError("");
@@ -249,6 +292,7 @@ function CreateCita(props) {
       <Modal.Header closeButton onClick={() => {
         setEditable(true);
         setApellidoConNombre("");
+        setTipoIdc("dni");
         setIdc("");
         setNumero("");
       }}>
@@ -259,21 +303,34 @@ function CreateCita(props) {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            {showBuscador && (<div className="col mb-3" style={{ background: "#00C5C1", padding: "6px", borderRadius: "20px" }}>
-              <label className="form-label" style={{ marginLeft: "15px", fontWeight: "bold" }}>Buscador por Apellido, Nombre o DNI:</label>
-              <input
-                style={{ borderRadius: "100px" }}
-                type="text"
-                className="form-control"
-                onChangeCapture={(e) => manejarValorSeleccionado(e.target.value)}
-                list="pacientes-list"
-                multiple={false}
-              />
-              <datalist id="pacientes-list">
-                <option value="">Ingreso manual</option>
-                {valorBusquedaOptionsJSX}
-              </datalist>
-            </div>)}
+            {showBuscador && (
+              <div className="col mb-3" style={{ position: "relative" }}>
+                <input
+                  placeholder="Buscador por Apellido, Nombre o DNI"
+                  type="text"
+                  className="form-control"
+                  onChangeCapture={(e) =>
+                    manejarValorSeleccionado(e.target.value)
+                  }
+                  list="pacientes-list"
+                  multiple={false}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "10px",
+                    transform: "translateY(-60%)",
+                  }}
+                >
+                  <FaSearch />
+                </span>
+                <datalist id="pacientes-list">
+                  <option value="">Ingreso manual</option>
+                  {valorBusquedaOptionsJSX}
+                </datalist>
+              </div>
+            )}
 
             <form>
               <div className="row">
@@ -289,15 +346,40 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">DNI*</label>
-                  <input
-                    value={idc || ""}
-                    onChange={(e) => setIdc(e.target.value)}
-                    type="number"
-                    className="form-control"
-                    disabled={!editable}
-                    required
-                  />
+                  <label className="form-label">IDC*</label>
+                  <div style={{ display: "flex" }}>
+                    <select
+                      value={tipoIdc}
+                      onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                      className="form-control-tipoIDC"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="dni">DNI</option>
+                      <option value="ce">CE</option>
+                      <option value="ruc">RUC</option>
+                      <option value="pas">PAS</option>
+
+                    </select>
+                    <input
+                      value={idc || ""}
+                      onChange={(e) => setIdc(e.target.value)}
+                      type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                      minLength={tipoIdc === "dni" ? 8 : undefined}
+                      maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                      onKeyDown={(e) => {
+                        const maxLength = e.target.maxLength;
+                        const currentValue = e.target.value;
+                        if (maxLength && currentValue.length >= maxLength) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="form-control"
+                      disabled={!editable}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -347,8 +429,7 @@ function CreateCita(props) {
                   <label className="form-label">Hora Inicio*</label>
                   <select
                     value={horaInicio}
-                    onChange={(e) =>
-                      setHoraInicio(e.target.value)}
+                    onChange={(e) => setHoraInicio(e.target.value)}
                     className="form-control"
                     multiple={false}
                     required
@@ -382,9 +463,20 @@ function CreateCita(props) {
                 </div>
               </div>
               <div style={{ display: "flex" }}>
-                <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '1px' }}>Agregar</button>
+                <button
+                  type="submit"
+                  onClick={validateFields}
+                  className="btn btn-primary"
+                  style={{ margin: "1px" }}
+                >
+                  Agregar
+                </button>
                 {error && (
-                  <div className="alert alert-danger" role="alert" style={{ margin: '10px' }}>
+                  <div
+                    className="alert alert-danger"
+                    role="alert"
+                    style={{ margin: "10px" }}
+                  >
                     {error}
                   </div>
                 )}
@@ -392,9 +484,8 @@ function CreateCita(props) {
             </form>
           </div>
         </div>
-
       </Modal.Body>
-    </Modal >
+    </Modal>
   );
 }
 

@@ -545,7 +545,7 @@ function TratamientosEspecif(props) {
                           <h3>Tratamientos Realizados por este Paciente</h3>
                           <button
                             variant="primary"
-                            className="btn btn-success mx-1 btn-md"
+                            className="btn greenWater without mx-1 btn-md"
                             style={{
                               borderRadius: "12px",
                               justifyContent: "center",
@@ -574,12 +574,7 @@ function TratamientosEspecif(props) {
                               }}
                             >
                               <button
-                                style={{
-                                  borderRadius: "7px",
-                                  margin: "1px",
-                                  height: "38px",
-                                }}
-                                className="btn btn-outline-dark"
+                               style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
                                   filtroFecha("Dia");
                                   setTaparFiltro(false);
@@ -588,12 +583,7 @@ function TratamientosEspecif(props) {
                                 Dia
                               </button>
                               <button
-                                style={{
-                                  borderRadius: "7px",
-                                  margin: "1px",
-                                  height: "38px",
-                                }}
-                                className="btn btn-outline-dark"
+                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
                                   filtroFecha("Semana");
                                   setTaparFiltro(true);
@@ -602,12 +592,7 @@ function TratamientosEspecif(props) {
                                 Semana
                               </button>
                               <button
-                                style={{
-                                  borderRadius: "7px",
-                                  margin: "1px",
-                                  height: "38px",
-                                }}
-                                className="btn btn-outline-dark"
+                  style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
                                   filtroFecha("Mes");
                                   setTaparFiltro(true);
@@ -616,12 +601,7 @@ function TratamientosEspecif(props) {
                                 Mes
                               </button>
                               <button
-                                style={{
-                                  borderRadius: "7px",
-                                  margin: "1px",
-                                  height: "38px",
-                                }}
-                                className="btn btn-outline-dark"
+              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
                                   setModalSeleccionFechaShow(true);
                                 }}
@@ -913,7 +893,7 @@ function TratamientosEspecif(props) {
                             <th onClick={() => sorting("apellido")}>
                               Apellido y Nombres
                             </th>
-                            <th onClick={() => sorting("idc")}>DNI</th>
+                            <th onClick={() => sorting("idc")}>IDC</th>
                             <th onClick={() => sorting("tarifasTratamientos")}>
                               Tratamiento
                             </th>
@@ -1026,9 +1006,9 @@ function TratamientosEspecif(props) {
                                       <i className="fa-regular fa-comment"></i> Ver
                                       Notas
                                     </Dropdown.Item>
-                                    <Dropdown.Item   onClick={() => {
+                                    <Dropdown.Item onClick={() => {
                                       props.openControlYEvolucion(1, tratamiento)
-                                     }}
+                                    }}
                                     >
                                       <i class="fa-solid fa-chart-line"></i> Evolucionar
                                     </Dropdown.Item>

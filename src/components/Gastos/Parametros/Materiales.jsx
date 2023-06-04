@@ -160,7 +160,7 @@ const Materiales = () => {
                     <div className="w-100">
                         <nav className="navbar">
                             <div className="d-flex justify-content-between w-100 px-2">
-                                <div className="search-bar w-50">
+                                <div className="search-bar">
                                     <input
                                         value={search}
                                         onChange={searcher}
@@ -211,9 +211,9 @@ const Materiales = () => {
                                                 className="d-flex justify-content-center align-items-center"
                                                 style={{ maxHeight: "40px", marginLeft: "10px" }}
                                             >
-                                                <h1>Materiales</h1>
+                                                <h1 className="me-2">Materiales</h1>
                                             </div>
-                                            <div className="col d-flex justify-content-end">
+                                            <div className="col d-flex justify-content-start">
                                                 <button
                                                     variant="primary"
                                                     className="btn-blue m-2"

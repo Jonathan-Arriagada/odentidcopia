@@ -13,6 +13,7 @@ import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
+import moment from "moment";
 import "../../style/Main.css";
 
 function TabPanel(props) {
@@ -37,6 +38,7 @@ function TabPanel(props) {
 
 export default function History() {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
+  const [tipoIdc, setTipoIdc] = useState("dni");
   const [idc, setIdc] = useState("");
   const [numero, setNumero] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
@@ -132,7 +134,7 @@ export default function History() {
         query(clientsCollection, where("idc", "==", idc))
       );
       if (!querySnapshot.empty) {
-        setError("El DNI ya existe en la Base de Datos");
+        setError("El IDC ya existe en la Base de Datos");
         setTimeout(clearError, 2000);
         return false;
       } else {
@@ -156,6 +158,7 @@ export default function History() {
 
     const newData = {
       apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
+      tipoIdc: tipoIdc || clientData.tipoIdc,
       idc: idc || clientData.idc,
       fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
       numero: numero || clientData.numero,
@@ -198,6 +201,7 @@ export default function History() {
   const handleCrearClick = async () => {
     await addDoc(clientsCollection, {
       apellidoConNombre: apellidoConNombre,
+      tipoIdc: tipoIdc,
       idc: idc,
       fechaNacimiento: fechaNacimiento,
       numero: numero,
@@ -238,6 +242,7 @@ export default function History() {
       const clientF = await getDoc(doc(db, "clients", id));
       if (clientF.exists()) {
         setApellidoConNombre(clientF.data().apellidoConNombre);
+        setTipoIdc(clientF.data().tipoIdc);
         setIdc(clientF.data().idc);
         setNumero(clientF.data().numero);
         setFechaNacimiento(clientF.data().fechaNacimiento);
@@ -273,6 +278,7 @@ export default function History() {
       }
     } else {
       setApellidoConNombre("");
+      setTipoIdc("dni")
       setIdc("");
       setNumero("");
       setFechaNacimiento("");
@@ -337,6 +343,13 @@ export default function History() {
   const handleLimpiar = () => {
     setSearch("")
     navigate("/historial");
+  };
+
+  const handleFechaNac = (event) => {
+    const { value } = event.target;
+    const edad = moment().diff(moment(value), "years");
+    setFechaNacimiento(value);
+    setEdad(edad)
   };
 
   return (
@@ -459,7 +472,7 @@ export default function History() {
                   {!mostrarAntecedentes && (
                     <div id="formFiliacion">
                       <div className="container d-flex mb-3">
-                        <h1>Historial Parte 1: Filiación</h1>
+                        <h1 id="tituloH1History">Historial Parte 1: Filiación</h1>
                       </div>
 
                       {error && (
@@ -484,26 +497,50 @@ export default function History() {
                             </div>
 
                             <div className="col-md-3">
-                              <label className="form-label">DNI:</label>
-                              <input
-                                value={idc || ""}
-                                onChange={(e) => {
-                                  setIdc(e.target.value);
-                                }}
-                                type="number"
-                                className="form-control m-1"
-                                required
-                              />
+                              <label className="form-label">IDC:</label>
+                              <div style={{ display: "flex" }}>
+                                <select
+                                  value={tipoIdc}
+                                  onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                                  className="form-control-tipoIDC m-1"
+                                  multiple={false}
+                                  style={{ width: "fit-content" }}
+                                  required
+                                >
+                                  <option value="dni">DNI</option>
+                                  <option value="ce">CE</option>
+                                  <option value="ruc">RUC</option>
+                                  <option value="pas">PAS</option>
+
+                                </select>
+                                <input
+                                  value={idc || ""}
+                                  onChange={(e) => {
+                                    setIdc(e.target.value);
+                                  }}
+                                  type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                                  minLength={tipoIdc === "dni" ? 8 : undefined}
+                                  maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                                  onKeyDown={(e) => {
+                                    const maxLength = e.target.maxLength;
+                                    const currentValue = e.target.value;
+                                    if (maxLength && currentValue.length >= maxLength) {
+                                      e.preventDefault();
+                                    }
+                                  }}
+                                  className="form-control m-1"
+                                  required
+                                />
+                              </div>
                             </div>
 
                             <div className="col-md-3">
                               <label className="form-label">Edad*</label>
                               <input
                                 value={edad || ""}
-                                onChange={(e) => setEdad(e.target.value)}
                                 type="number"
                                 className="form-control m-1"
-                                required
+                                disabled
                               />
                             </div>
 
@@ -529,7 +566,7 @@ export default function History() {
                               <label className="form-label">Fecha de Nacimiento:</label>
                               <input
                                 value={fechaNacimiento || ""}
-                                onChange={(e) => setFechaNacimiento(e.target.value)}
+                                onChange={handleFechaNac}
                                 type="date"
                                 className="form-control m-1"
                                 required
@@ -610,7 +647,7 @@ export default function History() {
 
                           <div className="row">
                             <div className="col-md-4">
-                              <label className="form-label">Responsable:</label>
+                              <label className="form-label">Parentesco:</label>
                               <input
                                 value={responsable || ""}
                                 onChange={(e) => setResponsable(e.target.value)}
@@ -657,7 +694,7 @@ export default function History() {
                   {mostrarAntecedentes && (
                     <div id="formAntecedentes">
                       <div className="container d-flex mb-3">
-                        <h1>Historial Parte 2: Antecedentes</h1>
+                        <h1 id="tituloH1History">Historial Parte 2: Antecedentes</h1>
                       </div>
                       <div className="container">
                         <div className="d-flex">
@@ -672,7 +709,7 @@ export default function History() {
                             />
                           </div>
                           <div className="w-50 ms-5">
-                            <label className="form-label">DNI:</label>
+                            <label className="form-label">IDC:</label>
                             <input
                               value={idc || ""}
                               onChange={(e) => setIdc(e.target.value)}

@@ -4,9 +4,10 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditTratamiento = (props) => {
-  const [codigo, ] = useState(props.tratamiento.codigo);
+  const [codigo,] = useState(props.tratamiento.codigo);
   const [apellidoConNombre, setApellidoConNombre] = useState(props.tratamiento.apellidoConNombre || "");
-  const [idPaciente, ] = useState(props.tratamiento.idPaciente || "");
+  const [idPaciente,] = useState(props.tratamiento.idPaciente || "");
+  const [tipoIdc, setTipoIdc] = useState(props.tratamiento.tipoIdc || "dni");
   const [idc, setIdc] = useState(props.tratamiento.idc || "");
   const [tarifasTratamientos, setTarifasTratamientos] = useState(props.tratamiento.tarifasTratamientos || "");
   const [cta, setCta] = useState(props.tratamiento.cta || "");
@@ -75,6 +76,7 @@ const EditTratamiento = (props) => {
       codigo: codigo || tratamientoData.codigo,
       apellidoConNombre: apellidoConNombre || tratamientoData.apellidoConNombre,
       idPaciente: idPaciente || tratamientoData.idPaciente,
+      tipoIdc: tipoIdc || tratamientoData.tipoIdc,
       idc: idc || tratamientoData.idc,
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
       cta: cta || tratamientoData.cta,
@@ -123,14 +125,39 @@ const EditTratamiento = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="col mb-3">
-                  <label className="form-label">DNI</label>
-                  <input
-                    defaultValue={props.tratamiento.idc}
-                    onChange={(e) => setIdc(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
+                <div className="mb-3">
+                  <label className="form-label">IDC*</label>
+                  <div style={{ display: "flex" }}>
+                    <select
+                      value={tipoIdc}
+                      onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                      className="form-control-tipoIDC"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="dni">DNI</option>
+                      <option value="ce">CE</option>
+                      <option value="ruc">RUC</option>
+                      <option value="pas">PAS</option>
+
+                    </select>
+                    <input
+                      defaultValue={props.tratamiento.idc}
+                      onChange={(e) => setIdc(e.target.value)}
+                      type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                      minLength={tipoIdc === "dni" ? 8 : undefined}
+                      maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                      onKeyDown={(e) => {
+                        const maxLength = e.target.maxLength;
+                        const currentValue = e.target.value;
+                        if (maxLength && currentValue.length >= maxLength) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="form-control"
+                    />
+                  </div>
                 </div>
               </div>
 
