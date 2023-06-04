@@ -293,6 +293,7 @@ input[type="file"]::before {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: var(--color-background-green);
 }
 
 .login-page {
@@ -306,11 +307,11 @@ input[type="file"]::before {
   margin: auto;
   margin-top: 45px;
   margin-top: 0px;
-  background: linear-gradient(45deg, #00c6c2, #2bb1ff);
   width: 400px;
   aspect-ratio: 1;
   border-radius: 9px;
-  padding: 60px 80px;
+  padding: 60px 50px;
+  animation: Entrance 2s ease 0s 1 normal forwards;
 }
 
 @media (max-width: 1440px) and (max-height: 768px) {
@@ -320,16 +321,6 @@ input[type="file"]::before {
   }
 }
 
-.login-page::before {
-  position: absolute;
-  content: "";
-  height: calc(100% - 2px);
-  width: calc(100% - 2px);
-  background-color: #ffffff;
-  border-radius: 8px;
-}
-
-
 .login-page .logo {
   position: absolute;
   width: 300px;
@@ -337,14 +328,14 @@ input[type="file"]::before {
   top: 50px;
 }
 
-
 .login-page form {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 100%;
+  width: 130%;
   margin-top: 4em;
+  background-color: var(--color-white);
 }
 
 .login-page form .email,
@@ -352,14 +343,17 @@ input[type="file"]::before {
   position: relative;
 }
 
-.login-page form input {
+.email, .password {
   width: 100%;
   border: none;
   background-color: transparent;
   padding: 20px 10px 3px;
-  border-bottom: 1px solid #2BB1FF;
+  border: 1px solid var(--color-border);
   color: rgb(0, 0, 0);
-
+}
+.login-page form input{
+  width: 100%;
+  border: none;
 }
 
 .login-page form input:focus {
@@ -379,7 +373,7 @@ input[type="file"]::before {
 .login-page form input:focus~label,
 .login-page form input:valid~label {
   top: 0;
-  color: #2BB1FF;
+  color: var(--color-black)
 }
 
 .error {
@@ -393,23 +387,16 @@ input[type="file"]::before {
   background-color: var(--color-estilo-main);
   border: none;
   border-radius: 20px;
-  margin-top: 20px;
   color: var(--color-white);
-  padding: 10px;
+  padding: 0 10px 10px 10px;
   cursor: pointer;
 }
 
 .button-login:active {
   scale: 0.98;
 }
-
-.password-toggle {
-  border: "none";
-  background-color: "transparent";
-  cursor: "pointer";
-  color: "#000";
-  border-bottom: "1px solid #2BB1FF";
-  border-radius: "0px";
+.button-login {
+  padding-top: 10px !important;
 }
 
 .background-container {
@@ -417,7 +404,6 @@ input[type="file"]::before {
   width: 100%;
   height: 100%;
 }
-
 
 .background-image {
   position: absolute;
@@ -442,6 +428,7 @@ input[type="file"]::before {
   font-size: 48px;
   font-weight: bold;
   line-height: 1;
+  animation: Entrance 2s ease 0s 1 normal forwards;
 }
 .welcome-text span:nth-child(1) {
   text-align: start;
@@ -451,6 +438,17 @@ input[type="file"]::before {
 }
 .welcome-text span {
   display: block;
+}
+@keyframes Entrance {
+	0% {
+		opacity: 0;
+		transform: translateY(-200px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 /*ESTILOS LOADING.CSS*/

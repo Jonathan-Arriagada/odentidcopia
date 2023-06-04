@@ -24,6 +24,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [captchaResolved, setCaptchaResolved] = useState(false);
   const { dispatch } = useContext(AuthContext);
+  const [showItem, setShowItem] = useState(false);
+  
 
   const togglePasswordVisibility = (e) => {
     e.preventDefault();
@@ -104,7 +106,7 @@ const Login = () => {
 
   return (
     <>
-    <div className="login">
+    <div className="login" style={{overflow: "hidden"}}>
       <div className="background-container">
         <img className="background-image" alt="Background" src={background} />
         <div className="text-overlay">
@@ -116,8 +118,8 @@ const Login = () => {
       </div>
       <div className="login-page" style={{transform: "scale(0.9)"}}>
         <img className="logo" src={logo} alt="Odentid" />
-        <form onSubmit={submit}>
-        <h3 style={{textAlign: "left", margin:"-15px 0 5px 0"}}>Ingresar</h3>
+        <form className="p-4" onSubmit={submit}>
+        <h3 style={{textAlign: "left"}}>Iniciar Sesión</h3>
           <div className="email">
             <input
               onChange={(e) => setEmail(e.target.value)}
@@ -128,15 +130,17 @@ const Login = () => {
           </div>
           <div className="password" style={{ display: "flex" }}>
             <input
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setShowItem(true)
+              }}
               type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
             />
             <label htmlFor="password">Contraseña</label>
             <button
-              className="password-toggle"
-              style={{ border: "none", background: "transparent", cursor: "pointer", color: "#000", borderBottom: "1px solid #2BB1FF", borderRadius: "0px" }} // Agrega un margen de valor cero al botón
+              style={{ border: "none", background: "transparent", cursor: "pointer", color: "#000", borderRadius: "0px" }} // Agrega un margen de valor cero al botón
               onClick={togglePasswordVisibility}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -145,13 +149,14 @@ const Login = () => {
           {error && (
             <span className="error">Informacion de Sesion Incorrecta.</span>
           )}
-
+          {showItem && 
           <div className="captcha" style={{ display: "flex", justifyContent: "center", alignItems: "center", transform: "scale(0.9)" }}>
             <ReCAPTCHA
               sitekey={process.env.REACT_APP_captcha}
               onChange={handleCaptchaResolved}
             />
           </div>
+          }
           {error2 && (
             <span className="error">Captcha Invalido.</span>
           )}
@@ -168,8 +173,7 @@ const Login = () => {
               width: "150px",
               background: "white",
               color: "black",
-              marginLeft: "50px",
-              padding: "0",
+              alignSelf: "center"
             }}
           >
             <span style={{ cursor: "pointer" }}>
