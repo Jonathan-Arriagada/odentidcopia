@@ -6,8 +6,7 @@ import Navigation from "../Navigation";
 import EditControlEvolucion from "./EditControlEvolucion";
 import moment from "moment";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
@@ -21,18 +20,27 @@ const ControlEvolucion = () => {
     const [idParam, setIdParam] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [modalShowVerDetalle, setModalShowVerDetalle] = useState(false);
+    const navigate = useNavigate
 
-    const logout = () => {
-        const auth = getAuth();
-        signOut(auth)
-            .then(() => {
-                localStorage.setItem("user", JSON.stringify(null));
-            })
-            .catch((error) => {
-                // Maneja cualquier error que ocurra durante el logout
-                console.log("Error durante el logout:", error);
-            });
-    };
+    const logout = useCallback(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+        navigate("/");
+        window.location.reload();
+      }, [navigate]);
+    
+    const confirmLogout = (e) => {
+        e.preventDefault();       
+        Swal.fire({
+          title: '¿Desea cerrar sesión?',
+          showDenyButton: true,         
+          confirmButtonText: 'Si, cerrar sesión',
+          denyButtonText: `No, seguir logueado`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            logout();         
+          }
+        });
+      };
 
     const controlesCollectiona = collection(db, "controlEvoluciones");
     const controlesCollection = useRef(query(controlesCollectiona, orderBy("fechaControlRealizado", "desc"))
@@ -165,7 +173,7 @@ const ControlEvolucion = () => {
                                             to="/"
                                             className="text-decoration-none"
                                             style={{ color: "#8D93AB" }}
-                                            onClick={logout}
+                                            onClick={confirmLogout}
                                         >
                                             <FaSignOutAlt className="icono" />
                                             <span>Logout</span>

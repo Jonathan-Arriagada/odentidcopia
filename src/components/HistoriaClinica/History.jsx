@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../Navigation";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import Swal from "sweetalert2";
 import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
@@ -106,16 +106,24 @@ export default function History() {
   }, [updateOpcionesPacientes]);
 
 
-  const logout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        localStorage.setItem("user", JSON.stringify(null));
-      })
-      .catch((error) => {
-        // Maneja cualquier error que ocurra durante el logout
-        console.log("Error durante el logout:", error);
-      });
+  const logout = useCallback(() => {
+    localStorage.setItem("user", JSON.stringify(null));
+    navigate("/");
+    window.location.reload();
+  }, [navigate]);
+
+const confirmLogout = (e) => {
+    e.preventDefault();       
+    Swal.fire({
+      title: '¿Desea cerrar sesión?',
+      showDenyButton: true,         
+      confirmButtonText: 'Si, cerrar sesión',
+      denyButtonText: `No, seguir logueado`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();         
+      }
+    });
   };
 
   const validateFields = async (e) => {
@@ -443,7 +451,7 @@ export default function History() {
                     to="/"
                     className="text-decoration-none"
                     style={{ color: "#8D93AB" }}
-                    onClick={logout}
+                    onClick={confirmLogout}
                   >
                     <FaSignOutAlt className="icono" />
                     <span>Logout</span>
