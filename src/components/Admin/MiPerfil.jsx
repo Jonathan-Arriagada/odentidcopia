@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from "react";
+import React, { useState, useEffect, useCallback, } from "react";
 import { doc, updateDoc, where, collection, getDocs, query, } from "firebase/firestore";
 import { auth, db, deslogear, } from "../../firebaseConfig/firebase";
 import { updateProfile, updateEmail, onAuthStateChanged } from "firebase/auth";
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Navigation from "../Navigation";
 import EditClave from "./EditClave";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import { getAuth, signOut } from "firebase/auth";
+import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import "../../style/Main.css"
 
@@ -30,16 +30,24 @@ const MiPerfil = () => {
   const storage = getStorage();
   const navigate = useNavigate()
 
-  const logout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        localStorage.setItem("user", JSON.stringify(null));
-      })
-      .catch((error) => {
-        // Maneja cualquier error que ocurra durante el logout
-        console.log("Error durante el logout:", error);
-      });
+  const logout = useCallback(() => {
+    localStorage.setItem("user", JSON.stringify(null));
+    navigate("/");
+    window.location.reload();
+  }, [navigate]);
+
+const confirmLogout = (e) => {
+    e.preventDefault();       
+    Swal.fire({
+      title: '¿Desea cerrar sesión?',
+      showDenyButton: true,         
+      confirmButtonText: 'Si, cerrar sesión',
+      denyButtonText: `No, seguir logueado`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();         
+      }
+    });
   };
 
   useEffect(() => {
@@ -178,7 +186,7 @@ const MiPerfil = () => {
                       to="/"
                       className="text-decoration-none"
                       style={{ color: "#8D93AB" }}
-                      onClick={logout}
+                      onClick={confirmLogout}
                     >
                       <FaSignOutAlt className="icono" />
                       <span>Logout</span>

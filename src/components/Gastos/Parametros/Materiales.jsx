@@ -5,8 +5,8 @@ import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy, getDocs, li
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Materiales = () => {
     const [cuenta, setCuenta] = useState('');
@@ -20,7 +20,7 @@ const Materiales = () => {
     const [modalShowGestionMateriales, setModalShowGestionMateriales] = useState(false);
     const [search, setSearch] = useState("");
     const [editable] = useState(false);
-
+    const navigate = useNavigate()
 
     const materialesCollection = collection(db, "materiales");
     const materialesCollectionOrdenados = useRef(query(materialesCollection, orderBy("cuenta")));
@@ -34,17 +34,25 @@ const Materiales = () => {
         setIsLoading(false);
     }, []);
 
-    const logout = () => {
-        const auth = getAuth();
-        signOut(auth)
-            .then(() => {
-                localStorage.setItem("user", JSON.stringify(null));
-            })
-            .catch((error) => {
-                // Maneja cualquier error que ocurra durante el logout
-                console.log("Error durante el logout:", error);
-            });
-    };
+    const logout = useCallback(() => {
+        localStorage.setItem("user", JSON.stringify(null));
+        navigate("/");
+        window.location.reload();
+      }, [navigate]);
+    
+    const confirmLogout = (e) => {
+        e.preventDefault();       
+        Swal.fire({
+          title: '¿Desea cerrar sesión?',
+          showDenyButton: true,         
+          confirmButtonText: 'Si, cerrar sesión',
+          denyButtonText: `No, seguir logueado`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            logout();         
+          }
+        });
+      };
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
@@ -192,7 +200,7 @@ const Materiales = () => {
                                             to="/"
                                             className="text-decoration-none"
                                             style={{ color: "#8D93AB" }}
-                                            onClick={logout}
+                                            onClick={confirmLogout}
                                         >
                                             <FaSignOutAlt className="icono" />
                                             <span>Logout</span>

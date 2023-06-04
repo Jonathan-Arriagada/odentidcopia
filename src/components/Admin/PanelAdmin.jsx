@@ -4,9 +4,9 @@ import { collection, orderBy, query, onSnapshot, updateDoc, doc } from "firebase
 import { db, } from "../../firebaseConfig/firebase";
 import CrearAsistente from "./CrearAsistente";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
-import { getAuth, signOut } from "firebase/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css"
+import Swal from "sweetalert2";
 
 function PanelAdmin() {
   const [usuarios, setUsuarios] = useState([]);
@@ -19,17 +19,26 @@ function PanelAdmin() {
 
   const userCollectiona = collection(db, "user");
   const userCollection = useRef(query(userCollectiona, orderBy("codigo")));
+  const navigate = useNavigate()
 
-  const logout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        localStorage.setItem("user", JSON.stringify(null));
-      })
-      .catch((error) => {
-        // Maneja cualquier error que ocurra durante el logout
-        console.log("Error durante el logout:", error);
-      });
+  const logout = useCallback(() => {
+    localStorage.setItem("user", JSON.stringify(null));
+    navigate("/");
+    window.location.reload();
+  }, [navigate]);
+
+const confirmLogout = (e) => {
+    e.preventDefault();       
+    Swal.fire({
+      title: '¿Desea cerrar sesión?',
+      showDenyButton: true,         
+      confirmButtonText: 'Si, cerrar sesión',
+      denyButtonText: `No, seguir logueado`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();         
+      }
+    });
   };
 
   const getUsuarios = useCallback((snapshot) => {
@@ -131,7 +140,7 @@ function PanelAdmin() {
                       to="/"
                       className="text-decoration-none"
                       style={{ color: "#8D93AB" }}
-                      onClick={logout}
+                      onClick={confirmLogout}
                     >
                       <FaSignOutAlt className="icono" />
                       <span>Logout</span>

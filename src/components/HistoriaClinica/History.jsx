@@ -8,7 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../Navigation";
 import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import Swal from "sweetalert2";
 import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
@@ -106,16 +106,24 @@ export default function History() {
   }, [updateOpcionesPacientes]);
 
 
-  const logout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        localStorage.setItem("user", JSON.stringify(null));
-      })
-      .catch((error) => {
-        // Maneja cualquier error que ocurra durante el logout
-        console.log("Error durante el logout:", error);
-      });
+  const logout = useCallback(() => {
+    localStorage.setItem("user", JSON.stringify(null));
+    navigate("/");
+    window.location.reload();
+  }, [navigate]);
+
+const confirmLogout = (e) => {
+    e.preventDefault();       
+    Swal.fire({
+      title: '¿Desea cerrar sesión?',
+      showDenyButton: true,         
+      confirmButtonText: 'Si, cerrar sesión',
+      denyButtonText: `No, seguir logueado`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();         
+      }
+    });
   };
 
   const validateFields = async (e) => {
@@ -443,7 +451,7 @@ export default function History() {
                     to="/"
                     className="text-decoration-none"
                     style={{ color: "#8D93AB" }}
-                    onClick={logout}
+                    onClick={confirmLogout}
                   >
                     <FaSignOutAlt className="icono" />
                     <span>Logout</span>
@@ -691,6 +699,7 @@ export default function History() {
                   )}
 
                   {/* ANTECEDENTES */}
+
                   {mostrarAntecedentes && (
                     <div id="formAntecedentes">
                       <div className="container d-flex mb-3">
@@ -720,9 +729,11 @@ export default function History() {
                           </div>
                         </div>
                         <div className="d-flex m-2">
-                          <div className="col-md-4 mb-3">
-                            <div className="row">
-                              <label className="form-label">
+                          <div className="col-mb-3">
+
+                            <hr/>
+                  
+                              <label className="form-label d-flex">
                                 1. ¿Está siendo atendido por un médico?
                                 <label className="m-1">
                                   <input
@@ -747,15 +758,13 @@ export default function History() {
                                 value={pregunta1[0]}
                                 onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
                                 type="text"
-                                className="form-control m-1"
+                                className="form-control w-50 m-1"
                                 placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
                                 disabled={!pregunta1[1]}
-                              />
-                            </div>
-
-                            <div className="row">
-                              <label className="form-label">
-                                2. ¿Por un médico psiquiatra o psicologo?
+                              />             
+                   
+                              <label className="form-label d-flex">
+                                2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
                                 <label className="m-1">
                                   <input
                                     type="checkbox"
@@ -779,13 +788,12 @@ export default function History() {
                                 value={pregunta2[0]}
                                 onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
                                 type="text"
-                                className="form-control m-1"
+                                className="form-control m-1 w-50"
                                 placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
                                 disabled={!pregunta2[1]}
                               />
-                            </div>
-
-                            <label className="form-label">
+                    
+                            <label className="form-label d-flex">
                               3. ¿Está tomando algún medicamento?{" "}
                               <label className="m-1">
                                 <input
@@ -810,12 +818,12 @@ export default function History() {
                               value={pregunta3[0]}
                               onChange={(e) => setPregunta3((prevState) => [e.target.value, prevState[1]])}
                               type="text"
-                              className="form-control m-1"
+                              className="form-control m-1 w-50"
                               placeholder={pregunta3[1] ? "¿Qué medicamento?" : ""}
                               disabled={!pregunta3[1]}
                             />
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               4. ¿Es alérgico a algún medicamento?
                               <label className="m-1">
                                 <input
@@ -840,15 +848,13 @@ export default function History() {
                               value={pregunta4[0]}
                               onChange={(e) => setPregunta4((prevState) => [e.target.value, prevState[1]])}
                               type="text"
-                              className="form-control m-1"
+                              className="form-control m-1 w-50"
                               placeholder={pregunta4[1] ? "¿A cuál medicamento?" : ""}
                               disabled={!pregunta4[1]}
                             />
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               5. ¿Ha tenido alguna reacción a la anestesia local?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -869,10 +875,9 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
-                              6. ¿Está embarazada? <br />
-                              <br />
-                              <label className="m-1">
+                            <label className="form-label d-flex">
+                              6. ¿Está embarazada?
+                               <label className="m-1">
                                 <input
                                   type="checkbox"
                                   className="m-1"
@@ -891,12 +896,9 @@ export default function History() {
                                 No
                               </label>
                             </label>
-                          </div>
 
-                          <div className="col-md-4 mb-3">
-                            <label className="form-label">
-                              7. ¿Padece o padeció hepatitis? <br />
-                              <br />
+                            <label className="form-label d-flex">
+                              7. ¿Padece o padeció hepatitis?
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -917,10 +919,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               8. ¿Padece o padeció enfermedades renales?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -941,10 +941,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               9. ¿Tiene problemas del corazón?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -965,10 +963,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               10. ¿Padece o ha padecido cáncer?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -989,10 +985,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               11. ¿Ha tenido alguna cirugía?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1012,10 +1006,9 @@ export default function History() {
                                 No
                               </label>
                             </label>
-                            <br />
-                            <label className="form-label">
-                              12. ¿Es diabético? <br />
-                              <br />
+
+                            <label className="form-label d-flex">
+                              12. ¿Es diabético?
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1035,13 +1028,9 @@ export default function History() {
                                 No
                               </label>
                             </label>
-                          </div>
-
-                          <div className="col-md-4 mb-3">
-                            <label className="form-label">
+            
+                            <label className="form-label d-flex">
                               13. ¿Tiene trastornos de tipo convulsivo?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1062,10 +1051,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               14. ¿Lo han hospitalizado?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1086,10 +1073,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               15. ¿Ha tenido algun sangrado excesivo?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1110,10 +1095,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               16. ¿Tiene algun problema digestivo (úlceras o gastritis)?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1134,9 +1117,8 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
-                              17. ¿Toma anticonceptivos orales? <br />
-                              <br />
+                            <label className="form-label d-flex">
+                              17. ¿Toma anticonceptivos orales?
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1157,11 +1139,9 @@ export default function History() {
                               </label>
                             </label>
 
-                            <label className="form-label">
+                            <label className="form-label d-flex">
                               18. ¿Padece alguna otra enfermedad o transtorno que no se
                               mencione en esta lista y que debamos saber?
-                              <br />
-                              <br />
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -1181,6 +1161,14 @@ export default function History() {
                                 No
                               </label>
                             </label>
+                            <input
+                                value={pregunta18[0]}
+                                onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
+                                type="text"
+                                className="form-control w-50 m-1"
+                                placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
+                                disabled={!pregunta18[1]}
+                              />
                           </div>
                         </div>
                         {!id ? (
