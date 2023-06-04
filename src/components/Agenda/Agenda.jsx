@@ -212,7 +212,7 @@ function Citas() {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Apellido y Nombres o DNI..."
+                    placeholder="Buscar por Apellido y Nombres o IDC..."
                     className="form-control m-2"
                   />
                   {taparFiltro && (
@@ -377,7 +377,7 @@ function Citas() {
                         <th onClick={() => sorting("apellidoConNombre")}>
                           Apellido y Nombres
                         </th>
-                        <th onClick={() => sorting("idc")}>DNI</th>
+                        <th onClick={() => sorting("idc")}>IDC</th>
                         <th onClick={() => sorting("estado")}>Estado</th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
                         <th>Accion</th>

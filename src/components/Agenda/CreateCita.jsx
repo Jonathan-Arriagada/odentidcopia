@@ -18,6 +18,7 @@ function CreateCita(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idPacienteCita, setIdPacienteCita] = useState("");
   const [idc, setIdc] = useState("");
+  const [tipoIdc, setTipoIdc] = useState("dni");
   const [estado, setEstado] = useState("");
   const [numero, setNumero] = useState("");
   const [fecha, setFecha] = useState("");
@@ -108,6 +109,7 @@ function CreateCita(props) {
   useEffect(() => {
     if (props.client) {
       setApellidoConNombre(props.client.apellidoConNombre);
+      setTipoIdc(props.client.tipoIdc);
       setIdc(props.client.idc);
       setNumero(props.client.numero);
       setIdPacienteCita(props.client.id);
@@ -115,6 +117,7 @@ function CreateCita(props) {
       setEditable(false);
     } else {
       setApellidoConNombre("");
+      setTipoIdc("dni")
       setIdc("");
       setIdPacienteCita("");
       setNumero("");
@@ -131,6 +134,7 @@ function CreateCita(props) {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
           setApellidoConNombre(data.apellidoConNombre);
+          setTipoIdc(data.tipoIdc);
           setIdc(data.idc);
           setNumero(data.numero);
           setIdPacienteCita(props.id);
@@ -150,6 +154,7 @@ function CreateCita(props) {
     if (!querySnapshot.empty) {
       await addDoc(citasCollection, {
         apellidoConNombre: apellidoConNombre,
+        tipoIdc: tipoIdc,
         idc: idc,
         idPacienteCita: idPacienteCita,
         estado: estado,
@@ -165,6 +170,7 @@ function CreateCita(props) {
       const clientsRef = await addDoc(collection(db, "clients"), {
         apellidoConNombre: apellidoConNombre,
         idc: idc,
+        tipoIdc: tipoIdc,
         fechaNacimiento: "",
         numero: numero,
         valorBusqueda: apellidoConNombre + " " + idc,
@@ -201,6 +207,7 @@ function CreateCita(props) {
       await addDoc(citasCollection, {
         apellidoConNombre: apellidoConNombre,
         idPacienteCita: clientsRef.id,
+        tipoIdc: tipoIdc,
         idc: idc,
         estado: estado,
         numero: numero,
@@ -217,7 +224,8 @@ function CreateCita(props) {
   const manejarValorSeleccionado = async (suggestion) => {
     if (suggestion === "<---Ingreso manual--->" || suggestion === "") {
       setApellidoConNombre("");
-      setIdPacienteCita("");
+      setIdPacienteCita("")
+      setTipoIdc("dni")
       setIdc("");
       setNumero("");
       setEditable(true);
@@ -233,7 +241,8 @@ function CreateCita(props) {
     if (doc) {
       const data = doc.data();
       setApellidoConNombre(data.apellidoConNombre);
-      setIdPacienteCita(doc.id);
+      setIdPacienteCita(doc.id)
+      setTipoIdc(data.tipoIdc);
       setIdc(data.idc);
       setNumero(data.numero);
       setEditable(false);
@@ -243,6 +252,7 @@ function CreateCita(props) {
   const clearFields = () => {
     setApellidoConNombre("");
     setIdPacienteCita("");
+    setTipoIdc("dni")
     setIdc("");
     setNumero("");
     setEstado("");
@@ -278,21 +288,14 @@ function CreateCita(props) {
   };
 
   return (
-    <Modal
-      {...props}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header
-        closeButton
-        onClick={() => {
-          setEditable(true);
-          setApellidoConNombre("");
-          setIdc("");
-          setNumero("");
-        }}
-      >
+    <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal.Header closeButton onClick={() => {
+        setEditable(true);
+        setApellidoConNombre("");
+        setTipoIdc("dni");
+        setIdc("");
+        setNumero("");
+      }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cita</h1>
         </Modal.Title>
@@ -343,15 +346,40 @@ function CreateCita(props) {
                   />
                 </div>
                 <div className="col mb-3">
-                  <label className="form-label">DNI*</label>
-                  <input
-                    value={idc || ""}
-                    onChange={(e) => setIdc(e.target.value)}
-                    type="number"
-                    className="form-control"
-                    disabled={!editable}
-                    required
-                  />
+                  <label className="form-label">IDC*</label>
+                  <div style={{ display: "flex" }}>
+                    <select
+                      value={tipoIdc}
+                      onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                      className="form-control-tipoIDC"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="dni">DNI</option>
+                      <option value="ce">CE</option>
+                      <option value="ruc">RUC</option>
+                      <option value="pas">PAS</option>
+
+                    </select>
+                    <input
+                      value={idc || ""}
+                      onChange={(e) => setIdc(e.target.value)}
+                      type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                      minLength={tipoIdc === "dni" ? 8 : undefined}
+                      maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                      onKeyDown={(e) => {
+                        const maxLength = e.target.maxLength;
+                        const currentValue = e.target.value;
+                        if (maxLength && currentValue.length >= maxLength) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="form-control"
+                      disabled={!editable}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 

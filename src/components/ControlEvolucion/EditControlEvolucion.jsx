@@ -6,6 +6,7 @@ import { AuthContext } from "../../context/AuthContext"
 
 const Edit = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.control.apellidoConNombre || '');
+  const [tipoIdc, setTipoIdc] = useState(props.control.tipoIdc || "dni");
   const [idc, setIdc] = useState(props.control.idc || '');
   const [tratamientoControl, setTratamientoControl] = useState(props.control.tratamientoControl || '');
   const [pieza, setPieza] = useState(props.control.pieza || '');
@@ -22,6 +23,7 @@ const Edit = (props) => {
 
     const newData = {
       apellidoConNombre: apellidoConNombre || controlData.apellidoConNombre,
+      tipoIdc: tipoIdc || controlData.tipoIdc,
       idc: idc || controlData.idc,
       tratamientoControl: tratamientoControl || controlData.tratamientoControl,
       pieza: pieza || controlData.pieza,
@@ -62,14 +64,39 @@ const Edit = (props) => {
                     />
                   </div>
                   <div className="col mb-6">
-                    <label className="form-label">DNI:</label>
-                    <input
-                      defaultValue={props.control.idc}
-                      onChange={(e) => setIdc(e.target.value)}
-                      type="number"
-                      className="form-control"
-                      disabled
-                    />
+                    <label className="form-label">IDC*</label>
+                    <div style={{ display: "flex" }}>
+                      <select
+                        value={tipoIdc}
+                        onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                        className="form-control-tipoIDC"
+                        multiple={false}
+                        style={{ width: "fit-content" }}
+                        required
+                      >
+                        <option value="dni">DNI</option>
+                        <option value="ce">CE</option>
+                        <option value="ruc">RUC</option>
+                        <option value="pas">PAS</option>
+
+                      </select>
+                      <input
+                        defaultValue={props.control.idc}
+                        onChange={(e) => setIdc(e.target.value)}
+                        type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                        minLength={tipoIdc === "dni" ? 8 : undefined}
+                        maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                        onKeyDown={(e) => {
+                          const maxLength = e.target.maxLength;
+                          const currentValue = e.target.value;
+                          if (maxLength && currentValue.length >= maxLength) {
+                            e.preventDefault();
+                          }
+                        }}
+                        className="form-control"
+                        disabled
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="row">

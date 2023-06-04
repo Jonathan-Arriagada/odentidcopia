@@ -143,7 +143,7 @@ const Show = () => {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Apellido y Nombres o DNI..."
+                    placeholder="Buscar por Apellido y Nombres o IDC..."
                     className="form-control m-2"
                   />
                 </div>                    
@@ -200,7 +200,7 @@ const Show = () => {
                         <th onClick={() => sorting("apellidoConNombre")}>
                           Apellido Y Nombres
                         </th>
-                        <th onClick={() => sorting("idc")}>DNI</th>
+                        <th onClick={() => sorting("idc")}>IDC</th>
                         <th onClick={() => sorting("fechaNacimiento")}>
                           Fecha Nacimiento
                         </th>

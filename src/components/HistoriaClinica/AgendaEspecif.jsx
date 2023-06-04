@@ -275,7 +275,7 @@ function AgendaEspecif(id) {
                             <th onClick={() => sorting("apellidoConNombre")}>
                               Apellido y Nombres
                             </th>
-                            <th onClick={() => sorting("idc")}>DNI</th>
+                            <th onClick={() => sorting("idc")}>IDC</th>
                             <th onClick={() => sorting("estado")}>Estado</th>
                             <th onClick={() => sorting("numero")}>Telefono</th>
                             <th>Notas</th>
