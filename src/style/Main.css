@@ -654,7 +654,6 @@ input[type="file"]::before {
   align-items: center;
   gap: 10px;
   padding: 25px 0 15px;
-  background-color: rgba(255, 255, 255, 0.377);
   border-radius: 14px;
   margin-bottom: 10px;
 }
@@ -664,7 +663,6 @@ input[type="file"]::before {
   content: "";
   height: 1px;
   width: 88%;
-  background-color: var(--color-white);
   bottom: 0;
 }
 
@@ -679,18 +677,9 @@ input[type="file"]::before {
   display: none;
 }
 
-.navigation header .profile {
-  height: 50px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background-color: var(--color-light-text);
-}
 
 .profile-img {
   height: 100%;
-  aspect-ratio: 1;
-  border-radius: 40%;
-  object-fit: cover;
 }
 
 .navigation.active header .profile {

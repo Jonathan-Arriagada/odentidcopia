@@ -6,6 +6,7 @@ import { Link,useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import logo from "../img/icono.png"
 import "../style/Main.css";
 import Swal from "sweetalert2";
 
@@ -104,9 +105,9 @@ const Navigation = () => {
         </div>
         <header>
             <div className="profile">
-                <img src={currentUser.photoURL || profile} alt="profile" className="profile-img" />
+                <img src={logo} alt="profile" className="profile-img" />
             </div>
-            <span>{currentUser.displayName}</span>
+            <span>Hola, {currentUser.displayName}</span>
         </header>
         {isLoading && (
             <>
