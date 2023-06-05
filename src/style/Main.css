@@ -384,7 +384,7 @@ input[type="file"]::before {
 @media (max-width: 1360px) and (max-height: 768px) {
   .login-page {
     left: 10%;
-    top: 10%;
+    top: 15%;
   }
 }
 
