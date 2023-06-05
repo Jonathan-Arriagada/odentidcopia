@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import peruFlag from "../../img/peru.png"
 import argentinaFlag from "../../img/argentina.png"
+import moment from "moment";
 
 const Create = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
