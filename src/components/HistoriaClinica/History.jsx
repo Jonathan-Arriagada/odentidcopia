@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { getDoc, doc, updateDoc, getDocs, query, where, collection, addDoc, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../Navigation";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import TratamientosEspecif from "./TratamientosEspecif";
@@ -15,6 +15,8 @@ import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
 import moment from "moment";
 import "../../style/Main.css";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,6 +62,7 @@ export default function History() {
   const [mostrarAntecedentes, setMostrarAntecedentes] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const { currentUser, } = useContext(AuthContext);
 
   const [pregunta1, setPregunta1] = useState(["", false]);
   const [pregunta2, setPregunta2] = useState(["", false]);
@@ -112,17 +115,17 @@ export default function History() {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -430,17 +433,17 @@ const confirmLogout = (e) => {
               </>
 
               <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                  Bienvenido al sistema Odentid
-                </p>
-                <div className="d-flex">
-                  <div className="notificacion">
-                    <Link
-                      to="/miPerfil"
-                      className="text-decoration-none"
-                    >
-                      <FaUser className="icono" />
-                    </Link>
+              <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                    Bienvenido {currentUser.displayName}
+                  </p>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                      </Link>
                   </div>
                   <div className="notificacion">
                     <FaBell className="icono" />
@@ -533,7 +536,8 @@ const confirmLogout = (e) => {
                                   onKeyDown={(e) => {
                                     const maxLength = e.target.maxLength;
                                     const currentValue = e.target.value;
-                                    if (maxLength && currentValue.length >= maxLength) {
+                                    const isTabKey = e.key === "Tab";
+                                    if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                                       e.preventDefault();
                                     }
                                   }}
@@ -732,68 +736,68 @@ const confirmLogout = (e) => {
                         <div className="d-flex m-2">
                           <div className="col-mb-3">
 
-                            <hr/>
-                  
-                              <label className="form-label d-flex">
-                                1. ¿Está siendo atendido por un médico?
-                                <label className="m-1">
-                                  <input
-                                    type="radio"
-                                    className="m-1"
-                                    checked={pregunta1[1]}
-                                    onChange={() => setPregunta1((prevState) => [prevState[0], true])}
-                                  />
-                                  Sí
-                                </label>
-                                <label className="m-1">
-                                  <input
-                                    type="radio"
-                                    className="m-1"
-                                    checked={!pregunta1[1]}
-                                    onChange={() => setPregunta1((prevState) => [prevState[0], false])}
-                                  />
-                                  No
-                                </label>
+                            <hr />
+
+                            <label className="form-label d-flex">
+                              1. ¿Está siendo atendido por un médico?
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={pregunta1[1]}
+                                  onChange={() => setPregunta1((prevState) => [prevState[0], true])}
+                                />
+                                Sí
                               </label>
-                              <input
-                                value={pregunta1[0]}
-                                onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
-                                type="text"
-                                className="form-control w-50 m-1"
-                                placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
-                                disabled={!pregunta1[1]}
-                              />             
-                   
-                              <label className="form-label d-flex">
-                                2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
-                                <label className="m-1">
-                                  <input
-                                    type="radio"
-                                    className="m-1"
-                                    checked={pregunta2[1]}
-                                    onChange={() => setPregunta2((prevState) => [prevState[0], true])}
-                                  />
-                                  Sí
-                                </label>
-                                <label className="m-1">
-                                  <input
-                                    type="radio"
-                                    className="m-1"
-                                    checked={!pregunta2[1]}
-                                    onChange={() => setPregunta2((prevState) => [prevState[0], false])}
-                                  />
-                                  No
-                                </label>
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={!pregunta1[1]}
+                                  onChange={() => setPregunta1((prevState) => [prevState[0], false])}
+                                />
+                                No
                               </label>
-                              <input
-                                value={pregunta2[0]}
-                                onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
-                                type="text"
-                                className="form-control m-1 w-50"
-                                placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
-                                disabled={!pregunta2[1]}
-                              />
-                    
+                            </label>
+                            <input
+                              value={pregunta1[0]}
+                              onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
+                              type="text"
+                              className="form-control w-50 m-1"
+                              placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
+                              disabled={!pregunta1[1]}
+                            />
+
+                            <label className="form-label d-flex">
+                              2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={pregunta2[1]}
+                                  onChange={() => setPregunta2((prevState) => [prevState[0], true])}
+                                />
+                                Sí
+                              </label>
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={!pregunta2[1]}
+                                  onChange={() => setPregunta2((prevState) => [prevState[0], false])}
+                                />
+                                No
+                              </label>
+                            </label>
+                            <input
+                              value={pregunta2[0]}
+                              onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
+                              type="text"
+                              className="form-control m-1 w-50"
+                              placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
+                              disabled={!pregunta2[1]}
+                            />
+
                             <label className="form-label d-flex">
                               3. ¿Está tomando algún medicamento?{" "}
                               <label className="m-1">
@@ -877,8 +881,8 @@ const confirmLogout = (e) => {
                             </label>
 
                             <label className="form-label d-flex">
-                              6. ¿Está embarazada?       
-                               <label className="m-1">
+                              6. ¿Está embarazada?
+                              <label className="m-1">
                                 <input
                                   type="radio"
                                   className="m-1"
@@ -895,8 +899,8 @@ const confirmLogout = (e) => {
                                   onChange={() => setPregunta6((prevState) => [prevState[0], false])}
                                 />
                                 No
-                              </label>                     
-                             </label>
+                              </label>
+                            </label>
 
                             <label className="form-label d-flex">
                               7. ¿Padece o padeció hepatitis?
@@ -1029,7 +1033,7 @@ const confirmLogout = (e) => {
                                 No
                               </label>
                             </label>
-            
+
                             <label className="form-label d-flex">
                               13. ¿Tiene trastornos de tipo convulsivo?
                               <label className="m-1">
@@ -1163,13 +1167,13 @@ const confirmLogout = (e) => {
                               </label>
                             </label>
                             <input
-                                value={pregunta18[0]}
-                                onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
-                                type="text"
-                                className="form-control w-50 m-1"
-                                placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
-                                disabled={!pregunta18[1]}
-                              />
+                              value={pregunta18[0]}
+                              onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
+                              type="text"
+                              className="form-control w-50 m-1"
+                              placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
+                              disabled={!pregunta18[1]}
+                            />
                           </div>
                         </div>
                         {!id ? (

@@ -56,7 +56,7 @@ const CreateTarifa = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={store}>
+              <form onSubmit={store}style={{ transform: "scale(0.96)" }}>
                 <div className="mb-3">
                   <label className="form-label">Codigo</label>
                   <input

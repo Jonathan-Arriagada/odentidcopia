@@ -1,15 +1,17 @@
 import React from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
 
 const Ingresos = () => {
   const [tratamientos, setTratamientos] = useState([]);
@@ -26,7 +28,9 @@ const Ingresos = () => {
 
   const tratamientosCollectionRef = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectionRef));
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { currentUser, } = useContext(AuthContext);
+
 
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
@@ -34,17 +38,17 @@ const Ingresos = () => {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -83,7 +87,6 @@ const confirmLogout = (e) => {
         const {
           fechaCobro,
           importeAbonado,
-          metodoPago,
           codigoTratamiento,
           pacienteCobro,
           tratamientoCobro,
@@ -92,7 +95,6 @@ const confirmLogout = (e) => {
 
         const filteredFechaCobro = [];
         const filteredImporteAbonado = [];
-        const filteredMetodoPago = [];
         const filteredCodigoTratamiento = [];
         const filteredPacienteCobro = [];
         const filteredTratamientoCobro = [];
@@ -104,7 +106,6 @@ const confirmLogout = (e) => {
           if (fechaz >= search.fechaInicio && fechaz <= search.fechaFin) {
             filteredFechaCobro.push(fecha);
             filteredImporteAbonado.push(importeAbonado[i]);
-            filteredMetodoPago.push(metodoPago[i]);
             filteredCodigoTratamiento.push(codigoTratamiento[i]);
             filteredPacienteCobro.push(pacienteCobro[i]);
             filteredTratamientoCobro.push(tratamientoCobro[i]);
@@ -117,7 +118,6 @@ const confirmLogout = (e) => {
           cobrosManuales: {
             fechaCobro: filteredFechaCobro,
             importeAbonado: filteredImporteAbonado,
-            metodoPago: filteredMetodoPago,
             codigoTratamiento: filteredCodigoTratamiento,
             pacienteCobro: filteredPacienteCobro,
             tratamientoCobro: filteredTratamientoCobro,
@@ -135,7 +135,6 @@ const confirmLogout = (e) => {
           const {
             fechaCobro,
             importeAbonado,
-            metodoPago,
             codigoTratamiento,
             pacienteCobro,
             tratamientoCobro,
@@ -144,7 +143,6 @@ const confirmLogout = (e) => {
 
           const filteredFechaCobro = [];
           const filteredImporteAbonado = [];
-          const filteredMetodoPago = [];
           const filteredCodigoTratamiento = [];
           const filteredPacienteCobro = [];
           const filteredTratamientoCobro = [];
@@ -156,7 +154,6 @@ const confirmLogout = (e) => {
             if (fechaz === search) {
               filteredFechaCobro.push(fecha);
               filteredImporteAbonado.push(importeAbonado[i]);
-              filteredMetodoPago.push(metodoPago[i]);
               filteredCodigoTratamiento.push(codigoTratamiento[i]);
               filteredPacienteCobro.push(pacienteCobro[i]);
               filteredTratamientoCobro.push(tratamientoCobro[i]);
@@ -169,7 +166,6 @@ const confirmLogout = (e) => {
             cobrosManuales: {
               fechaCobro: filteredFechaCobro,
               importeAbonado: filteredImporteAbonado,
-              metodoPago: filteredMetodoPago,
               codigoTratamiento: filteredCodigoTratamiento,
               pacienteCobro: filteredPacienteCobro,
               tratamientoCobro: filteredTratamientoCobro,
@@ -185,10 +181,6 @@ const confirmLogout = (e) => {
               .toLowerCase()
               .includes(search.toLowerCase()) ||
             dato.cobrosManuales.tratamientoCobro
-              ?.toString()
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            dato.cobrosManuales.metodoPago
               ?.toString()
               .toLowerCase()
               .includes(search.toLowerCase())
@@ -275,7 +267,7 @@ const confirmLogout = (e) => {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Tratamiento, Paciente o Metodo Pago..."
+                    placeholder="Buscar por Tratamiento o Paciente..."
                     className="form-control m-2"
                   />
                   {taparFiltro && (
@@ -295,7 +287,7 @@ const confirmLogout = (e) => {
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido al sistema Odentid
+                    Bienvenido {currentUser.displayName}
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
@@ -303,7 +295,7 @@ const confirmLogout = (e) => {
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
-                        <FaUser className="icono" />
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
                     </div>
                     <div className="notificacion">
@@ -494,9 +486,6 @@ const confirmLogout = (e) => {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("fechaCobro")}>Fecha</th>
-                        <th onClick={() => sorting("metodoPago")}>
-                          Metodo Pago
-                        </th>
                         <th onClick={() => sorting("importeAbonado")}>
                           Importe
                         </th>
@@ -523,9 +512,6 @@ const confirmLogout = (e) => {
                               tratamiento.cobrosManuales.importeAbonado[
                               index
                               ] || "";
-                            const metodoPago =
-                              tratamiento.cobrosManuales.metodoPago[index] ||
-                              "";
                             const cta =
                               tratamiento.cobrosManuales.codigoTratamiento[
                               index
@@ -549,7 +535,6 @@ const confirmLogout = (e) => {
                                       "DD/MM/YY"
                                     )}
                                   </td>
-                                  <td>{metodoPago.toString()}</td>
                                   <td>{importe.toString()}</td>
                                   <td>{cta.toString()}</td>
                                   <td>{paciente.toString()}</td>

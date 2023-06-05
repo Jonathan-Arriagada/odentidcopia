@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import EditControlEvolucion from "./EditControlEvolucion";
 import moment from "moment";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
 
 const ControlEvolucion = () => {
     const [controles, setControles] = useState([]);
@@ -20,6 +22,7 @@ const ControlEvolucion = () => {
     const [idParam, setIdParam] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [modalShowVerDetalle, setModalShowVerDetalle] = useState(false);
+    const { currentUser, } = useContext(AuthContext);
     const navigate = useNavigate
 
     const logout = useCallback(() => {
@@ -152,17 +155,17 @@ const ControlEvolucion = () => {
                                     />
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                                    <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                                        Bienvenido al sistema Odentid
-                                    </p>
-                                    <div className="d-flex">
-                                        <div className="notificacion">
-                                            <Link
-                                                to="/miPerfil"
-                                                className="text-decoration-none"
-                                            >
-                                                <FaUser className="icono" />
-                                            </Link>
+                                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                                    Bienvenido {currentUser.displayName}
+                                </p>
+                                <div className="d-flex">
+                                    <div className="notificacion">
+                                    <Link
+                                        to="/miPerfil"
+                                        className="text-decoration-none"
+                                    >
+                                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                                    </Link>
                                         </div>
                                         <div className="notificacion">
                                             <FaBell className="icono" />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, getDoc} from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
@@ -328,19 +328,8 @@ function CreateCita(props) {
               </div>
             )}
 
-            <form>
+            <form style={{ transform: "scale(0.96)" }}>
               <div className="row">
-                <div className="col mb-3">
-                  <label className="form-label">Apellido y Nombres*</label>
-                  <input
-                    value={apellidoConNombre || ""}
-                    onChange={(e) => setApellidoConNombre(e.target.value)}
-                    type="text"
-                    className="form-control"
-                    disabled={!editable}
-                    required
-                  />
-                </div>
                 <div className="col mb-3">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
@@ -367,7 +356,8 @@ function CreateCita(props) {
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
-                        if (maxLength && currentValue.length >= maxLength) {
+                        const isTabKey = e.key === "Tab";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                           e.preventDefault();
                         }
                       }}
@@ -377,13 +367,26 @@ function CreateCita(props) {
                     />
                   </div>
                 </div>
+
+                <div className="col mb-3">
+                  <label className="form-label">Apellido y Nombres*</label>
+                  <input
+                    value={apellidoConNombre || ""}
+                    onChange={(e) => setApellidoConNombre(e.target.value)}
+                    type="text"
+                    className="form-control"
+                    disabled={!editable}
+                    required
+                  />
+                </div>
+
               </div>
 
               <div className="row">
                 <div className="col mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                  <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
+                    <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
                     <select
                       value={selectedCode}
                       onChange={(e) => { setSelectedCode(e.target.value); setNumero("") }}
@@ -395,13 +398,13 @@ function CreateCita(props) {
                       <option value="+51">+51</option>
                       <option value="+54">+54</option>
                     </select>
-                  <input
-                    value={numero || ""}
-                    onChange={(e) => setNumero(e.target.value)}
-                    type="number"
-                    className="form-control"
-                    required
-                  />
+                    <input
+                      value={numero || ""}
+                      onChange={(e) => setNumero(e.target.value)}
+                      type="number"
+                      className="form-control"
+                      required
+                    />
                   </div>
                 </div>
 

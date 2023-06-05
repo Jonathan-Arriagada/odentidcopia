@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { Modal } from "react-bootstrap";
 import Navigation from "../../Navigation.jsx";
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
-import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
+import { FaBell, FaSignOutAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../../context/AuthContext.js";
+import profile from "../../../img/icono.png";
 
 const Proveedores = () => {
   const [ruc, setRuc] = useState("");
@@ -19,6 +21,7 @@ const Proveedores = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [modalShowGestionProveedores, setModalShowGestionProveedores] = useState(false);
   const [search, setSearch] = useState("");
+  const { currentUser, } = useContext(AuthContext);
 
   const proveedoresCollection = collection(db, "proveedores");
   const proveedoresCollectionOrdenados = useRef(query(proveedoresCollection, orderBy("name")));
@@ -173,16 +176,16 @@ const confirmLogout = (e) => {
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido al sistema Odentid
+                      Bienvenido {currentUser.displayName}
                   </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                        <FaUser className="icono" />
-                      </Link>
+                   <div className="d-flex">
+                      <div className="notificacion">
+                        <Link
+                          to="/miPerfil"
+                          className="text-decoration-none"
+                        >
+                          <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                        </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />

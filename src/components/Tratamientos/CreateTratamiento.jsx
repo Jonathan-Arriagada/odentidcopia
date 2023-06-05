@@ -15,9 +15,8 @@ function CreateTratamiento(props) {
   const [cta, setCta] = useState("");
   const [precio, setPrecio] = useState("");
   const [tarifasTratamientos, setTarifasTratamientos] = useState("");
+  const [formaPago, setFormaPago] = useState("contado");
   const [pieza, setPieza] = useState("");
-  const [plazo, setPlazo] = useState("");
-  const [cuota, setCuota] = useState("");
   const [estadosTratamientos, setEstadosTratamientos] = useState("");
   const [fecha, setFecha] = useState("");
   const [fechaVencimiento, setFechaVencimiento] = useState("");
@@ -97,9 +96,7 @@ function CreateTratamiento(props) {
       idc.trim() === "" ||
       tarifasTratamientos.trim() === "" ||
       estadosTratamientos.trim() === "" ||
-      fecha.trim() === "" ||
-      fechaVencimiento.trim() === "" ||
-      plazo.trim() === ""
+      fecha.trim() === ""
     ) {
       setError("Respeta los campos obligatorios *");
       setTimeout(clearError, 2000)
@@ -125,9 +122,8 @@ function CreateTratamiento(props) {
     setPrecio("")
     setTarifasTratamientos("")
     setPieza("")
-    setPlazo("")
-    setCuota("")
     setEstadosTratamientos("")
+    setFormaPago("")
     setFecha("")
     setFechaVencimiento("")
     setNotas("")
@@ -143,10 +139,9 @@ function CreateTratamiento(props) {
       idc: idc,
       cta: cta,
       precio: precio,
+      formaPago: formaPago,
       tarifasTratamientos: tarifasTratamientos,
       pieza: pieza,
-      plazo: plazo,
-      cuota: cuota,
       estadosTratamientos: estadosTratamientos,
       fecha: fecha,
       fechaVencimiento: fechaVencimiento,
@@ -161,15 +156,15 @@ function CreateTratamiento(props) {
       },
     });
     await addDoc(controlesCollection, {
-      codigo: codigo,
+      codigoTratamiento: codigo,
       apellidoConNombre: apellidoConNombre,
       idPaciente: idPaciente,
       tipoIdc: tipoIdc,
       idc: idc,
-      tarifasTratamientos: tarifasTratamientos,
+      tratamientoControl: tarifasTratamientos,
       pieza: pieza,
-      fecha: fecha,
-      notas: "1° Tratamiento Iniciado: " + notas,
+      fechaControlRealizado: fecha,
+      detalleTratamiento: "1° Tratamiento Iniciado: " + notas,
       doctor: currentUser.displayName,
     });
     clearFields();
@@ -246,48 +241,37 @@ function CreateTratamiento(props) {
       <Modal.Body>
         <div className="container">
           {showBuscador && (
-    <div className="col mb-3" style={{ position: "relative" }}>
-          <input
-            placeholder="Buscador por Apellido, Nombre o DNI"
-            type="text"
-            className="form-control"
-            onChangeCapture={(e) =>
-              manejarValorSeleccionado(e.target.value)
-            }
-            list="pacientes-list"
-            multiple={false}
-          />
-          <span
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "10px",
-              transform: "translateY(-60%)",
-            }}
-          >
-            <FaSearch />
-          </span>
-          <datalist id="pacientes-list">
-            <option value="">Ingreso manual</option>
-            {valorBusquedaOptionsJSX}
-          </datalist>
-        </div>
+            <div className="col mb-3" style={{ position: "relative" }}>
+              <input
+                placeholder="Buscador por Apellido, Nombre o DNI"
+                type="text"
+                className="form-control"
+                onChangeCapture={(e) =>
+                  manejarValorSeleccionado(e.target.value)
+                }
+                list="pacientes-list"
+                multiple={false}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  right: "10px",
+                  transform: "translateY(-60%)",
+                }}
+              >
+                <FaSearch />
+              </span>
+              <datalist id="pacientes-list">
+                <option value="">Ingreso manual</option>
+                {valorBusquedaOptionsJSX}
+              </datalist>
+            </div>
           )}
 
-          <form>
+          <form style={{ transform: "scale(0.96)" }}>
             <div className="row">
               <div className="col mb-3">
-                <label className="form-label">Apellido y Nombres*</label>
-                <input
-                  value={apellidoConNombre}
-                  onChange={(e) => setApellidoConNombre(e.target.value)}
-                  type="text"
-                  className="form-control"
-                  disabled={!editable}
-                  required
-                />
-              </div>
-              <div className="mb-3">
                 <label className="form-label">IDC*</label>
                 <div style={{ display: "flex" }}>
                   <select
@@ -313,7 +297,8 @@ function CreateTratamiento(props) {
                     onKeyDown={(e) => {
                       const maxLength = e.target.maxLength;
                       const currentValue = e.target.value;
-                      if (maxLength && currentValue.length >= maxLength) {
+                      const isTabKey = e.key === "Tab";
+                      if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                         e.preventDefault();
                       }
                     }}
@@ -322,6 +307,17 @@ function CreateTratamiento(props) {
                     required
                   />
                 </div>
+              </div>
+              <div className="col mb-3">
+                <label className="form-label">Apellido y Nombres*</label>
+                <input
+                  value={apellidoConNombre}
+                  onChange={(e) => setApellidoConNombre(e.target.value)}
+                  type="text"
+                  className="form-control"
+                  disabled={!editable}
+                  required
+                />
               </div>
             </div>
 
@@ -359,14 +355,19 @@ function CreateTratamiento(props) {
 
             <div className="row">
               <div className="col mb-2">
-                <label className="form-label">Cta</label>
-                <input
-                  value={cta}
-                  type="number"
+                <label className="form-label">Forma de Pago</label>
+                <select
+                  value={formaPago}
+                  onChange={(e) => setFormaPago(e.target.value)}
                   className="form-control"
-                  disabled={true}
-                />
+                  multiple={false}
+                  required
+                >
+                  <option value="contado">Contado</option>
+                  <option value="cuotas">Cuotas</option>
+                </select>
               </div>
+
               <div className="col mb-2">
                 <label className="form-label">Precio</label>
                 <input
@@ -376,33 +377,12 @@ function CreateTratamiento(props) {
                   disabled={true}
                 />
               </div>
-            </div>
 
-            <div className="row">
-              <div className="col mb-3">
+              <div className="col mb-2">
                 <label className="form-label">Pieza</label>
                 <input
                   value={pieza}
                   onChange={(e) => setPieza(e.target.value)}
-                  type="number"
-                  className="form-control"
-                />
-              </div>
-              <div className="col mb-3">
-                <label className="form-label">Plazo*</label>
-                <input
-                  value={plazo}
-                  onChange={(e) => setPlazo(e.target.value)}
-                  type="number"
-                  className="form-control"
-                  required
-                />
-              </div>
-              <div className="col mb-3">
-                <label className="form-label">Cuota</label>
-                <input
-                  value={cuota}
-                  onChange={(e) => setCuota(e.target.value)}
                   type="number"
                   className="form-control"
                 />
@@ -420,7 +400,7 @@ function CreateTratamiento(props) {
                   required
                 />
               </div>
-              <div className="col mb-3">
+              {formaPago === "cuotas" && (<div className="col mb-3">
                 <label className="form-label">Fecha Vencimiento*</label>
                 <input
                   value={fechaVencimiento}
@@ -429,7 +409,7 @@ function CreateTratamiento(props) {
                   className="form-control"
                   required
                 />
-              </div>
+              </div>)}
             </div>
 
             <div className="row">

@@ -1,9 +1,8 @@
 
 import Nav from "./zNavIcons/Nav";
 import { FaUsers, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt,FaChevronDown , FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax } from 'react-icons/fa';
-import { useState, useContext,useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import logo from "../img/icono.png"
@@ -12,7 +11,6 @@ import Swal from "sweetalert2";
 
 const Navigation = () => {
     const [isActive, setIsActive] = useState(false);
-    const { currentUser, } = useContext(AuthContext);
     const [userType, setUserType] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -21,7 +19,6 @@ const Navigation = () => {
     const [isMouseMoving, setIsMouseMoving] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-
 
     const logout = useCallback(() => {
         localStorage.setItem("user", JSON.stringify(null));
@@ -108,13 +105,11 @@ const Navigation = () => {
             <div className="profile">
                 <img src={logo} alt="profile" className="profile-img" />
             </div>
-            <span>Hola, {currentUser.displayName}</span>
         </header>
         {isLoading && (
-            <>
-                <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link>
-                <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
-
+            <>  
+            <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
+            <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link>
                 <div className={open2 ? "sidebar-item open" : "sidebar-item"}>
                     <div className="sidebar-title d-flex align-items-center justify-content-between">
                         <Nav title="Gestion Economia" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />

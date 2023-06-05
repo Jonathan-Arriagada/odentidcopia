@@ -30,15 +30,14 @@ function ControlEvolucionEspecif(props) {
 
 
   const getControles = useCallback((snapshot) => {
-    const controlesArray = snapshot.docs
-      .filter((doc) => {
-        if (props.tratamiento) {
-          setMostrarBuscadores(false);
-          return doc.data().codigoTratamiento === props.tratamiento.codigo;
-        } else {
-          return doc.data().idPaciente === props.id;
-        }
-      })
+    const controlesArray = snapshot.docs.filter((doc) => {
+      if (props.tratamiento) {
+        setMostrarBuscadores(false);
+        return doc.data().codigoTratamiento === props.tratamiento.codigo;
+      } else {
+        return doc.data().idPaciente === props.id;
+      }
+    })
       .map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -102,7 +101,7 @@ function ControlEvolucionEspecif(props) {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si' ,
+      confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -114,7 +113,7 @@ function ControlEvolucionEspecif(props) {
         )
       }
     })
-}
+  }
 
   var results = controles;
   if (mostrarBuscadores) {

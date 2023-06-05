@@ -25,16 +25,19 @@ body {
   font-family: 'Goldplay';
   overflow-x: hidden;
 }
+
 h1 {
   color: var(--color-primario-normal) !important;
   letter-spacing: 1px;
   font-weight: 600;
 }
+
 h3 {
   color: var(--color-primario-normal) !important;
   letter-spacing: 1px !important;
   font-weight: 600 !important;
 }
+
 #boton-main {
   background: var(--color-estilo-main);
   color: var(--color-white);
@@ -45,27 +48,27 @@ h3 {
   color: var(--color-white);
 }
 
-.button-main:hover{
-  background-color: var(--color-estilo-main);  
+.button-main:hover {
+  background-color: var(--color-estilo-main);
   color: var(--color-white);
 }
 
-.grey{
+.grey {
   color: var(--color-light-text)
 }
 
-.greenWater{
+.greenWater {
   color: var(--color-estilo-main);
 }
 
-.without{
+.without {
   outline: none;
   border: none;
-  background-color: var(--color-white);  
+  background-color: var(--color-white);
 }
 
-.without:hover{
-  background-color: var(--color-white);  
+.without:hover {
+  background-color: var(--color-white);
   color: var(--color-estilo-main);
   outline: none;
   border: none;
@@ -185,6 +188,11 @@ tbody tr.hide td p {
   transition: .2s ease-in-out .5s;
 }
 
+#columnaAccion{
+  width: min-content !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 /*<!------------Termina estilos tablas---------------->*/
 
 /*ESTILOS TABPANELS*/
@@ -193,17 +201,19 @@ tbody tr.hide td p {
   font-weight: bolder !important;
   color: var(--color-light-text) !important;
 }
+
 .Mui-selected {
   color: var(--color-primario-fuerte) !important;
   font-weight: bold !important;
   font-family: 'Goldplay' !important;
 }
+
 .MuiTabs-indicator {
-  background-color:var(--color-estilo-main) !important;
+  background-color: var(--color-estilo-main) !important;
 }
 
-#tituloH1History{
- font-size: 2rem !important;
+#tituloH1History {
+  font-size: 2rem !important;
 }
 
 
@@ -337,6 +347,15 @@ input[type="file"]::before {
   color: var(--color-black);
 }
 
+/*ESTILOS DROPDOWN ACTIONS ACCIONES*/
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+#dropdown-button2::after {
+  display: block !important;
+}
+
 /*ESTILOS LOGIN.CSS*/
 .login {
   display: flex;
@@ -352,11 +371,9 @@ input[type="file"]::before {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  left: 20% !important;
-  top: 3%;
+  left: 20%;
+  top: 20%;
   margin: auto;
-  margin-top: 45px;
-  margin-top: 0px;
   width: 400px;
   aspect-ratio: 1;
   border-radius: 9px;
@@ -364,10 +381,10 @@ input[type="file"]::before {
   animation: Entrance 2s ease 0s 1 normal forwards;
 }
 
-@media (max-width: 1440px) and (max-height: 768px) {
+@media (max-width: 1360px) and (max-height: 768px) {
   .login-page {
     left: 10%;
-    top: 5%;
+    top: 15%;
   }
 }
 
@@ -393,7 +410,8 @@ input[type="file"]::before {
   position: relative;
 }
 
-.email, .password {
+.email,
+.password {
   width: 100%;
   border: none;
   background-color: transparent;
@@ -401,7 +419,8 @@ input[type="file"]::before {
   border: 1px solid var(--color-border);
   color: rgb(0, 0, 0);
 }
-.login-page form input{
+
+.login-page form input {
   width: 100%;
   border: none;
 }
@@ -445,6 +464,7 @@ input[type="file"]::before {
 .button-login:active {
   scale: 0.98;
 }
+
 .button-login {
   padding-top: 10px !important;
 }
@@ -480,25 +500,29 @@ input[type="file"]::before {
   line-height: 1;
   animation: Entrance 2s ease 0s 1 normal forwards;
 }
+
 .welcome-text span:nth-child(1) {
   text-align: start;
 }
+
 .welcome-text span:nth-child(2) {
   text-align: start;
 }
+
 .welcome-text span {
   display: block;
 }
-@keyframes Entrance {
-	0% {
-		opacity: 0;
-		transform: translateY(-200px);
-	}
 
-	100% {
-		opacity: 1;
-		transform: translateY(0);
-	}
+@keyframes Entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(-200px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /*ESTILOS LOADING.CSS*/
@@ -550,7 +574,7 @@ input[type="file"]::before {
   font-size: 20px;
   margin-right: 10px;
   color: var(--color-light-text);
-  
+
 }
 
 .profile-picture {
@@ -568,6 +592,7 @@ input[type="file"]::before {
   .right-navbar {
     width: 35%;
   }
+
   .navigation {
     width: 40%
   }

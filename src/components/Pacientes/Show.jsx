@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
@@ -7,11 +7,14 @@ import Edit from "./Edit";
 import Create from "./Create";
 import CreateCita from "../Agenda/CreateCita";
 import moment from "moment";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
+
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -24,6 +27,7 @@ const Show = () => {
   const [modalShowCita, setModalShowCita] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { currentUser, } = useContext(AuthContext);
 
 
   const logout = useCallback(() => {
@@ -32,17 +36,17 @@ const Show = () => {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -82,7 +86,7 @@ const confirmLogout = (e) => {
       showCancelButton: true,
       confirmButtonColor: '#00C5C1',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si' ,
+      confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -155,19 +159,19 @@ const confirmLogout = (e) => {
                     placeholder="Buscar por Apellido y Nombres o IDC..."
                     className="form-control m-2"
                   />
-                </div>                    
+                </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido al sistema Odentid
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                        <FaUser className="icono" />
-                      </Link>
+                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                      Bienvenido {currentUser.displayName}
+                </p>
+                   <div className="d-flex">
+                      <div className="notificacion">
+                         <Link
+                           to="/miPerfil"
+                          className="text-decoration-none"
+                           >
+                            <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                         </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />
@@ -206,7 +210,7 @@ const confirmLogout = (e) => {
                     <thead>
                       <tr>
                         <th>N°</th>
-                        <th onClick={() => sorting("apellidoConNombre")}>
+                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                           Apellido Y Nombres
                         </th>
                         <th onClick={() => sorting("idc")}>IDC</th>
@@ -214,7 +218,7 @@ const confirmLogout = (e) => {
                           Fecha Nacimiento
                         </th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th>Accion</th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -222,7 +226,7 @@ const confirmLogout = (e) => {
                       {results.map((client, index) => (
                         <tr key={client.id}>
                           <td>{results.length - index}</td>
-                          <td>
+                          <td style={{ textAlign: "left" }}>
                             <Link to={`/historial/${client.id}`}>
                               {client.apellidoConNombre}
                             </Link>
@@ -236,14 +240,14 @@ const confirmLogout = (e) => {
                           </td>
                           <td> {client.numero}</td>
 
-                          <td style={{ padding: "10px" }}>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
                               >
-                                <i className="fa-solid fa-list"> </i>
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>
@@ -259,7 +263,7 @@ const confirmLogout = (e) => {
                                 </Dropdown.Item>
 
                                 <Dropdown.Item>
-                                  <Link to={`/historial/${client.id}`} style={{textDecoration: "none", color:"#212529"}}>
+                                  <Link to={`/historial/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                     <i className="fa-solid fa-file-medical"></i>
                                     Historial Clinico
                                   </Link>
@@ -272,7 +276,7 @@ const confirmLogout = (e) => {
                                     setClient(client);
                                   }}
                                 >
-                                  <i class="fa-solid fa-plus"></i>
+                                  <i className="fa-solid fa-plus"></i>
                                   Crear Cita
                                 </Dropdown.Item>
 

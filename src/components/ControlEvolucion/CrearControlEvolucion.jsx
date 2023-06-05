@@ -179,7 +179,7 @@ const CrearControlEvolucion = (props) => {
                         </datalist>
                     </div>)}
 
-                    <form onSubmit={validateFields}>
+                    <form onSubmit={validateFields} style={{ transform: "scale(0.96)" }}>
                         {error && (
                             <div className="alert alert-danger" role="alert">
                                 {error}
@@ -188,17 +188,6 @@ const CrearControlEvolucion = (props) => {
                         <br></br>
                         {!ocultar && (
                             <div className="row">
-                                <div className="col mb-6">
-                                    <label className="form-label">Apellido y Nombres:</label>
-                                    <input
-                                        value={apellidoConNombre ?? ''}
-                                        onChange={(e) => setApellidoConNombre(e.target.value)}
-                                        type="text"
-                                        className="form-control"
-                                        disabled={!editable}
-                                        required
-                                    />
-                                </div>
                                 <div className="col mb-6">
                                     <label className="form-label">IDC*</label>
                                     <div style={{ display: "flex" }}>
@@ -225,7 +214,8 @@ const CrearControlEvolucion = (props) => {
                                             onKeyDown={(e) => {
                                                 const maxLength = e.target.maxLength;
                                                 const currentValue = e.target.value;
-                                                if (maxLength && currentValue.length >= maxLength) {
+                                                const isTabKey = e.key === "Tab";
+                                                if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                                                     e.preventDefault();
                                                 }
                                             }}
@@ -234,6 +224,17 @@ const CrearControlEvolucion = (props) => {
                                             required
                                         />
                                     </div>
+                                </div>
+                                <div className="col mb-6">
+                                    <label className="form-label">Apellido y Nombres:</label>
+                                    <input
+                                        value={apellidoConNombre ?? ''}
+                                        onChange={(e) => setApellidoConNombre(e.target.value)}
+                                        type="text"
+                                        className="form-control"
+                                        disabled={!editable}
+                                        required
+                                    />
                                 </div>
                             </div>)}
                         {!ocultar && (<div className="row">

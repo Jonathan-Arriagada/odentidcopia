@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useContext, useRef } from "react";
 import { collection, query, orderBy, onSnapshot, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
@@ -11,10 +11,12 @@ import ListaSeleccionEstadoPago from "./ListaSeleccionEstadoPago";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown, Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
 
 function Tratamientos() {
   const [tratamientos, setTratamientos] = useState([]);
@@ -57,6 +59,7 @@ function Tratamientos() {
   const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
   const [indexParaEditcobro, setIndexParaEditcobro] = useState("");
   const [fechaEditCobro, setFechaEditCobro] = useState("");
+  const [nroComprobanteEditCobro, setNroComprobanteEditCobro] = useState("");
   const [importeEditCobro, setImporteEditCobro] = useState("");
   const [idParaEditcobro, setIdParaEditcobro] = useState("");
 
@@ -64,12 +67,14 @@ function Tratamientos() {
   const [trataCobro, setTrataCobro] = useState("");
   const [pacienteCobro, setPacienteCobro] = useState("");
   const [fechaCobro, setFechaCobro] = useState("");
+  const [nroComprobanteCobro, setNroComprobanteCobro] = useState("");
   const [importeCobro, setImporteCobro] = useState("");
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
   const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
-  const navigate = useNavigate()  
+  const { currentUser, } = useContext(AuthContext);
+  const navigate = useNavigate()
 
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
@@ -77,17 +82,17 @@ function Tratamientos() {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -187,7 +192,7 @@ const confirmLogout = (e) => {
       showCancelButton: true,
       confirmButtonColor: '#00C5C1',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si' ,
+      confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -356,11 +361,13 @@ const confirmLogout = (e) => {
     setIndexParaEditcobro("");
     setIdParaCobro("");
     setFechaEditCobro("");
+    setNroComprobanteEditCobro("");
     setImporteEditCobro("");
   };
 
   const clearFieldsCobro = () => {
     setFechaCobro("");
+    setNroComprobanteCobro("");
     setImporteCobro("");
   };
 
@@ -370,7 +377,9 @@ const confirmLogout = (e) => {
       const tratamientoRef = doc(db, "tratamientos", id);
       const tratamientoDoc = await getDoc(tratamientoRef);
       const tratamientoData = tratamientoDoc.data();
+
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro || [];
+      const nroComprobanteCobroArray = tratamientoData.cobrosManuales.nroComprobanteCobro || [];
       const codigoTratamientoArray =
         tratamientoData.cobrosManuales.codigoTratamiento || [];
       const importeAbonadoArray =
@@ -382,15 +391,17 @@ const confirmLogout = (e) => {
       const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro || [];
 
       fechaCobroArray.push(fechaCobro);
-      codigoTratamientoArray.push(codigoCobro);
+      nroComprobanteCobroArray.push(nroComprobanteCobro);
       importeAbonadoArray.push(importeCobro);
       tratamientoCobroArray.push(trataCobro);
+      codigoTratamientoArray.push(codigoCobro);
       pacienteCobroArray.push(pacienteCobro);
       estadoCobroArray.push("SIN COBRAR");
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nroComprobanteCobroArray,
           "cobrosManuales.importeAbonado": importeAbonadoArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -425,6 +436,7 @@ const confirmLogout = (e) => {
       const tratamientoData = tratamientoDoc.data();
 
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
+      const nroComprobanteCobroArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
       const codigoTratamientoArray =
         tratamientoData.cobrosManuales.codigoTratamiento;
       const importeAbonadoArray = tratamientoData.cobrosManuales.importeAbonado;
@@ -437,8 +449,8 @@ const confirmLogout = (e) => {
         fechaCobroArray,
         index
       );
-      const nuevoCodigoTratamientoArray = eliminarPosicionArray(
-        codigoTratamientoArray,
+      const nuevaNroComprobanteCobroArray = eliminarPosicionArray(
+        nroComprobanteCobroArray,
         index
       );
       const nuevoImporteAbonadoArray = eliminarPosicionArray(
@@ -447,6 +459,10 @@ const confirmLogout = (e) => {
       );
       const nuevoTratamientoCobroArray = eliminarPosicionArray(
         tratamientoCobroArray,
+        index
+      );
+      const nuevoCodigoTratamientoArray = eliminarPosicionArray(
+        codigoTratamientoArray,
         index
       );
       const nuevoPacienteCobroArray = eliminarPosicionArray(
@@ -461,6 +477,7 @@ const confirmLogout = (e) => {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": nuevaFechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nuevaNroComprobanteCobroArray,
           "cobrosManuales.importeAbonado": nuevoImporteAbonadoArray,
           "cobrosManuales.tratamientoCobro": nuevoTratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": nuevoCodigoTratamientoArray,
@@ -486,12 +503,14 @@ const confirmLogout = (e) => {
       const tratamientoData = tratamientoDoc.data();
 
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
-      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
+      const nroComprobanteCobroArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
       const importeCobroArray = tratamientoData.cobrosManuales.importeAbonado;
       const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
+      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
 
       fechaCobroArray[indexParaEditcobro] = fechaEditCobro || fechaCobroArray[indexParaEditcobro];
+      nroComprobanteCobroArray[indexParaEditcobro] = nroComprobanteEditCobro || nroComprobanteCobroArray[indexParaEditcobro];
       importeCobroArray[indexParaEditcobro] = importeEditCobro || importeCobroArray[indexParaEditcobro];
       codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
       tratamientoCobroArray[indexParaEditcobro] = trataCobro;
@@ -501,6 +520,7 @@ const confirmLogout = (e) => {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nroComprobanteCobroArray,
           "cobrosManuales.importeAbonado": importeCobroArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -548,7 +568,7 @@ const confirmLogout = (e) => {
     }
   };
 
-  
+
   return (
     <>
       <div className="mainpage">
@@ -584,7 +604,7 @@ const confirmLogout = (e) => {
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido al sistema Odentid
+                    Bienvenido {currentUser.displayName}
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
@@ -592,7 +612,7 @@ const confirmLogout = (e) => {
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
-                        <FaUser className="icono" />
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
                     </div>
                     <div className="notificacion">
@@ -674,7 +694,7 @@ const confirmLogout = (e) => {
                             Dia
                           </button>
                           <button
-                          style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               filtroFecha("Semana");
                               setTaparFiltro(true);
@@ -683,7 +703,7 @@ const confirmLogout = (e) => {
                             Semana
                           </button>
                           <button
-                          style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               filtroFecha("Mes");
                               setTaparFiltro(true);
@@ -692,7 +712,7 @@ const confirmLogout = (e) => {
                             Mes
                           </button>
                           <button
-                           style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               setModalSeleccionFechaShow(true);
                             }}
@@ -1009,7 +1029,7 @@ const confirmLogout = (e) => {
                         <th onClick={() => sorting("estadosTratamientos")}>
                           Estado Tratamiento
                         </th>
-                        <th>Accion</th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -1035,7 +1055,7 @@ const confirmLogout = (e) => {
                             </div>
                           </td>
 
-                          <td style={{ paddingBottom: "0" }}>
+                          <td style={{ paddingBottom: "0", display: "flex" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {tratamiento.estadosTratamientos}
                               <p
@@ -1043,17 +1063,15 @@ const confirmLogout = (e) => {
                                 className="color-preview"
                               ></p>
                             </div>
-
                           </td>
-
-                          <td>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
                               >
-                                <i className="fa-solid fa-list"> </i>
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>
@@ -1167,10 +1185,8 @@ const confirmLogout = (e) => {
                         <thead>
                           <tr>
                             <th>Cta</th>
+                            <th>Forma Pago</th>
                             <th>Precio/Total</th>
-                            <th>Plazo</th>
-                            <th>Cuota</th>
-                            <th>Resta</th>
                             <th>Fecha Vto</th>
                             <th>Estado Pago</th>
                             <th></th>
@@ -1181,10 +1197,8 @@ const confirmLogout = (e) => {
                           {results.map((tratamiento) => (
                             <tr key={tratamiento.id}>
                               <td> {tratamiento.cta} </td>
+                              <td> {tratamiento.formaPago} </td>
                               <td>{tratamiento.precio}</td>
-                              <td>{tratamiento.plazo}</td>
-                              <td>{tratamiento.cuota}</td>
-                              <td>{tratamiento.plazo - tratamiento.cuota}</td>
                               <td>
                                 {moment(tratamiento.fechaVencimiento).format(
                                   "DD/MM/YY"
@@ -1225,6 +1239,7 @@ const confirmLogout = (e) => {
                           <tr>
                             <th>N°</th>
                             <th>Fecha Cobro</th>
+                            <th>Nro Comprobante</th>
                             <th>Importe abonado</th>
                             <th>Accion</th>
                             <th>
@@ -1249,6 +1264,7 @@ const confirmLogout = (e) => {
                           {results.map((tratamiento) => (
                             tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
                               const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
+                              const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
                               const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
                               const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
 
@@ -1256,6 +1272,7 @@ const confirmLogout = (e) => {
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
+                                  <td>{nroComprobante.toString()}</td>
                                   <td>{importe.toString()}</td>
                                   <td>
                                     {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
@@ -1286,7 +1303,7 @@ const confirmLogout = (e) => {
                                           onClick={(e) => {
                                             setIndexParaEditcobro(index)
                                             setIdParaEditcobro(idParaCobro)
-                                            setMostrarModalEditarCobro([true, fecha, importe]);
+                                            setMostrarModalEditarCobro([true, fecha, importe, nroComprobante]);
                                           }}
                                           style={{ margin: "1px" }}
                                         >
@@ -1304,6 +1321,9 @@ const confirmLogout = (e) => {
                                         </button>
                                       </>
                                     )}
+                                  </td>
+                                  <td>
+                                    <i className="fa-solid fa-download"></i>
                                   </td>
                                 </tr>
                               );
@@ -1369,7 +1389,18 @@ const confirmLogout = (e) => {
                       />
                     </div>
                   </div>
-                  <br></br>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Nro Comprobante</label>
+                      <input
+                        onChange={(e) => setNroComprobanteCobro(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
                   <div className="row">
                     <div className="col mb-6">
                       <label className="form-label">Importe Cobro</label>
@@ -1423,8 +1454,19 @@ const confirmLogout = (e) => {
                       />
                     </div>
                   </div>
-                 <br></br>
                   <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Nro Comprobante</label>
+                      <input
+                        defaultValue={mostrarModalEditarCobro[3]}
+                        onChange={(e) => setNroComprobanteEditCobro(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>                  <div className="row">
                     <div className="col mb-6">
                       <label className="form-label">Importe Cobro</label>
                       <input
