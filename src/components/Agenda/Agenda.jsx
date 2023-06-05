@@ -11,7 +11,7 @@ import HorariosAtencionCitas from "./HorariosAtencionCitas";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown, Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css"
 import Swal from "sweetalert2";
@@ -41,7 +41,7 @@ function Citas() {
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
   const navigate = useNavigate()
-  
+
 
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
@@ -49,16 +49,17 @@ function Citas() {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -130,9 +131,9 @@ const confirmLogout = (e) => {
       text: "No podra revertir la accion",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#00C5C1',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si' ,
+      confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -144,7 +145,7 @@ const confirmLogout = (e) => {
         )
       }
     })
-}
+  }
 
   const searcher = (e) => {
     setSearch(e.target.value);
@@ -251,7 +252,7 @@ const confirmLogout = (e) => {
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
-                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
                     </div>
                     <div className="notificacion">
@@ -294,7 +295,7 @@ const confirmLogout = (e) => {
                           <i className="fa-solid fa-gear"></i>
                         </button>
                       ) : null}
-                                            <button
+                      <button
                         variant="primary"
                         className="btn-blue m-2"
                         onClick={() => setModalShowCita(true)}
@@ -319,65 +320,65 @@ const confirmLogout = (e) => {
                         <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
                       </div>)}
                     </div>
-                  
 
-                  <div className="d-flex justify-content-between">
-                    <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); setMostrarBotonesFechas(false) }}>
-                      <Modal.Header closeButton onClick={() => {
-                        setModalSeleccionFechaShow(false);
-                        setSelectedDate("");
-                        setTaparFiltro(false);
-                        setSearch("");
-                        setMostrarBotonesFechas(false);
-                      }}>
-                        <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Calendar
-                          defaultValue={moment().format("YYYY-MM-DD")}
-                          onChange={(date) => {
-                            const formattedDate =
-                              moment(date).format("YYYY-MM-DD");
-                            setSelectedDate(formattedDate);
+
+                    <div className="d-flex justify-content-between">
+                      <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); setMostrarBotonesFechas(false) }}>
+                        <Modal.Header closeButton onClick={() => {
+                          setModalSeleccionFechaShow(false);
+                          setSelectedDate("");
+                          setTaparFiltro(false);
+                          setSearch("");
+                          setMostrarBotonesFechas(false);
+                        }}>
+                          <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
                           }}
-                          value={selectedDate}
-                        />
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false) }}>
-                          Buscar Fecha
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
+                        >
+                          <Calendar
+                            defaultValue={moment().format("YYYY-MM-DD")}
+                            onChange={(date) => {
+                              const formattedDate =
+                                moment(date).format("YYYY-MM-DD");
+                              setSelectedDate(formattedDate);
+                            }}
+                            value={selectedDate}
+                          />
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false) }}>
+                            Buscar Fecha
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
 
-                    <div className="col d-flex justify-content-end">
+                      <div className="col d-flex justify-content-end">
 
-                      {mostrarAjustes && (
-                        <div className="d-flex">
-                          <button
-                            variant="secondary"
-                            className="btn-blue me-2"
-                            onClick={() => setModalShowEstados(true)}
-                          >
-                            Estados
-                          </button>
-                          <button
-                            variant="tertiary"
-                            className="btn-blue me-2"
-                            onClick={() => setModalShowHorarios(true)}
-                          >
-                            Horarios Atencion
-                          </button>
-                        </div>
-                      )}
+                        {mostrarAjustes && (
+                          <div className="d-flex">
+                            <button
+                              variant="secondary"
+                              className="btn-blue me-2"
+                              onClick={() => setModalShowEstados(true)}
+                            >
+                              Estados
+                            </button>
+                            <button
+                              variant="tertiary"
+                              className="btn-blue me-2"
+                              onClick={() => setModalShowHorarios(true)}
+                            >
+                              Horarios Atencion
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
                   </div>
                   <table className="table__body">
                     <thead>
@@ -391,7 +392,7 @@ const confirmLogout = (e) => {
                         <th onClick={() => sorting("idc")}>IDC</th>
                         <th onClick={() => sorting("estado")}>Estado</th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th>Accion</th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -403,7 +404,7 @@ const confirmLogout = (e) => {
                           <td> {cita.horaFin} </td>
                           <td> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
-                          <td style={{ display: "flex", marginTop: "8px"}}>
+                          <td style={{ display: "flex", marginTop: "8px" }}>
                             {cita.estado}
                             <p
                               style={buscarEstilos(cita.estado)}
@@ -412,14 +413,14 @@ const confirmLogout = (e) => {
                             </p>
                           </td>
                           <td> {cita.numero} </td>
-                          <td>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
                               >
-                                <i className="fa-solid fa-list"> </i>
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>

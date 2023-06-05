@@ -25,7 +25,7 @@ const ListaSeleccionEstadoPago = ({ tratamientoId }) => {
     return (
         <div>
             <Dropdown onSelect={handleEstadoChange}>
-                <Dropdown.Toggle variant="secondary" id="dropdown-button">
+                <Dropdown.Toggle variant="secondary" id="dropdown-button2">
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {estados.map((estado, index) => (

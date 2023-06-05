@@ -3,14 +3,23 @@ import { getDoc, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 const Edit = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
   const [tipoIdc, setTipoIdc] = useState(props.client.tipoIdc || "dni");
   const [idc, setIdc] = useState(props.client.idc || "");
+  const [edad, setEdad] = useState(props.client.edad || "");
   const [fechaNacimiento, setFechaNacimiento] = useState(props.client.fechaNacimiento || "");
   const [numero, setNumero] = useState(props.client.numero || "");
   const [valorBusqueda, setValorBusqueda] = useState("");
+
+  const handleFechaNac = (event) => {
+    const { value } = event.target;
+    const edad = moment().diff(moment(value), "years");
+    setFechaNacimiento(value);
+    setEdad(edad)
+  };
 
   const update = async (e) => {
     e.preventDefault();
@@ -20,6 +29,7 @@ const Edit = (props) => {
       showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: 'Guardar',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No guardar`,
       cancelButtonText: 'Cancelar',
     }).then(async (result) => {
@@ -33,6 +43,7 @@ const Edit = (props) => {
           tipoIdc: tipoIdc || clientData.tipoIdc,
           idc: idc || clientData.idc,
           fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
+          edad: edad || clientData.edad,
           numero: numero || clientData.numero,
           valorBusqueda: valorBusqueda || clientData.valorBusqueda,
         };
@@ -63,19 +74,7 @@ const Edit = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={update}>
-                <div className="mb-3">
-                  <label className="form-label">Apellido y Nombres</label>
-                  <input
-                    defaultValue={props.client.apellidoConNombre}
-                    onChange={(e) => {
-                      setApellidoConNombre(e.target.value);
-                      setValorBusqueda(e.target.value + " " + (idc || props.client.idc));
-                    }}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
+              <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
                 <div className="mb-3">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
@@ -105,7 +104,8 @@ const Edit = (props) => {
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
-                        if (maxLength && currentValue.length >= maxLength) {
+                        const isTabKey = e.key === "Tab";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                           e.preventDefault();
                         }
                       }}
@@ -113,12 +113,23 @@ const Edit = (props) => {
                     />
                   </div>
                 </div>
-
+                <div className="mb-3">
+                  <label className="form-label">Apellido y Nombres</label>
+                  <input
+                    defaultValue={props.client.apellidoConNombre}
+                    onChange={(e) => {
+                      setApellidoConNombre(e.target.value);
+                      setValorBusqueda(e.target.value + " " + (idc || props.client.idc));
+                    }}
+                    type="text"
+                    className="form-control"
+                  />
+                </div>
                 <div className="mb-3">
                   <label className="form-label">Fecha Nacimiento</label>
                   <input
                     defaultValue={props.client.fechaNacimiento}
-                    onChange={(e) => setFechaNacimiento(e.currentTarget.value)}
+                    onChange={handleFechaNac}
                     type="date"
                     className="form-control"
                   />

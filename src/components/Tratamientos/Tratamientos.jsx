@@ -80,16 +80,17 @@ function Tratamientos() {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -187,9 +188,9 @@ const confirmLogout = (e) => {
       text: "No podra revertir la accion",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#00C5C1',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si' ,
+      confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -550,7 +551,7 @@ const confirmLogout = (e) => {
     }
   };
 
-  
+
   return (
     <>
       <div className="mainpage">
@@ -676,7 +677,7 @@ const confirmLogout = (e) => {
                             Dia
                           </button>
                           <button
-                          style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               filtroFecha("Semana");
                               setTaparFiltro(true);
@@ -685,7 +686,7 @@ const confirmLogout = (e) => {
                             Semana
                           </button>
                           <button
-                          style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               filtroFecha("Mes");
                               setTaparFiltro(true);
@@ -694,7 +695,7 @@ const confirmLogout = (e) => {
                             Mes
                           </button>
                           <button
-                           style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                             onClick={() => {
                               setModalSeleccionFechaShow(true);
                             }}
@@ -1011,7 +1012,7 @@ const confirmLogout = (e) => {
                         <th onClick={() => sorting("estadosTratamientos")}>
                           Estado Tratamiento
                         </th>
-                        <th>Accion</th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -1037,7 +1038,7 @@ const confirmLogout = (e) => {
                             </div>
                           </td>
 
-                          <td style={{ paddingBottom: "0" }}>
+                          <td style={{ paddingBottom: "0", display: "flex" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {tratamiento.estadosTratamientos}
                               <p
@@ -1045,17 +1046,15 @@ const confirmLogout = (e) => {
                                 className="color-preview"
                               ></p>
                             </div>
-
                           </td>
-
-                          <td>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
                               >
-                                <i className="fa-solid fa-list"> </i>
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>
@@ -1170,9 +1169,6 @@ const confirmLogout = (e) => {
                           <tr>
                             <th>Cta</th>
                             <th>Precio/Total</th>
-                            <th>Plazo</th>
-                            <th>Cuota</th>
-                            <th>Resta</th>
                             <th>Fecha Vto</th>
                             <th>Estado Pago</th>
                             <th></th>
@@ -1184,9 +1180,6 @@ const confirmLogout = (e) => {
                             <tr key={tratamiento.id}>
                               <td> {tratamiento.cta} </td>
                               <td>{tratamiento.precio}</td>
-                              <td>{tratamiento.plazo}</td>
-                              <td>{tratamiento.cuota}</td>
-                              <td>{tratamiento.plazo - tratamiento.cuota}</td>
                               <td>
                                 {moment(tratamiento.fechaVencimiento).format(
                                   "DD/MM/YY"
@@ -1425,7 +1418,7 @@ const confirmLogout = (e) => {
                       />
                     </div>
                   </div>
-                 <br></br>
+                  <br></br>
                   <div className="row">
                     <div className="col mb-6">
                       <label className="form-label">Importe Cobro</label>

@@ -46,6 +46,7 @@ const Gastos = () => {
           title: '¿Desea cerrar sesión?',
           showDenyButton: true,         
           confirmButtonText: 'Si, cerrar sesión',
+          confirmButtonColor: '#00C5C1',
           denyButtonText: `No, seguir logueado`,
         }).then((result) => {
           if (result.isConfirmed) {

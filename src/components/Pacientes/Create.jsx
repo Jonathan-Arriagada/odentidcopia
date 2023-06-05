@@ -3,21 +3,26 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
+import peruFlag from "../../img/peru.png"
+import argentinaFlag from "../../img/argentina.png"
+import moment from "moment";
 
 const Create = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [tipoIdc, setTipoIdc] = useState("dni");
   const [idc, setIdc] = useState("");
+  const [edad, setEdad] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [numero, setNumero] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [error, setError] = useState("");
+  const [selectedCode, setSelectedCode] = useState("+51");
 
   const clientsCollection = collection(db, "clients");
 
   const confirm = () => {
     Swal.fire({
-      title: '¡Cliente agregado!',
+      title: '¡Paciente agregado!',
       icon: 'success',
     })
   }
@@ -41,7 +46,7 @@ const Create = (props) => {
         return false;
       } else {
         setError("");
-        await store();       
+        await store();
         clearFields();
         props.onHide();
         confirm();
@@ -59,8 +64,17 @@ const Create = (props) => {
     setTipoIdc("dni");
     setIdc("");
     setFechaNacimiento("");
+    setEdad("");
     setNumero("");
     setError("");
+    setSelectedCode("+51");
+  };
+
+  const handleFechaNac = (event) => {
+    const { value } = event.target;
+    const edad = moment().diff(moment(value), "years");
+    setFechaNacimiento(value);
+    setEdad(edad)
   };
 
   const store = async () => {
@@ -69,9 +83,10 @@ const Create = (props) => {
       tipoIdc: tipoIdc,
       idc: idc,
       fechaNacimiento: fechaNacimiento,
+      selectedCode: selectedCode,
       numero: numero,
       valorBusqueda: valorBusqueda,
-      edad: "",
+      edad: edad,
       sexo: "",
       lugarNacimiento: "",
       procedencia: "",
@@ -102,8 +117,6 @@ const Create = (props) => {
     });
   };
 
-  console.log(tipoIdc)
-
   return (
     <Modal
       {...props}
@@ -113,32 +126,19 @@ const Create = (props) => {
     >
       <Modal.Header closeButton onClick={() => { clearFields(); props.onHide(); }}>
         <Modal.Title id="contained-modal-title-vcenter">
-          <h1>Crear Cliente</h1>
+          <h1>Crear Paciente</h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="container">
           <div className="row">
             <div className="col">
-              <form>
+            <form style={{ transform: "scale(0.96)" }}>
                 {error && (
                   <div className="alert alert-danger" role="alert">
                     {error}
                   </div>
                 )}
-                <div className="mb-3">
-                  <label className="form-label">Apellido y Nombres*</label>
-                  <input
-                    value={apellidoConNombre}
-                    onChange={(e) => {
-                      setApellidoConNombre(e.target.value);
-                      setValorBusqueda(e.target.value + " " + idc);
-                    }}
-                    type="text"
-                    className="form-control"
-                    required
-                  />
-                </div>
                 <div className="mb-3">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
@@ -168,7 +168,8 @@ const Create = (props) => {
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
-                        if (maxLength && currentValue.length >= maxLength) {
+                        const isTabKey = e.key === "Tab";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                           e.preventDefault();
                         }
                       }}
@@ -178,10 +179,23 @@ const Create = (props) => {
                   </div>
                 </div>
                 <div className="mb-3">
+                  <label className="form-label">Apellido y Nombres*</label>
+                  <input
+                    value={apellidoConNombre}
+                    onChange={(e) => {
+                      setApellidoConNombre(e.target.value);
+                      setValorBusqueda(e.target.value + " " + idc);
+                    }}
+                    type="text"
+                    className="form-control"
+                    required
+                  />
+                </div>
+                <div className="mb-3">
                   <label className="form-label">Fecha Nacimiento*</label>
                   <input
                     value={fechaNacimiento}
-                    onChange={(e) => setFechaNacimiento(e.target.value)}
+                    onChange={handleFechaNac}
                     type="date"
                     className="form-control"
                     required
@@ -189,17 +203,31 @@ const Create = (props) => {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Telefono*</label>
-                  <input
-                    value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    type="number"
-                    className="form-control"
-                    required
-                  />
+                  <div style={{ display: "flex" }}>
+                    <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
+                    <select
+                      value={selectedCode}
+                      onChange={(e) => { setSelectedCode(e.target.value); setNumero("") }}
+                      className="form-control-tipoIDC me-1"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="+51">+51</option>
+                      <option value="+54">+54</option>
+                    </select>
+                    <input
+                      value={numero}
+                      onChange={(e) => setNumero(e.target.value)}
+                      type="number"
+                      className="form-control"
+                      required
+                    />
+                  </div>
                 </div>
                 <button
                   type="submit"
-                  onClick={validateFields}                  
+                  onClick={validateFields}
                   className="btn btn-primary"
                 >
                   Agregar

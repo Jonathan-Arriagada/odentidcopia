@@ -48,7 +48,7 @@ const EditTarifa = (props) => {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            <form onSubmit={update}>
+            <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
 
               <div className="row">
                 <div className="col mb-3">

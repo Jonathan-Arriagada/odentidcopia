@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 
 const EditCita = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.cita.apellidoConNombre || "");
+  const [tipoIdc, setTipoIdc] = useState(props.cita.tipoIdc || "dni");
   const [idc, setIdc] = useState(props.cita.idc || "");
   const [estado, setEstado] = useState(props.cita.estado || "");
   const [numero, setNumero] = useState(props.cita.numero || "");
@@ -64,6 +65,7 @@ const EditCita = (props) => {
 
     const newData = {
       apellidoConNombre: apellidoConNombre || citaData.apellidoConNombre,
+      tipoIdc: tipoIdc || citaData.tipoIdc,
       idc: idc || citaData.idc,
       estado: estado || citaData.estado,
       numero: numero || citaData.numero,
@@ -93,24 +95,51 @@ const EditCita = (props) => {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            <form onSubmit={update}>
+            <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
 
               <div className="row">
+                <div className="col mb-3">
+                  <label className="form-label">IDC</label>
+                  <div style={{ display: "flex" }}>
+                    <select
+                      value={tipoIdc}
+                      onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                      className="form-control-tipoIDC"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="dni">DNI</option>
+                      <option value="ce">CE</option>
+                      <option value="ruc">RUC</option>
+                      <option value="pas">PAS</option>
+
+                    </select>
+                    <input
+                      defaultValue={props.cita.idc}
+                      onChange={(e) => setIdc(e.target.value)}
+                      type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                      minLength={tipoIdc === "dni" ? 8 : undefined}
+                      maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                      onKeyDown={(e) => {
+                        const maxLength = e.target.maxLength;
+                        const currentValue = e.target.value;
+                        const isTabKey = e.key === "Tab";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+
                 <div className="col mb-3">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
                     defaultValue={props.cita.apellidoConNombre}
                     onChange={(e) => setApellidoConNombre(e.target.value)}
                     type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="col mb-3">
-                  <label className="form-label">IDC</label>
-                  <input
-                    defaultValue={props.cita.idc}
-                    onChange={(e) => setIdc(e.target.value)}
-                    type="number"
                     className="form-control"
                   />
                 </div>

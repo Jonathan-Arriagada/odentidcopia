@@ -36,16 +36,17 @@ const Show = () => {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -83,16 +84,16 @@ const confirmLogout = (e) => {
       text: "No podra revertir la accion",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#00C5C1',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si' ,
+      confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
         deleteClient(id)
         Swal.fire(
           '¡Borrado!',
-          'El cliente ha sido borrado.',
+          'El paciente ha sido borrado.',
           'success'
         )
       }
@@ -158,7 +159,7 @@ const confirmLogout = (e) => {
                     placeholder="Buscar por Apellido y Nombres o IDC..."
                     className="form-control m-2"
                   />
-                </div>                    
+                </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                 <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
                       Bienvenido {currentUser.displayName}
@@ -217,7 +218,7 @@ const confirmLogout = (e) => {
                           Fecha Nacimiento
                         </th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th>Accion</th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -239,14 +240,14 @@ const confirmLogout = (e) => {
                           </td>
                           <td> {client.numero}</td>
 
-                          <td style={{ padding: "10px" }}>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
                               >
-                                <i className="fa-solid fa-list"> </i>
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>
@@ -262,7 +263,7 @@ const confirmLogout = (e) => {
                                 </Dropdown.Item>
 
                                 <Dropdown.Item>
-                                  <Link to={`/historial/${client.id}`} style={{textDecoration: "none", color:"#212529"}}>
+                                  <Link to={`/historial/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                     <i className="fa-solid fa-file-medical"></i>
                                     Historial Clinico
                                   </Link>
@@ -275,7 +276,7 @@ const confirmLogout = (e) => {
                                     setClient(client);
                                   }}
                                 >
-                                  <i class="fa-solid fa-plus"></i>
+                                  <i className="fa-solid fa-plus"></i>
                                   Crear Cita
                                 </Dropdown.Item>
 

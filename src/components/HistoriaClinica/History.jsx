@@ -115,16 +115,17 @@ export default function History() {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -535,7 +536,8 @@ const confirmLogout = (e) => {
                                   onKeyDown={(e) => {
                                     const maxLength = e.target.maxLength;
                                     const currentValue = e.target.value;
-                                    if (maxLength && currentValue.length >= maxLength) {
+                                    const isTabKey = e.key === "Tab";
+                                    if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                                       e.preventDefault();
                                     }
                                   }}
@@ -734,68 +736,68 @@ const confirmLogout = (e) => {
                         <div className="d-flex m-2">
                           <div className="col-mb-3">
 
-                            <hr/>
-                  
-                              <label className="form-label d-flex">
-                                1. ¿Está siendo atendido por un médico?
-                                <label className="m-1">
-                                  <input
-                                    type="checkbox"
-                                    className="m-1"
-                                    checked={pregunta1[1]}
-                                    onChange={() => setPregunta1((prevState) => [prevState[0], true])}
-                                  />
-                                  Sí
-                                </label>
-                                <label className="m-1">
-                                  <input
-                                    type="checkbox"
-                                    className="m-1"
-                                    checked={!pregunta1[1]}
-                                    onChange={() => setPregunta1((prevState) => [prevState[0], false])}
-                                  />
-                                  No
-                                </label>
+                            <hr />
+
+                            <label className="form-label d-flex">
+                              1. ¿Está siendo atendido por un médico?
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={pregunta1[1]}
+                                  onChange={() => setPregunta1((prevState) => [prevState[0], true])}
+                                />
+                                Sí
                               </label>
-                              <input
-                                value={pregunta1[0]}
-                                onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
-                                type="text"
-                                className="form-control w-50 m-1"
-                                placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
-                                disabled={!pregunta1[1]}
-                              />             
-                   
-                              <label className="form-label d-flex">
-                                2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
-                                <label className="m-1">
-                                  <input
-                                    type="checkbox"
-                                    className="m-1"
-                                    checked={pregunta2[1]}
-                                    onChange={() => setPregunta2((prevState) => [prevState[0], true])}
-                                  />
-                                  Sí
-                                </label>
-                                <label className="m-1">
-                                  <input
-                                    type="checkbox"
-                                    className="m-1"
-                                    checked={!pregunta2[1]}
-                                    onChange={() => setPregunta2((prevState) => [prevState[0], false])}
-                                  />
-                                  No
-                                </label>
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={!pregunta1[1]}
+                                  onChange={() => setPregunta1((prevState) => [prevState[0], false])}
+                                />
+                                No
                               </label>
-                              <input
-                                value={pregunta2[0]}
-                                onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
-                                type="text"
-                                className="form-control m-1 w-50"
-                                placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
-                                disabled={!pregunta2[1]}
-                              />
-                    
+                            </label>
+                            <input
+                              value={pregunta1[0]}
+                              onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
+                              type="text"
+                              className="form-control w-50 m-1"
+                              placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
+                              disabled={!pregunta1[1]}
+                            />
+
+                            <label className="form-label d-flex">
+                              2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={pregunta2[1]}
+                                  onChange={() => setPregunta2((prevState) => [prevState[0], true])}
+                                />
+                                Sí
+                              </label>
+                              <label className="m-1">
+                                <input
+                                  type="checkbox"
+                                  className="m-1"
+                                  checked={!pregunta2[1]}
+                                  onChange={() => setPregunta2((prevState) => [prevState[0], false])}
+                                />
+                                No
+                              </label>
+                            </label>
+                            <input
+                              value={pregunta2[0]}
+                              onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
+                              type="text"
+                              className="form-control m-1 w-50"
+                              placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
+                              disabled={!pregunta2[1]}
+                            />
+
                             <label className="form-label d-flex">
                               3. ¿Está tomando algún medicamento?{" "}
                               <label className="m-1">
@@ -880,7 +882,7 @@ const confirmLogout = (e) => {
 
                             <label className="form-label d-flex">
                               6. ¿Está embarazada?
-                               <label className="m-1">
+                              <label className="m-1">
                                 <input
                                   type="checkbox"
                                   className="m-1"
@@ -1031,7 +1033,7 @@ const confirmLogout = (e) => {
                                 No
                               </label>
                             </label>
-            
+
                             <label className="form-label d-flex">
                               13. ¿Tiene trastornos de tipo convulsivo?
                               <label className="m-1">
@@ -1165,13 +1167,13 @@ const confirmLogout = (e) => {
                               </label>
                             </label>
                             <input
-                                value={pregunta18[0]}
-                                onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
-                                type="text"
-                                className="form-control w-50 m-1"
-                                placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
-                                disabled={!pregunta18[1]}
-                              />
+                              value={pregunta18[0]}
+                              onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
+                              type="text"
+                              className="form-control w-50 m-1"
+                              placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
+                              disabled={!pregunta18[1]}
+                            />
                           </div>
                         </div>
                         {!id ? (
