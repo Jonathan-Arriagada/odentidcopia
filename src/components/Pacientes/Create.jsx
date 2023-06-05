@@ -3,7 +3,8 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
-import moment from "moment";
+import peruFlag from "../../img/peru.png"
+import argentinaFlag from "../../img/argentina.png"
 
 const Create = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
@@ -14,12 +15,13 @@ const Create = (props) => {
   const [numero, setNumero] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [error, setError] = useState("");
+  const [selectedCode, setSelectedCode] = useState("+51");
 
   const clientsCollection = collection(db, "clients");
 
   const confirm = () => {
     Swal.fire({
-      title: '¡Cliente agregado!',
+      title: '¡Paciente agregado!',
       icon: 'success',
     })
   }
@@ -64,6 +66,7 @@ const Create = (props) => {
     setEdad("");
     setNumero("");
     setError("");
+    setSelectedCode("+51");
   };
 
   const handleFechaNac = (event) => {
@@ -79,6 +82,7 @@ const Create = (props) => {
       tipoIdc: tipoIdc,
       idc: idc,
       fechaNacimiento: fechaNacimiento,
+      selectedCode: selectedCode,
       numero: numero,
       valorBusqueda: valorBusqueda,
       edad: edad,
@@ -112,8 +116,6 @@ const Create = (props) => {
     });
   };
 
-  console.log(tipoIdc)
-
   return (
     <Modal
       {...props}
@@ -123,7 +125,7 @@ const Create = (props) => {
     >
       <Modal.Header closeButton onClick={() => { clearFields(); props.onHide(); }}>
         <Modal.Title id="contained-modal-title-vcenter">
-          <h1>Crear Cliente</h1>
+          <h1>Crear Paciente</h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -199,6 +201,19 @@ const Create = (props) => {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Telefono*</label>
+                  <div style={{ display: "flex" }}>
+                  <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
+                    <select
+                      value={selectedCode}
+                      onChange={(e) => { setSelectedCode(e.target.value); setNumero("") }}
+                      className="form-control-tipoIDC me-1"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="+51">+51</option>
+                      <option value="+54">+54</option>
+                    </select>
                   <input
                     value={numero}
                     onChange={(e) => setNumero(e.target.value)}
@@ -206,6 +221,7 @@ const Create = (props) => {
                     className="form-control"
                     required
                   />
+                  </div>
                 </div>
                 <button
                   type="submit"
