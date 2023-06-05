@@ -3,11 +3,13 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 const Create = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [tipoIdc, setTipoIdc] = useState("dni");
   const [idc, setIdc] = useState("");
+  const [edad, setEdad] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [numero, setNumero] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
@@ -41,7 +43,7 @@ const Create = (props) => {
         return false;
       } else {
         setError("");
-        await store();       
+        await store();
         clearFields();
         props.onHide();
         confirm();
@@ -59,8 +61,16 @@ const Create = (props) => {
     setTipoIdc("dni");
     setIdc("");
     setFechaNacimiento("");
+    setEdad("");
     setNumero("");
     setError("");
+  };
+
+  const handleFechaNac = (event) => {
+    const { value } = event.target;
+    const edad = moment().diff(moment(value), "years");
+    setFechaNacimiento(value);
+    setEdad(edad)
   };
 
   const store = async () => {
@@ -71,7 +81,7 @@ const Create = (props) => {
       fechaNacimiento: fechaNacimiento,
       numero: numero,
       valorBusqueda: valorBusqueda,
-      edad: "",
+      edad: edad,
       sexo: "",
       lugarNacimiento: "",
       procedencia: "",
@@ -181,7 +191,7 @@ const Create = (props) => {
                   <label className="form-label">Fecha Nacimiento*</label>
                   <input
                     value={fechaNacimiento}
-                    onChange={(e) => setFechaNacimiento(e.target.value)}
+                    onChange={handleFechaNac}
                     type="date"
                     className="form-control"
                     required
@@ -199,7 +209,7 @@ const Create = (props) => {
                 </div>
                 <button
                   type="submit"
-                  onClick={validateFields}                  
+                  onClick={validateFields}
                   className="btn btn-primary"
                 >
                   Agregar
