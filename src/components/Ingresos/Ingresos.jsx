@@ -83,7 +83,6 @@ const confirmLogout = (e) => {
         const {
           fechaCobro,
           importeAbonado,
-          metodoPago,
           codigoTratamiento,
           pacienteCobro,
           tratamientoCobro,
@@ -92,7 +91,6 @@ const confirmLogout = (e) => {
 
         const filteredFechaCobro = [];
         const filteredImporteAbonado = [];
-        const filteredMetodoPago = [];
         const filteredCodigoTratamiento = [];
         const filteredPacienteCobro = [];
         const filteredTratamientoCobro = [];
@@ -104,7 +102,6 @@ const confirmLogout = (e) => {
           if (fechaz >= search.fechaInicio && fechaz <= search.fechaFin) {
             filteredFechaCobro.push(fecha);
             filteredImporteAbonado.push(importeAbonado[i]);
-            filteredMetodoPago.push(metodoPago[i]);
             filteredCodigoTratamiento.push(codigoTratamiento[i]);
             filteredPacienteCobro.push(pacienteCobro[i]);
             filteredTratamientoCobro.push(tratamientoCobro[i]);
@@ -117,7 +114,6 @@ const confirmLogout = (e) => {
           cobrosManuales: {
             fechaCobro: filteredFechaCobro,
             importeAbonado: filteredImporteAbonado,
-            metodoPago: filteredMetodoPago,
             codigoTratamiento: filteredCodigoTratamiento,
             pacienteCobro: filteredPacienteCobro,
             tratamientoCobro: filteredTratamientoCobro,
@@ -135,7 +131,6 @@ const confirmLogout = (e) => {
           const {
             fechaCobro,
             importeAbonado,
-            metodoPago,
             codigoTratamiento,
             pacienteCobro,
             tratamientoCobro,
@@ -144,7 +139,6 @@ const confirmLogout = (e) => {
 
           const filteredFechaCobro = [];
           const filteredImporteAbonado = [];
-          const filteredMetodoPago = [];
           const filteredCodigoTratamiento = [];
           const filteredPacienteCobro = [];
           const filteredTratamientoCobro = [];
@@ -156,7 +150,6 @@ const confirmLogout = (e) => {
             if (fechaz === search) {
               filteredFechaCobro.push(fecha);
               filteredImporteAbonado.push(importeAbonado[i]);
-              filteredMetodoPago.push(metodoPago[i]);
               filteredCodigoTratamiento.push(codigoTratamiento[i]);
               filteredPacienteCobro.push(pacienteCobro[i]);
               filteredTratamientoCobro.push(tratamientoCobro[i]);
@@ -169,7 +162,6 @@ const confirmLogout = (e) => {
             cobrosManuales: {
               fechaCobro: filteredFechaCobro,
               importeAbonado: filteredImporteAbonado,
-              metodoPago: filteredMetodoPago,
               codigoTratamiento: filteredCodigoTratamiento,
               pacienteCobro: filteredPacienteCobro,
               tratamientoCobro: filteredTratamientoCobro,
@@ -185,10 +177,6 @@ const confirmLogout = (e) => {
               .toLowerCase()
               .includes(search.toLowerCase()) ||
             dato.cobrosManuales.tratamientoCobro
-              ?.toString()
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            dato.cobrosManuales.metodoPago
               ?.toString()
               .toLowerCase()
               .includes(search.toLowerCase())
@@ -275,7 +263,7 @@ const confirmLogout = (e) => {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Tratamiento, Paciente o Metodo Pago..."
+                    placeholder="Buscar por Tratamiento o Paciente..."
                     className="form-control m-2"
                   />
                   {taparFiltro && (
@@ -494,9 +482,6 @@ const confirmLogout = (e) => {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("fechaCobro")}>Fecha</th>
-                        <th onClick={() => sorting("metodoPago")}>
-                          Metodo Pago
-                        </th>
                         <th onClick={() => sorting("importeAbonado")}>
                           Importe
                         </th>
@@ -523,9 +508,6 @@ const confirmLogout = (e) => {
                               tratamiento.cobrosManuales.importeAbonado[
                               index
                               ] || "";
-                            const metodoPago =
-                              tratamiento.cobrosManuales.metodoPago[index] ||
-                              "";
                             const cta =
                               tratamiento.cobrosManuales.codigoTratamiento[
                               index
@@ -549,7 +531,6 @@ const confirmLogout = (e) => {
                                       "DD/MM/YY"
                                     )}
                                   </td>
-                                  <td>{metodoPago.toString()}</td>
                                   <td>{importe.toString()}</td>
                                   <td>{cta.toString()}</td>
                                   <td>{paciente.toString()}</td>

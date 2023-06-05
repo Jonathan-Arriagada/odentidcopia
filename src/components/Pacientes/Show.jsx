@@ -32,17 +32,17 @@ const Show = () => {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -82,7 +82,7 @@ const confirmLogout = (e) => {
       showCancelButton: true,
       confirmButtonColor: '#00C5C1',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Si' ,
+      confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -155,7 +155,7 @@ const confirmLogout = (e) => {
                     placeholder="Buscar por Apellido y Nombres o IDC..."
                     className="form-control m-2"
                   />
-                </div>                    
+                </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
                     Bienvenido al sistema Odentid
@@ -214,7 +214,6 @@ const confirmLogout = (e) => {
                           Fecha Nacimiento
                         </th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th>Accion</th>
                       </tr>
                     </thead>
 
@@ -243,7 +242,7 @@ const confirmLogout = (e) => {
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
                               >
-                                <i className="fa-solid fa-list"> </i>
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>
@@ -259,7 +258,7 @@ const confirmLogout = (e) => {
                                 </Dropdown.Item>
 
                                 <Dropdown.Item>
-                                  <Link to={`/historial/${client.id}`} style={{textDecoration: "none", color:"#212529"}}>
+                                  <Link to={`/historial/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                     <i className="fa-solid fa-file-medical"></i>
                                     Historial Clinico
                                   </Link>
@@ -272,7 +271,7 @@ const confirmLogout = (e) => {
                                     setClient(client);
                                   }}
                                 >
-                                  <i class="fa-solid fa-plus"></i>
+                                  <i className="fa-solid fa-plus"></i>
                                   Crear Cita
                                 </Dropdown.Item>
 

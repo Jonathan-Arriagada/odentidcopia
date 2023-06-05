@@ -65,7 +65,6 @@ function IngresosEspecif(id) {
         const {
           fechaCobro,
           importeAbonado,
-          metodoPago,
           codigoTratamiento,
           pacienteCobro,
           tratamientoCobro,
@@ -74,7 +73,6 @@ function IngresosEspecif(id) {
 
         const filteredFechaCobro = [];
         const filteredImporteAbonado = [];
-        const filteredMetodoPago = [];
         const filteredCodigoTratamiento = [];
         const filteredPacienteCobro = [];
         const filteredTratamientoCobro = [];
@@ -86,7 +84,6 @@ function IngresosEspecif(id) {
           if (fechaz >= search.fechaInicio && fechaz <= search.fechaFin) {
             filteredFechaCobro.push(fecha);
             filteredImporteAbonado.push(importeAbonado[i]);
-            filteredMetodoPago.push(metodoPago[i]);
             filteredCodigoTratamiento.push(codigoTratamiento[i]);
             filteredPacienteCobro.push(pacienteCobro[i]);
             filteredTratamientoCobro.push(tratamientoCobro[i]);
@@ -99,7 +96,6 @@ function IngresosEspecif(id) {
           cobrosManuales: {
             fechaCobro: filteredFechaCobro,
             importeAbonado: filteredImporteAbonado,
-            metodoPago: filteredMetodoPago,
             codigoTratamiento: filteredCodigoTratamiento,
             pacienteCobro: filteredPacienteCobro,
             tratamientoCobro: filteredTratamientoCobro,
@@ -117,7 +113,6 @@ function IngresosEspecif(id) {
           const {
             fechaCobro,
             importeAbonado,
-            metodoPago,
             codigoTratamiento,
             pacienteCobro,
             tratamientoCobro,
@@ -126,7 +121,6 @@ function IngresosEspecif(id) {
 
           const filteredFechaCobro = [];
           const filteredImporteAbonado = [];
-          const filteredMetodoPago = [];
           const filteredCodigoTratamiento = [];
           const filteredPacienteCobro = [];
           const filteredTratamientoCobro = [];
@@ -138,7 +132,6 @@ function IngresosEspecif(id) {
             if (fechaz === search) {
               filteredFechaCobro.push(fecha);
               filteredImporteAbonado.push(importeAbonado[i]);
-              filteredMetodoPago.push(metodoPago[i]);
               filteredCodigoTratamiento.push(codigoTratamiento[i]);
               filteredPacienteCobro.push(pacienteCobro[i]);
               filteredTratamientoCobro.push(tratamientoCobro[i]);
@@ -151,7 +144,6 @@ function IngresosEspecif(id) {
             cobrosManuales: {
               fechaCobro: filteredFechaCobro,
               importeAbonado: filteredImporteAbonado,
-              metodoPago: filteredMetodoPago,
               codigoTratamiento: filteredCodigoTratamiento,
               pacienteCobro: filteredPacienteCobro,
               tratamientoCobro: filteredTratamientoCobro,
@@ -169,11 +161,7 @@ function IngresosEspecif(id) {
             dato.cobrosManuales.tratamientoCobro
               ?.toString()
               .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            dato.cobrosManuales.metodoPago
-              ?.toString()
-              .toLowerCase()
-              .includes(search.toLowerCase())
+              .includes(search.toLowerCase()) 
         );
       }
     }
@@ -433,9 +421,6 @@ function IngresosEspecif(id) {
                         <thead>
                           <tr>
                             <th onClick={() => sorting("fechaCobro")}>Fecha</th>
-                            <th onClick={() => sorting("metodoPago")}>
-                              Metodo Pago
-                            </th>
                             <th onClick={() => sorting("importeAbonado")}>
                               Importe
                             </th>
@@ -462,9 +447,6 @@ function IngresosEspecif(id) {
                                   tratamiento.cobrosManuales.importeAbonado[
                                   index
                                   ] || "";
-                                const metodoPago =
-                                  tratamiento.cobrosManuales.metodoPago[index] ||
-                                  "";
                                 const cta =
                                   tratamiento.cobrosManuales.codigoTratamiento[
                                   index
@@ -488,7 +470,6 @@ function IngresosEspecif(id) {
                                           "DD/MM/YY"
                                         )}
                                       </td>
-                                      <td>{metodoPago.toString()}</td>
                                       <td>{importe.toString()}</td>
                                       <td>{cta.toString()}</td>
                                       <td>{paciente.toString()}</td>

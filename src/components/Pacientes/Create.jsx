@@ -140,19 +140,6 @@ const Create = (props) => {
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">Apellido y Nombres*</label>
-                  <input
-                    value={apellidoConNombre}
-                    onChange={(e) => {
-                      setApellidoConNombre(e.target.value);
-                      setValorBusqueda(e.target.value + " " + idc);
-                    }}
-                    type="text"
-                    className="form-control"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -191,6 +178,19 @@ const Create = (props) => {
                   </div>
                 </div>
                 <div className="mb-3">
+                  <label className="form-label">Apellido y Nombres*</label>
+                  <input
+                    value={apellidoConNombre}
+                    onChange={(e) => {
+                      setApellidoConNombre(e.target.value);
+                      setValorBusqueda(e.target.value + " " + idc);
+                    }}
+                    type="text"
+                    className="form-control"
+                    required
+                  />
+                </div>
+                <div className="mb-3">
                   <label className="form-label">Fecha Nacimiento*</label>
                   <input
                     value={fechaNacimiento}
@@ -203,7 +203,7 @@ const Create = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Telefono*</label>
                   <div style={{ display: "flex" }}>
-                  <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
+                    <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
                     <select
                       value={selectedCode}
                       onChange={(e) => { setSelectedCode(e.target.value); setNumero("") }}
@@ -215,13 +215,13 @@ const Create = (props) => {
                       <option value="+51">+51</option>
                       <option value="+54">+54</option>
                     </select>
-                  <input
-                    value={numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    type="number"
-                    className="form-control"
-                    required
-                  />
+                    <input
+                      value={numero}
+                      onChange={(e) => setNumero(e.target.value)}
+                      type="number"
+                      className="form-control"
+                      required
+                    />
                   </div>
                 </div>
                 <button

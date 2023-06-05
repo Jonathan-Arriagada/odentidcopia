@@ -52,7 +52,6 @@ function TratamientosEspecif(props) {
   const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
   const [indexParaEditcobro, setIndexParaEditcobro] = useState("");
   const [fechaEditCobro, setFechaEditCobro] = useState("");
-  const [metodoPagoEditCobro, setMetodoPagoEditCobro] = useState("");
   const [importeEditCobro, setImporteEditCobro] = useState("");
   const [idParaEditcobro, setIdParaEditcobro] = useState("");
 
@@ -60,7 +59,6 @@ function TratamientosEspecif(props) {
   const [trataCobro, setTrataCobro] = useState("");
   const [pacienteCobro, setPacienteCobro] = useState("");
   const [fechaCobro, setFechaCobro] = useState("");
-  const [metodoPagoCobro, setMetodoPagoCobro] = useState("");
   const [importeCobro, setImporteCobro] = useState("");
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
@@ -296,13 +294,11 @@ function TratamientosEspecif(props) {
     setIndexParaEditcobro("");
     setIdParaCobro("");
     setFechaEditCobro("");
-    setMetodoPagoEditCobro("");
     setImporteEditCobro("");
   };
 
   const clearFieldsCobro = () => {
     setFechaCobro("");
-    setMetodoPagoCobro("");
     setImporteCobro("");
   };
 
@@ -317,7 +313,6 @@ function TratamientosEspecif(props) {
         tratamientoData.cobrosManuales.codigoTratamiento || [];
       const importeAbonadoArray =
         tratamientoData.cobrosManuales.importeAbonado || [];
-      const metodoPagoArray = tratamientoData.cobrosManuales.metodoPago || [];
       const tratamientoCobroArray =
         tratamientoData.cobrosManuales.tratamientoCobro || [];
       const pacienteCobroArray =
@@ -327,7 +322,6 @@ function TratamientosEspecif(props) {
       fechaCobroArray.push(fechaCobro);
       codigoTratamientoArray.push(codigoCobro);
       importeAbonadoArray.push(importeCobro);
-      metodoPagoArray.push(metodoPagoCobro);
       tratamientoCobroArray.push(trataCobro);
       pacienteCobroArray.push(pacienteCobro);
       estadoCobroArray.push("SIN COBRAR");
@@ -335,7 +329,6 @@ function TratamientosEspecif(props) {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
-          "cobrosManuales.metodoPago": metodoPagoArray,
           "cobrosManuales.importeAbonado": importeAbonadoArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -439,12 +432,10 @@ function TratamientosEspecif(props) {
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
       const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
       const importeCobroArray = tratamientoData.cobrosManuales.importeAbonado;
-      const metodoPagoArray = tratamientoData.cobrosManuales.metodoPago;
       const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
 
       fechaCobroArray[indexParaEditcobro] = fechaEditCobro || fechaCobroArray[indexParaEditcobro];
-      metodoPagoArray[indexParaEditcobro] = metodoPagoEditCobro || metodoPagoArray[indexParaEditcobro];
       importeCobroArray[indexParaEditcobro] = importeEditCobro || importeCobroArray[indexParaEditcobro];
       codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
       tratamientoCobroArray[indexParaEditcobro] = trataCobro;
@@ -454,7 +445,6 @@ function TratamientosEspecif(props) {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
-          "cobrosManuales.metodoPago": metodoPagoArray,
           "cobrosManuales.importeAbonado": importeCobroArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -903,7 +893,6 @@ function TratamientosEspecif(props) {
                             <th onClick={() => sorting("estadosTratamientos")}>
                               Estado Tratamiento
                             </th>
-                            <th>Accion</th>
                           </tr>
                         </thead>
 
@@ -945,7 +934,7 @@ function TratamientosEspecif(props) {
                                     className="btn btn-secondary mx-1 btn-md"
                                     id="dropdown-actions"
                                   >
-                                    <i className="fa-solid fa-list"> </i>
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
                                   </Dropdown.Toggle>
 
                                   <Dropdown.Menu>
@@ -1010,7 +999,7 @@ function TratamientosEspecif(props) {
                                       props.openControlYEvolucion(1, tratamiento)
                                     }}
                                     >
-                                      <i class="fa-solid fa-chart-line"></i> Evolucionar
+                                      <i className="fa-solid fa-chart-line"></i> Evolucionar
                                     </Dropdown.Item>
                                     <Dropdown.Item
                                       onClick={() =>
@@ -1123,7 +1112,6 @@ function TratamientosEspecif(props) {
                               <tr>
                                 <th>N°</th>
                                 <th>Fecha Cobro</th>
-                                <th>Metodo Pago</th>
                                 <th>Importe abonado</th>
                                 <th>Accion</th>
                                 <th>
@@ -1149,14 +1137,12 @@ function TratamientosEspecif(props) {
                                 tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
                                   const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
                                   const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
-                                  const metodoPago = tratamiento.cobrosManuales.metodoPago[index] || "";
                                   const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
 
                                   return (
                                     <tr key={index}>
                                       <td>{index + 1}</td>
                                       <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
-                                      <td>{metodoPago.toString()}</td>
                                       <td>{importe.toString()}</td>
                                       <td>
                                         {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
@@ -1187,7 +1173,7 @@ function TratamientosEspecif(props) {
                                               onClick={(e) => {
                                                 setIndexParaEditcobro(index)
                                                 setIdParaEditcobro(idParaCobro)
-                                                setMostrarModalEditarCobro([true, fecha, importe, metodoPago]);
+                                                setMostrarModalEditarCobro([true, fecha, importe]);
                                               }}
                                               style={{ margin: "1px" }}
                                             >
@@ -1271,18 +1257,6 @@ function TratamientosEspecif(props) {
                     </div>
                     <div className="row">
                       <div className="col mb-6">
-                        <label className="form-label">Metodo Pago Cobro</label>
-                        <input
-                          onChange={(e) => setMetodoPagoCobro(e.target.value)}
-                          type="text"
-                          className="form-control"
-                          autoComplete="off"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col mb-6">
                         <label className="form-label">Importe Cobro</label>
                         <input
                           onChange={(e) => setImporteCobro(e.target.value)}
@@ -1330,19 +1304,6 @@ function TratamientosEspecif(props) {
                           defaultValue={mostrarModalEditarCobro[1]}
                           onChange={(e) => setFechaEditCobro(e.target.value)}
                           type="date"
-                          className="form-control"
-                          autoComplete="off"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col mb-6">
-                        <label className="form-label">Metodo Pago Cobro</label>
-                        <input
-                          defaultValue={mostrarModalEditarCobro[3]}
-                          onChange={(e) => setMetodoPagoEditCobro(e.target.value)}
-                          type="text"
                           className="form-control"
                           autoComplete="off"
                           required

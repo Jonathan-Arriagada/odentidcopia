@@ -116,15 +116,6 @@ const EditTratamiento = (props) => {
             <form onSubmit={update}>
 
               <div className="row">
-                <div className="col mb-3">
-                  <label className="form-label">Apellido y Nombres</label>
-                  <input
-                    defaultValue={props.tratamiento.apellidoConNombre}
-                    onChange={(e) => setApellidoConNombre(e.target.value)}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
                 <div className="mb-3">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
@@ -158,6 +149,15 @@ const EditTratamiento = (props) => {
                       className="form-control"
                     />
                   </div>
+                </div>
+                <div className="col mb-3">
+                  <label className="form-label">Apellido y Nombres</label>
+                  <input
+                    defaultValue={props.tratamiento.apellidoConNombre}
+                    onChange={(e) => setApellidoConNombre(e.target.value)}
+                    type="text"
+                    className="form-control"
+                  />
                 </div>
               </div>
 

@@ -76,18 +76,6 @@ const Edit = (props) => {
             <div className="col">
               <form onSubmit={update}>
                 <div className="mb-3">
-                  <label className="form-label">Apellido y Nombres</label>
-                  <input
-                    defaultValue={props.client.apellidoConNombre}
-                    onChange={(e) => {
-                      setApellidoConNombre(e.target.value);
-                      setValorBusqueda(e.target.value + " " + (idc || props.client.idc));
-                    }}
-                    type="text"
-                    className="form-control"
-                  />
-                </div>
-                <div className="mb-3">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -124,7 +112,18 @@ const Edit = (props) => {
                     />
                   </div>
                 </div>
-
+                <div className="mb-3">
+                  <label className="form-label">Apellido y Nombres</label>
+                  <input
+                    defaultValue={props.client.apellidoConNombre}
+                    onChange={(e) => {
+                      setApellidoConNombre(e.target.value);
+                      setValorBusqueda(e.target.value + " " + (idc || props.client.idc));
+                    }}
+                    type="text"
+                    className="form-control"
+                  />
+                </div>
                 <div className="mb-3">
                   <label className="form-label">Fecha Nacimiento</label>
                   <input

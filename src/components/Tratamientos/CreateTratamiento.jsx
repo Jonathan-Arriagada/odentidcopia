@@ -161,15 +161,15 @@ function CreateTratamiento(props) {
       },
     });
     await addDoc(controlesCollection, {
-      codigo: codigo,
+      codigoTratamiento: codigo,
       apellidoConNombre: apellidoConNombre,
       idPaciente: idPaciente,
       tipoIdc: tipoIdc,
       idc: idc,
-      tarifasTratamientos: tarifasTratamientos,
+      tratamientoControl: tarifasTratamientos,
       pieza: pieza,
-      fecha: fecha,
-      notas: "1° Tratamiento Iniciado: " + notas,
+      fechaControlRealizado: fecha,
+      detalleTratamiento: "1° Tratamiento Iniciado: " + notas,
       doctor: currentUser.displayName,
     });
     clearFields();
@@ -246,47 +246,36 @@ function CreateTratamiento(props) {
       <Modal.Body>
         <div className="container">
           {showBuscador && (
-    <div className="col mb-3" style={{ position: "relative" }}>
-          <input
-            placeholder="Buscador por Apellido, Nombre o DNI"
-            type="text"
-            className="form-control"
-            onChangeCapture={(e) =>
-              manejarValorSeleccionado(e.target.value)
-            }
-            list="pacientes-list"
-            multiple={false}
-          />
-          <span
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "10px",
-              transform: "translateY(-60%)",
-            }}
-          >
-            <FaSearch />
-          </span>
-          <datalist id="pacientes-list">
-            <option value="">Ingreso manual</option>
-            {valorBusquedaOptionsJSX}
-          </datalist>
-        </div>
+            <div className="col mb-3" style={{ position: "relative" }}>
+              <input
+                placeholder="Buscador por Apellido, Nombre o DNI"
+                type="text"
+                className="form-control"
+                onChangeCapture={(e) =>
+                  manejarValorSeleccionado(e.target.value)
+                }
+                list="pacientes-list"
+                multiple={false}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  right: "10px",
+                  transform: "translateY(-60%)",
+                }}
+              >
+                <FaSearch />
+              </span>
+              <datalist id="pacientes-list">
+                <option value="">Ingreso manual</option>
+                {valorBusquedaOptionsJSX}
+              </datalist>
+            </div>
           )}
 
           <form>
             <div className="row">
-              <div className="col mb-3">
-                <label className="form-label">Apellido y Nombres*</label>
-                <input
-                  value={apellidoConNombre}
-                  onChange={(e) => setApellidoConNombre(e.target.value)}
-                  type="text"
-                  className="form-control"
-                  disabled={!editable}
-                  required
-                />
-              </div>
               <div className="mb-3">
                 <label className="form-label">IDC*</label>
                 <div style={{ display: "flex" }}>
@@ -322,6 +311,17 @@ function CreateTratamiento(props) {
                     required
                   />
                 </div>
+              </div>
+              <div className="col mb-3">
+                <label className="form-label">Apellido y Nombres*</label>
+                <input
+                  value={apellidoConNombre}
+                  onChange={(e) => setApellidoConNombre(e.target.value)}
+                  type="text"
+                  className="form-control"
+                  disabled={!editable}
+                  required
+                />
               </div>
             </div>
 

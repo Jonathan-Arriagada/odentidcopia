@@ -189,17 +189,6 @@ const CrearControlEvolucion = (props) => {
                         {!ocultar && (
                             <div className="row">
                                 <div className="col mb-6">
-                                    <label className="form-label">Apellido y Nombres:</label>
-                                    <input
-                                        value={apellidoConNombre ?? ''}
-                                        onChange={(e) => setApellidoConNombre(e.target.value)}
-                                        type="text"
-                                        className="form-control"
-                                        disabled={!editable}
-                                        required
-                                    />
-                                </div>
-                                <div className="col mb-6">
                                     <label className="form-label">IDC*</label>
                                     <div style={{ display: "flex" }}>
                                         <select
@@ -234,6 +223,17 @@ const CrearControlEvolucion = (props) => {
                                             required
                                         />
                                     </div>
+                                </div>
+                                <div className="col mb-6">
+                                    <label className="form-label">Apellido y Nombres:</label>
+                                    <input
+                                        value={apellidoConNombre ?? ''}
+                                        onChange={(e) => setApellidoConNombre(e.target.value)}
+                                        type="text"
+                                        className="form-control"
+                                        disabled={!editable}
+                                        required
+                                    />
                                 </div>
                             </div>)}
                         {!ocultar && (<div className="row">

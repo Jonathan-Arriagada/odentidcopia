@@ -54,16 +54,6 @@ const Edit = (props) => {
                 <br></br>
                 <div className="row">
                   <div className="col mb-6">
-                    <label className="form-label">Apellido y Nombres:</label>
-                    <input
-                      defaultValue={props.control.apellidoConNombre}
-                      onChange={(e) => setApellidoConNombre(e.target.value)}
-                      type="text"
-                      className="form-control"
-                      disabled
-                    />
-                  </div>
-                  <div className="col mb-6">
                     <label className="form-label">IDC*</label>
                     <div style={{ display: "flex" }}>
                       <select
@@ -97,6 +87,16 @@ const Edit = (props) => {
                         disabled
                       />
                     </div>
+                  </div>
+                  <div className="col mb-6">
+                    <label className="form-label">Apellido y Nombres:</label>
+                    <input
+                      defaultValue={props.control.apellidoConNombre}
+                      onChange={(e) => setApellidoConNombre(e.target.value)}
+                      type="text"
+                      className="form-control"
+                      disabled
+                    />
                   </div>
                 </div>
                 <div className="row">
