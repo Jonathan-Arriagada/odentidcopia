@@ -20,6 +20,7 @@ const Edit = (props) => {
       showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: 'Guardar',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No guardar`,
       cancelButtonText: 'Cancelar',
     }).then(async (result) => {

@@ -1,18 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  getDocs,
-  where,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import {collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, getDoc} from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
+import peruFlag from "../../img/peru.png"
+import argentinaFlag from "../../img/argentina.png"
 
 function CreateCita(props) {
   const [apellidoConNombre, setApellidoConNombre] = useState("");
@@ -20,6 +12,7 @@ function CreateCita(props) {
   const [idc, setIdc] = useState("");
   const [tipoIdc, setTipoIdc] = useState("dni");
   const [estado, setEstado] = useState("");
+  const [selectedCode, setSelectedCode] = useState("+51");
   const [numero, setNumero] = useState("");
   const [fecha, setFecha] = useState("");
   const [horaInicio, setHoraInicio] = useState("08:00");
@@ -172,6 +165,7 @@ function CreateCita(props) {
         idc: idc,
         tipoIdc: tipoIdc,
         fechaNacimiento: "",
+        selectedCode: selectedCode,
         numero: numero,
         valorBusqueda: apellidoConNombre + " " + idc,
         edad: "",
@@ -210,6 +204,7 @@ function CreateCita(props) {
         tipoIdc: tipoIdc,
         idc: idc,
         estado: estado,
+        selectedCode: selectedCode,
         numero: numero,
         fecha: fecha,
         horaInicio: horaInicio,
@@ -254,6 +249,7 @@ function CreateCita(props) {
     setIdPacienteCita("");
     setTipoIdc("dni")
     setIdc("");
+    setSelectedCode("+51");
     setNumero("");
     setEstado("");
     setFecha("");
@@ -386,14 +382,27 @@ function CreateCita(props) {
               <div className="row">
                 <div className="col mb-3">
                   <label className="form-label">Teléfono*</label>
+                  <div style={{ display: "flex" }}>
+                  <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
+                    <select
+                      value={selectedCode}
+                      onChange={(e) => { setSelectedCode(e.target.value); setNumero("") }}
+                      className="form-control-tipoIDC me-1"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="+51">+51</option>
+                      <option value="+54">+54</option>
+                    </select>
                   <input
                     value={numero || ""}
                     onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
-                    disabled={!editable}
                     required
                   />
+                  </div>
                 </div>
 
                 <div className="col mb-3">

@@ -118,6 +118,7 @@ const confirmLogout = (e) => {
       title: '¿Desea cerrar sesión?',
       showDenyButton: true,         
       confirmButtonText: 'Si, cerrar sesión',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
@@ -876,7 +877,7 @@ const confirmLogout = (e) => {
                             </label>
 
                             <label className="form-label d-flex">
-                              6. ¿Está embarazada?
+                              6. ¿Está embarazada?       
                                <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -894,8 +895,8 @@ const confirmLogout = (e) => {
                                   onChange={() => setPregunta6((prevState) => [prevState[0], false])}
                                 />
                                 No
-                              </label>
-                            </label>
+                              </label>                     
+                             </label>
 
                             <label className="form-label d-flex">
                               7. ¿Padece o padeció hepatitis?

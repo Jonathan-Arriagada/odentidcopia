@@ -83,6 +83,7 @@ const confirmLogout = (e) => {
       title: '¿Desea cerrar sesión?',
       showDenyButton: true,         
       confirmButtonText: 'Si, cerrar sesión',
+      confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
@@ -184,7 +185,7 @@ const confirmLogout = (e) => {
       text: "No podra revertir la accion",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#00C5C1',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si' ,
       cancelButtonText: 'No'
