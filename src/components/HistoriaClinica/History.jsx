@@ -738,7 +738,7 @@ const confirmLogout = (e) => {
                                 1. ¿Está siendo atendido por un médico?
                                 <label className="m-1">
                                   <input
-                                    type="checkbox"
+                                    type="radio"
                                     className="m-1"
                                     checked={pregunta1[1]}
                                     onChange={() => setPregunta1((prevState) => [prevState[0], true])}
@@ -747,7 +747,7 @@ const confirmLogout = (e) => {
                                 </label>
                                 <label className="m-1">
                                   <input
-                                    type="checkbox"
+                                    type="radio"
                                     className="m-1"
                                     checked={!pregunta1[1]}
                                     onChange={() => setPregunta1((prevState) => [prevState[0], false])}
@@ -768,7 +768,7 @@ const confirmLogout = (e) => {
                                 2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
                                 <label className="m-1">
                                   <input
-                                    type="checkbox"
+                                    type="radio"
                                     className="m-1"
                                     checked={pregunta2[1]}
                                     onChange={() => setPregunta2((prevState) => [prevState[0], true])}
@@ -777,7 +777,7 @@ const confirmLogout = (e) => {
                                 </label>
                                 <label className="m-1">
                                   <input
-                                    type="checkbox"
+                                    type="radio"
                                     className="m-1"
                                     checked={!pregunta2[1]}
                                     onChange={() => setPregunta2((prevState) => [prevState[0], false])}
@@ -798,7 +798,7 @@ const confirmLogout = (e) => {
                               3. ¿Está tomando algún medicamento?{" "}
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta3[1]}
                                   onChange={() => setPregunta3((prevState) => [prevState[0], true])}
@@ -807,7 +807,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta3[1]}
                                   onChange={() => setPregunta3((prevState) => [prevState[0], false])}
@@ -828,7 +828,7 @@ const confirmLogout = (e) => {
                               4. ¿Es alérgico a algún medicamento?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta4[1]}
                                   onChange={() => setPregunta4((prevState) => [prevState[0], true])}
@@ -837,7 +837,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta4[1]}
                                   onChange={() => setPregunta4((prevState) => [prevState[0], false])}
@@ -858,7 +858,7 @@ const confirmLogout = (e) => {
                               5. ¿Ha tenido alguna reacción a la anestesia local?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta5[1]}
                                   onChange={() => setPregunta5((prevState) => [prevState[0], true])}
@@ -867,7 +867,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta5[1]}
                                   onChange={() => setPregunta5((prevState) => [prevState[0], false])}
@@ -880,7 +880,7 @@ const confirmLogout = (e) => {
                               6. ¿Está embarazada?       
                                <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta6[1]}
                                   onChange={() => setPregunta6((prevState) => [prevState[0], true])}
@@ -889,7 +889,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta6[1]}
                                   onChange={() => setPregunta6((prevState) => [prevState[0], false])}
@@ -902,7 +902,7 @@ const confirmLogout = (e) => {
                               7. ¿Padece o padeció hepatitis?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta7[1]}
                                   onChange={() => setPregunta7((prevState) => [prevState[0], true])}
@@ -911,7 +911,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta7[1]}
                                   onChange={() => setPregunta7((prevState) => [prevState[0], false])}
@@ -924,7 +924,7 @@ const confirmLogout = (e) => {
                               8. ¿Padece o padeció enfermedades renales?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta8[1]}
                                   onChange={() => setPregunta8((prevState) => [prevState[0], true])}
@@ -933,7 +933,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta8[1]}
                                   onChange={() => setPregunta8((prevState) => [prevState[0], false])}
@@ -946,7 +946,7 @@ const confirmLogout = (e) => {
                               9. ¿Tiene problemas del corazón?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta9[1]}
                                   onChange={() => setPregunta9((prevState) => [prevState[0], true])}
@@ -955,7 +955,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta9[1]}
                                   onChange={() => setPregunta9((prevState) => [prevState[0], false])}
@@ -968,7 +968,7 @@ const confirmLogout = (e) => {
                               10. ¿Padece o ha padecido cáncer?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta10[1]}
                                   onChange={() => setPregunta10((prevState) => [prevState[0], true])}
@@ -977,7 +977,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta10[1]}
                                   onChange={() => setPregunta10((prevState) => [prevState[0], false])}
@@ -990,7 +990,7 @@ const confirmLogout = (e) => {
                               11. ¿Ha tenido alguna cirugía?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta11[1]}
                                   onChange={() => setPregunta11((prevState) => [prevState[0], true])}
@@ -999,7 +999,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta11[1]}
                                   onChange={() => setPregunta11((prevState) => [prevState[0], false])}
@@ -1012,7 +1012,7 @@ const confirmLogout = (e) => {
                               12. ¿Es diabético?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta12[1]}
                                   onChange={() => setPregunta12((prevState) => [prevState[0], true])}
@@ -1021,7 +1021,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta12[1]}
                                   onChange={() => setPregunta12((prevState) => [prevState[0], false])}
@@ -1034,7 +1034,7 @@ const confirmLogout = (e) => {
                               13. ¿Tiene trastornos de tipo convulsivo?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta13[1]}
                                   onChange={() => setPregunta13((prevState) => [prevState[0], true])}
@@ -1043,7 +1043,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta13[1]}
                                   onChange={() => setPregunta13((prevState) => [prevState[0], false])}
@@ -1056,7 +1056,7 @@ const confirmLogout = (e) => {
                               14. ¿Lo han hospitalizado?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta14[1]}
                                   onChange={() => setPregunta14((prevState) => [prevState[0], true])}
@@ -1065,7 +1065,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta14[1]}
                                   onChange={() => setPregunta14((prevState) => [prevState[0], false])}
@@ -1078,7 +1078,7 @@ const confirmLogout = (e) => {
                               15. ¿Ha tenido algun sangrado excesivo?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta15[1]}
                                   onChange={() => setPregunta15((prevState) => [prevState[0], true])}
@@ -1087,7 +1087,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta15[1]}
                                   onChange={() => setPregunta15((prevState) => [prevState[0], false])}
@@ -1100,7 +1100,7 @@ const confirmLogout = (e) => {
                               16. ¿Tiene algun problema digestivo (úlceras o gastritis)?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta16[1]}
                                   onChange={() => setPregunta16((prevState) => [prevState[0], true])}
@@ -1109,7 +1109,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta16[1]}
                                   onChange={() => setPregunta16((prevState) => [prevState[0], false])}
@@ -1122,7 +1122,7 @@ const confirmLogout = (e) => {
                               17. ¿Toma anticonceptivos orales?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta17[1]}
                                   onChange={() => setPregunta17((prevState) => [prevState[0], true])}
@@ -1131,7 +1131,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta17[1]}
                                   onChange={() => setPregunta17((prevState) => [prevState[0], false])}
@@ -1145,7 +1145,7 @@ const confirmLogout = (e) => {
                               mencione en esta lista y que debamos saber?
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={pregunta18[1]}
                                   onChange={() => setPregunta18((prevState) => [prevState[0], true])}
@@ -1154,7 +1154,7 @@ const confirmLogout = (e) => {
                               </label>
                               <label className="m-1">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
                                   className="m-1"
                                   checked={!pregunta18[1]}
                                   onChange={() => setPregunta18((prevState) => [prevState[0], false])}
