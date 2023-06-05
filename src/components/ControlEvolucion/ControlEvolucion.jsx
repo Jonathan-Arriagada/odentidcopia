@@ -5,7 +5,7 @@ import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import EditControlEvolucion from "./EditControlEvolucion";
 import moment from "moment";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import "../../style/Main.css";

@@ -6,7 +6,7 @@ import { getDoc, doc, updateDoc, getDocs, query, where, collection, addDoc, onSn
 import { db } from "../../firebaseConfig/firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import Navigation from "../Navigation";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import TratamientosEspecif from "./TratamientosEspecif";

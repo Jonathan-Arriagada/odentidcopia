@@ -3,7 +3,7 @@ import Navigation from "../Navigation";
 import { collection, orderBy, query, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { db, } from "../../firebaseConfig/firebase";
 import CrearAsistente from "./CrearAsistente";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css"
 import Swal from "sweetalert2";

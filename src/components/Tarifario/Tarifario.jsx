@@ -4,12 +4,13 @@ import { collection, updateDoc, doc, orderBy, query, onSnapshot } from "firebase
 import { db } from "../../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
 import EditTarifa from "./EditTarifa";
-import { FaSignOutAlt, FaBell, FaUser } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import "../../style/Main.css";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthContext";
 import profile from "../../img/profile.png";
+import { Dropdown } from "react-bootstrap";
+import "../../style/Main.css";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
@@ -34,17 +35,17 @@ function Tarifario() {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -128,17 +129,17 @@ const confirmLogout = (e) => {
                 />
               </div>
               <div className="col d-flex justify-content-end align-items-center right-navbar">
-              <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido {currentUser.displayName}
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                      </Link>
+                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                  Bienvenido {currentUser.displayName}
+                </p>
+                <div className="d-flex">
+                  <div className="notificacion">
+                    <Link
+                      to="/miPerfil"
+                      className="text-decoration-none"
+                    >
+                      <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                    </Link>
                   </div>
                   <div className="notificacion">
                     <FaBell className="icono" />
@@ -188,7 +189,7 @@ const confirmLogout = (e) => {
                       <th onClick={() => sorting("codigo")}>Código</th>
                       <th>Tratamiento</th>
                       <th>Tarifa</th>
-                      {userType === process.env.REACT_APP_rolAdCon ? <th>Accion</th> : null}
+                      {userType === process.env.REACT_APP_rolAdCon ? <th id="columnaAccion"></th> : null}
                     </tr>
                   </thead>
 
@@ -202,46 +203,59 @@ const confirmLogout = (e) => {
                         <td> {tarifa.tratamiento}</td>
                         <td> {tarifa.tarifa} </td>
                         {userType === process.env.REACT_APP_rolAdCon ? (
-                          <td>
-                            <button
-                              variant="primary"
-                              className="btn btn-success mx-1"
-                              disabled={
-                                disabledRows.includes(tarifa.id) ||
-                                tarifa.eliminado
-                              }
-                              onClick={() => {
-                                setModalShowEdit(true);
-                                setTarifa(tarifa);
-                                setIdParam(tarifa.id);
-                              }}
-                            >
-                              <i className="fa-regular fa-pen-to-square"></i>
-                            </button>
-                            <button
-                              onClick={() => {
-                                deleteTarifa(tarifa.id);
-                              }}
-                              className="btn btn-danger"
-                              disabled={
-                                disabledRows.includes(tarifa.id) ||
-                                tarifa.eliminado
-                              }
-                            >
-                              <i className="fa-solid fa-trash"></i>
-                            </button>
-                            {tarifa.eliminado}
-                            <button
-                              onClick={() => {
-                                activeTarifa(tarifa.id);
-                              }}
-                              className="btn btn-light"
-                              disabled={disabledRows.includes(tarifa.id)}
-                              style={{ marginLeft: "2px" }}
-                            >
-                              {" "}
-                              <i className="fa-solid fa-power-off"></i>{" "}
-                            </button>
+                          <td id="columnaAccion" >
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                variant="primary"
+                                className="btn btn-secondary mx-1 btn-md"
+                                id="dropdown-actions"
+                              >
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
+                              </Dropdown.Toggle>
+
+                              <Dropdown.Menu style={{textAlign: "center"}}>
+                                <button
+                                  variant="primary"
+                                  className="btn btn-success mx-1"
+                                  disabled={
+                                    disabledRows.includes(tarifa.id) ||
+                                    tarifa.eliminado
+                                  }
+                                  onClick={() => {
+                                    setModalShowEdit(true);
+                                    setTarifa(tarifa);
+                                    setIdParam(tarifa.id);
+                                  }}
+                                >
+
+                                  <i className="fa-regular fa-pen-to-square"></i>
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    deleteTarifa(tarifa.id);
+                                  }}
+                                  className="btn btn-danger"
+                                  disabled={
+                                    disabledRows.includes(tarifa.id) ||
+                                    tarifa.eliminado
+                                  }
+                                >
+                                  <i className="fa-solid fa-trash"></i>
+                                </button>
+                                {tarifa.eliminado}
+                                <button
+                                  onClick={() => {
+                                    activeTarifa(tarifa.id);
+                                  }}
+                                  className="btn btn-light"
+                                  disabled={disabledRows.includes(tarifa.id)}
+                                  style={{ marginLeft: "2px", background: "#E6E6E6" }}
+                                >
+                                  {" "}
+                                  <i className="fa-solid fa-power-off"></i>{" "}
+                                </button>
+                              </Dropdown.Menu>
+                            </Dropdown>
                           </td>
                         ) : null}
                       </tr>
@@ -253,7 +267,7 @@ const confirmLogout = (e) => {
           </div>
         </div>
         )}
-      </div>
+      </div >
       <CreateTarifa show={modalShow} onHide={() => setModalShow(false)} />
       <EditTarifa
         id={idParam}

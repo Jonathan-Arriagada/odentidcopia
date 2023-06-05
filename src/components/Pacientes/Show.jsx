@@ -7,7 +7,7 @@ import Edit from "./Edit";
 import Create from "./Create";
 import CreateCita from "../Agenda/CreateCita";
 import moment from "moment";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import "../../style/Main.css";

@@ -4,7 +4,7 @@ import Navigation from "../../Navigation.jsx";
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy, getDocs, limit } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
-import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
+import { FaBell, FaSignOutAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../context/AuthContext.js";

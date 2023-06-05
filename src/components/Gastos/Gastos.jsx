@@ -7,12 +7,13 @@ import EditGasto from "./EditGasto";
 import CrearGasto from "./CrearGasto";
 import TipoGasto from "./Parametros/TipoGasto";
 import moment from "moment";
-import { FaUser, FaBell, FaSignOutAlt } from "react-icons/fa";
+import { FaBell, FaSignOutAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import "../../style/Main.css";
 import Swal from "sweetalert2";
 import profile from "../../img/profile.png";
 import { AuthContext } from "../../context/AuthContext";
+import { Dropdown } from "react-bootstrap";
+import "../../style/Main.css";
 
 
 const Gastos = () => {
@@ -38,22 +39,22 @@ const Gastos = () => {
         localStorage.setItem("user", JSON.stringify(null));
         navigate("/");
         window.location.reload();
-      }, [navigate]);
-    
+    }, [navigate]);
+
     const confirmLogout = (e) => {
-        e.preventDefault();       
+        e.preventDefault();
         Swal.fire({
-          title: '¿Desea cerrar sesión?',
-          showDenyButton: true,         
-          confirmButtonText: 'Si, cerrar sesión',
-          confirmButtonColor: '#00C5C1',
-          denyButtonText: `No, seguir logueado`,
+            title: '¿Desea cerrar sesión?',
+            showDenyButton: true,
+            confirmButtonText: 'Si, cerrar sesión',
+            confirmButtonColor: '#00C5C1',
+            denyButtonText: `No, seguir logueado`,
         }).then((result) => {
-          if (result.isConfirmed) {
-            logout();         
-          }
+            if (result.isConfirmed) {
+                logout();
+            }
         });
-      };
+    };
 
     const getGastos = useCallback((snapshot) => {
         const gastosArray = snapshot.docs.map((doc) => ({
@@ -144,18 +145,18 @@ const Gastos = () => {
                                     />
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                                    Bienvenido {currentUser.displayName}
-                                </p>
-                                <div className="d-flex">
-                                    <div className="notificacion">
-                                    <Link
-                                        to="/miPerfil"
-                                        className="text-decoration-none"
-                                    >
-                                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                                    </Link>
-                                    </div>
+                                    <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                                        Bienvenido {currentUser.displayName}
+                                    </p>
+                                    <div className="d-flex">
+                                        <div className="notificacion">
+                                            <Link
+                                                to="/miPerfil"
+                                                className="text-decoration-none"
+                                            >
+                                                <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                                            </Link>
+                                        </div>
                                         <div className="notificacion">
                                             <FaBell className="icono" />
                                             <span className="badge rounded-pill bg-danger">5</span>
@@ -234,7 +235,7 @@ const Gastos = () => {
                                                 <th onClick={() => sorting("descripArticulo")}>Descripcion</th>
                                                 <th onClick={() => sorting("precioUniArticulo")}>Precio Uni</th>
                                                 <th onClick={() => sorting("subTotalArticulo")}>SubTotal</th>
-                                                <th>Accion</th>
+                                                <th id="columnaAccion"></th>
                                             </tr>
                                         </thead>
 
@@ -252,26 +253,39 @@ const Gastos = () => {
                                                     <td> {gasto.descripArticulo} </td>
                                                     <td> {gasto.precioUniArticulo} </td>
                                                     <td> {gasto.subTotalArticulo} </td>
-                                                    <td>
-                                                        <button
-                                                            variant="primary"
-                                                            className="btn btn-success mx-1"
-                                                            onClick={() => {
-                                                                setModalShowEdit(true);
-                                                                setGasto(gasto);
-                                                                setIdParam(gasto.id);
-                                                            }}
-                                                        >
-                                                            <i className="fa-regular fa-pen-to-square"></i>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                deleteGasto(gasto.id);
-                                                            }}
-                                                            className="btn btn-danger mx-1"
-                                                        >
-                                                            <i className="fa-solid fa-trash-can"></i>
-                                                        </button>
+                                                    <td id="columnaAccion">
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle
+                                                                variant="primary"
+                                                                className="btn btn-secondary mx-1 btn-md"
+                                                                id="dropdown-actions"
+                                                            >
+                                                                <i className="fa-solid fa-ellipsis-vertical"></i>
+                                                            </Dropdown.Toggle>
+
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+
+                                                                        setModalShowEdit(true);
+                                                                        setGasto(gasto);
+                                                                        setIdParam(gasto.id);
+                                                                    }}
+                                                                >
+                                                                    <i className="fa-regular fa-pen-to-square"></i>
+                                                                    Editar
+                                                                </Dropdown.Item>
+
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        deleteGasto(gasto.id);
+                                                                    }}
+                                                                >
+                                                                    <i className="fa-solid fa-trash-can"></i>
+                                                                    Eliminar
+                                                                </Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
                                                     </td>
                                                 </tr>
                                             ))}

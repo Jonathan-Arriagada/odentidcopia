@@ -13,8 +13,7 @@ const EditTratamiento = (props) => {
   const [cta, setCta] = useState(props.tratamiento.cta || "");
   const [precio, setPrecio] = useState(props.tratamiento.precio || "");
   const [pieza, setPieza] = useState(props.tratamiento.pieza || "");
-  const [plazo, setPlazo] = useState(props.tratamiento.plazo || "");
-  const [cuota, setCuota] = useState(props.tratamiento.cuota || "");
+  const [formaPago, setFormaPago] = useState(props.tratamiento.formaPago || "contado");
   const [estadosTratamientos, setEstadosTratamientos] = useState(props.tratamiento.estadosTratamientos || "");
   const [fecha, setFecha] = useState(props.tratamiento.fecha || "");
   const [fechaVencimiento, setFechaVencimiento] = useState(props.tratamiento.fechaVencimiento || "");
@@ -82,8 +81,7 @@ const EditTratamiento = (props) => {
       cta: cta || tratamientoData.cta,
       precio: precio || tratamientoData.precio,
       pieza: pieza || tratamientoData.pieza,
-      plazo: plazo || tratamientoData.plazo,
-      cuota: cuota || tratamientoData.cuota,
+      formaPago: formaPago || tratamientoData.formaPago,
       estadosTratamientos: estadosTratamientos || tratamientoData.estadosTratamientos,
       fecha: fecha || tratamientoData.fecha,
       fechaVencimiento: fechaVencimiento || tratamientoData.fechaVencimiento,
@@ -116,7 +114,7 @@ const EditTratamiento = (props) => {
             <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
 
               <div className="row">
-                <div className="mb-3">
+                <div className="col mb-3">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -191,28 +189,33 @@ const EditTratamiento = (props) => {
 
               <div className="row">
                 <div className="col mb-2">
+                  <label className="form-label">Forma de Pago</label>
+                  <select
+                    defaultValue={props.tratamiento.formaPago}
+                    onChange={(e) => setFormaPago(e.target.value)}
+                    className="form-control"
+                    multiple={false}
+                    required
+                  >
+                    <option value="contado">Contado</option>
+                    <option value="cuotas">Cuotas</option>
+                  </select>
+                </div>
+
+                <div className="col mb-2">
+                  <label className="form-label">Precio</label>
+                  <input
+                    defaultValue={props.tratamiento.precio}
+                    type="number"
+                    className="form-control"
+                    disabled={true}
+                  />
+                </div>
+                <div className="col mb-2">
                   <label className="form-label">Pieza</label>
                   <input
                     defaultValue={props.tratamiento.pieza}
                     onChange={(e) => setPieza(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="col mb-2">
-                  <label className="form-label">Plazo</label>
-                  <input
-                    defaultValue={props.tratamiento.plazo}
-                    onChange={(e) => setPlazo(e.target.value)}
-                    type="number"
-                    className="form-control"
-                  />
-                </div>
-                <div className="col mb-2">
-                  <label className="form-label">Cuota</label>
-                  <input
-                    defaultValue={props.tratamiento.cuota}
-                    onChange={(e) => setCuota(e.target.value)}
                     type="number"
                     className="form-control"
                   />
@@ -229,6 +232,8 @@ const EditTratamiento = (props) => {
                     className="form-control"
                   />
                 </div>
+
+                {((formaPago === "cuotas") || (props.tratamiento.formaPago === "cuotas")) && (
                 <div className="col mb-3">
                   <label className="form-label">Fecha Vencimiento</label>
                   <input
@@ -237,7 +242,7 @@ const EditTratamiento = (props) => {
                     type="date"
                     className="form-control"
                   />
-                </div>
+                </div>)}
               </div>
 
               <div className="row">

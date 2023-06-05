@@ -1,15 +1,17 @@
 import React from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import Navigation from "../Navigation";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
 
 const Ingresos = () => {
   const [tratamientos, setTratamientos] = useState([]);
@@ -26,7 +28,9 @@ const Ingresos = () => {
 
   const tratamientosCollectionRef = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectionRef));
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { currentUser, } = useContext(AuthContext);
+
 
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
@@ -34,17 +38,17 @@ const Ingresos = () => {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -283,7 +287,7 @@ const confirmLogout = (e) => {
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido al sistema Odentid
+                    Bienvenido {currentUser.displayName}
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
@@ -291,7 +295,7 @@ const confirmLogout = (e) => {
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
-                        <FaUser className="icono" />
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
                     </div>
                     <div className="notificacion">

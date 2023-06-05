@@ -11,7 +11,7 @@ import ListaSeleccionEstadoPago from "./ListaSeleccionEstadoPago";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown, Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaUser, FaBell } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
@@ -59,6 +59,7 @@ function Tratamientos() {
   const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
   const [indexParaEditcobro, setIndexParaEditcobro] = useState("");
   const [fechaEditCobro, setFechaEditCobro] = useState("");
+  const [nroComprobanteEditCobro, setNroComprobanteEditCobro] = useState("");
   const [importeEditCobro, setImporteEditCobro] = useState("");
   const [idParaEditcobro, setIdParaEditcobro] = useState("");
 
@@ -66,13 +67,14 @@ function Tratamientos() {
   const [trataCobro, setTrataCobro] = useState("");
   const [pacienteCobro, setPacienteCobro] = useState("");
   const [fechaCobro, setFechaCobro] = useState("");
+  const [nroComprobanteCobro, setNroComprobanteCobro] = useState("");
   const [importeCobro, setImporteCobro] = useState("");
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
   const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
   const { currentUser, } = useContext(AuthContext);
-  const navigate = useNavigate()  
+  const navigate = useNavigate()
 
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
@@ -359,11 +361,13 @@ function Tratamientos() {
     setIndexParaEditcobro("");
     setIdParaCobro("");
     setFechaEditCobro("");
+    setNroComprobanteEditCobro("");
     setImporteEditCobro("");
   };
 
   const clearFieldsCobro = () => {
     setFechaCobro("");
+    setNroComprobanteCobro("");
     setImporteCobro("");
   };
 
@@ -373,7 +377,9 @@ function Tratamientos() {
       const tratamientoRef = doc(db, "tratamientos", id);
       const tratamientoDoc = await getDoc(tratamientoRef);
       const tratamientoData = tratamientoDoc.data();
+
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro || [];
+      const nroComprobanteCobroArray = tratamientoData.cobrosManuales.nroComprobanteCobro || [];
       const codigoTratamientoArray =
         tratamientoData.cobrosManuales.codigoTratamiento || [];
       const importeAbonadoArray =
@@ -385,15 +391,17 @@ function Tratamientos() {
       const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro || [];
 
       fechaCobroArray.push(fechaCobro);
-      codigoTratamientoArray.push(codigoCobro);
+      nroComprobanteCobroArray.push(nroComprobanteCobro);
       importeAbonadoArray.push(importeCobro);
       tratamientoCobroArray.push(trataCobro);
+      codigoTratamientoArray.push(codigoCobro);
       pacienteCobroArray.push(pacienteCobro);
       estadoCobroArray.push("SIN COBRAR");
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nroComprobanteCobroArray,
           "cobrosManuales.importeAbonado": importeAbonadoArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -428,6 +436,7 @@ function Tratamientos() {
       const tratamientoData = tratamientoDoc.data();
 
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
+      const nroComprobanteCobroArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
       const codigoTratamientoArray =
         tratamientoData.cobrosManuales.codigoTratamiento;
       const importeAbonadoArray = tratamientoData.cobrosManuales.importeAbonado;
@@ -440,8 +449,8 @@ function Tratamientos() {
         fechaCobroArray,
         index
       );
-      const nuevoCodigoTratamientoArray = eliminarPosicionArray(
-        codigoTratamientoArray,
+      const nuevaNroComprobanteCobroArray = eliminarPosicionArray(
+        nroComprobanteCobroArray,
         index
       );
       const nuevoImporteAbonadoArray = eliminarPosicionArray(
@@ -450,6 +459,10 @@ function Tratamientos() {
       );
       const nuevoTratamientoCobroArray = eliminarPosicionArray(
         tratamientoCobroArray,
+        index
+      );
+      const nuevoCodigoTratamientoArray = eliminarPosicionArray(
+        codigoTratamientoArray,
         index
       );
       const nuevoPacienteCobroArray = eliminarPosicionArray(
@@ -464,6 +477,7 @@ function Tratamientos() {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": nuevaFechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nuevaNroComprobanteCobroArray,
           "cobrosManuales.importeAbonado": nuevoImporteAbonadoArray,
           "cobrosManuales.tratamientoCobro": nuevoTratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": nuevoCodigoTratamientoArray,
@@ -489,12 +503,14 @@ function Tratamientos() {
       const tratamientoData = tratamientoDoc.data();
 
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
-      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
+      const nroComprobanteCobroArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
       const importeCobroArray = tratamientoData.cobrosManuales.importeAbonado;
       const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
+      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
 
       fechaCobroArray[indexParaEditcobro] = fechaEditCobro || fechaCobroArray[indexParaEditcobro];
+      nroComprobanteCobroArray[indexParaEditcobro] = nroComprobanteEditCobro || nroComprobanteCobroArray[indexParaEditcobro];
       importeCobroArray[indexParaEditcobro] = importeEditCobro || importeCobroArray[indexParaEditcobro];
       codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
       tratamientoCobroArray[indexParaEditcobro] = trataCobro;
@@ -504,6 +520,7 @@ function Tratamientos() {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nroComprobanteCobroArray,
           "cobrosManuales.importeAbonado": importeCobroArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -586,7 +603,7 @@ function Tratamientos() {
                   )}
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
                     Bienvenido {currentUser.displayName}
                   </p>
                   <div className="d-flex">
@@ -595,7 +612,7 @@ function Tratamientos() {
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
-                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
                     </div>
                     <div className="notificacion">
@@ -1054,7 +1071,7 @@ function Tratamientos() {
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
                               >
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                <i className="fa-solid fa-ellipsis-vertical"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>
@@ -1168,6 +1185,7 @@ function Tratamientos() {
                         <thead>
                           <tr>
                             <th>Cta</th>
+                            <th>Forma Pago</th>
                             <th>Precio/Total</th>
                             <th>Fecha Vto</th>
                             <th>Estado Pago</th>
@@ -1179,6 +1197,7 @@ function Tratamientos() {
                           {results.map((tratamiento) => (
                             <tr key={tratamiento.id}>
                               <td> {tratamiento.cta} </td>
+                              <td> {tratamiento.formaPago} </td>
                               <td>{tratamiento.precio}</td>
                               <td>
                                 {moment(tratamiento.fechaVencimiento).format(
@@ -1220,6 +1239,7 @@ function Tratamientos() {
                           <tr>
                             <th>N°</th>
                             <th>Fecha Cobro</th>
+                            <th>Nro Comprobante</th>
                             <th>Importe abonado</th>
                             <th>Accion</th>
                             <th>
@@ -1244,6 +1264,7 @@ function Tratamientos() {
                           {results.map((tratamiento) => (
                             tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
                               const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
+                              const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
                               const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
                               const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
 
@@ -1251,6 +1272,7 @@ function Tratamientos() {
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
+                                  <td>{nroComprobante.toString()}</td>
                                   <td>{importe.toString()}</td>
                                   <td>
                                     {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
@@ -1281,7 +1303,7 @@ function Tratamientos() {
                                           onClick={(e) => {
                                             setIndexParaEditcobro(index)
                                             setIdParaEditcobro(idParaCobro)
-                                            setMostrarModalEditarCobro([true, fecha, importe]);
+                                            setMostrarModalEditarCobro([true, fecha, importe, nroComprobante]);
                                           }}
                                           style={{ margin: "1px" }}
                                         >
@@ -1299,6 +1321,9 @@ function Tratamientos() {
                                         </button>
                                       </>
                                     )}
+                                  </td>
+                                  <td>
+                                    <i className="fa-solid fa-download"></i>
                                   </td>
                                 </tr>
                               );
@@ -1364,7 +1389,18 @@ function Tratamientos() {
                       />
                     </div>
                   </div>
-                  <br></br>
+                  <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Nro Comprobante</label>
+                      <input
+                        onChange={(e) => setNroComprobanteCobro(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>
                   <div className="row">
                     <div className="col mb-6">
                       <label className="form-label">Importe Cobro</label>
@@ -1418,8 +1454,19 @@ function Tratamientos() {
                       />
                     </div>
                   </div>
-                  <br></br>
                   <div className="row">
+                    <div className="col mb-6">
+                      <label className="form-label">Nro Comprobante</label>
+                      <input
+                        defaultValue={mostrarModalEditarCobro[3]}
+                        onChange={(e) => setNroComprobanteEditCobro(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        autoComplete="off"
+                        required
+                      />
+                    </div>
+                  </div>                  <div className="row">
                     <div className="col mb-6">
                       <label className="form-label">Importe Cobro</label>
                       <input

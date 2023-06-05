@@ -15,6 +15,7 @@ function CreateTratamiento(props) {
   const [cta, setCta] = useState("");
   const [precio, setPrecio] = useState("");
   const [tarifasTratamientos, setTarifasTratamientos] = useState("");
+  const [formaPago, setFormaPago] = useState("contado");
   const [pieza, setPieza] = useState("");
   const [estadosTratamientos, setEstadosTratamientos] = useState("");
   const [fecha, setFecha] = useState("");
@@ -95,8 +96,7 @@ function CreateTratamiento(props) {
       idc.trim() === "" ||
       tarifasTratamientos.trim() === "" ||
       estadosTratamientos.trim() === "" ||
-      fecha.trim() === "" ||
-      fechaVencimiento.trim() === ""
+      fecha.trim() === ""
     ) {
       setError("Respeta los campos obligatorios *");
       setTimeout(clearError, 2000)
@@ -123,6 +123,7 @@ function CreateTratamiento(props) {
     setTarifasTratamientos("")
     setPieza("")
     setEstadosTratamientos("")
+    setFormaPago("")
     setFecha("")
     setFechaVencimiento("")
     setNotas("")
@@ -138,6 +139,7 @@ function CreateTratamiento(props) {
       idc: idc,
       cta: cta,
       precio: precio,
+      formaPago: formaPago,
       tarifasTratamientos: tarifasTratamientos,
       pieza: pieza,
       estadosTratamientos: estadosTratamientos,
@@ -352,7 +354,21 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col mb-3">
+              <div className="col mb-2">
+                <label className="form-label">Forma de Pago</label>
+                <select
+                  value={formaPago}
+                  onChange={(e) => setFormaPago(e.target.value)}
+                  className="form-control"
+                  multiple={false}
+                  required
+                >
+                  <option value="contado">Contado</option>
+                  <option value="cuotas">Cuotas</option>
+                </select>
+              </div>
+
+              <div className="col mb-2">
                 <label className="form-label">Precio</label>
                 <input
                   value={precio}
@@ -362,7 +378,7 @@ function CreateTratamiento(props) {
                 />
               </div>
 
-              <div className="col mb-3">
+              <div className="col mb-2">
                 <label className="form-label">Pieza</label>
                 <input
                   value={pieza}
@@ -384,7 +400,7 @@ function CreateTratamiento(props) {
                   required
                 />
               </div>
-              <div className="col mb-3">
+              {formaPago === "cuotas" && (<div className="col mb-3">
                 <label className="form-label">Fecha Vencimiento*</label>
                 <input
                   value={fechaVencimiento}
@@ -393,7 +409,7 @@ function CreateTratamiento(props) {
                   className="form-control"
                   required
                 />
-              </div>
+              </div>)}
             </div>
 
             <div className="row">

@@ -52,6 +52,7 @@ function TratamientosEspecif(props) {
   const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
   const [indexParaEditcobro, setIndexParaEditcobro] = useState("");
   const [fechaEditCobro, setFechaEditCobro] = useState("");
+  const [nroComprobanteEditCobro, setNroComprobanteEditCobro] = useState("");
   const [importeEditCobro, setImporteEditCobro] = useState("");
   const [idParaEditcobro, setIdParaEditcobro] = useState("");
 
@@ -59,6 +60,7 @@ function TratamientosEspecif(props) {
   const [trataCobro, setTrataCobro] = useState("");
   const [pacienteCobro, setPacienteCobro] = useState("");
   const [fechaCobro, setFechaCobro] = useState("");
+  const [nroComprobanteCobro, setNroComprobanteCobro] = useState("");
   const [importeCobro, setImporteCobro] = useState("");
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
@@ -294,11 +296,13 @@ function TratamientosEspecif(props) {
     setIndexParaEditcobro("");
     setIdParaCobro("");
     setFechaEditCobro("");
+    setNroComprobanteEditCobro("");
     setImporteEditCobro("");
   };
 
   const clearFieldsCobro = () => {
     setFechaCobro("");
+    setNroComprobanteCobro("");
     setImporteCobro("");
   };
 
@@ -308,9 +312,10 @@ function TratamientosEspecif(props) {
       const tratamientoRef = doc(db, "tratamientos", id);
       const tratamientoDoc = await getDoc(tratamientoRef);
       const tratamientoData = tratamientoDoc.data();
+
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro || [];
-      const codigoTratamientoArray =
-        tratamientoData.cobrosManuales.codigoTratamiento || [];
+      const nroComprobanteArray = tratamientoData.cobrosManuales.nroComprobanteCobro || [];
+      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento || [];
       const importeAbonadoArray =
         tratamientoData.cobrosManuales.importeAbonado || [];
       const tratamientoCobroArray =
@@ -320,6 +325,7 @@ function TratamientosEspecif(props) {
       const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro || [];
 
       fechaCobroArray.push(fechaCobro);
+      nroComprobanteArray.push(nroComprobanteCobro);
       codigoTratamientoArray.push(codigoCobro);
       importeAbonadoArray.push(importeCobro);
       tratamientoCobroArray.push(trataCobro);
@@ -329,6 +335,7 @@ function TratamientosEspecif(props) {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nroComprobanteArray,
           "cobrosManuales.importeAbonado": importeAbonadoArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -363,12 +370,12 @@ function TratamientosEspecif(props) {
       const tratamientoData = tratamientoDoc.data();
 
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
-      const codigoTratamientoArray =
-        tratamientoData.cobrosManuales.codigoTratamiento;
+      const nroComprobanteArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
       const importeAbonadoArray = tratamientoData.cobrosManuales.importeAbonado;
-      const metodoPagoArray = tratamientoData.cobrosManuales.metodoPago;
       const tratamientoCobroArray =
         tratamientoData.cobrosManuales.tratamientoCobro;
+      const codigoTratamientoArray =
+        tratamientoData.cobrosManuales.codigoTratamiento;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
       const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro;
 
@@ -376,20 +383,20 @@ function TratamientosEspecif(props) {
         fechaCobroArray,
         index
       );
-      const nuevoCodigoTratamientoArray = eliminarPosicionArray(
-        codigoTratamientoArray,
+      const nuevoNroComprobanteArray = eliminarPosicionArray(
+        nroComprobanteArray,
         index
       );
       const nuevoImporteAbonadoArray = eliminarPosicionArray(
         importeAbonadoArray,
         index
       );
-      const nuevoMetodoPagoArray = eliminarPosicionArray(
-        metodoPagoArray,
-        index
-      );
       const nuevoTratamientoCobroArray = eliminarPosicionArray(
         tratamientoCobroArray,
+        index
+      );
+      const nuevoCodigoTratamientoArray = eliminarPosicionArray(
+        codigoTratamientoArray,
         index
       );
       const nuevoPacienteCobroArray = eliminarPosicionArray(
@@ -404,7 +411,7 @@ function TratamientosEspecif(props) {
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": nuevaFechaCobroArray,
-          "cobrosManuales.metodoPago": nuevoMetodoPagoArray,
+          "cobrosManuales.nroComprobanteCobro": nuevoNroComprobanteArray,
           "cobrosManuales.importeAbonado": nuevoImporteAbonadoArray,
           "cobrosManuales.tratamientoCobro": nuevoTratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": nuevoCodigoTratamientoArray,
@@ -430,21 +437,24 @@ function TratamientosEspecif(props) {
       const tratamientoData = tratamientoDoc.data();
 
       const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
-      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
+      const nroComprobanteArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
       const importeCobroArray = tratamientoData.cobrosManuales.importeAbonado;
       const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
+      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
 
       fechaCobroArray[indexParaEditcobro] = fechaEditCobro || fechaCobroArray[indexParaEditcobro];
+      nroComprobanteArray[indexParaEditcobro] = nroComprobanteEditCobro || nroComprobanteArray[indexParaEditcobro];
       importeCobroArray[indexParaEditcobro] = importeEditCobro || importeCobroArray[indexParaEditcobro];
-      codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
       tratamientoCobroArray[indexParaEditcobro] = trataCobro;
+      codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
       pacienteCobroArray[indexParaEditcobro] = pacienteCobro;
 
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
           "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nroComprobanteArray,
           "cobrosManuales.importeAbonado": importeCobroArray,
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
@@ -884,7 +894,10 @@ function TratamientosEspecif(props) {
                               Tratamiento
                             </th>
                             <th onClick={() => sorting("pieza")}>Pieza</th>
+                            <th onClick={() => sorting("precio")}>Precio</th>
+                            <th onClick={() => sorting("formaPago")}>Forma Pago</th>
                             <th onClick={() => sorting("fecha")}>Fecha</th>
+                            <th onClick={() => sorting("fechaVencimiento")}>Fecha Vto</th>
                             <th onClick={() => sorting("estadoPago")}>Estado Pago</th>
                             <th onClick={() => sorting("estadosTratamientos")}>
                               Estado Tratamiento
@@ -899,7 +912,10 @@ function TratamientosEspecif(props) {
                               <td>{results.length - index}</td>
                               <td> {tratamiento.tarifasTratamientos} </td>
                               <td> {tratamiento.pieza} </td>
+                              <td> {tratamiento.precio} </td>
+                              <td> {tratamiento.formaPago} </td>
                               <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
+                              <td>{moment(tratamiento.fechaVencimiento).format("DD/MM/YY")}</td>
                               <td style={{ paddingBottom: "0" }}>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                   {tratamiento.estadoPago || ""}
@@ -908,10 +924,14 @@ function TratamientosEspecif(props) {
                                       style={buscarEstilosPago(tratamiento.estadoPago)}
                                       className="color-preview"
                                     ></p>
-                                  )}
 
+                                  )}
+                                  <ListaSeleccionEstadoPago
+                                    tratamientoId={tratamiento.id}
+                                  />
                                 </div>
                               </td>
+
                               <td style={{ paddingBottom: "0" }}>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                   {tratamiento.estadosTratamientos}
@@ -1041,46 +1061,7 @@ function TratamientosEspecif(props) {
                           </Modal.Body>
                         </Modal>
                       )}
-
-                      {mostrarTabla && (
-                        <div style={{ marginTop: "30px" }}>
-                          <h4 style={{ textAlign: "left" }}>Pagos - Gestión Auto</h4>
-                          <table className="table__body">
-                            <thead>
-                              <tr>
-                                <th>Cta</th>
-                                <th>Precio/Total</th>
-                                <th>Fecha Vto</th>
-                                <th>Estado Pago</th>
-                                <th></th>
-                              </tr>
-                            </thead>
-
-                            <tbody>
-                              {results.map((tratamiento) => (
-                                <tr key={tratamiento.id}>
-                                  <td> {tratamiento.cta} </td>
-                                  <td>{tratamiento.precio}</td>
-                                  <td>
-                                    {moment(tratamiento.fechaVencimiento).format(
-                                      "DD/MM/YY"
-                                    )}
-                                  </td>
-                                  <td style={{ display: "flex" }}>
-                                    <span style={{ marginRight: "5px" }}>
-                                      {tratamiento.estadoPago}
-                                    </span>
-                                    <ListaSeleccionEstadoPago
-                                      tratamientoId={tratamiento.id}
-                                    />
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-
+                      <br></br>
                       {mostrarTabla && (
                         <div style={{ marginTop: "30px" }}>
                           <div
@@ -1091,7 +1072,7 @@ function TratamientosEspecif(props) {
                             }}
                           >
                             <h4 style={{ textAlign: "left", marginRight: "10px" }}>
-                              Cobros - Gestión Manual
+                              Pagos
                             </h4>
                             <h4>Saldo Restante: {restoCobro}</h4>
                           </div>
@@ -1101,6 +1082,7 @@ function TratamientosEspecif(props) {
                               <tr>
                                 <th>N°</th>
                                 <th>Fecha Cobro</th>
+                                <th>Nro Comprobante</th>
                                 <th>Importe abonado</th>
                                 <th>Accion</th>
                                 <th>
@@ -1126,12 +1108,14 @@ function TratamientosEspecif(props) {
                                 tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
                                   const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
                                   const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
+                                  const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
                                   const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
 
                                   return (
                                     <tr key={index}>
                                       <td>{index + 1}</td>
                                       <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
+                                      <td>{nroComprobante.toString()}</td>
                                       <td>{importe.toString()}</td>
                                       <td>
                                         {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
@@ -1162,7 +1146,7 @@ function TratamientosEspecif(props) {
                                               onClick={(e) => {
                                                 setIndexParaEditcobro(index)
                                                 setIdParaEditcobro(idParaCobro)
-                                                setMostrarModalEditarCobro([true, fecha, importe]);
+                                                setMostrarModalEditarCobro([true, fecha, importe, nroComprobante]);
                                               }}
                                               style={{ margin: "1px" }}
                                             >
@@ -1180,6 +1164,9 @@ function TratamientosEspecif(props) {
                                             </button>
                                           </>
                                         )}
+                                      </td>
+                                      <td>
+                                        <i className="fa-solid fa-download"></i>
                                       </td>
                                     </tr>
                                   );
@@ -1246,6 +1233,18 @@ function TratamientosEspecif(props) {
                     </div>
                     <div className="row">
                       <div className="col mb-6">
+                        <label className="form-label">Nro Comprobante</label>
+                        <input
+                          onChange={(e) => setNroComprobanteCobro(e.target.value)}
+                          type="text"
+                          className="form-control"
+                          autoComplete="off"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col mb-6">
                         <label className="form-label">Importe Cobro</label>
                         <input
                           onChange={(e) => setImporteCobro(e.target.value)}
@@ -1293,6 +1292,19 @@ function TratamientosEspecif(props) {
                           defaultValue={mostrarModalEditarCobro[1]}
                           onChange={(e) => setFechaEditCobro(e.target.value)}
                           type="date"
+                          className="form-control"
+                          autoComplete="off"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col mb-6">
+                        <label className="form-label">Nro Comprobante</label>
+                        <input
+                          defaultValue={mostrarModalEditarCobro[3]}
+                          onChange={(e) => setNroComprobanteEditCobro(e.target.value)}
+                          type="text"
                           className="form-control"
                           autoComplete="off"
                           required
