@@ -179,7 +179,7 @@ const CrearControlEvolucion = (props) => {
                         </datalist>
                     </div>)}
 
-                    <form onSubmit={validateFields}>
+                    <form onSubmit={validateFields} style={{ transform: "scale(0.96)" }}>
                         {error && (
                             <div className="alert alert-danger" role="alert">
                                 {error}
@@ -214,7 +214,8 @@ const CrearControlEvolucion = (props) => {
                                             onKeyDown={(e) => {
                                                 const maxLength = e.target.maxLength;
                                                 const currentValue = e.target.value;
-                                                if (maxLength && currentValue.length >= maxLength) {
+                                                const isTabKey = e.key === "Tab";
+                                                if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                                                     e.preventDefault();
                                                 }
                                             }}

@@ -113,7 +113,7 @@ const EditTratamiento = (props) => {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            <form onSubmit={update}>
+            <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
 
               <div className="row">
                 <div className="mb-3">
@@ -142,7 +142,8 @@ const EditTratamiento = (props) => {
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
-                        if (maxLength && currentValue.length >= maxLength) {
+                        const isTabKey = e.key === "Tab";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                           e.preventDefault();
                         }
                       }}

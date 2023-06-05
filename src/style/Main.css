@@ -188,6 +188,11 @@ tbody tr.hide td p {
   transition: .2s ease-in-out .5s;
 }
 
+#columnaAccion{
+  width: min-content !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 /*<!------------Termina estilos tablas---------------->*/
 
 /*ESTILOS TABPANELS*/
@@ -345,6 +350,10 @@ input[type="file"]::before {
 /*ESTILOS DROPDOWN ACTIONS ACCIONES*/
 .dropdown-toggle::after {
   display: none !important;
+}
+
+#dropdown-button2::after {
+  display: block !important;
 }
 
 /*ESTILOS LOGIN.CSS*/

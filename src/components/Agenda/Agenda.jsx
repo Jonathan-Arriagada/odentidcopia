@@ -392,6 +392,7 @@ function Citas() {
                         <th onClick={() => sorting("idc")}>IDC</th>
                         <th onClick={() => sorting("estado")}>Estado</th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -412,7 +413,7 @@ function Citas() {
                             </p>
                           </td>
                           <td> {cita.numero} </td>
-                          <td>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"

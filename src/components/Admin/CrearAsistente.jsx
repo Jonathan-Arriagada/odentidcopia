@@ -14,7 +14,7 @@ const CrearAsistente = (props) => {
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [rol, setRol] = useState(process.env.REACT_APP_rolAsi);
-  const [foto, ] = useState('');
+  const [foto,] = useState('');
   const [error, setError] = useState('');
   const [editable] = useState(false);
 
@@ -116,7 +116,7 @@ const CrearAsistente = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={store}>
+              <form onSubmit={store} style={{ transform: "scale(0.96)" }}>
                 <div className="mb-3">
                   <label className="form-label">Codigo</label>
                   <input

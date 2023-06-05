@@ -214,6 +214,7 @@ const Show = () => {
                           Fecha Nacimiento
                         </th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -235,7 +236,7 @@ const Show = () => {
                           </td>
                           <td> {client.numero}</td>
 
-                          <td style={{ padding: "10px" }}>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"

@@ -564,7 +564,7 @@ function TratamientosEspecif(props) {
                               }}
                             >
                               <button
-                               style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
                                   filtroFecha("Dia");
                                   setTaparFiltro(false);
@@ -582,7 +582,7 @@ function TratamientosEspecif(props) {
                                 Semana
                               </button>
                               <button
-                  style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
                                   filtroFecha("Mes");
                                   setTaparFiltro(true);
@@ -591,7 +591,7 @@ function TratamientosEspecif(props) {
                                 Mes
                               </button>
                               <button
-              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
                                   setModalSeleccionFechaShow(true);
                                 }}
@@ -880,10 +880,6 @@ function TratamientosEspecif(props) {
                         <thead>
                           <tr>
                             <th>N°</th>
-                            <th onClick={() => sorting("apellido")}>
-                              Apellido y Nombres
-                            </th>
-                            <th onClick={() => sorting("idc")}>IDC</th>
                             <th onClick={() => sorting("tarifasTratamientos")}>
                               Tratamiento
                             </th>
@@ -893,6 +889,7 @@ function TratamientosEspecif(props) {
                             <th onClick={() => sorting("estadosTratamientos")}>
                               Estado Tratamiento
                             </th>
+                            <th id="columnaAccion"></th>
                           </tr>
                         </thead>
 
@@ -900,8 +897,6 @@ function TratamientosEspecif(props) {
                           {results.map((tratamiento, index) => (
                             <tr key={tratamiento.id}>
                               <td>{results.length - index}</td>
-                              <td> {tratamiento.apellidoConNombre} </td>
-                              <td> {tratamiento.idc} </td>
                               <td> {tratamiento.tarifasTratamientos} </td>
                               <td> {tratamiento.pieza} </td>
                               <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
@@ -927,14 +922,14 @@ function TratamientosEspecif(props) {
                                 </div>
                               </td>
 
-                              <td>
+                              <td id="columnaAccion">
                                 <Dropdown>
                                   <Dropdown.Toggle
                                     variant="primary"
                                     className="btn btn-secondary mx-1 btn-md"
                                     id="dropdown-actions"
                                   >
-                                <i className="fa-solid fa-ellipsis-vertical"></i>
+                                    <i className="fa-solid fa-ellipsis-vertical"></i>
                                   </Dropdown.Toggle>
 
                                   <Dropdown.Menu>
@@ -1055,9 +1050,6 @@ function TratamientosEspecif(props) {
                               <tr>
                                 <th>Cta</th>
                                 <th>Precio/Total</th>
-                                <th>Plazo</th>
-                                <th>Cuota</th>
-                                <th>Resta</th>
                                 <th>Fecha Vto</th>
                                 <th>Estado Pago</th>
                                 <th></th>
@@ -1069,9 +1061,6 @@ function TratamientosEspecif(props) {
                                 <tr key={tratamiento.id}>
                                   <td> {tratamiento.cta} </td>
                                   <td>{tratamiento.precio}</td>
-                                  <td>{tratamiento.plazo}</td>
-                                  <td>{tratamiento.cuota}</td>
-                                  <td>{tratamiento.plazo - tratamiento.cuota}</td>
                                   <td>
                                     {moment(tratamiento.fechaVencimiento).format(
                                       "DD/MM/YY"

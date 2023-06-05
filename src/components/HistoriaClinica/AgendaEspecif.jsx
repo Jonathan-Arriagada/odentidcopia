@@ -7,8 +7,9 @@ import CreateCita from "../Agenda/CreateCita";
 import EditCita from "../Agenda/EditCita";
 import moment from "moment";
 import Calendar from "react-calendar";
-import { Modal, Button } from "react-bootstrap";
+import { Dropdown, Modal, Button } from "react-bootstrap";
 import "../../style/Main.css";
+import Swal from "sweetalert2";
 
 function AgendaEspecif(id) {
   const [citas, setCitas] = useState([]);
@@ -20,6 +21,7 @@ function AgendaEspecif(id) {
   const [order, setOrder] = useState("ASC");
   const [isLoading, setIsLoading] = useState(true);
   const [noHayCitas, setNoHayCitas] = useState(false);
+  const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
 
   const [estados, setEstados] = useState([]);
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
@@ -66,10 +68,10 @@ function AgendaEspecif(id) {
 
 
   useEffect(() => {
-    const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => {getCitas(snapshot)});
+    const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => { getCitas(snapshot) });
     const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
 
-    return () => { unsubscribeCitas(); unsubscribeEstados()};
+    return () => { unsubscribeCitas(); unsubscribeEstados() };
   }, [getCitas, getEstados]);
 
   const buscarEstilos = (estadoParam) => {
@@ -147,6 +149,28 @@ function AgendaEspecif(id) {
       setOrder("ASC");
     }
   };
+
+  const confirmeDelete = (id) => {
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "No podra revertir la accion",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#00C5C1',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteCita(id)
+        Swal.fire(
+          '¡Borrado!',
+          'Cita eliminada.',
+          'success'
+        )
+      }
+    })
+  }
 
   return (
     <>
@@ -279,7 +303,7 @@ function AgendaEspecif(id) {
                             <th onClick={() => sorting("estado")}>Estado</th>
                             <th onClick={() => sorting("numero")}>Telefono</th>
                             <th>Notas</th>
-                            <th>Accion</th>
+                            <th id="columnaAccion"></th>
                           </tr>
                         </thead>
 
@@ -291,8 +315,8 @@ function AgendaEspecif(id) {
                               <td> {cita.horaFin} </td>
                               <td> {cita.apellidoConNombre} </td>
                               <td> {cita.idc} </td>
-                              <td style={{ display: "flex", marginTop: "8px"}}>
-                                {cita.estado}                              
+                              <td style={{ display: "flex", marginTop: "8px" }}>
+                                {cita.estado}
 
                                 <p
                                   style={buscarEstilos(cita.estado)}
@@ -302,31 +326,82 @@ function AgendaEspecif(id) {
                               </td>
                               <td> {cita.numero} </td>
                               <td> {cita.comentario} </td>
-                              <td>
-                                <button
-                                  variant="primary"
-                                  className="btn btn-success mx-1"
-                                  onClick={() => {
-                                    setModalShowEditCita(true);
-                                    setCita(cita);
-                                    setIdParam(cita.id);
-                                  }}
-                                >
-                                  <i className="fa-regular fa-pen-to-square"></i>
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    deleteCita(cita.id);
-                                  }}
-                                  className="btn btn-danger"
-                                >
-                                  <i className="fa-solid fa-trash-can"></i>
-                                </button>
+                              <td id="columnaAccion">
+                                <Dropdown>
+                                  <Dropdown.Toggle
+                                    variant="primary"
+                                    className="btn btn-secondary mx-1 btn-md"
+                                    id="dropdown-actions"
+                                  >
+                                    <i className="fa-solid fa-ellipsis-vertical"></i>
+                                  </Dropdown.Toggle>
+
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowEditCita(true);
+                                        setCita(cita);
+                                        setIdParam(cita.id);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-pen-to-square"></i>
+                                      Editar
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowVerNotas([
+                                          true,
+                                          cita.comentario
+                                        ]);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-comment"></i> Ver
+                                      Notas
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        confirmeDelete(cita.id)
+                                      }
+                                    >
+                                      <i className="fa-solid fa-trash-can"></i>
+                                      Eliminar
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
+                      {modalShowVerNotas[0] && (
+                        <Modal
+                          show={modalShowVerNotas[0]}
+                          size="md"
+                          aria-labelledby="contained-modal-title-vcenter"
+                          centered
+                          onHide={() => setModalShowVerNotas([false, ""])}
+                        >
+                          <Modal.Header
+                            closeButton
+                            onClick={() => setModalShowVerNotas([false, ""])}
+                          >
+                            <Modal.Title>Comentarios</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="container">
+                              <div className="col">
+                                <form>
+                                  <div className="row">
+                                    <div className="col mb-6">
+                                      <p>{modalShowVerNotas[1]}</p>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </Modal.Body>
+                        </Modal>
+                      )}
                     </div>
                   </div>
                 </div>

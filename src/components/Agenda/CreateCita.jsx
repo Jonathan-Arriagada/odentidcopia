@@ -328,7 +328,7 @@ function CreateCita(props) {
               </div>
             )}
 
-            <form>
+            <form style={{ transform: "scale(0.96)" }}>
               <div className="row">
                 <div className="col mb-3">
                   <label className="form-label">IDC*</label>
@@ -356,7 +356,8 @@ function CreateCita(props) {
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
-                        if (maxLength && currentValue.length >= maxLength) {
+                        const isTabKey = e.key === "Tab";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                           e.preventDefault();
                         }
                       }}

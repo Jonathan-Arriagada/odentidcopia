@@ -1009,6 +1009,7 @@ function Tratamientos() {
                         <th onClick={() => sorting("estadosTratamientos")}>
                           Estado Tratamiento
                         </th>
+                        <th id="columnaAccion"></th>
                       </tr>
                     </thead>
 
@@ -1043,7 +1044,7 @@ function Tratamientos() {
                               ></p>
                             </div>
                           </td>
-                          <td>
+                          <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle
                                 variant="primary"
@@ -1165,9 +1166,6 @@ function Tratamientos() {
                           <tr>
                             <th>Cta</th>
                             <th>Precio/Total</th>
-                            <th>Plazo</th>
-                            <th>Cuota</th>
-                            <th>Resta</th>
                             <th>Fecha Vto</th>
                             <th>Estado Pago</th>
                             <th></th>
@@ -1179,9 +1177,6 @@ function Tratamientos() {
                             <tr key={tratamiento.id}>
                               <td> {tratamiento.cta} </td>
                               <td>{tratamiento.precio}</td>
-                              <td>{tratamiento.plazo}</td>
-                              <td>{tratamiento.cuota}</td>
-                              <td>{tratamiento.plazo - tratamiento.cuota}</td>
                               <td>
                                 {moment(tratamiento.fechaVencimiento).format(
                                   "DD/MM/YY"

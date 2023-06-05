@@ -133,7 +133,7 @@ const Create = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form>
+            <form style={{ transform: "scale(0.96)" }}>
                 {error && (
                   <div className="alert alert-danger" role="alert">
                     {error}
@@ -168,7 +168,8 @@ const Create = (props) => {
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
-                        if (maxLength && currentValue.length >= maxLength) {
+                        const isTabKey = e.key === "Tab";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
                           e.preventDefault();
                         }
                       }}
