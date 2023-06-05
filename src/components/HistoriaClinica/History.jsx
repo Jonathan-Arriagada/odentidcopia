@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { getDoc, doc, updateDoc, getDocs, query, where, collection, addDoc, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +15,8 @@ import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
 import moment from "moment";
 import "../../style/Main.css";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,6 +62,7 @@ export default function History() {
   const [mostrarAntecedentes, setMostrarAntecedentes] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const { currentUser, } = useContext(AuthContext);
 
   const [pregunta1, setPregunta1] = useState(["", false]);
   const [pregunta2, setPregunta2] = useState(["", false]);
@@ -429,17 +432,17 @@ const confirmLogout = (e) => {
               </>
 
               <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                  Bienvenido al sistema Odentid
-                </p>
-                <div className="d-flex">
-                  <div className="notificacion">
-                    <Link
-                      to="/miPerfil"
-                      className="text-decoration-none"
-                    >
-                      <FaUser className="icono" />
-                    </Link>
+              <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                    Bienvenido {currentUser.displayName}
+                  </p>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                      </Link>
                   </div>
                   <div className="notificacion">
                     <FaBell className="icono" />

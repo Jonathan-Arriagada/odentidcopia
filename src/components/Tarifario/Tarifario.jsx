@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Navigation from "../Navigation";
 import { collection, updateDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
@@ -8,6 +8,8 @@ import { FaSignOutAlt, FaBell, FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../context/AuthContext";
+import profile from "../../img/profile.png";
 
 function Tarifario() {
   const [tarifas, setTarifas] = useState([]);
@@ -19,6 +21,7 @@ function Tarifario() {
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [userType, setUserType] = useState("");
+  const { currentUser, } = useContext(AuthContext);
 
   const tarifasCollectiona = collection(db, "tarifas");
   const tarifasCollection = useRef(query(tarifasCollectiona, orderBy("codigo")));
@@ -124,17 +127,17 @@ const confirmLogout = (e) => {
                 />
               </div>
               <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                  Bienvenido al sistema Odentid
-                </p>
-                <div className="d-flex">
-                  <div className="notificacion">
-                    <Link
-                      to="/miPerfil"
-                      className="text-decoration-none"
-                    >
-                      <FaUser className="icono" />
-                    </Link>
+              <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                    Bienvenido {currentUser.displayName}
+                  </p>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                      </Link>
                   </div>
                   <div className="notificacion">
                     <FaBell className="icono" />

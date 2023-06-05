@@ -243,7 +243,7 @@ const confirmLogout = (e) => {
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido al sistema Odentid
+                    Bienvenido {currentUser.displayName}
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">

@@ -352,11 +352,9 @@ input[type="file"]::before {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  left: 20% !important;
-  top: 3%;
+  left: 20%;
+  top: 20%;
   margin: auto;
-  margin-top: 45px;
-  margin-top: 0px;
   width: 400px;
   aspect-ratio: 1;
   border-radius: 9px;
@@ -364,10 +362,10 @@ input[type="file"]::before {
   animation: Entrance 2s ease 0s 1 normal forwards;
 }
 
-@media (max-width: 1440px) and (max-height: 768px) {
+@media (max-width: 1360px) and (max-height: 768px) {
   .login-page {
     left: 10%;
-    top: 5%;
+    top: 10%;
   }
 }
 

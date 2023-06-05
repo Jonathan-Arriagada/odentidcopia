@@ -107,13 +107,11 @@ const Navigation = () => {
             <div className="profile">
                 <img src={logo} alt="profile" className="profile-img" />
             </div>
-            <span>Hola, {currentUser.displayName}</span>
         </header>
         {isLoading && (
-            <>
-                <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link>
-                <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
-
+            <>  
+            <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
+            <Link to="/clients" className="text-decoration-none link-light"><Nav title="Pacientes" Icon={FaUsers} /></Link>
                 <div className={open2 ? "sidebar-item open" : "sidebar-item"}>
                     <div className="sidebar-title d-flex align-items-center justify-content-between">
                         <Nav title="Gestion Economia" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />

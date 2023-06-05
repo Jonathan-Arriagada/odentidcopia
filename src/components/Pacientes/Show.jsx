@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
@@ -12,6 +12,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import profile from "../../img/profile.png";
+import { AuthContext } from "../../context/AuthContext";
+
 
 const Show = () => {
   const [clients, setClients] = useState([]);
@@ -24,6 +27,7 @@ const Show = () => {
   const [modalShowCita, setModalShowCita] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { currentUser, } = useContext(AuthContext);
 
 
   const logout = useCallback(() => {
@@ -156,17 +160,17 @@ const confirmLogout = (e) => {
                   />
                 </div>                    
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido al sistema Odentid
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                        <FaUser className="icono" />
-                      </Link>
+                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                      Bienvenido {currentUser.displayName}
+                </p>
+                   <div className="d-flex">
+                      <div className="notificacion">
+                         <Link
+                           to="/miPerfil"
+                          className="text-decoration-none"
+                           >
+                            <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                         </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />
@@ -205,7 +209,7 @@ const confirmLogout = (e) => {
                     <thead>
                       <tr>
                         <th>N°</th>
-                        <th onClick={() => sorting("apellidoConNombre")}>
+                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                           Apellido Y Nombres
                         </th>
                         <th onClick={() => sorting("idc")}>IDC</th>
@@ -221,7 +225,7 @@ const confirmLogout = (e) => {
                       {results.map((client, index) => (
                         <tr key={client.id}>
                           <td>{results.length - index}</td>
-                          <td>
+                          <td style={{ textAlign: "left" }}>
                             <Link to={`/historial/${client.id}`}>
                               {client.apellidoConNombre}
                             </Link>
