@@ -24,6 +24,7 @@ const Create = (props) => {
     Swal.fire({
       title: '¡Paciente agregado!',
       icon: 'success',
+      confirmButtonColor: '#00C5C1'
     })
   }
 

@@ -303,7 +303,6 @@ function AgendaEspecif(id) {
                             <th onClick={() => sorting("idc")}>IDC</th>
                             <th onClick={() => sorting("estado")}>Estado</th>
                             <th onClick={() => sorting("numero")}>Telefono</th>
-                            <th>Notas</th>
                             <th id="columnaAccion"></th>
                           </tr>
                         </thead>
@@ -326,7 +325,6 @@ function AgendaEspecif(id) {
                                 </p>
                               </td>
                               <td> {cita.numero} </td>
-                              <td> {cita.comentario} </td>
                               <td id="columnaAccion">
                                 <Dropdown>
                                   <Dropdown.Toggle

@@ -87,6 +87,7 @@ function CreateTratamiento(props) {
     Swal.fire({
       title: '¡Tratamiento agregado!',
       icon: 'success',
+      confirmButtonColor: '#00C5C1'
     })
   }
 

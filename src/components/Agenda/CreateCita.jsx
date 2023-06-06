@@ -28,7 +28,6 @@ function CreateCita(props) {
   const [showBuscador, setShowBuscador] = useState(true);
 
   const citasCollection = collection(db, "citas");
-  console.log(horaInicio)
   const updateOptionsEstado = useCallback((snapshot) => {
     const options = snapshot.docs.map((doc) => doc.data().name);
     setEstadoOptions(options);
@@ -104,7 +103,7 @@ function CreateCita(props) {
       setApellidoConNombre(props.client.apellidoConNombre);
       setTipoIdc(props.client.tipoIdc);
       setIdc(props.client.idc);
-      //todo set selectcode
+      setSelectedCode(props.client.selectedCode);
       setNumero(props.client.numero);
       setIdPacienteCita(props.client.id);
       setShowBuscador(false);
@@ -131,7 +130,7 @@ function CreateCita(props) {
           setApellidoConNombre(data.apellidoConNombre);
           setTipoIdc(data.tipoIdc);
           setIdc(data.idc);
-          //todo set select code
+          setSelectedCode(data.selectedCode);
           setNumero(data.numero);
           setIdPacienteCita(props.id);
           setEditable(false);
@@ -154,7 +153,8 @@ function CreateCita(props) {
         idc: idc,
         idPacienteCita: idPacienteCita,
         estado: estado,
-        numero: selectedCode + numero,
+        selectedCode: selectedCode,
+        numero: numero,
         fecha: fecha,
         comentario: comentario,
         horaInicio: horaInicio,
@@ -168,7 +168,8 @@ function CreateCita(props) {
         idc: idc,
         tipoIdc: tipoIdc,
         fechaNacimiento: "",
-        numero: selectedCode + numero,
+        selectedCode: selectedCode,
+        numero: numero,
         valorBusqueda: apellidoConNombre + " " + idc,
         edad: "",
         sexo: "",
@@ -206,7 +207,8 @@ function CreateCita(props) {
         tipoIdc: tipoIdc,
         idc: idc,
         estado: estado,
-        numero: selectedCode + numero,
+        selectedCode: selectedCode,
+        numero: numero,
         fecha: fecha,
         horaInicio: horaInicio,
         horaFin: horaFin,
@@ -241,7 +243,7 @@ function CreateCita(props) {
       setIdPacienteCita(doc.id)
       setTipoIdc(data.tipoIdc);
       setIdc(data.idc);
-      //TODO SET SELECTCODE
+      setSelectedCode(data.selectedCode);
       setNumero(data.numero);
       setEditable(false);
     }
