@@ -188,11 +188,12 @@ tbody tr.hide td p {
   transition: .2s ease-in-out .5s;
 }
 
-#columnaAccion{
+#columnaAccion {
   width: min-content !important;
   margin: 0 !important;
   padding: 0 !important;
 }
+
 /*<!------------Termina estilos tablas---------------->*/
 
 /*ESTILOS TABPANELS*/
@@ -216,6 +217,18 @@ tbody tr.hide td p {
   font-size: 2rem !important;
 }
 
+.resaltado {
+  font-weight: bold !important;
+  font-family: 'Goldplay' !important;
+  color: var(--color-estilo-main) !important;
+  letter-spacing: 0.5px;
+}
+
+.noResaltado {
+  font-family: 'Goldplay' !important;
+  color: var(--color-light-text) !important;
+  letter-spacing: 0.5px;
+}
 
 /*<!--ESTILOS PARA TARIFARIO--> (NO HACE FALTA REVISAR COLORES AQUI)*/
 .deleted-row {

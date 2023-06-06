@@ -335,8 +335,11 @@ export default function History() {
     setTratamiento("")
 
   };
-  const handleClickSiguiente = () => {
-    setMostrarAntecedentes(!mostrarAntecedentes)
+  const handleMostrarFiliacion = () => {
+      setMostrarAntecedentes(false)
+  };
+  const handleMostrarAntecedentes = () => {
+    setMostrarAntecedentes(true)
   };
 
   const searcher = (e) => {
@@ -433,17 +436,17 @@ export default function History() {
               </>
 
               <div className="col d-flex justify-content-end align-items-center right-navbar">
-              <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido {currentUser.displayName}
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                      </Link>
+                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                  Bienvenido {currentUser.displayName}
+                </p>
+                <div className="d-flex">
+                  <div className="notificacion">
+                    <Link
+                      to="/miPerfil"
+                      className="text-decoration-none"
+                    >
+                      <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                    </Link>
                   </div>
                   <div className="notificacion">
                     <FaBell className="icono" />
@@ -483,9 +486,28 @@ export default function History() {
                 <form>
                   {!mostrarAntecedentes && (
                     <div id="formFiliacion">
-                      <div className="container d-flex mb-3">
-                        <h1 id="tituloH1History">Historial Parte 1: Filiación</h1>
-                      </div>
+                      <Box sx={{ width: "120%", marginLeft: "-26px" }} >
+                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                          <div className="subPestanas d-flex">
+                            <span
+                              className={`${!mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
+                              style={{ margin: "3px" }}
+                              onClick={handleMostrarFiliacion}
+
+                            >
+                              Filiación
+                            </span>
+                            <span
+                              className={`${mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
+                              style={{ margin: "3px" }}
+                              onClick={handleMostrarAntecedentes}
+
+                            >
+                              Antecedentes
+                            </span>
+                          </div>
+                        </Box>
+                      </Box>
 
                       {error && (
                         <div className="alert alert-danger" role="alert">
@@ -493,6 +515,7 @@ export default function History() {
                         </div>
                       )}
                       <div className="container">
+                        <br></br>
                         <div className="col">
                           <div className="row">
                             <div className="col-md-3">
@@ -690,15 +713,6 @@ export default function History() {
                               />
                             </div>
                           </div>
-                          <button
-                            className="btn"
-                            id="boton-main"
-                            style={{ margin: "3px" }}
-                            onClick={handleClickSiguiente}
-
-                          >
-                            Siguiente
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -708,10 +722,30 @@ export default function History() {
 
                   {mostrarAntecedentes && (
                     <div id="formAntecedentes">
-                      <div className="container d-flex mb-3">
-                        <h1 id="tituloH1History">Historial Parte 2: Antecedentes</h1>
-                      </div>
+                      <Box sx={{ width: "120%", marginLeft: "-26px" }} >
+                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                          <div className="subPestanas d-flex">
+                            <span
+                              className={`${!mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
+                              style={{ margin: "3px" }}
+                              onClick={handleMostrarFiliacion}
+
+                            >
+                              Filiación
+                            </span>
+                            <span
+                              className={`${mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
+                              style={{ margin: "3px" }}
+                              onClick={handleMostrarAntecedentes}
+
+                            >
+                              Antecedentes
+                            </span>
+                          </div>
+                        </Box>
+                      </Box>
                       <div className="container">
+                        <br></br>
                         <div className="d-flex">
                           <div className="w-50 me-5">
                             <label className="form-label">Apellido y Nombres:</label>
@@ -1180,15 +1214,6 @@ export default function History() {
                         {!id ? (
                           <div id="botones">
                             <button
-                              className="btn"
-                              style={{ margin: "3px" }}
-                              id="boton-main"
-                              onClick={handleClickSiguiente}
-                            >
-                              Anterior
-                            </button>
-
-                            <button
                               type="submit"
                               className="btn"
                               id="boton-main"
@@ -1200,14 +1225,6 @@ export default function History() {
                           </div>
                         ) : (
                           <div id="botones">
-                            <button
-                              className="btn"
-                              id="boton-main"
-                              style={{ margin: "3px" }}
-                              onClick={handleClickSiguiente}
-                            >
-                              Anterior
-                            </button>
                             <button
                               type="submit"
                               className="btn"
