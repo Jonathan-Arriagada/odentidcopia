@@ -28,7 +28,7 @@ function CreateCita(props) {
   const [showBuscador, setShowBuscador] = useState(true);
 
   const citasCollection = collection(db, "citas");
-
+  console.log(horaInicio)
   const updateOptionsEstado = useCallback((snapshot) => {
     const options = snapshot.docs.map((doc) => doc.data().name);
     setEstadoOptions(options);
@@ -104,6 +104,7 @@ function CreateCita(props) {
       setApellidoConNombre(props.client.apellidoConNombre);
       setTipoIdc(props.client.tipoIdc);
       setIdc(props.client.idc);
+      //todo set selectcode
       setNumero(props.client.numero);
       setIdPacienteCita(props.client.id);
       setShowBuscador(false);
@@ -113,6 +114,7 @@ function CreateCita(props) {
       setTipoIdc("dni")
       setIdc("");
       setIdPacienteCita("");
+      setSelectedCode("+51");
       setNumero("");
     }
   }, [props.client]);
@@ -129,6 +131,7 @@ function CreateCita(props) {
           setApellidoConNombre(data.apellidoConNombre);
           setTipoIdc(data.tipoIdc);
           setIdc(data.idc);
+          //todo set select code
           setNumero(data.numero);
           setIdPacienteCita(props.id);
           setEditable(false);
@@ -151,7 +154,7 @@ function CreateCita(props) {
         idc: idc,
         idPacienteCita: idPacienteCita,
         estado: estado,
-        numero: numero,
+        numero: selectedCode + numero,
         fecha: fecha,
         comentario: comentario,
         horaInicio: horaInicio,
@@ -165,8 +168,7 @@ function CreateCita(props) {
         idc: idc,
         tipoIdc: tipoIdc,
         fechaNacimiento: "",
-        selectedCode: selectedCode,
-        numero: numero,
+        numero: selectedCode + numero,
         valorBusqueda: apellidoConNombre + " " + idc,
         edad: "",
         sexo: "",
@@ -204,8 +206,7 @@ function CreateCita(props) {
         tipoIdc: tipoIdc,
         idc: idc,
         estado: estado,
-        selectedCode: selectedCode,
-        numero: numero,
+        numero: selectedCode + numero,
         fecha: fecha,
         horaInicio: horaInicio,
         horaFin: horaFin,
@@ -222,6 +223,7 @@ function CreateCita(props) {
       setIdPacienteCita("")
       setTipoIdc("dni")
       setIdc("");
+      setSelectedCode("+51");
       setNumero("");
       setEditable(true);
       return;
@@ -239,6 +241,7 @@ function CreateCita(props) {
       setIdPacienteCita(doc.id)
       setTipoIdc(data.tipoIdc);
       setIdc(data.idc);
+      //TODO SET SELECTCODE
       setNumero(data.numero);
       setEditable(false);
     }
@@ -251,19 +254,19 @@ function CreateCita(props) {
     setIdc("");
     setSelectedCode("+51");
     setNumero("");
-    setEstado("");
+    setEstado("Agendada");
     setFecha("");
-    setHoraInicio("");
-    setHoraInicio("");
+    setHoraInicio("08:00");
+    setHoraFin("08:30");
     setComentario("");
     setNumero("");
   };
 
   const validateFields = (e) => {
+    e.preventDefault();
     if (
       apellidoConNombre.trim() === "" ||
       idc.trim() === "" ||
-      estado.trim() === "" ||
       numero.trim() === "" ||
       fecha.trim() === "" ||
       horaInicio.trim() === "" ||
@@ -290,6 +293,7 @@ function CreateCita(props) {
         setApellidoConNombre("");
         setTipoIdc("dni");
         setIdc("");
+        setSelectedCode("+51");
         setNumero("");
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
@@ -417,7 +421,6 @@ function CreateCita(props) {
                     multiple={false}
                     required
                   >
-                    <option value="">Selecciona un estado</option>
                     {estadoOptionsJSX}
                   </select>
                 </div>

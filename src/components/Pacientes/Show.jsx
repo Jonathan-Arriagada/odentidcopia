@@ -91,11 +91,12 @@ const Show = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteClient(id)
-        Swal.fire(
-          '¡Borrado!',
-          'El paciente ha sido borrado.',
-          'success'
-        )
+        Swal.fire({
+          title: '¡Borrado!',
+          text: 'El paciente ha sido borrado.',
+          icon: 'success',
+          confirmButtonColor: '#00C5C1'
+        });
       }
     })
   }
@@ -161,17 +162,17 @@ const Show = () => {
                   />
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                      Bienvenido {currentUser.displayName}
-                </p>
-                   <div className="d-flex">
-                      <div className="notificacion">
-                         <Link
-                           to="/miPerfil"
-                          className="text-decoration-none"
-                           >
-                            <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                         </Link>
+                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                    Bienvenido {currentUser.displayName}
+                  </p>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                      </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />

@@ -915,7 +915,10 @@ function TratamientosEspecif(props) {
                               <td> {tratamiento.precio} </td>
                               <td> {tratamiento.formaPago} </td>
                               <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
-                              <td>{moment(tratamiento.fechaVencimiento).format("DD/MM/YY")}</td>
+                              <td>{tratamiento.fechaVencimiento !== '' && (
+                                moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
+                              )}
+                              </td>
                               <td style={{ paddingBottom: "0" }}>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                   {tratamiento.estadoPago || ""}
@@ -1011,7 +1014,7 @@ function TratamientosEspecif(props) {
                                       Notas
                                     </Dropdown.Item>
                                     <Dropdown.Item onClick={() => {
-                                      props.openControlYEvolucion(1, tratamiento)
+                                      props.openControlYEvolucion(3, tratamiento)
                                     }}
                                     >
                                       <i className="fa-solid fa-chart-line"></i> Evolucionar

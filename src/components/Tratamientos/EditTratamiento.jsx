@@ -13,7 +13,7 @@ const EditTratamiento = (props) => {
   const [cta, setCta] = useState(props.tratamiento.cta || "");
   const [precio, setPrecio] = useState(props.tratamiento.precio || "");
   const [pieza, setPieza] = useState(props.tratamiento.pieza || "");
-  const [formaPago, setFormaPago] = useState(props.tratamiento.formaPago || "contado");
+  const [formaPago, setFormaPago] = useState(props.tratamiento.formaPago || "Contado");
   const [estadosTratamientos, setEstadosTratamientos] = useState(props.tratamiento.estadosTratamientos || "");
   const [fecha, setFecha] = useState(props.tratamiento.fecha || "");
   const [fechaVencimiento, setFechaVencimiento] = useState(props.tratamiento.fechaVencimiento || "");
@@ -197,8 +197,8 @@ const EditTratamiento = (props) => {
                     multiple={false}
                     required
                   >
-                    <option value="contado">Contado</option>
-                    <option value="cuotas">Cuotas</option>
+                    <option value="Contado">Contado</option>
+                    <option value="Cuotas">Cuotas</option>
                   </select>
                 </div>
 
@@ -233,7 +233,7 @@ const EditTratamiento = (props) => {
                   />
                 </div>
 
-                {((formaPago === "cuotas") || (props.tratamiento.formaPago === "cuotas")) && (
+                {((formaPago === "Cuotas") || (props.tratamiento.formaPago === "Cuotas")) && (
                 <div className="col mb-3">
                   <label className="form-label">Fecha Vencimiento</label>
                   <input

@@ -106,11 +106,12 @@ function ControlEvolucionEspecif(props) {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteControl(id)
-        Swal.fire(
-          '¡Borrado!',
-          'Control y evolucion borrada.',
-          'success'
-        )
+        Swal.fire({
+          title: '¡Borrado!',
+          text: 'Control y evolucion borrada.',
+          icon: 'success',
+          confirmButtonColor: '#00C5C1'
+        });
       }
     })
   }

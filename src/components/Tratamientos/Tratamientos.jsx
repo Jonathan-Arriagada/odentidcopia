@@ -197,11 +197,12 @@ function Tratamientos() {
     }).then((result) => {
       if (result.isConfirmed) {
         deletetratamiento(id)
-        Swal.fire(
-          '¡Borrado!',
-          'El tratamiento ha sido borrado.',
-          'success'
-        )
+        Swal.fire({
+          title: '¡Borrado!',
+          text: 'El tratamiento ha sido borrado.',
+          icon: 'success',
+          confirmButtonColor: '#00C5C1'
+        });
       }
     })
   }
@@ -1199,10 +1200,9 @@ function Tratamientos() {
                               <td> {tratamiento.cta} </td>
                               <td> {tratamiento.formaPago} </td>
                               <td>{tratamiento.precio}</td>
-                              <td>
-                                {moment(tratamiento.fechaVencimiento).format(
-                                  "DD/MM/YY"
-                                )}
+                               <td>{tratamiento.fechaVencimiento !== '' && (
+                                moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
+                              )}
                               </td>
                               <td style={{ display: "flex" }}>
                                 <span style={{ marginRight: "5px" }}>

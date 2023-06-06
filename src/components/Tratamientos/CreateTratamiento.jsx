@@ -15,7 +15,7 @@ function CreateTratamiento(props) {
   const [cta, setCta] = useState("");
   const [precio, setPrecio] = useState("");
   const [tarifasTratamientos, setTarifasTratamientos] = useState("");
-  const [formaPago, setFormaPago] = useState("contado");
+  const [formaPago, setFormaPago] = useState("Contado");
   const [pieza, setPieza] = useState("");
   const [estadosTratamientos, setEstadosTratamientos] = useState("");
   const [fecha, setFecha] = useState("");
@@ -123,7 +123,7 @@ function CreateTratamiento(props) {
     setTarifasTratamientos("")
     setPieza("")
     setEstadosTratamientos("")
-    setFormaPago("")
+    setFormaPago("Contado")
     setFecha("")
     setFechaVencimiento("")
     setNotas("")
@@ -363,8 +363,8 @@ function CreateTratamiento(props) {
                   multiple={false}
                   required
                 >
-                  <option value="contado">Contado</option>
-                  <option value="cuotas">Cuotas</option>
+                  <option value="Contado">Contado</option>
+                  <option value="Cuotas">Cuotas</option>
                 </select>
               </div>
 
@@ -400,7 +400,7 @@ function CreateTratamiento(props) {
                   required
                 />
               </div>
-              {formaPago === "cuotas" && (<div className="col mb-3">
+              {formaPago === "Cuotas" && (<div className="col mb-3">
                 <label className="form-label">Fecha Vencimiento*</label>
                 <input
                   value={fechaVencimiento}

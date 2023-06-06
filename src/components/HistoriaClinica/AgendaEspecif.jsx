@@ -163,11 +163,12 @@ function AgendaEspecif(id) {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteCita(id)
-        Swal.fire(
-          '¡Borrado!',
-          'Cita eliminada.',
-          'success'
-        )
+        Swal.fire({
+          title: '¡Borrado!',
+          text: 'Cita eliminada.',
+          icon: 'success',
+          confirmButtonColor: '#00C5C1'
+        });
       }
     })
   }
