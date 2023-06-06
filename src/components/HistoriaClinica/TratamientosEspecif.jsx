@@ -960,7 +960,7 @@ function TratamientosEspecif(props) {
                                 moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
                               )}
                               </td>
-                              <td style={{ paddingBottom: "0" }}>
+                              <td>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                   {tratamiento.estadoPago || ""}
                                   {tratamiento.estadoPago && (
@@ -976,7 +976,7 @@ function TratamientosEspecif(props) {
                                 </div>
                               </td>
 
-                              <td style={{ paddingBottom: "0", display: "flex" }}>
+                              <td>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                   {tratamiento.estadosTratamientos || ""}
                                   {tratamiento.estadosTratamientos && (

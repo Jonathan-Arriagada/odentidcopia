@@ -316,7 +316,7 @@ function AgendaEspecif(id) {
                               <td> {cita.horaFin} </td>
                               <td> {cita.apellidoConNombre} </td>
                               <td> {cita.idc} </td>
-                              <td style={{ paddingBottom: "0", display: "flex" }}>
+                              <td>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                   {cita.estado || ""}
                                   {cita.estado && (

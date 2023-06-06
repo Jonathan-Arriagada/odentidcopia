@@ -1083,7 +1083,7 @@ function Tratamientos() {
                           <td> {tratamiento.tarifasTratamientos} </td>
                           <td> {tratamiento.pieza} </td>
                           <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
-                          <td style={{ paddingBottom: "0" }}>
+                          <td>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {tratamiento.estadoPago || ""}
                               {tratamiento.estadoPago && (
@@ -1095,7 +1095,7 @@ function Tratamientos() {
 
                             </div>
                           </td>
-                          <td style={{ paddingBottom: "0", display: "flex" }}>
+                          <td style={{display: "flex", paddingBottom: "auto" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {tratamiento.estadosTratamientos || ""}
                               {tratamiento.estadosTratamientos && (

@@ -25,7 +25,7 @@ const ListaSeleccionEstadoCita = ({ citaId }) => {
     return (
         <div>
             <Dropdown onSelect={handleEstadoChange}>
-                <Dropdown.Toggle variant="secondary" id="dropdown-button2">
+                <Dropdown.Toggle variant="secondary" id="dropdown-button2" className="p-2 my-1">
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {estados.map((estado, index) => (
