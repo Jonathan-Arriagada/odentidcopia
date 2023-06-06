@@ -125,6 +125,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               id="email"
+              autoComplete="current-email"
             />
             <label htmlFor="email">Email</label>
           </div>

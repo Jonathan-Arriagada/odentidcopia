@@ -19,7 +19,6 @@ const ListaSeleccionEstadoCita = ({ citaId }) => {
 
     const handleEstadoChange = async (selectedEstado) => {
         const citasRef = doc(db, "citas", citaId);
-        console.log(citasRef)
         await updateDoc(citasRef, { estado: selectedEstado });
     };
 

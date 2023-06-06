@@ -67,6 +67,7 @@ const EditTratamiento = (props) => {
   }
 
   const update = async (e) => {
+    e.preventDefault();
     const tratamientoRef = doc(db, "tratamientos", props.id);
     const tratamientoDoc = await getDoc(tratamientoRef);
     const tratamientoData = tratamientoDoc.data();
@@ -235,15 +236,15 @@ const EditTratamiento = (props) => {
                 </div>
 
                 {((formaPago === "Cuotas") || (props.tratamiento.formaPago === "Cuotas")) && (
-                <div className="col mb-3">
-                  <label className="form-label">Fecha Vencimiento</label>
-                  <input
-                    defaultValue={props.tratamiento.fechaVencimiento}
-                    onChange={(e) => setFechaVencimiento(e.target.value)}
-                    type="date"
-                    className="form-control"
-                  />
-                </div>)}
+                  <div className="col mb-3">
+                    <label className="form-label">Fecha Vencimiento</label>
+                    <input
+                      defaultValue={props.tratamiento.fechaVencimiento}
+                      onChange={(e) => setFechaVencimiento(e.target.value)}
+                      type="date"
+                      className="form-control"
+                    />
+                  </div>)}
               </div>
 
               <div className="row">

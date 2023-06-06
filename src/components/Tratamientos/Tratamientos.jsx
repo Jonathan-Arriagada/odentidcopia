@@ -177,6 +177,29 @@ function Tratamientos() {
     };
   }, [getTratamientos, getEstadoTratamientos, getEstadoPago]);
 
+  useEffect(() => {
+    const hoy = new Date();
+
+    const actualizarEstadoPago = async (tratamiento) => {
+      const fechaVencimiento = new Date(tratamiento.fechaVencimiento);
+      const tratamientoRef = doc(tratamientosCollectiona, tratamiento.id);
+
+      if (fechaVencimiento && fechaVencimiento > hoy && tratamiento.estadoPago !== "Cancelado") {
+        await updateDoc(tratamientoRef, {
+          estadoPago: "Programado",
+        });
+      } else if (fechaVencimiento && fechaVencimiento <= hoy && tratamiento.estadoPago !== "Cancelado") {
+        await updateDoc(tratamientoRef, {
+          estadoPago: "Vencido",
+        });
+      }
+    };
+
+    tratamientos.forEach((tratamiento) => {
+      actualizarEstadoPago(tratamiento);
+    });
+  }, [tratamientos, tratamientosCollectiona]);
+
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);
     await deleteDoc(tratamientoDoc);
@@ -411,7 +434,9 @@ function Tratamientos() {
           "cobrosManuales.estadoCobro": estadoCobroArray,
         });
       }
-      setRestoCobro(restoCobro - importeCobro);
+      let resto = (restoCobro - importeCobro);
+      setRestoCobro(resto);
+      actualizarDatosConRestoCobro(id, resto)
       setMostrarModalAgregarCobro([false, ""]);
     } catch (e) {
       window.alert(
@@ -423,7 +448,7 @@ function Tratamientos() {
   };
 
   useEffect(() => {
-    if (restoCobro === 0) {
+    if (restoCobro === 0 || restoCobro < 0) {
       setPagoFinalizado(true);
     } else {
       setPagoFinalizado(false);
@@ -487,7 +512,9 @@ function Tratamientos() {
           "cobrosManuales.estadoCobro": nuevoEstadoCobroArray,
         });
       }
-      setRestoCobro(tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0));
+      let resto = (tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0))
+      setRestoCobro(resto);
+      actualizarDatosConRestoCobro(idParaEditcobro, resto)
     } catch (e) {
       window.alert(
         "Hubo inconvenientes al tratar de eliminar  su cobro. Intentelo más tarde" +
@@ -529,8 +556,10 @@ function Tratamientos() {
           "cobrosManuales.pacienteCobro": pacienteCobroArray,
         });
       }
-      setRestoCobro(tratamientoData.precio - importeCobroArray.reduce((total, importe) => total + Number(importe), 0));
-      clearFieldsEditarCobro()
+      let resto = (tratamientoData.precio - importeCobroArray.reduce((total, importe) => total + Number(importe), 0));
+      setRestoCobro(resto);
+      actualizarDatosConRestoCobro(idParaEditcobro, resto);
+      clearFieldsEditarCobro();
     } catch (e) {
       window.alert("Hubo inconvenientes al tratar de Editar su cobro. Intentelo más tarde" + e + e.message)
     }
@@ -570,6 +599,16 @@ function Tratamientos() {
     }
   };
 
+  const actualizarDatosConRestoCobro = async (tratamientoID, resto) => {
+    if (resto === 0 || resto < 0) {
+      const tratamientoRef = doc(db, "tratamientos", tratamientoID);
+
+      await updateDoc(tratamientoRef, {
+        estadoPago: "Cancelado",
+        fechaVencimiento: ""
+      });
+    }
+  }
 
   return (
     <>
@@ -1051,7 +1090,7 @@ function Tratamientos() {
                                 <p
                                   style={buscarEstilosPago(tratamiento.estadoPago)}
                                   className="color-preview justify-content-center align-items-center"
-                                  ></p>
+                                ></p>
                               )}
 
                             </div>
@@ -1063,7 +1102,7 @@ function Tratamientos() {
                                 <p
                                   style={buscarEstilos(tratamiento.estadosTratamientos)}
                                   className="color-preview justify-content-center align-items-center"
-                                  ></p>
+                                ></p>
 
                               )}
                               <ListaSeleccionEstadoTratamiento
@@ -1095,7 +1134,7 @@ function Tratamientos() {
                                       setPacienteCobro(
                                         tratamiento.apellidoConNombre
                                       );
-                                      setRestoCobro(
+                                      let resto = (
                                         tratamiento.precio -
                                         tratamiento.cobrosManuales.importeAbonado.reduce(
                                           (total, importe) =>
@@ -1103,6 +1142,8 @@ function Tratamientos() {
                                           0
                                         )
                                       );
+                                      setRestoCobro(resto)
+                                      actualizarDatosConRestoCobro(tratamiento.id, resto)
                                     }}
                                   >
                                     <i className="fa-regular fa-eye"></i> Ver
@@ -1207,7 +1248,7 @@ function Tratamientos() {
                               <td> {tratamiento.cta} </td>
                               <td> {tratamiento.formaPago} </td>
                               <td>{tratamiento.precio}</td>
-                               <td>{tratamiento.fechaVencimiento !== '' && (
+                              <td>{tratamiento.fechaVencimiento !== '' && (
                                 moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
                               )}
                               </td>

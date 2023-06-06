@@ -132,7 +132,6 @@ function ControlEvolucionEspecif(props) {
     }
   }
 
-  console.log(results)
   return (
     <>
       <div className="mainpage">
