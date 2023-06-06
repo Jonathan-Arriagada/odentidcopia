@@ -127,7 +127,7 @@ const Navigation = () => {
                         <Nav title="Gestion Medica" Icon={FaLaptopMedical} /><FaChevronDown className="toggle-btn" onClick={() => setOpen3(!open3)} />
                     </div>
                     <div className="sidebar-content">
-                        <Link to="/historial" className="text-decoration-none link-light"><Nav title="Historial Clinico" Icon={FaBookMedical} /></Link>
+                        <Link to="/historial" className="text-decoration-none link-light"><Nav title="Historial Clínica" Icon={FaBookMedical} /></Link>
                         <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
                         <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
 

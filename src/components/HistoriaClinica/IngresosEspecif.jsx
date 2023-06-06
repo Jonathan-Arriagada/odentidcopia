@@ -161,7 +161,7 @@ function IngresosEspecif(id) {
             dato.cobrosManuales.tratamientoCobro
               ?.toString()
               .toLowerCase()
-              .includes(search.toLowerCase()) 
+              .includes(search.toLowerCase())
         );
       }
     }
@@ -421,17 +421,17 @@ function IngresosEspecif(id) {
                         <thead>
                           <tr>
                             <th onClick={() => sorting("fechaCobro")}>Fecha</th>
-                            <th onClick={() => sorting("importeAbonado")}>
-                              Importe
-                            </th>
-                            <th onClick={() => sorting("codigoTratamiento")}>
-                              Cta
-                            </th>
                             <th onClick={() => sorting("pacienteCobro")}>
                               Paciente
                             </th>
                             <th onClick={() => sorting("tratamientoCobro")}>
                               Tratamiento
+                            </th>
+                            <th onClick={() => sorting("nroComprobanteCobro")}>
+                              Nro Comprobante
+                            </th>
+                            <th onClick={() => sorting("importeAbonado")}>
+                              Importe
                             </th>
                           </tr>
                         </thead>
@@ -443,19 +443,19 @@ function IngresosEspecif(id) {
                                 const fecha =
                                   tratamiento.cobrosManuales.fechaCobro[index] ||
                                   "";
-                                const importe =
-                                  tratamiento.cobrosManuales.importeAbonado[
-                                  index
-                                  ] || "";
-                                const cta =
-                                  tratamiento.cobrosManuales.codigoTratamiento[
-                                  index
-                                  ] || "";
                                 const paciente =
                                   tratamiento.cobrosManuales.pacienteCobro[index] ||
                                   "";
                                 const tratamientoz =
                                   tratamiento.cobrosManuales.tratamientoCobro[
+                                  index
+                                  ] || "";
+                                const nroComprobante =
+                                  tratamiento.cobrosManuales.nroComprobanteCobro[
+                                  index
+                                  ] || "";
+                                const importe =
+                                  tratamiento.cobrosManuales.importeAbonado[
                                   index
                                   ] || "";
                                 const estadoCobro =
@@ -470,10 +470,10 @@ function IngresosEspecif(id) {
                                           "DD/MM/YY"
                                         )}
                                       </td>
-                                      <td>{importe.toString()}</td>
-                                      <td>{cta.toString()}</td>
                                       <td>{paciente.toString()}</td>
                                       <td>{tratamientoz.toString()}</td>
+                                      <td>{nroComprobante.toString()}</td>
+                                      <td>{importe.toString()}</td>
                                     </tr>
                                   );
                                 }

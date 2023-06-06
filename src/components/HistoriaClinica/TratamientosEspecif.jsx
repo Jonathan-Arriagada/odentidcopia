@@ -5,6 +5,7 @@ import { db } from "../../firebaseConfig/firebase";
 import CreateTratamiento from "../Tratamientos/CreateTratamiento";
 import EditTratamiento from "../Tratamientos/EditTratamiento";
 import ListaSeleccionEstadoPago from "../Tratamientos/ListaSeleccionEstadoPago";
+import ListaSeleccionEstadoTratamiento from "../Tratamientos/ListaSeleccionEstadoTratamiento";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown } from "react-bootstrap";
@@ -925,8 +926,8 @@ function TratamientosEspecif(props) {
                                   {tratamiento.estadoPago && (
                                     <p
                                       style={buscarEstilosPago(tratamiento.estadoPago)}
-                                      className="color-preview"
-                                    ></p>
+                                      className="color-preview justify-content-center align-items-center"
+                                      ></p>
 
                                   )}
                                   <ListaSeleccionEstadoPago
@@ -935,13 +936,19 @@ function TratamientosEspecif(props) {
                                 </div>
                               </td>
 
-                              <td style={{ paddingBottom: "0" }}>
+                              <td style={{ paddingBottom: "0", display: "flex" }}>
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                  {tratamiento.estadosTratamientos}
-                                  <p
-                                    style={buscarEstilos(tratamiento.estadosTratamientos)}
-                                    className="color-preview"
-                                  ></p>
+                                  {tratamiento.estadosTratamientos || ""}
+                                  {tratamiento.estadosTratamientos && (
+                                    <p
+                                      style={buscarEstilos(tratamiento.estadosTratamientos)}
+                                      className="color-preview justify-content-center align-items-center"
+                                      ></p>
+
+                                  )}
+                                  <ListaSeleccionEstadoTratamiento
+                                    tratamientoId={tratamiento.id}
+                                  />
                                 </div>
                               </td>
 

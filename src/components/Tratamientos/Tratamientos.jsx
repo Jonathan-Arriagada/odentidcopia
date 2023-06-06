@@ -7,6 +7,7 @@ import CreateTratamiento from "./CreateTratamiento";
 import EditTratamiento from "./EditTratamiento";
 import EstadosTratamientos from "./EstadosTratamientos";
 import EditPago from "./EditPago";
+import ListaSeleccionEstadoTratamiento from "./ListaSeleccionEstadoTratamiento";
 import ListaSeleccionEstadoPago from "./ListaSeleccionEstadoPago";
 import moment from "moment";
 import Calendar from "react-calendar";
@@ -1017,7 +1018,7 @@ function Tratamientos() {
                     <thead>
                       <tr>
                         <th>N°</th>
-                        <th onClick={() => sorting("apellido")}>
+                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                           Apellido y Nombres
                         </th>
                         <th onClick={() => sorting("idc")}>IDC</th>
@@ -1049,22 +1050,28 @@ function Tratamientos() {
                               {tratamiento.estadoPago && (
                                 <p
                                   style={buscarEstilosPago(tratamiento.estadoPago)}
-                                  className="color-preview"
-                                ></p>
+                                  className="color-preview justify-content-center align-items-center"
+                                  ></p>
                               )}
 
                             </div>
                           </td>
-
                           <td style={{ paddingBottom: "0", display: "flex" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {tratamiento.estadosTratamientos}
-                              <p
-                                style={buscarEstilos(tratamiento.estadosTratamientos)}
-                                className="color-preview"
-                              ></p>
+                              {tratamiento.estadosTratamientos || ""}
+                              {tratamiento.estadosTratamientos && (
+                                <p
+                                  style={buscarEstilos(tratamiento.estadosTratamientos)}
+                                  className="color-preview justify-content-center align-items-center"
+                                  ></p>
+
+                              )}
+                              <ListaSeleccionEstadoTratamiento
+                                tratamientoId={tratamiento.id}
+                              />
                             </div>
                           </td>
+
                           <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle

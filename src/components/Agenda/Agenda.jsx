@@ -8,6 +8,7 @@ import Navigation from "../Navigation";
 import EditCita from "./EditCita";
 import Estados from "./Estados";
 import HorariosAtencionCitas from "./HorariosAtencionCitas";
+import ListaSeleccionEstadoCita from "./ListaSeleccionEstadoCita";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown, Modal, Button } from "react-bootstrap";
@@ -387,7 +388,7 @@ function Citas() {
                         <th onClick={() => sorting("fecha")}>Fecha</th>
                         <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
                         <th onClick={() => sorting("horaFin")}>Hora Fin</th>
-                        <th onClick={() => sorting("apellidoConNombre")}>
+                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                           Apellido y Nombres
                         </th>
                         <th onClick={() => sorting("idc")}>IDC</th>
@@ -405,13 +406,20 @@ function Citas() {
                           <td> {cita.horaFin} </td>
                           <td> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
-                          <td style={{ display: "flex", marginTop: "8px" }}>
-                            {cita.estado}
-                            <p
-                              style={buscarEstilos(cita.estado)}
-                              className="color-preview justify-content-center align-items-center"
-                            >
-                            </p>
+                          <td style={{ paddingBottom: "0", display: "flex" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {cita.estado || ""}
+                              {cita.estado && (
+                                <p
+                                  style={buscarEstilos(cita.estado)}
+                                  className="color-preview justify-content-center align-items-center"
+                                ></p>
+
+                              )}
+                              <ListaSeleccionEstadoCita
+                                citaId={cita.id}
+                              />
+                            </div>
                           </td>
                           <td> {cita.numero} </td>
                           <td id="columnaAccion">

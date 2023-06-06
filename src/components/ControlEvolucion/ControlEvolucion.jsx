@@ -198,7 +198,7 @@ const ControlEvolucion = () => {
                                         <thead>
                                             <tr>
                                                 <th>N°</th>
-                                                <th onClick={() => sorting("apellidoConNombre")}>
+                                                <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                                                     Apellido Y Nombres
                                                 </th>
                                                 <th onClick={() => sorting("idc")}>IDC</th>

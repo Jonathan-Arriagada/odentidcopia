@@ -366,7 +366,7 @@ const Ingresos = () => {
                               Dia
                             </button>
                             <button
-                             style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
                                 filtroFecha("Semana");
                                 setTaparFiltro(true);
@@ -375,7 +375,7 @@ const Ingresos = () => {
                               Semana
                             </button>
                             <button
-                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
                                 filtroFecha("Mes");
                                 setTaparFiltro(true);
@@ -384,7 +384,7 @@ const Ingresos = () => {
                               Mes
                             </button>
                             <button
-                      style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
                                 setModalSeleccionFechaShow(true);
                               }}
@@ -466,17 +466,17 @@ const Ingresos = () => {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("fechaCobro")}>Fecha</th>
-                        <th onClick={() => sorting("importeAbonado")}>
-                          Importe
-                        </th>
-                        <th onClick={() => sorting("codigoTratamiento")}>
-                          Cta
-                        </th>
                         <th onClick={() => sorting("pacienteCobro")}>
                           Paciente
                         </th>
                         <th onClick={() => sorting("tratamientoCobro")}>
                           Tratamiento
+                        </th>
+                        <th onClick={() => sorting("nroComprobanteCobro")}>
+                          Nro Comprobante
+                        </th>
+                        <th onClick={() => sorting("importeAbonado")}>
+                          Importe
                         </th>
                       </tr>
                     </thead>
@@ -488,19 +488,19 @@ const Ingresos = () => {
                             const fecha =
                               tratamiento.cobrosManuales.fechaCobro[index] ||
                               "";
-                            const importe =
-                              tratamiento.cobrosManuales.importeAbonado[
-                              index
-                              ] || "";
-                            const cta =
-                              tratamiento.cobrosManuales.codigoTratamiento[
-                              index
-                              ] || "";
                             const paciente =
                               tratamiento.cobrosManuales.pacienteCobro[index] ||
                               "";
                             const tratamientoz =
                               tratamiento.cobrosManuales.tratamientoCobro[
+                              index
+                              ] || "";
+                            const nroComprobante =
+                              tratamiento.cobrosManuales.nroComprobanteCobro[
+                              index
+                              ] || "";
+                            const importe =
+                              tratamiento.cobrosManuales.importeAbonado[
                               index
                               ] || "";
                             const estadoCobro =
@@ -515,10 +515,10 @@ const Ingresos = () => {
                                       "DD/MM/YY"
                                     )}
                                   </td>
-                                  <td>{importe.toString()}</td>
-                                  <td>{cta.toString()}</td>
                                   <td>{paciente.toString()}</td>
                                   <td>{tratamientoz.toString()}</td>
+                                  <td>{nroComprobante.toString()}</td>
+                                  <td>{importe.toString()}</td>
                                 </tr>
                               );
                             }

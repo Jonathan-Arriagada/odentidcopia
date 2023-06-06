@@ -3,6 +3,7 @@ import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
+import ListaSeleccionEstadoCita from "../Agenda/ListaSeleccionEstadoCita";
 import CreateCita from "../Agenda/CreateCita";
 import EditCita from "../Agenda/EditCita";
 import moment from "moment";
@@ -297,7 +298,7 @@ function AgendaEspecif(id) {
                             <th onClick={() => sorting("fecha")}>Fecha</th>
                             <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
                             <th onClick={() => sorting("horaFin")}>Hora Fin</th>
-                            <th onClick={() => sorting("apellidoConNombre")}>
+                            <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                               Apellido y Nombres
                             </th>
                             <th onClick={() => sorting("idc")}>IDC</th>
@@ -315,14 +316,20 @@ function AgendaEspecif(id) {
                               <td> {cita.horaFin} </td>
                               <td> {cita.apellidoConNombre} </td>
                               <td> {cita.idc} </td>
-                              <td style={{ display: "flex", marginTop: "8px" }}>
-                                {cita.estado}
+                              <td style={{ paddingBottom: "0", display: "flex" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                  {cita.estado || ""}
+                                  {cita.estado && (
+                                    <p
+                                      style={buscarEstilos(cita.estado)}
+                                      className="color-preview justify-content-center align-items-center"
+                                    ></p>
 
-                                <p
-                                  style={buscarEstilos(cita.estado)}
-                                  className="color-preview justify-content-center align-items-center"
-                                >
-                                </p>
+                                  )}
+                                  <ListaSeleccionEstadoCita
+                                    citaId={cita.id}
+                                  />
+                                </div>
                               </td>
                               <td> {cita.numero} </td>
                               <td id="columnaAccion">

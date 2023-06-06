@@ -132,7 +132,7 @@ function ControlEvolucionEspecif(props) {
     }
   }
 
-
+  console.log(results)
   return (
     <>
       <div className="mainpage">
@@ -161,16 +161,8 @@ function ControlEvolucionEspecif(props) {
                     <div className="col">
                       <br></br>
                       <div className="d-flex justify-content-between">
-                        <h3>Control y Evoluciones del Paciente</h3>
-                        {!mostrarBuscadores && (<div className="col d-flex align-items-center justify-content-end">
-                          <button
-                            variant="primary"
-                            className="btn-blue m-2"
-                            onClick={() => setModalShowCrearControl(true)}
-                          >
-                            Nuevo
-                          </button>
-                        </div>)}
+                        <h3>Datos del Paciente</h3>
+
                       </div>
 
                       <div className="form-control_history">
@@ -225,12 +217,42 @@ function ControlEvolucionEspecif(props) {
                           </div>
                         </div>
                         )}
+
                         {!mostrarBuscadores && (
                           <div>
-                            <br></br>
-                            <h3>Evolucionando Tratamiento Especifico!</h3>
-                          </div>
+                            <div className="row mb-3">
+                              <div className="col-2 sm-2">
+                                <label id="textoIntroHistory">Tratamientos:</label>
+                              </div>
+                              <div className="col-2 sm-4">
+                                <input value={results[0].tratamientoControl} disabled
+                                  style={{ border: "none", background: "none" }}></input>
+                              </div>
+                            </div>
+                            <div className="row mb-3">
+                              <div className="col-2 sm-2">
+                                <label id="textoIntroHistory">Pieza:</label>
+                              </div>
+                              <div className="col-2 sm-4">
+                                <input value={results[0].pieza} disabled
+                                  style={{ border: "none", background: "none" }}></input>
+                              </div>
+                            </div>
 
+                            <div className="col d-flex align-items-center justify-content-start">
+                              <br></br>
+                              <h4 style={{ marginBottom: '0' }}>Control y Evolucion</h4>
+                              <div>
+                                <button
+                                  variant="primary"
+                                  className="btn-blue m-2"
+                                  onClick={() => setModalShowCrearControl(true)}
+                                >
+                                  Nuevo
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         )}
                       </div>
 
@@ -288,16 +310,18 @@ function ControlEvolucionEspecif(props) {
 
                               <div className="col-9 p-3 bg-body-tertiary ">
 
-                                <input type="text" value={control.tratamientoControl}
-                                  disabled
-                                  className="bg-body-tertiary"
-                                  style={{ border: "0", fontWeight: "bold" }} />
-                                <span className="mx-2">|</span>
-                                <input type="text" value={control.pieza}
-                                  disabled
-                                  className="bg-body-tertiary"
-                                  style={{ backgroundColor: "white", border: "0", fontWeight: "bold" }} />
-
+                                {mostrarBuscadores ? (<div>
+                                  <input type="text" value={control.tratamientoControl}
+                                    disabled
+                                    className="bg-body-tertiary"
+                                    style={{ border: "0", fontWeight: "bold" }} />
+                                  <span className="mx-2">|</span>
+                                  <input type="text" value={control.pieza}
+                                    disabled
+                                    className="bg-body-tertiary"
+                                    style={{ backgroundColor: "white", border: "0", fontWeight: "bold" }} />
+                                </div>) : (<br></br>
+                                )}
                                 <input
                                   type="text"
                                   value={control.detalleTratamiento}

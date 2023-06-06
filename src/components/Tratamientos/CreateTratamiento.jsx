@@ -376,7 +376,6 @@ function CreateTratamiento(props) {
                   value={precio}
                   type="number"
                   className="form-control"
-                  disabled={true}
                 />
               </div>
 

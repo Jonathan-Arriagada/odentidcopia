@@ -16,7 +16,8 @@ import profile from "../../img/profile.png";
 
 const MiPerfil = () => {
   const [user, setUser] = useState("");
-  const [apellidoConNombre, setApellidoConNombre] = useState("");
+  const [nombres, setNombres] = useState("");
+  const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
   const [telefono, setTelefono] = useState("");
   const [fechaAlta, setFechaAlta] = useState("");
@@ -40,16 +41,16 @@ const MiPerfil = () => {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Si, cerrar sesión',
       denyButtonText: `No, seguir logueado`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -66,7 +67,8 @@ const confirmLogout = (e) => {
       const userData2 = userDocsSnapshot.docs[0].data();
       const userId = userDocsSnapshot.docs[0].id;
       setUser(userData2);
-      setApellidoConNombre(userData2.apellidoConNombre);
+      setApellido(userData2.apellido);
+      setNombres(userData2.nombres);
       setCorreo(userData2.correo);
       setTelefono(userData2.telefono);
       setFechaAlta(userData2.fechaAlta);
@@ -95,13 +97,14 @@ const confirmLogout = (e) => {
       const user = auth.currentUser;
 
       await updateProfile(user, {
-        displayName: apellidoConNombre,
+        displayName: nombres + " " + apellido,
       });
       await updateEmail(user, correo);
 
       const userDocRef = doc(db, "user", id);
       await updateDoc(userDocRef, {
-        apellidoConNombre,
+        nombres,
+        apellido,
         correo,
         telefono,
       });
@@ -165,20 +168,20 @@ const confirmLogout = (e) => {
             <nav className="navbar">
               <div className="d-flex justify-content-between w-100 px-2">
                 <div className="search-bar w-50">
-                  
+
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                        Bienvenido {currentUser.displayName}
+                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                    Bienvenido {currentUser.displayName}
                   </p>
-                   <div className="d-flex">
-                      <div className="notificacion">
-                         <Link
-                           to="/miPerfil"
-                          className="text-decoration-none"
-                           >
-                            <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                         </Link>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                      </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />
@@ -233,9 +236,21 @@ const confirmLogout = (e) => {
                       <form>
                         <div className="row gx-3 mb-3">
                           <div className="col-md-6">
-                            <label className="small mb-1">Apellido y Nombres</label>
-                            <input className="form-control" id="inputApellidoConNombres" type="text" placeholder="Ingresa tu Apellido y Nombres" value={apellidoConNombre || ""}
-                              onChange={(e) => setApellidoConNombre(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                            <label className="small mb-1">Nombres</label>
+                            <input className="form-control" id="inputNombres" type="text" placeholder="Ingresa tus Nombres" value={nombres || ""}
+                              onChange={(e) => setNombres(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                          </div>
+                          <div className="col-md-6">
+                            <label className="small mb-1">Apellido</label>
+                            <input className="form-control" id="inputApellido" type="text" placeholder="Ingresa tu Apellido" value={apellido || ""}
+                              onChange={(e) => setApellido(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                          </div>
+                        </div>
+                        <div className="row gx-3 mb-3">
+                          <div className="col-md-6">
+                            <label className="small mb-1">Correo Electronico</label>
+                            <input className="form-control" id="inputEmailAddress" type="email" placeholder="Ingresa tu Correo Electronico" value={correo}
+                              onChange={(e) => setCorreo(e.target.value.toLowerCase())} disabled={!editable} style={{ textAlign: "center" }} autoComplete="off" />
                           </div>
                           <div className="col-md-6">
                             <label className="small mb-1">Telefono</label>
@@ -243,11 +258,7 @@ const confirmLogout = (e) => {
                               onChange={(e) => setTelefono(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
                           </div>
                         </div>
-                        <div className="mb-3">
-                          <label className="small mb-1">Correo Electronico</label>
-                          <input className="form-control" id="inputEmailAddress" type="email" placeholder="Ingresa tu Correo Electronico" value={correo}
-                            onChange={(e) => setCorreo(e.target.value.toLowerCase())} disabled={!editable} style={{ textAlign: "center" }} autoComplete="off" />
-                        </div>
+
                         <div className="row gx-3 mb-3">
                           <div className="col-md-6">
                             <label className="small mb-1">Rol</label>
