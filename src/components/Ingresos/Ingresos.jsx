@@ -328,7 +328,7 @@ const Ingresos = () => {
 
                         <button
                           variant="primary"
-                          className="btn btn-success mx-1 btn-md"
+                          className="btn greenWater without mx-1 btn-md"
                           style={{
                             borderRadius: "12px",
                             justifyContent: "center",
@@ -357,12 +357,7 @@ const Ingresos = () => {
                             }}
                           >
                             <button
-                              style={{
-                                borderRadius: "7px",
-                                margin: "1px",
-                                height: "38px",
-                              }}
-                              className="btn btn-outline-dark"
+                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
                                 filtroFecha("Dia");
                                 setTaparFiltro(false);
@@ -371,12 +366,7 @@ const Ingresos = () => {
                               Dia
                             </button>
                             <button
-                              style={{
-                                borderRadius: "7px",
-                                margin: "1px",
-                                height: "38px",
-                              }}
-                              className="btn btn-outline-dark"
+                             style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
                                 filtroFecha("Semana");
                                 setTaparFiltro(true);
@@ -385,12 +375,7 @@ const Ingresos = () => {
                               Semana
                             </button>
                             <button
-                              style={{
-                                borderRadius: "7px",
-                                margin: "1px",
-                                height: "38px",
-                              }}
-                              className="btn btn-outline-dark"
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
                                 filtroFecha("Mes");
                                 setTaparFiltro(true);
@@ -399,12 +384,7 @@ const Ingresos = () => {
                               Mes
                             </button>
                             <button
-                              style={{
-                                borderRadius: "7px",
-                                margin: "1px",
-                                height: "38px",
-                              }}
-                              className="btn btn-outline-dark"
+                      style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
                                 setModalSeleccionFechaShow(true);
                               }}
