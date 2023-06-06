@@ -170,7 +170,8 @@ const Create = (props) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
                         const isTabKey = e.key === "Tab";
-                        if (maxLength && currentValue.length >= maxLength && !isTabKey) {
+                        const isDeleteKey = e.key === "Delete" || e.key === "Supr" || e.key === "Backspace";
+                        if (maxLength && currentValue.length >= maxLength && !isTabKey && !isDeleteKey) {
                           e.preventDefault();
                         }
                       }}
