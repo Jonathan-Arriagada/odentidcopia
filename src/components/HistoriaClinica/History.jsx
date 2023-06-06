@@ -468,9 +468,9 @@ export default function History() {
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs value={value} onChange={handleChange} >
                 <Tab label="Historial Clinico" />
-                <Tab label="Control y Evolución" />
-                <Tab label="Citas" />
                 <Tab label="Tratamientos" />
+                <Tab label="Citas" />
+                <Tab label="Control y Evolución" />
                 <Tab label="Ingresos" />
 
               </Tabs>
@@ -1229,16 +1229,15 @@ export default function History() {
             {/* CONTROL Y EVOLUCION */}
 
             < TabPanel value={value} index={1} >
-              <ControlEvolucionEspecif id={id} tratamiento={tratamiento} />
+              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion} />
             </TabPanel >
-
 
             < TabPanel value={value} index={2} >
               <AgendaEspecif id={id} />
             </TabPanel >
 
             < TabPanel value={value} index={3} >
-              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion} />
+              <ControlEvolucionEspecif id={id} tratamiento={tratamiento} />
             </TabPanel >
 
             < TabPanel value={value} index={4} >

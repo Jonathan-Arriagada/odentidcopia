@@ -11,7 +11,7 @@ function CreateCita(props) {
   const [idPacienteCita, setIdPacienteCita] = useState("");
   const [idc, setIdc] = useState("");
   const [tipoIdc, setTipoIdc] = useState("dni");
-  const [estado, setEstado] = useState("");
+  const [estado, setEstado] = useState("Agendada");
   const [selectedCode, setSelectedCode] = useState("+51");
   const [numero, setNumero] = useState("");
   const [fecha, setFecha] = useState("");
@@ -434,9 +434,7 @@ function CreateCita(props) {
                     required
                   />
                 </div>
-              </div>
 
-              <div className="row">
                 <div className="col mb-3">
                   <label className="form-label">Hora Inicio*</label>
                   <select
