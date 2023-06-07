@@ -17,7 +17,7 @@ function CreateTratamiento(props) {
   const [cta, setCta] = useState("");
   const [precio, setPrecio] = useState("");
   const [tarifasTratamientos, setTarifasTratamientos] = useState("");
-  const [formaPago, setFormaPago] = useState("Contado");
+  const [formaPago, setFormaPago] = useState("");
   const [pieza, setPieza] = useState("");
   const [estadosTratamientos, setEstadosTratamientos] = useState("");
   const [fecha, setFecha] = useState("");
@@ -126,7 +126,7 @@ function CreateTratamiento(props) {
     setTarifasTratamientos("")
     setPieza("")
     setEstadosTratamientos("")
-    setFormaPago("Contado")
+    setFormaPago("")
     setFecha("")
     setFechaVencimiento("")
     setNotas("")
@@ -194,7 +194,10 @@ function CreateTratamiento(props) {
     if (fecha === "") {
       setFecha(hoy);
     }
-  }, [fecha, hoy]);
+    if (formaPago === "") {
+      setFormaPago("Contado");
+    }
+  }, [formaPago, fecha, hoy]);
 
   const manejarValorSeleccionado = async (suggestion) => {
     const querySnapshot = await getDocs(
@@ -366,7 +369,7 @@ function CreateTratamiento(props) {
               <div className="col mb-2">
                 <label className="form-label">Forma de Pago</label>
                 <select
-                  value={formaPago}
+                  value={"Contado"}
                   onChange={(e) => setFormaPago(e.target.value)}
                   className="form-control"
                   multiple={false}

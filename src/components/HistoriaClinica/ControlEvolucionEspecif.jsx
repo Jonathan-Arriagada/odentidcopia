@@ -122,26 +122,17 @@ function ControlEvolucionEspecif(props) {
 
   var results = controles;
   if (mostrarBuscadores) {
-    if (tratamientoPaciente === "Todos" && piezaPaciente === "Todos") {
-      results = controles;
-    }
-    else if (tratamientoPaciente && piezaPaciente === "Todos") {
-      results = controles.filter((doc) => doc.tratamientoControl === tratamientoPaciente);
-    }
-    else if (piezaPaciente && tratamientoPaciente === "Todos") {
-      results = controles.filter((doc) => doc.pieza === piezaPaciente);
+    if ((tratamientoPaciente === "" && piezaPaciente === "") || (tratamientoPaciente !== "" && piezaPaciente === "")) {
+      results = [];
     }
     else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
       results = controles.filter((doc) => doc.pieza === piezaPaciente && doc.tratamientoControl === tratamientoPaciente);
     }
-    else if (tratamientoPaciente === "Todos" && piezaPaciente === "Exento") {
+    else if (tratamientoPaciente !== "" && piezaPaciente === "Exento") {
       results = controles.filter((doc) => doc.pieza === "");
     }
     else if (tratamientoPaciente !== "" && piezaPaciente === "Exento") {
       results = controles.filter((doc) => doc.pieza === "" && doc.tratamientoControl === tratamientoPaciente);
-    }
-    else if (tratamientoPaciente === "" && piezaPaciente === "") {
-      results = [];
     }
   }
 
@@ -208,7 +199,6 @@ function ControlEvolucionEspecif(props) {
                               style={{ textAlign: "center" }}
                             >
                               <option value="">...</option>
-                              <option value="Todos">Todos</option>
                               {optionsTarifasTratamientos}
                             </select>
                           </div>
@@ -227,7 +217,6 @@ function ControlEvolucionEspecif(props) {
                                   multiple={false} required
                                   style={{ width: "130px", textAlign: "center" }}>
                                   <option value="">...</option>
-                                  <option value="Todos">Todos</option>
                                   <option value="Exento">Exento</option>
                                   {optionsPiezasTratamientos}
                                 </select>

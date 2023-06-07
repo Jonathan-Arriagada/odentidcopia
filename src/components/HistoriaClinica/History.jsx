@@ -57,7 +57,6 @@ export default function History() {
   const [tratamiento, setTratamiento] = useState("");
 
   const [error, setError] = useState("");
-  const [editable,] = useState("");
   const [value, setValue] = useState(0);
   const [mostrarAntecedentes, setMostrarAntecedentes] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -475,9 +474,10 @@ export default function History() {
                   Antecedentes
                 </span>
                 <Tab label="Tratamientos" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
-                <Tab label="Control y Evolución" onClick={handleMostrarFiliacion} />
-                <Tab label="Citas" onClick={handleMostrarFiliacion} />
-                <Tab label="Ingresos" onClick={handleMostrarFiliacion} />
+                <Tab label="Control y Evolución" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
+                <Tab label="Citas" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
+                <Tab label="Ingresos" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
+
               </Tabs>
             </Box>
 
@@ -702,33 +702,8 @@ export default function History() {
                   {mostrarAntecedentes && (
                     <div id="formAntecedentes">
                       <div className="container">
-                        <div className="d-flex">
-                          <div className="w-50 me-5">
-                            <label className="form-label">Apellido y Nombres:</label>
-                            <input
-                              value={apellidoConNombre || ""}
-                              onChange={(e) => setApellidoConNombre(e.target.value)}
-                              type="text"
-                              className="form-control m-1"
-                              disabled={!editable}
-                            />
-                          </div>
-                          <div className="w-50 ms-5">
-                            <label className="form-label">IDC:</label>
-                            <input
-                              value={idc || ""}
-                              onChange={(e) => setIdc(e.target.value)}
-                              type="number"
-                              className="form-control m-1"
-                              disabled={!editable}
-                            />
-                          </div>
-                        </div>
                         <div className="d-flex m-2">
                           <div className="col-mb-3">
-
-                            <hr />
-
                             <label className="form-label d-flex">
                               <div className="me-auto">
                               1. ¿Está siendo atendido por un médico?
