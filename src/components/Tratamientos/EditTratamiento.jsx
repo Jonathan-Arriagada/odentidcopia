@@ -4,16 +4,16 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
 const EditTratamiento = (props) => {
-  const [codigo,] = useState(props.tratamiento.codigo);
+  const [codigo, setCodigo] = useState(props.tratamiento.codigo);
   const [apellidoConNombre, setApellidoConNombre] = useState(props.tratamiento.apellidoConNombre || "");
-  const [idPaciente,] = useState(props.tratamiento.idPaciente || "");
-  const [tipoIdc, setTipoIdc] = useState(props.tratamiento.tipoIdc || "dni");
+  const [idPaciente, setIdPaciente] = useState(props.tratamiento.idPaciente || "");
+  const [tipoIdc, setTipoIdc] = useState(props.tratamiento.tipoIdc || "");
   const [idc, setIdc] = useState(props.tratamiento.idc || "");
   const [tarifasTratamientos, setTarifasTratamientos] = useState(props.tratamiento.tarifasTratamientos || "");
   const [cta, setCta] = useState(props.tratamiento.cta || "");
   const [precio, setPrecio] = useState(props.tratamiento.precio || "");
   const [pieza, setPieza] = useState(props.tratamiento.pieza || "");
-  const [formaPago, setFormaPago] = useState(props.tratamiento.formaPago || "Contado");
+  const [formaPago, setFormaPago] = useState(props.tratamiento.formaPago || "");
   const [estadosTratamientos, setEstadosTratamientos] = useState(props.tratamiento.estadosTratamientos || "");
   const [fecha, setFecha] = useState(props.tratamiento.fecha || "");
   const [fechaVencimiento, setFechaVencimiento] = useState(props.tratamiento.fechaVencimiento || "");
@@ -81,7 +81,7 @@ const EditTratamiento = (props) => {
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
       cta: cta || tratamientoData.cta,
       precio: precio || tratamientoData.precio,
-      pieza: pieza || tratamientoData.pieza,
+      pieza: pieza ,
       formaPago: formaPago || tratamientoData.formaPago,
       estadosTratamientos: estadosTratamientos || tratamientoData.estadosTratamientos,
       fecha: fecha || tratamientoData.fecha,
@@ -89,6 +89,24 @@ const EditTratamiento = (props) => {
       notas: notas || tratamientoData.notas,
     };
     await updateDoc(tratamientoRef, newData);
+    clearFields();
+  };
+
+  const clearFields = () => {
+    setCodigo("");
+    setApellidoConNombre("");
+    setIdPaciente("");
+    setTipoIdc("");
+    setIdc("");
+    setTarifasTratamientos("");
+    setCta("");
+    setPrecio("");
+    setPieza("");
+    setFormaPago("");
+    setEstadosTratamientos("");
+    setFecha("");
+    setFechaVencimiento("");
+    setNotas("");
   };
 
   const handleTarifasTratamientosChange = (event, tratamiento) => {
@@ -208,9 +226,9 @@ const EditTratamiento = (props) => {
                   <label className="form-label">Precio</label>
                   <input
                     defaultValue={props.tratamiento.precio}
+                    onChange={(e) => setPrecio(e.target.value)}
                     type="number"
                     className="form-control"
-                    disabled={true}
                   />
                 </div>
                 <div className="col mb-2">

@@ -5,8 +5,10 @@ import { Modal } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import peruFlag from "../../img/peru.png"
 import argentinaFlag from "../../img/argentina.png"
+import moment from "moment";
 
 function CreateCita(props) {
+  const hoy = moment(new Date()).format("YYYY-MM-DD");
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idPacienteCita, setIdPacienteCita] = useState("");
   const [idc, setIdc] = useState("");
@@ -168,6 +170,7 @@ function CreateCita(props) {
         idc: idc,
         tipoIdc: tipoIdc,
         fechaNacimiento: "",
+        fechaAlta: hoy,
         selectedCode: selectedCode,
         numero: numero,
         valorBusqueda: apellidoConNombre + " " + idc,
@@ -251,7 +254,6 @@ function CreateCita(props) {
 
   const clearFields = () => {
     setApellidoConNombre("");
-    setIdPacienteCita("");
     setTipoIdc("dni")
     setIdc("");
     setSelectedCode("+51");

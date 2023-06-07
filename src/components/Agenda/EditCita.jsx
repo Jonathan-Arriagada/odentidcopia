@@ -5,7 +5,7 @@ import { Modal } from "react-bootstrap";
 
 const EditCita = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.cita.apellidoConNombre || "");
-  const [tipoIdc, setTipoIdc] = useState(props.cita.tipoIdc || "dni");
+  const [tipoIdc, setTipoIdc] = useState(props.cita.tipoIdc || "");
   const [idc, setIdc] = useState(props.cita.idc || "");
   const [estado, setEstado] = useState(props.cita.estado || "");
   const [numero, setNumero] = useState(props.cita.numero || "");
@@ -75,6 +75,19 @@ const EditCita = (props) => {
       horaFin: horaFin || citaData.horaFin,
     };
     await updateDoc(citaRef, newData);
+    clearFields();
+  };
+
+  const clearFields = () => {
+    setApellidoConNombre("");
+    setTipoIdc("");
+    setIdc("");
+    setEstado("");
+    setNumero("");
+    setFecha("");
+    setComentario("");
+    setHoraInicio("");
+    setHoraFin("");
   };
 
   return (

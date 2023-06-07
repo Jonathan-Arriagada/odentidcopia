@@ -94,6 +94,7 @@ function CreateTratamiento(props) {
   }
 
   const validateFields = (e) => {
+    e.preventDefault();
     if (
       apellidoConNombre.trim() === "" ||
       idc.trim() === "" ||
@@ -118,7 +119,6 @@ function CreateTratamiento(props) {
   const clearFields = () => {
     setCodigo("")
     setApellidoConNombre("")
-    setIdPaciente("")
     setTipoIdc("dni")
     setIdc("")
     setCta("")
@@ -235,7 +235,7 @@ function CreateTratamiento(props) {
     };
 
     fetchClient();
-  }, [props.id]);
+  }, [props.id,apellidoConNombre]);
 
   return (
     <Modal
@@ -384,6 +384,7 @@ function CreateTratamiento(props) {
                 <label className="form-label">Precio</label>
                 <input
                   value={precio}
+                  onChange={(e) => setPrecio(e.target.value)}
                   type="number"
                   className="form-control"
                 />

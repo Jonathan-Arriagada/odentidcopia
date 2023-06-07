@@ -7,7 +7,7 @@ import moment from "moment";
 
 const Edit = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
-  const [tipoIdc, setTipoIdc] = useState(props.client.tipoIdc || "dni");
+  const [tipoIdc, setTipoIdc] = useState(props.client.tipoIdc || "");
   const [idc, setIdc] = useState(props.client.idc || "");
   const [edad, setEdad] = useState(props.client.edad || "");
   const [fechaNacimiento, setFechaNacimiento] = useState(props.client.fechaNacimiento || "");
@@ -51,11 +51,21 @@ const Edit = (props) => {
         Swal.fire('¡Guardado!', '', 'success');
 
         await updateDoc(clientRef, newData);
-
+        clearFields();
       } else if (result.isDenied) {
         Swal.fire('Cambios no guardados.', '', 'info');
       }
     });
+  };
+
+  const clearFields = () => {
+    setApellidoConNombre("");
+    setTipoIdc("");
+    setIdc("");
+    setFechaNacimiento("");
+    setEdad("");
+    setNumero("");
+    setValorBusqueda("");
   };
 
   return (

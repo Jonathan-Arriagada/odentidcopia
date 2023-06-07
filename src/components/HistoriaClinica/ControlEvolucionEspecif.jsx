@@ -56,16 +56,16 @@ function ControlEvolucionEspecif(props) {
 
   const updateOptionsTarifasTratamientos = useCallback((snapshot) => {
     const filteredDocs = snapshot.docs.filter((doc) => doc.data().idPaciente === props.id);
-    const options2 = filteredDocs.map(doc => (
-      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tarifasTratamientos}</option>
+    const uniqueTarifasTratamientos = [...new Set(filteredDocs.map(doc => doc.data().tarifasTratamientos))];
+    const options2 = uniqueTarifasTratamientos.map(tarifa => (
+      <option key={`tarifasTratamientos-${tarifa}`} value={tarifa}>{tarifa}</option>
     ));
-    const options3 = filteredDocs
-      .filter(doc => doc.data().pieza !== "")
-      .map(doc => (
-        <option key={`pieza-${doc.id}`} value={doc.pieza}>
-          {doc.data().pieza}
-        </option>
-      ));
+    const uniquePiezas = [...new Set(filteredDocs.filter(doc => doc.data().pieza !== "").map(doc => doc.data().pieza))];
+    const options3 = uniquePiezas.map(pieza => (
+      <option key={`pieza-${pieza}`} value={pieza}>
+        {pieza}
+      </option>
+    ));
     options2.sort((a, b) => {
       const trataA = a.props.value;
       const trataB = b.props.value;
@@ -122,17 +122,14 @@ function ControlEvolucionEspecif(props) {
 
   var results = controles;
   if (mostrarBuscadores) {
-    if ((tratamientoPaciente === "" && piezaPaciente === "") || (tratamientoPaciente !== "" && piezaPaciente === "")) {
+    if ((tratamientoPaciente === "") || (tratamientoPaciente !== "" && piezaPaciente === "")) {
       results = [];
-    }
-    else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
+    } else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
       results = controles.filter((doc) => doc.pieza === piezaPaciente && doc.tratamientoControl === tratamientoPaciente);
-    }
-    else if (tratamientoPaciente !== "" && piezaPaciente === "Exento") {
-      results = controles.filter((doc) => doc.pieza === "");
-    }
-    else if (tratamientoPaciente !== "" && piezaPaciente === "Exento") {
+    } else if (tratamientoPaciente !== "" && piezaPaciente === "Exento") {
+      console.log("ENTRO") //NO ESTA CORRIENDO
       results = controles.filter((doc) => doc.pieza === "" && doc.tratamientoControl === tratamientoPaciente);
+      console.log(results)
     }
   }
 
@@ -320,7 +317,7 @@ function ControlEvolucionEspecif(props) {
                                   <input type="text" value={control.tratamientoControl}
                                     disabled
                                     className="bg-body-tertiary"
-                                    style={{ border: "0", fontWeight: "bold", width: `calc(${control.tratamientoControl.length}ch - 1%)`  }} />
+                                    style={{ border: "0", fontWeight: "bold", width: `calc(${control.tratamientoControl.length}ch - 1%)` }} />
                                   <span className="mx-2">|</span>
                                   <input type="text" value={control.pieza}
                                     disabled

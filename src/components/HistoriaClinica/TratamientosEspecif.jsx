@@ -160,10 +160,11 @@ function TratamientosEspecif(props) {
 
     const actualizarEstadoPago = async (tratamiento) => {
       const fechaVencimientoBase = tratamiento.fechaVencimiento;
+      const tratamientoRef = doc(tratamientosCollectiona, tratamiento.id);
+
       let fechaVencimiento;
-      if (fechaVencimientoBase && restoCobro !== 0 && fechaVencimientoBase !== "" && fechaVencimientoBase !== null && fechaVencimientoBase !== undefined) {
+      if (fechaVencimientoBase && restoCobro > 0 && fechaVencimientoBase !== "" && fechaVencimientoBase !== null && fechaVencimientoBase !== undefined) {
         fechaVencimiento = new Date(tratamiento.fechaVencimiento)
-        const tratamientoRef = doc(tratamientosCollectiona, tratamiento.id);
         if (fechaVencimiento > hoy && tratamiento.estadoPago !== "Cancelado") {
           await updateDoc(tratamientoRef, {
             estadoPago: "Programado",
@@ -173,6 +174,11 @@ function TratamientosEspecif(props) {
             estadoPago: "Vencido",
           });
         }
+      }
+      if (restoCobro > 0 && tratamiento.estadoPago === "Cancelado") {
+        await updateDoc(tratamientoRef, {
+          estadoPago: "Pendiente",
+        });
       }
     };
 
@@ -350,7 +356,6 @@ function TratamientosEspecif(props) {
         tratamientoData.cobrosManuales.tratamientoCobro || [];
       const pacienteCobroArray =
         tratamientoData.cobrosManuales.pacienteCobro || [];
-      const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro || [];
 
       fechaCobroArray.push(fechaCobro);
       nroComprobanteArray.push(nroComprobanteCobro);
@@ -358,7 +363,6 @@ function TratamientosEspecif(props) {
       importeAbonadoArray.push(importeCobro);
       tratamientoCobroArray.push(trataCobro);
       pacienteCobroArray.push(pacienteCobro);
-      estadoCobroArray.push("SIN COBRAR");
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -368,7 +372,6 @@ function TratamientosEspecif(props) {
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
           "cobrosManuales.pacienteCobro": pacienteCobroArray,
-          "cobrosManuales.estadoCobro": estadoCobroArray,
         });
       }
       let resto = (restoCobro - importeCobro);
@@ -407,7 +410,6 @@ function TratamientosEspecif(props) {
       const codigoTratamientoArray =
         tratamientoData.cobrosManuales.codigoTratamiento;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
-      const estadoCobroArray = tratamientoData.cobrosManuales.estadoCobro;
 
       const nuevaFechaCobroArray = eliminarPosicionArray(
         fechaCobroArray,
@@ -433,10 +435,6 @@ function TratamientosEspecif(props) {
         pacienteCobroArray,
         index
       );
-      const nuevoEstadoCobroArray = eliminarPosicionArray(
-        estadoCobroArray,
-        index
-      );
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -446,7 +444,6 @@ function TratamientosEspecif(props) {
           "cobrosManuales.tratamientoCobro": nuevoTratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": nuevoCodigoTratamientoArray,
           "cobrosManuales.pacienteCobro": nuevoPacienteCobroArray,
-          "cobrosManuales.estadoCobro": nuevoEstadoCobroArray,
         });
       }
       let resto = (tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0));
@@ -510,32 +507,6 @@ function TratamientosEspecif(props) {
     return array.filter((_, i) => i !== index);
   };
 
-
-  const cambiarEstadoCobro = async (e, id, index, string) => {
-    e.preventDefault();
-    try {
-      const tratamientoRef = doc(db, "tratamientos", id);
-      const tratamientoDoc = await getDoc(tratamientoRef);
-      const tratamientoData = tratamientoDoc.data();
-      const estadoArray = tratamientoData.cobrosManuales.estadoCobro;
-
-      estadoArray[index] = string;
-
-      if (tratamientoDoc.exists()) {
-        await updateDoc(tratamientoRef, {
-          "cobrosManuales.estadoCobro": estadoArray,
-        });
-      }
-      if (string === "COBRADO") {
-        window.alert("AGREGADO. Se ha ingresado su Cobro a Ingresos");
-      } else {
-        window.alert("ELIMINADO. Se ha quitado el Cobro de Ingresos");
-
-      }
-    } catch (e) {
-      window.alert("Hubo inconvenientes al tratar de agregar/quitar su cobro. Intentelo más tarde" + e + e.message);
-    }
-  };
 
   const actualizarDatosConRestoCobro = async (tratamientoID, resto) => {
     if (resto === 0 || resto < 0) {
@@ -1170,7 +1141,6 @@ function TratamientosEspecif(props) {
                                   const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
                                   const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
                                   const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
-                                  const estadoCobro = tratamiento.cobrosManuales.estadoCobro[index];
 
                                   return (
                                     <tr key={index}>
@@ -1181,26 +1151,6 @@ function TratamientosEspecif(props) {
                                       <td>
                                         {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
                                           <>
-                                            <button
-                                              variant="primary"
-                                              className={`btn ${estadoCobro === "SIN COBRAR" ? "btn-success" : "btn-warning"} sm-1`}
-                                              onClick={(e) => {
-                                                if (estadoCobro === "SIN COBRAR") {
-                                                  cambiarEstadoCobro(e, idParaCobro, index, "COBRADO");
-                                                } else {
-                                                  cambiarEstadoCobro(e, idParaCobro, index, "SIN COBRAR");
-                                                }
-                                              }}
-                                              style={{ margin: "1px" }}
-                                            >
-                                              {estadoCobro === "SIN COBRAR" ? (
-                                                <>
-                                                  Cobrar <i className="fa-solid fa-cart-shopping"></i>
-                                                </>
-                                              ) : (
-                                                "Descobrar"
-                                              )}
-                                            </button>
                                             <button
                                               variant="primary"
                                               className="btn btn-secondary sm-1"

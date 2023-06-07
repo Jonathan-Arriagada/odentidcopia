@@ -90,7 +90,6 @@ const Ingresos = () => {
           codigoTratamiento,
           pacienteCobro,
           tratamientoCobro,
-          estadoCobro,
         } = tratamiento.cobrosManuales;
 
         const filteredFechaCobro = [];
@@ -98,7 +97,6 @@ const Ingresos = () => {
         const filteredCodigoTratamiento = [];
         const filteredPacienteCobro = [];
         const filteredTratamientoCobro = [];
-        const filteredEstadoCobro = [];
 
         for (let i = 0; i < fechaCobro.length; i++) {
           const fecha = fechaCobro[i];
@@ -109,7 +107,6 @@ const Ingresos = () => {
             filteredCodigoTratamiento.push(codigoTratamiento[i]);
             filteredPacienteCobro.push(pacienteCobro[i]);
             filteredTratamientoCobro.push(tratamientoCobro[i]);
-            filteredEstadoCobro.push(estadoCobro[i]);
           }
         }
 
@@ -121,7 +118,6 @@ const Ingresos = () => {
             codigoTratamiento: filteredCodigoTratamiento,
             pacienteCobro: filteredPacienteCobro,
             tratamientoCobro: filteredTratamientoCobro,
-            estadoCobro: filteredEstadoCobro,
           },
         };
       });
@@ -138,7 +134,6 @@ const Ingresos = () => {
             codigoTratamiento,
             pacienteCobro,
             tratamientoCobro,
-            estadoCobro,
           } = tratamiento.cobrosManuales;
 
           const filteredFechaCobro = [];
@@ -146,7 +141,6 @@ const Ingresos = () => {
           const filteredCodigoTratamiento = [];
           const filteredPacienteCobro = [];
           const filteredTratamientoCobro = [];
-          const filteredEstadoCobro = [];
 
           for (let i = 0; i < fechaCobro.length; i++) {
             const fecha = fechaCobro[i];
@@ -157,7 +151,6 @@ const Ingresos = () => {
               filteredCodigoTratamiento.push(codigoTratamiento[i]);
               filteredPacienteCobro.push(pacienteCobro[i]);
               filteredTratamientoCobro.push(tratamientoCobro[i]);
-              filteredEstadoCobro.push(estadoCobro[i]);
             }
           }
 
@@ -169,7 +162,6 @@ const Ingresos = () => {
               codigoTratamiento: filteredCodigoTratamiento,
               pacienteCobro: filteredPacienteCobro,
               tratamientoCobro: filteredTratamientoCobro,
-              estadoCobro: filteredEstadoCobro,
             },
           };
         });
@@ -195,15 +187,10 @@ const Ingresos = () => {
 
     results.forEach((tratamiento) => {
       const importes = tratamiento.cobrosManuales.importeAbonado;
-      const estadosCobro = tratamiento.cobrosManuales.estadoCobro;
 
       importes.forEach((importe, index) => {
-        const estadoCobro = estadosCobro[index];
-
-        if (estadoCobro === "COBRADO") {
-          total += Number(importe);
-          cantidad++;
-        }
+        total += Number(importe);
+        cantidad++;
       });
     });
 
@@ -503,26 +490,21 @@ const Ingresos = () => {
                               tratamiento.cobrosManuales.importeAbonado[
                               index
                               ] || "";
-                            const estadoCobro =
-                              tratamiento.cobrosManuales.estadoCobro[index] ||
-                              "";
 
-                            if (estadoCobro === "COBRADO") {
-                              return (
-                                <tr key={index}>
-                                  <td>
-                                    {moment(fecha.toString()).format(
-                                      "DD/MM/YY"
-                                    )}
-                                  </td>
-                                  <td>{paciente.toString()}</td>
-                                  <td>{tratamientoz.toString()}</td>
-                                  <td>{nroComprobante.toString()}</td>
-                                  <td>{importe.toString()}</td>
-                                </tr>
-                              );
-                            }
-                            return false;
+                            return (
+                              <tr key={index}>
+                                <td>
+                                  {moment(fecha.toString()).format(
+                                    "DD/MM/YY"
+                                  )}
+                                </td>
+                                <td>{paciente.toString()}</td>
+                                <td>{tratamientoz.toString()}</td>
+                                <td>{nroComprobante.toString()}</td>
+                                <td>{importe.toString()}</td>
+                              </tr>
+                            );
+
                           }
                         );
                       })}

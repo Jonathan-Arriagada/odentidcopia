@@ -363,6 +363,10 @@ input[type="file"]::before {
   content: none !important;
 }
 
+input,select {
+  color: var(--color-texto-oscuro) !important;
+}
+
 #custom-file-upload {
   border: 1px solid #ccc;
   display: inline-block;

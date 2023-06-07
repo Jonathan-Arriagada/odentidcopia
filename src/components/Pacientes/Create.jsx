@@ -8,6 +8,7 @@ import argentinaFlag from "../../img/argentina.png"
 import moment from "moment";
 
 const Create = (props) => {
+  const hoy = moment(new Date()).format("YYYY-MM-DD");
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [tipoIdc, setTipoIdc] = useState("dni");
   const [idc, setIdc] = useState("");
@@ -17,6 +18,7 @@ const Create = (props) => {
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [error, setError] = useState("");
   const [selectedCode, setSelectedCode] = useState("+51");
+
 
   const clientsCollection = collection(db, "clients");
 
@@ -83,6 +85,7 @@ const Create = (props) => {
       apellidoConNombre: apellidoConNombre,
       tipoIdc: tipoIdc,
       idc: idc,
+      fechaAlta: hoy,
       fechaNacimiento: fechaNacimiento,
       selectedCode: selectedCode,
       numero: numero,
