@@ -471,14 +471,13 @@ export default function History() {
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs value={value} onChange={handleChange} >
                 <Tab label="Filiacion" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
-                <span className={mostrarAntecedentes ? "active-tab" : "tab"} onClick={handleMostrarAntecedentes}>
+                <span className={`${mostrarAntecedentes ? "active-tab" : "tab"}`} onClick={handleMostrarAntecedentes}>
                   Antecedentes
                 </span>
                 <Tab label="Tratamientos" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
                 <Tab label="Control y Evolución" onClick={handleMostrarFiliacion} />
                 <Tab label="Citas" onClick={handleMostrarFiliacion} />
                 <Tab label="Ingresos" onClick={handleMostrarFiliacion} />
-
               </Tabs>
             </Box>
 
@@ -731,7 +730,9 @@ export default function History() {
                             <hr />
 
                             <label className="form-label d-flex">
+                              <div className="me-auto">
                               1. ¿Está siendo atendido por un médico?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -761,7 +762,9 @@ export default function History() {
                             />
 
                             <label className="form-label d-flex">
-                              2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
+                              <div className="me-auto">
+                                2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="checkbox"
@@ -791,7 +794,9 @@ export default function History() {
                             />
 
                             <label className="form-label d-flex">
-                              3. ¿Está tomando algún medicamento?{" "}
+                              <div className="me-auto">
+                                3. ¿Está tomando algún medicamento?{" "}
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -821,7 +826,9 @@ export default function History() {
                             />
 
                             <label className="form-label d-flex">
+                            <div className="me-auto">
                               4. ¿Es alérgico a algún medicamento?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -851,7 +858,9 @@ export default function History() {
                             />
 
                             <label className="form-label d-flex">
-                              5. ¿Ha tenido alguna reacción a la anestesia local?
+                              <div className="me-auto">
+                                5. ¿Ha tenido alguna reacción a la anestesia local?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -873,7 +882,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              6. ¿Está embarazada?
+                              <div className="me-auto">
+                                6. ¿Está embarazada?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -895,7 +906,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              7. ¿Padece o padeció hepatitis?
+                              <div className="me-auto">
+                                7. ¿Padece o padeció hepatitis?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -917,7 +930,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              8. ¿Padece o padeció enfermedades renales?
+                              <div className="me-auto">
+                                8. ¿Padece o padeció enfermedades renales?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -939,7 +954,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              9. ¿Tiene problemas del corazón?
+                              <div className="me-auto">
+                                9. ¿Tiene problemas del corazón?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -961,7 +978,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              10. ¿Padece o ha padecido cáncer?
+                              <div className="me-auto">
+                                10. ¿Padece o ha padecido cáncer?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -983,7 +1002,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              11. ¿Ha tenido alguna cirugía?
+                              <div className="me-auto">
+                                11. ¿Ha tenido alguna cirugía?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -1005,7 +1026,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              12. ¿Es diabético?
+                              <div className="me-auto">
+                                12. ¿Es diabético?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -1027,7 +1050,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              13. ¿Tiene trastornos de tipo convulsivo?
+                              <div className="me-auto">
+                                13. ¿Tiene trastornos de tipo convulsivo?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -1049,7 +1074,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              14. ¿Lo han hospitalizado?
+                              <div className="me-auto">
+                                14. ¿Lo han hospitalizado?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -1071,7 +1098,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              15. ¿Ha tenido algun sangrado excesivo?
+                              <div className="me-auto">
+                                15. ¿Ha tenido algun sangrado excesivo?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -1093,7 +1122,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              16. ¿Tiene algun problema digestivo (úlceras o gastritis)?
+                              <div className="me-auto">
+                                16. ¿Tiene algun problema digestivo (úlceras o gastritis)?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -1115,7 +1146,9 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              17. ¿Toma anticonceptivos orales?
+                              <div className="me-auto">
+                                17. ¿Toma anticonceptivos orales?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"
@@ -1137,8 +1170,10 @@ export default function History() {
                             </label>
 
                             <label className="form-label d-flex">
-                              18. ¿Padece alguna otra enfermedad o transtorno que no se
-                              mencione en esta lista y que debamos saber?
+                              <div className="me-auto">
+                                18. ¿Padece alguna otra enfermedad o transtorno que no se
+                                mencione en esta lista y que debamos saber?
+                              </div>
                               <label className="m-1">
                                 <input
                                   type="radio"

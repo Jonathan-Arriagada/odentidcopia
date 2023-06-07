@@ -229,7 +229,8 @@ tbody tr.hide td p {
   min-height: 48px;
   line-height: 1.7;
   border-bottom: solid 2.5px var(--color-estilo-main);
-
+  background-color: #d6d6d6;
+  transition: background-color 0.3s ease-in-out, 0.5s;
 }
 
 .tab {
@@ -982,3 +983,5 @@ input[type="file"]::before {
 .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: #e6e6e6;
 }
+
+

@@ -331,12 +331,12 @@ function ControlEvolucionEspecif(props) {
                                   <input type="text" value={control.tratamientoControl}
                                     disabled
                                     className="bg-body-tertiary"
-                                    style={{ border: "0", fontWeight: "bold", width: "fit-content" }} />
+                                    style={{ border: "0", fontWeight: "bold", width: `calc(${control.tratamientoControl.length}ch - 1%)`  }} />
                                   <span className="mx-2">|</span>
                                   <input type="text" value={control.pieza}
                                     disabled
                                     className="bg-body-tertiary"
-                                    style={{ backgroundColor: "white", border: "0", fontWeight: "bold" }} />
+                                    style={{ backgroundColor: "white", border: "0", fontWeight: "bold", width: "5%" }} />
                                 </div>) : (<br></br>
                                 )}
                                 <input
