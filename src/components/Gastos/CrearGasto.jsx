@@ -38,7 +38,6 @@ const CrearGasto = (props) => {
 
     const [importeGeneral, setImporteGeneral] = useState(0);
 
-
     const materialesCollection = collection(db, "materiales");
     const gastosCollection = collection(db, "gastos");
 

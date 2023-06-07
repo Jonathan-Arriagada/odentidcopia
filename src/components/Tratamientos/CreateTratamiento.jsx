@@ -5,8 +5,10 @@ import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { FaSearch } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
+import moment from "moment";
 
 function CreateTratamiento(props) {
+  const hoy = moment(new Date()).format("YYYY-MM-DD");
   const [codigo, setCodigo] = useState(null);
   const [apellidoConNombre, setApellidoConNombre] = useState("");
   const [idPaciente, setIdPaciente] = useState("");
@@ -188,6 +190,11 @@ function CreateTratamiento(props) {
     }
   }
 
+  useEffect(() => {
+    if (fecha === "") {
+      setFecha(hoy);
+    }
+  }, [fecha, hoy]);
 
   const manejarValorSeleccionado = async (suggestion) => {
     const querySnapshot = await getDocs(
@@ -394,11 +401,11 @@ function CreateTratamiento(props) {
               <div className="col mb-3">
                 <label className="form-label">Fecha*</label>
                 <input
-                  value={fecha}
+                  value={hoy}
                   onChange={(e) => setFecha(e.target.value)}
                   type="date"
                   className="form-control"
-                  required
+                  disabled
                 />
               </div>
               {formaPago === "Cuotas" && (<div className="col mb-3">

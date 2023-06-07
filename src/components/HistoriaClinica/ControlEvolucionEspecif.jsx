@@ -59,9 +59,13 @@ function ControlEvolucionEspecif(props) {
     const options2 = filteredDocs.map(doc => (
       <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tarifasTratamientos}</option>
     ));
-    const options3 = filteredDocs.map(doc => (
-      <option key={`pieza-${doc.id}`} value={doc.pieza}>{doc.data().pieza}</option>
-    ));
+    const options3 = filteredDocs
+      .filter(doc => doc.data().pieza !== "")
+      .map(doc => (
+        <option key={`pieza-${doc.id}`} value={doc.pieza}>
+          {doc.data().pieza}
+        </option>
+      ));
     options2.sort((a, b) => {
       const trataA = a.props.value;
       const trataB = b.props.value;
@@ -118,17 +122,26 @@ function ControlEvolucionEspecif(props) {
 
   var results = controles;
   if (mostrarBuscadores) {
-    if ((tratamientoPaciente === "Todos" && piezaPaciente === "Todos") || (tratamientoPaciente === "" && piezaPaciente === "")) {
+    if (tratamientoPaciente === "Todos" && piezaPaciente === "Todos") {
       results = controles;
     }
-    else if (tratamientoPaciente && (piezaPaciente === "Todos" || piezaPaciente === "")) {
+    else if (tratamientoPaciente && piezaPaciente === "Todos") {
       results = controles.filter((doc) => doc.tratamientoControl === tratamientoPaciente);
     }
-    else if (piezaPaciente && (tratamientoPaciente === "Todos" || tratamientoPaciente === "")) {
+    else if (piezaPaciente && tratamientoPaciente === "Todos") {
       results = controles.filter((doc) => doc.pieza === piezaPaciente);
     }
     else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
       results = controles.filter((doc) => doc.pieza === piezaPaciente && doc.tratamientoControl === tratamientoPaciente);
+    }
+    else if (tratamientoPaciente === "Todos" && piezaPaciente === "Exento") {
+      results = controles.filter((doc) => doc.pieza === "");
+    }
+    else if (tratamientoPaciente !== "" && piezaPaciente === "Exento") {
+      results = controles.filter((doc) => doc.pieza === "" && doc.tratamientoControl === tratamientoPaciente);
+    }
+    else if (tratamientoPaciente === "" && piezaPaciente === "") {
+      results = [];
     }
   }
 
@@ -194,28 +207,33 @@ function ControlEvolucionEspecif(props) {
                               required
                               style={{ textAlign: "center" }}
                             >
+                              <option value="">...</option>
                               <option value="Todos">Todos</option>
                               {optionsTarifasTratamientos}
                             </select>
                           </div>
                         </div>)}
-                        {mostrarBuscadores && (<div className="row mb-3">
-                          <div className="col-2 sm-2">
-                            <label id="textoIntroHistory">Pieza:</label>
-                          </div>
-                          <div className="col-2 sm-4">
-                            <select value={piezaPaciente}
-                              onChange={(e) => {
-                                setPiezaPaciente(e.target.value)
-                              }}
-                              multiple={false} required
-                              style={{ width: "130px", textAlign: "center" }}>
-                              <option value="Todos">Todos</option>
-                              {optionsPiezasTratamientos}
-                            </select>
-                          </div>
-                        </div>
-                        )}
+                        {
+                          (tratamientoPaciente !== "" && mostrarBuscadores) && (
+                            <div className="row mb-3">
+                              <div className="col-2 sm-2">
+                                <label id="textoIntroHistory">Pieza:</label>
+                              </div>
+                              <div className="col-2 sm-4">
+                                <select value={piezaPaciente}
+                                  onChange={(e) => {
+                                    setPiezaPaciente(e.target.value)
+                                  }}
+                                  multiple={false} required
+                                  style={{ width: "130px", textAlign: "center" }}>
+                                  <option value="">...</option>
+                                  <option value="Todos">Todos</option>
+                                  <option value="Exento">Exento</option>
+                                  {optionsPiezasTratamientos}
+                                </select>
+                              </div>
+                            </div>
+                          )}
 
                         {!mostrarBuscadores && (
                           <div>
@@ -313,7 +331,7 @@ function ControlEvolucionEspecif(props) {
                                   <input type="text" value={control.tratamientoControl}
                                     disabled
                                     className="bg-body-tertiary"
-                                    style={{ border: "0", fontWeight: "bold" }} />
+                                    style={{ border: "0", fontWeight: "bold", width: "fit-content" }} />
                                   <span className="mx-2">|</span>
                                   <input type="text" value={control.pieza}
                                     disabled

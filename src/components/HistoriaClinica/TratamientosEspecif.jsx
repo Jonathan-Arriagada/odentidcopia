@@ -14,6 +14,7 @@ import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 import "../../style/Main.css";
 
 function TratamientosEspecif(props) {
+  const hoy = moment(new Date()).format("YYYY-MM-DD");
   const [tratamientos, setTratamientos] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShowCrearTratamiento, setModalShowCrearTratamiento] = useState(false);
@@ -158,24 +159,27 @@ function TratamientosEspecif(props) {
     const hoy = new Date();
 
     const actualizarEstadoPago = async (tratamiento) => {
-      const fechaVencimiento = new Date(tratamiento.fechaVencimiento);
-      const tratamientoRef = doc(tratamientosCollectiona, tratamiento.id);
-
-      if (fechaVencimiento && fechaVencimiento > hoy && tratamiento.estadoPago !== "Cancelado") {
-        await updateDoc(tratamientoRef, {
-          estadoPago: "Programado",
-        });
-      } else if (fechaVencimiento && fechaVencimiento <= hoy && tratamiento.estadoPago !== "Cancelado") {
-        await updateDoc(tratamientoRef, {
-          estadoPago: "Vencido",
-        });
+      const fechaVencimientoBase = tratamiento.fechaVencimiento;
+      let fechaVencimiento;
+      if (fechaVencimientoBase && restoCobro !== 0 && fechaVencimientoBase !== "" && fechaVencimientoBase !== null && fechaVencimientoBase !== undefined) {
+        fechaVencimiento = new Date(tratamiento.fechaVencimiento)
+        const tratamientoRef = doc(tratamientosCollectiona, tratamiento.id);
+        if (fechaVencimiento > hoy && tratamiento.estadoPago !== "Cancelado") {
+          await updateDoc(tratamientoRef, {
+            estadoPago: "Programado",
+          });
+        } else if (fechaVencimiento <= hoy && tratamiento.estadoPago !== "Cancelado") {
+          await updateDoc(tratamientoRef, {
+            estadoPago: "Vencido",
+          });
+        }
       }
     };
 
     tratamientos.forEach((tratamiento) => {
       actualizarEstadoPago(tratamiento);
     });
-  }, [tratamientos, tratamientosCollectiona]);
+  }, [tratamientos, tratamientosCollectiona, restoCobro]);
 
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);
@@ -536,13 +540,18 @@ function TratamientosEspecif(props) {
   const actualizarDatosConRestoCobro = async (tratamientoID, resto) => {
     if (resto === 0 || resto < 0) {
       const tratamientoRef = doc(db, "tratamientos", tratamientoID);
-
       await updateDoc(tratamientoRef, {
         estadoPago: "Cancelado",
         fechaVencimiento: ""
       });
     }
   }
+
+  useEffect(() => {
+    if (fechaCobro === "") {
+      setFechaCobro(hoy);
+    }
+  }, [fechaCobro, hoy]);
 
   return (
     <>
@@ -1275,11 +1284,12 @@ function TratamientosEspecif(props) {
                       <div className="col mb-6">
                         <label className="form-label">Fecha Cobro</label>
                         <input
+                          value={hoy}
                           onChange={(e) => setFechaCobro(e.target.value)}
                           type="date"
                           className="form-control"
                           autoComplete="off"
-                          required
+                          disabled
                         />
                       </div>
                     </div>

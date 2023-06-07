@@ -336,7 +336,7 @@ export default function History() {
 
   };
   const handleMostrarFiliacion = () => {
-      setMostrarAntecedentes(false)
+    setMostrarAntecedentes(false)
   };
   const handleMostrarAntecedentes = () => {
     setMostrarAntecedentes(true)
@@ -470,11 +470,14 @@ export default function History() {
           <Box sx={{ width: "100%" }} >
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs value={value} onChange={handleChange} >
-                <Tab label="Historial Clinico" />
-                <Tab label="Tratamientos" />
-                <Tab label="Citas" />
-                <Tab label="Control y Evolución" />
-                <Tab label="Ingresos" />
+                <Tab label="Filiacion" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
+                <span className={mostrarAntecedentes ? "active-tab" : "tab"} onClick={handleMostrarAntecedentes}>
+                  Antecedentes
+                </span>
+                <Tab label="Tratamientos" className={mostrarAntecedentes ? "tabInactiva" : ""} onClick={handleMostrarFiliacion} />
+                <Tab label="Control y Evolución" onClick={handleMostrarFiliacion} />
+                <Tab label="Citas" onClick={handleMostrarFiliacion} />
+                <Tab label="Ingresos" onClick={handleMostrarFiliacion} />
 
               </Tabs>
             </Box>
@@ -486,28 +489,6 @@ export default function History() {
                 <form>
                   {!mostrarAntecedentes && (
                     <div id="formFiliacion">
-                      <Box sx={{ width: "120%", marginLeft: "-26px" }} >
-                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                          <div className="subPestanas d-flex">
-                            <span
-                              className={`${!mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
-                              style={{ margin: "3px" }}
-                              onClick={handleMostrarFiliacion}
-
-                            >
-                              Filiación
-                            </span>
-                            <span
-                              className={`${mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
-                              style={{ margin: "3px" }}
-                              onClick={handleMostrarAntecedentes}
-
-                            >
-                              Antecedentes
-                            </span>
-                          </div>
-                        </Box>
-                      </Box>
 
                       {error && (
                         <div className="alert alert-danger" role="alert">
@@ -515,7 +496,6 @@ export default function History() {
                         </div>
                       )}
                       <div className="container">
-                        <br></br>
                         <div className="col">
                           <div className="row">
                             <div className="col-md-3">
@@ -722,30 +702,7 @@ export default function History() {
 
                   {mostrarAntecedentes && (
                     <div id="formAntecedentes">
-                      <Box sx={{ width: "120%", marginLeft: "-26px" }} >
-                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                          <div className="subPestanas d-flex">
-                            <span
-                              className={`${!mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
-                              style={{ margin: "3px" }}
-                              onClick={handleMostrarFiliacion}
-
-                            >
-                              Filiación
-                            </span>
-                            <span
-                              className={`${mostrarAntecedentes ? "btn resaltado" : "btn noResaltado"}`}
-                              style={{ margin: "3px" }}
-                              onClick={handleMostrarAntecedentes}
-
-                            >
-                              Antecedentes
-                            </span>
-                          </div>
-                        </Box>
-                      </Box>
                       <div className="container">
-                        <br></br>
                         <div className="d-flex">
                           <div className="w-50 me-5">
                             <label className="form-label">Apellido y Nombres:</label>
@@ -1246,12 +1203,8 @@ export default function History() {
 
             {/* CONTROL Y EVOLUCION */}
 
-            < TabPanel value={value} index={1} >
-              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion} />
-            </TabPanel >
-
             < TabPanel value={value} index={2} >
-              <AgendaEspecif id={id} />
+              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion} />
             </TabPanel >
 
             < TabPanel value={value} index={3} >
@@ -1259,6 +1212,10 @@ export default function History() {
             </TabPanel >
 
             < TabPanel value={value} index={4} >
+              <AgendaEspecif id={id} />
+            </TabPanel >
+
+            < TabPanel value={value} index={5} >
               <IngresosEspecif id={id} />
             </TabPanel >
           </Box >
