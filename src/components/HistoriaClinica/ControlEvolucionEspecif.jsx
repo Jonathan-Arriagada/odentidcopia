@@ -122,14 +122,13 @@ function ControlEvolucionEspecif(props) {
 
   var results = controles;
   if (mostrarBuscadores) {
+
     if ((tratamientoPaciente === "") || (tratamientoPaciente !== "" && piezaPaciente === "")) {
       results = [];
-    } else if (tratamientoPaciente !== "" && piezaPaciente !== "") {
+    } else if (tratamientoPaciente !== "" && (piezaPaciente !== "Exento" && piezaPaciente !== "")) {
       results = controles.filter((doc) => doc.pieza === piezaPaciente && doc.tratamientoControl === tratamientoPaciente);
     } else if (tratamientoPaciente !== "" && piezaPaciente === "Exento") {
-      console.log("ENTRO") //NO ESTA CORRIENDO
       results = controles.filter((doc) => doc.pieza === "" && doc.tratamientoControl === tratamientoPaciente);
-      console.log(results)
     }
   }
 

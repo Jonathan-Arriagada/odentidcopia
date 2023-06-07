@@ -1059,7 +1059,7 @@ function Tratamientos() {
                       {results.map((tratamiento, index) => (
                         <tr key={tratamiento.id}>
                           <td>{results.length - index}</td>
-                          <td> {tratamiento.apellidoConNombre} </td>
+                          <td style={{ textAlign: "left" }}> {tratamiento.apellidoConNombre} </td>
                           <td> {tratamiento.idc} </td>
                           <td> {tratamiento.tarifasTratamientos} </td>
                           <td> {tratamiento.pieza} </td>

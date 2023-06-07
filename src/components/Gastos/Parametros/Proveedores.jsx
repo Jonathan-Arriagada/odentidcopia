@@ -237,7 +237,7 @@ const confirmLogout = (e) => {
                     <thead>
                       <tr>
                         <th>RUC</th>
-                        <th>Denominacion o Nombre Proveedor</th>
+                        <th style={{ textAlign: "left" }}>Denominacion o Nombre Proveedor</th>
                         <th>Accion</th>
                       </tr>
                     </thead>
@@ -246,7 +246,7 @@ const confirmLogout = (e) => {
                       {results.map((proveedor, index) => (
                         <tr key={proveedor.id}>
                           <td>{proveedor.ruc}</td>
-                          <td>{proveedor.name}</td>
+                          <td style={{ textAlign: "left" }}>{proveedor.name}</td>
                           <td>
                             <button
                               className="btn btn-success mx-1 btn-sm"

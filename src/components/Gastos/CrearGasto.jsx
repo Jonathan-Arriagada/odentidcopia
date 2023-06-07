@@ -24,11 +24,11 @@ const CrearGasto = (props) => {
 
     const [productos, setProductos] = useState([]);
     const [cantArticulo, setCantArticulo] = useState("");
-    const [umArticulo, setUmArticulo] = useState("");
+    const [, setUmArticulo] = useState("");
     const [descripArticulo, setDescripArticulo] = useState("");
     const [precioUniArticulo, setPrecioUniArticulo] = useState("");
     const [subTotalArticulo, setSubTotalArticulo] = useState("");
-    const [cuentaArticulo, setCuentaArticulo] = useState("");
+    const [, setCuentaArticulo] = useState("");
 
     const [modalAgregarArticuloBoton, setModalAgregarArticuloBoton] = useState(false);
     const [modalAgregarArticulo, setModalAgregarArticulo] = useState(false);
@@ -224,19 +224,19 @@ const CrearGasto = (props) => {
     const agregarProducto = () => {
         const nuevoProducto = {
             cantArticulo: cantArticulo,
-            umArticulo: umArticulo,
+            umArticulo: um,
             descripArticulo: descripArticulo,
-            cuentaArticulo: cuentaArticulo,
+            cuentaArticulo: cuenta,
             precioUniArticulo: precioUniArticulo,
             subTotalArticulo: subTotalArticulo,
         };
         setProductos([...productos, nuevoProducto]);
         setCantArticulo("");
-        setUmArticulo("");
-        setCuentaArticulo("");
         setDescripArticulo("");
         setPrecioUniArticulo("");
         setSubTotalArticulo("");
+        setUmArticulo("");
+        setCuentaArticulo("");
 
         const importeActual = parseFloat(importeGeneral) + parseFloat(subTotalArticulo);
         setImporteGeneral(importeActual);
@@ -266,7 +266,6 @@ const CrearGasto = (props) => {
     const handleCloseModal = () => {
         setCuenta("");
         setMaterial("");
-        setUm("");
         setModalAgregarArticulo([false, ""]);
         setModalAgregarArticuloBoton(false);
     };
@@ -281,7 +280,7 @@ const CrearGasto = (props) => {
             return;
         }
 
-        const newState = { cuenta: cuenta, name: material, um: um };
+        const newState = { cuenta: cuenta, name: modalAgregarArticulo[1], um: um };
         addDoc(materialesCollection, newState).then(() => {
             setError("");
         });
@@ -526,7 +525,8 @@ const CrearGasto = (props) => {
                                     type="text"
                                     className="form-control"
                                     defaultValue={modalAgregarArticulo[1]}
-                                    onChange={(e) => setMaterial(e.target.value || modalAgregarArticulo[1])}
+                                    onChange={(e) => setMaterial(modalAgregarArticulo[1])}
+                                    readOnly
                                 />
                                 {error && <small className="text-danger">{error}</small>}
                             </div>

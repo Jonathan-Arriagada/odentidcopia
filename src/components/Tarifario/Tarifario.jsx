@@ -187,7 +187,7 @@ function Tarifario() {
                   <thead>
                     <tr>
                       <th onClick={() => sorting("codigo")}>Código</th>
-                      <th>Tratamiento</th>
+                      <th style={{ textAlign: "left" }}>Tratamiento</th>
                       <th>Tarifa</th>
                       {userType === process.env.REACT_APP_rolAdCon ? <th id="columnaAccion"></th> : null}
                     </tr>
@@ -200,7 +200,7 @@ function Tarifario() {
                         className={tarifa.eliminado ? "deleted-row" : ""}
                       >
                         <td> {tarifa.codigo} </td>
-                        <td> {tarifa.tratamiento}</td>
+                        <td style={{ textAlign: "left" }}> {tarifa.tratamiento}</td>
                         <td> {tarifa.tarifa} </td>
                         {userType === process.env.REACT_APP_rolAdCon ? (
                           <td id="columnaAccion" >

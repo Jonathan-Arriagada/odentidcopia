@@ -453,10 +453,10 @@ const Ingresos = () => {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("fechaCobro")}>Fecha</th>
-                        <th onClick={() => sorting("pacienteCobro")}>
+                        <th onClick={() => sorting("pacienteCobro")} style={{ textAlign: "left" }}>
                           Paciente
                         </th>
-                        <th onClick={() => sorting("tratamientoCobro")}>
+                        <th onClick={() => sorting("tratamientoCobro")} style={{ textAlign: "left" }}>
                           Tratamiento
                         </th>
                         <th onClick={() => sorting("nroComprobanteCobro")}>
@@ -498,8 +498,8 @@ const Ingresos = () => {
                                     "DD/MM/YY"
                                   )}
                                 </td>
-                                <td>{paciente.toString()}</td>
-                                <td>{tratamientoz.toString()}</td>
+                                <td style={{ textAlign: "left" }}>{paciente.toString()}</td>
+                                <td style={{ textAlign: "left" }}>{tratamientoz.toString()}</td>
                                 <td>{nroComprobante.toString()}</td>
                                 <td>{importe.toString()}</td>
                               </tr>

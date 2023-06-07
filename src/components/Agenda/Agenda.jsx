@@ -404,7 +404,7 @@ function Citas() {
                           <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
                           <td> {cita.horaInicio} </td>
                           <td> {cita.horaFin} </td>
-                          <td> {cita.apellidoConNombre} </td>
+                          <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
                           <td style={{ paddingBottom: "0", display: "flex" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>

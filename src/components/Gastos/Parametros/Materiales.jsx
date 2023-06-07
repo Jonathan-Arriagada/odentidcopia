@@ -240,7 +240,7 @@ const Materiales = () => {
                                         <thead>
                                             <tr>
                                                 <th>Cuenta</th>
-                                                <th>Descripcion</th>
+                                                <th style={{ textAlign: "left" }}>Descripcion</th>
                                                 <th>U.M.</th>
                                                 <th>Accion</th>
                                             </tr>
@@ -250,7 +250,7 @@ const Materiales = () => {
                                             {results.map((material, index) => (
                                                 <tr key={material.id}>
                                                     <td>{material.cuenta}</td>
-                                                    <td>{material.name}</td>
+                                                    <td style={{ textAlign: "left" }}>{material.name}</td>
                                                     <td>{material.um}</td>
                                                     <td>
                                                         <button
