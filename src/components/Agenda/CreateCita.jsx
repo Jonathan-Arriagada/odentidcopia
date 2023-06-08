@@ -141,7 +141,7 @@ function CreateCita(props) {
     };
 
     fetchClient();
-  }, [props.id]);
+  }, [props.id,apellidoConNombre]);
 
   const store = async (e) => {
     e.preventDefault();

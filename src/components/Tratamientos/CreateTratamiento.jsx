@@ -235,7 +235,7 @@ function CreateTratamiento(props) {
     };
 
     fetchClient();
-  }, [props.id,apellidoConNombre]);
+  }, [props.id, apellidoConNombre]);
 
   return (
     <Modal
@@ -369,7 +369,7 @@ function CreateTratamiento(props) {
               <div className="col mb-2">
                 <label className="form-label">Forma de Pago</label>
                 <select
-                  value={"Contado"}
+                  value={formaPago}
                   onChange={(e) => setFormaPago(e.target.value)}
                   className="form-control"
                   multiple={false}

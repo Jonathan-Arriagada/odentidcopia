@@ -180,7 +180,7 @@ function Tratamientos() {
 
   useEffect(() => {
     const hoy = new Date();
-
+console.log(hoy)
     const actualizarEstadoPago = async (tratamiento) => {
       const fechaVencimientoBase = tratamiento.fechaVencimiento;
       const tratamientoRef = doc(tratamientosCollectiona, tratamiento.id);

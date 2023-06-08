@@ -2,9 +2,11 @@ import React, { useState, useCallback, useEffect, useContext } from "react";
 import { collection, addDoc, getDocs, query, where, orderBy, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import moment from "moment";
 import { AuthContext } from "../../context/AuthContext"
 
 const CrearControlEvolucion = (props) => {
+    const hoy = moment(new Date()).format("YYYY-MM-DD");
     const [apellidoConNombre, setApellidoConNombre] = useState('');
     const [tipoIdc, setTipoIdc] = useState("dni");
     const [idc, setIdc] = useState('');
@@ -75,13 +77,6 @@ const CrearControlEvolucion = (props) => {
     };
 
     const clearFields = () => {
-        setApellidoConNombre("");
-        setTipoIdc("dni")
-        setIdc("");
-        setIdPaciente("");
-        setTratamientoControl("");
-        setPieza("");
-        setFechaControlRealizado("");
         setDetalleTratamiento("");
         setError("");
     };
@@ -149,6 +144,12 @@ const CrearControlEvolucion = (props) => {
 
         fetchClient();
     }, [props.id, props.tratamiento]);
+
+    useEffect(() => {
+        if (fechaControlRealizado === "") {
+            setFechaControlRealizado(hoy);
+        }
+    }, [fechaControlRealizado, hoy]);
 
     return (
         <Modal

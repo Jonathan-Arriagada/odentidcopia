@@ -392,8 +392,8 @@ function Citas() {
                           Apellido y Nombres
                         </th>
                         <th onClick={() => sorting("idc")}>IDC</th>
-                        <th onClick={() => sorting("estado")}>Estado</th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
+                        <th onClick={() => sorting("estado")}>Estado</th>
                         <th id="columnaAccion"></th>
                       </tr>
                     </thead>
@@ -406,6 +406,7 @@ function Citas() {
                           <td> {cita.horaFin} </td>
                           <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
+                          <td> {cita.numero} </td>
                           <td style={{ paddingBottom: "0", display: "flex" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {cita.estado || ""}
@@ -421,7 +422,6 @@ function Citas() {
                               />
                             </div>
                           </td>
-                          <td> {cita.numero} </td>
                           <td id="columnaAccion">
                             <Dropdown>
                               <Dropdown.Toggle

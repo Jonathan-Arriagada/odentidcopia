@@ -24,11 +24,11 @@ const CrearGasto = (props) => {
 
     const [productos, setProductos] = useState([]);
     const [cantArticulo, setCantArticulo] = useState("");
-    const [, setUmArticulo] = useState("");
+    const [umArticulo, setUmArticulo] = useState("");
     const [descripArticulo, setDescripArticulo] = useState("");
     const [precioUniArticulo, setPrecioUniArticulo] = useState("");
     const [subTotalArticulo, setSubTotalArticulo] = useState("");
-    const [, setCuentaArticulo] = useState("");
+    const [cuentaArticulo, setCuentaArticulo] = useState("");
 
     const [modalAgregarArticuloBoton, setModalAgregarArticuloBoton] = useState(false);
     const [modalAgregarArticulo, setModalAgregarArticulo] = useState(false);
@@ -136,7 +136,7 @@ const CrearGasto = (props) => {
                     tipoGasto: tipoGasto,
                     comprobanteGasto: comprobanteGasto,
                     cantArticulo: producto.cantArticulo,
-                    umArticulo: producto.umArticulo,
+                    umArticulo: producto.umArticulo || umArticulo,
                     cuentaArticulo: producto.cuentaArticulo,
                     descripArticulo: producto.descripArticulo,
                     precioUniArticulo: producto.precioUniArticulo,
@@ -169,7 +169,7 @@ const CrearGasto = (props) => {
                     tipoGasto: tipoGasto,
                     comprobanteGasto: comprobanteGasto,
                     cantArticulo: producto.cantArticulo,
-                    umArticulo: producto.umArticulo,
+                    umArticulo: producto.umArticulo || umArticulo,
                     cuentaArticulo: producto.cuentaArticulo,
                     descripArticulo: producto.descripArticulo,
                     precioUniArticulo: producto.precioUniArticulo,
@@ -224,14 +224,15 @@ const CrearGasto = (props) => {
     const agregarProducto = () => {
         const nuevoProducto = {
             cantArticulo: cantArticulo,
-            umArticulo: um,
+            umArticulo: umArticulo || um,
             descripArticulo: descripArticulo,
-            cuentaArticulo: cuenta,
+            cuentaArticulo: cuentaArticulo || (cuenta-1),
             precioUniArticulo: precioUniArticulo,
             subTotalArticulo: subTotalArticulo,
         };
         setProductos([...productos, nuevoProducto]);
         setCantArticulo("");
+        setCuenta("");
         setDescripArticulo("");
         setPrecioUniArticulo("");
         setSubTotalArticulo("");

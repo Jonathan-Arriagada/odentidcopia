@@ -37,6 +37,13 @@ function Filiacion(id) {
             confirmButtonColor: '#00C5C1'
         })
     }
+    const confirmActualizado = () => {
+        Swal.fire({
+            title: '¡Paciente actualizado!',
+            icon: 'success',
+            confirmButtonColor: '#00C5C1'
+        })
+    }
 
     const validateFields = async (e) => {
         e.preventDefault();
@@ -95,7 +102,7 @@ function Filiacion(id) {
 
         };
         await updateDoc(clientRef, newData);
-
+        confirmActualizado();
     };
 
     const handleCrearClick = async () => {
