@@ -7,6 +7,7 @@ import "../../style/Main.css";
 
 const Estados = ({ show, onHide }) => {
   const [editIndex, setEditIndex] = useState(null);
+  const [nroOrden, setNroOrden] = useState(0);
   const [estado, setEstado] = useState("");
   const [error, setError] = useState("");
   const [estados, setEstados] = useState([]);
@@ -19,6 +20,7 @@ const Estados = ({ show, onHide }) => {
       id: doc.id,
       ...doc.data(),
     }));
+    estadosArray.sort((a, b) => a.nroOrden - b.nroOrden);
     setEstados(estadosArray);
   }, []);
 
@@ -40,17 +42,18 @@ const Estados = ({ show, onHide }) => {
 
   const handleCreate = (e) => {
     e.preventDefault();
-    if (estado.trim() === "") {
-      setError("El estado no puede estar vacío");
+    if (nroOrden === "" || estado.trim() === "") {
+      setError("El Estado/N° Orden no puede estar vacío");
       return;
     }
     if (estadoExiste(estado)) {
       setError("El estado ya existe");
       return;
     }
-    const newState = { name: estado, color: color };
+    const newState = { nroOrden: nroOrden, name: estado, color: color };
     addDoc(estadosCollection, newState).then(() => {
       setEstado("");
+      setNroOrden(0);
       setError("");
       setColor("")
     });
@@ -58,6 +61,7 @@ const Estados = ({ show, onHide }) => {
 
   const handleEdit = (index) => {
     setEditIndex(index);
+    setNroOrden(estados[index].nroOrden);
     setEstado(estados[index].name);
     setColor(estados[index].color);
     setError("");
@@ -74,9 +78,10 @@ const Estados = ({ show, onHide }) => {
       return;
     }
     const stateToUpdate = estados[editIndex];
-    const newState = { name: estado, color: color };
+    const newState = { nroOrden: nroOrden, name: estado, color: color };
     setDoc(doc(estadosCollection, stateToUpdate.id), newState).then(() => {
       setEditIndex(null);
+      setNroOrden(0);
       setEstado("");
       setError("");
       setColor("")
@@ -87,6 +92,7 @@ const Estados = ({ show, onHide }) => {
     await deleteDoc(doc(estadosCollection, estados[index].id));
     const newStates = estados.filter((_, i) => i !== index);
     setEstados(newStates);
+    setNroOrden(0);
     setEstado("");
     setError("");
     setColor("")
@@ -104,19 +110,32 @@ const Estados = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={editIndex !== null ? handleUpdate : handleCreate}>
-          <div className="mb-3">
-            <label className="form-label">Estado</label>
-            <input
-              type="text"
-              className="form-control"
-              value={estado}
-              onChange={(e) => setEstado(e.target.value)}
-              ref={inputRef}
-            />
-            {error && <small className="text-danger">{error}</small>}
+          <div className="row">
+            <div className="col-3 sm-1" style={{ textAlign: "center" }}>
+              <label className="form-label">N° Orden</label>
+              <input
+                type="number"
+                className="form-control"
+                value={nroOrden}
+                onChange={(e) => setNroOrden(e.target.value)}
+                style={{ textAlign: "center" }}
+              />
+              {error && <small className="text-danger">{error}</small>}
+            </div>
+            <div className="col-9 mb-1">
+              <label className="form-label">Estado</label>
+              <input
+                type="text"
+                className="form-control"
+                value={estado}
+                onChange={(e) => setEstado(e.target.value)}
+                ref={inputRef}
+              />
+              {error && <small className="text-danger">{error}</small>}
+            </div>
           </div>
           <div className="mb-3">
-            <label className="form-label">Color</label>
+            <label className="form-label">Color:</label>
             <div className="justify-content-center align-items-center" style={{ display: "flex" }}>
               <label className="form-label" style={{ marginRight: "8px" }}>Selecciona un color para el Estado:</label>
               <div className="color-input-container">
@@ -149,8 +168,16 @@ const Estados = ({ show, onHide }) => {
               key={state.id}
               className="d-flex align-items-center justify-content-between border p-2"
             >
-              <div>{state.name}</div>
-              <div>
+              <div className="col-1">{state.nroOrden}</div>
+              <div className="col-3">{state.name}</div>
+              <div className="col-1"
+              ><input
+                  type="color"
+                  className="color-preview"
+                  value={state.color}
+                  readOnly
+                /></div>
+              <div className="col-2">
                 <button
                   className="btn btn-primary mx-1 btn-sm"
                   onClick={() => handleEdit(index)}

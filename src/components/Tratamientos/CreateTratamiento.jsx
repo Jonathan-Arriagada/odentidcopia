@@ -142,6 +142,7 @@ function CreateTratamiento(props) {
       idc: idc,
       cta: cta,
       precio: precio,
+      restoCobro: Number(precio),
       formaPago: formaPago,
       tarifasTratamientos: tarifasTratamientos,
       pieza: pieza,

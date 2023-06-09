@@ -46,8 +46,9 @@ const MiPerfil = () => {
     Swal.fire({
       title: '¿Desea cerrar sesión?',
       showDenyButton: true,
-      confirmButtonText: 'Si, cerrar sesión',
-      denyButtonText: `No, seguir logueado`,
+      confirmButtonText: 'Cerrar sesión',
+      confirmButtonColor: '#00C5C1',
+      denyButtonText: `Cancelar`,
     }).then((result) => {
       if (result.isConfirmed) {
         logout();
@@ -108,12 +109,23 @@ const MiPerfil = () => {
         correo,
         telefono,
       });
-      window.alert('Modificacion usuario exitosa')
-      deslogear(auth);
-      localStorage.setItem("user", JSON.stringify(null));
-      navigate("/")
-    } catch (error) {
-      console.error("Error al guardar sus datos. Vuelva a iniciar sesión e intente de nuevo", error);
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'Modificación de usuario exitosa.',
+        icon: 'success',
+        confirmButtonColor: '#00C5C1',
+      }).then(() => {
+        deslogear(auth);
+        localStorage.setItem("user", JSON.stringify(null));
+        navigate("/")
+      })
+    } catch (e) {
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Error al guardar sus datos. Vuelva a iniciar sesión e intente de nuevo.',
+        icon: 'error',
+        confirmButtonColor: '#d33',
+      })
     }
   }
 
@@ -148,12 +160,23 @@ const MiPerfil = () => {
       await updateDoc(userDocRef, {
         foto: foto
       });
-      window.alert('Modificacion foto exitosa')
-      deslogear(auth);
-      localStorage.setItem("user", JSON.stringify(null));
-      navigate("/")
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'Modificación de Foto exitosa.',
+        icon: 'success',
+        confirmButtonColor: '#00C5C1',
+      }).then(() => {
+        deslogear(auth);
+        localStorage.setItem("user", JSON.stringify(null));
+        navigate("/")
+      })
     } catch (error) {
-      console.error("Error al guardar la imagen. Vuelva a iniciar sesión e intente de nuevo", error);
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Error al guardar la imagen. Vuelva a iniciar sesión e intente de nuevo.',
+        icon: 'error',
+        confirmButtonColor: '#d33',
+      })
     }
   }
 

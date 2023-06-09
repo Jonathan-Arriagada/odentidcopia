@@ -29,22 +29,22 @@ const ControlEvolucion = () => {
         localStorage.setItem("user", JSON.stringify(null));
         navigate("/");
         window.location.reload();
-      }, [navigate]);
-    
+    }, [navigate]);
+
     const confirmLogout = (e) => {
-        e.preventDefault();       
+        e.preventDefault();
         Swal.fire({
-          title: '¿Desea cerrar sesión?',
-          showDenyButton: true,         
-          confirmButtonText: 'Si, cerrar sesión',
-          confirmButtonColor: '#00C5C1',
-          denyButtonText: `No, seguir logueado`,
+            title: '¿Desea cerrar sesión?',
+            showDenyButton: true,
+            confirmButtonText: 'Cerrar sesión',
+            confirmButtonColor: '#00C5C1',
+            denyButtonText: `Cancelar`,
         }).then((result) => {
-          if (result.isConfirmed) {
-            logout();         
-          }
+            if (result.isConfirmed) {
+                logout();
+            }
         });
-      };
+    };
 
     const controlesCollectiona = collection(db, "controlEvoluciones");
     const controlesCollection = useRef(query(controlesCollectiona, orderBy("fechaControlRealizado", "desc"))
@@ -74,24 +74,24 @@ const ControlEvolucion = () => {
 
     const confirmeDelete = (id) => {
         Swal.fire({
-          title: '¿Esta seguro?',
-          text: "No podra revertir la accion",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#00C5C1',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Si' ,
-          cancelButtonText: 'No'
+            title: '¿Esta seguro?',
+            text: "No podra revertir la accion",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#00C5C1',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No'
         }).then((result) => {
-          if (result.isConfirmed) {
-            deleteControl(id)
-            Swal.fire({
-                title: '¡Borrado!',
-                text: 'Control y evolucion borrada.',
-                icon: 'success',
-                confirmButtonColor: '#00C5C1'
-              });
-          }
+            if (result.isConfirmed) {
+                deleteControl(id)
+                Swal.fire({
+                    title: '¡Borrado!',
+                    text: 'Control y evolucion borrada.',
+                    icon: 'success',
+                    confirmButtonColor: '#00C5C1'
+                });
+            }
         })
     }
 
@@ -156,17 +156,17 @@ const ControlEvolucion = () => {
                                     />
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                                    Bienvenido {currentUser.displayName}
-                                </p>
-                                <div className="d-flex">
-                                    <div className="notificacion">
-                                    <Link
-                                        to="/miPerfil"
-                                        className="text-decoration-none"
-                                    >
-                                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                                    </Link>
+                                    <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
+                                        Bienvenido {currentUser.displayName}
+                                    </p>
+                                    <div className="d-flex">
+                                        <div className="notificacion">
+                                            <Link
+                                                to="/miPerfil"
+                                                className="text-decoration-none"
+                                            >
+                                                <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                                            </Link>
                                         </div>
                                         <div className="notificacion">
                                             <FaBell className="icono" />
