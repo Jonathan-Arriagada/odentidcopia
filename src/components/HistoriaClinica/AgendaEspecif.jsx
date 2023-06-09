@@ -13,6 +13,7 @@ import "../../style/Main.css";
 import Swal from "sweetalert2";
 
 function AgendaEspecif(id) {
+  const hoy = moment(new Date()).format("YYYY-MM-DD");
   const mañana = moment().add(1, 'days').startOf('day');
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");
@@ -76,16 +77,16 @@ function AgendaEspecif(id) {
     return () => { unsubscribeCitas(); unsubscribeEstados() };
   }, [getCitas, getEstados]);
 
-  
+
   useEffect(() => {
     citas.forEach((cita) => {
       const citaDate = moment(cita.fecha, 'YYYY-MM-DD').startOf('day');
-      if (citaDate.isSame(mañana)) {
+      if ((citaDate.isSame(mañana) || citaDate.isSame(hoy)) && cita.estado !== "Confirmada") {
         const citaRef = doc(db, "citas", cita.id);
         updateDoc(citaRef, { estado: "Por Confirmar" })
       }
     });
-  }, [citas, mañana]);
+  }, [citas, mañana, hoy]);
 
   const buscarEstilos = (estadoParam) => {
     const colorEncontrado = estados.find((e) => e.name === estadoParam);
