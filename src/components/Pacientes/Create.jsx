@@ -87,7 +87,8 @@ const Create = (props) => {
       idc: idc,
       fechaAlta: hoy,
       fechaNacimiento: fechaNacimiento,
-      numero: selectedCode + numero,
+      selectedCode: selectedCode,
+      numero: numero,
       valorBusqueda: valorBusqueda,
       edad: edad,
       sexo: "",
@@ -249,12 +250,10 @@ const Create = (props) => {
                         setSelectedCode(e.target.value);
                         setNumero("");
                       }}
-                      className="form-control-tipoIDC me-1"
-                      multiple={false}
-                      style={{ width: "fit-content" }}
-                      required
+                      className="form-control-tipoIDC me-1"                 
+                      style={{ width: "fit-content" }}                 
                     >
-                      <option value="+51">+51</option>
+                      <option value="">+51</option>
                       <option value="">Otro pais</option>
                     </select>
                     {selectedCode === "+51" ? (
@@ -273,11 +272,12 @@ const Create = (props) => {
                       type="text"
                       className="form-control me-2"
                       style={{width: "100px"}}
+                      placeholder="Cod. area"
                       />
                         <input
                           value={numero}
                           onChange={(e) => setNumero(e.target.value)}
-                          type="text"
+                          type="number"
                           className="form-control"
                           required
                         />

@@ -92,7 +92,7 @@ const Show = () => {
       if (result.isConfirmed) {
         deleteClient(id)
         Swal.fire({
-          title: '¡Borrado!',
+          title: '¡Eliminado!',
           text: 'El paciente ha sido borrado.',
           icon: 'success',
           confirmButtonColor: '#00C5C1'

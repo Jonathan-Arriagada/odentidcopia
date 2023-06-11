@@ -50,9 +50,8 @@ const Edit = (props) => {
           idc: idc || clientData.idc,
           fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
           edad: edad || clientData.edad,
-          numero:
-            selectedCode + numero ||
-            clientData.selectedCode + clientData.numero,
+          selectedCode: selectedCode || clientData.selectedCode,
+          numero: numero || clientData.numero,
           valorBusqueda: valorBusqueda || clientData.valorBusqueda,
         };
 
@@ -74,10 +73,6 @@ const Edit = (props) => {
     setEdad("");
     setNumero("");
     setValorBusqueda("");
-  };
-
-  const handleTelefonoChange = (value) => {
-    setNumero(value);
   };
 
   return (
@@ -200,8 +195,7 @@ const Edit = (props) => {
                         setSelectedCode(e.target.value);
                         setNumero("");
                       }}
-                      className="form-control-tipoIDC me-1"
-                      multiple={false}
+                      className="form-control-tipoIDC me-1"              
                       style={{ width: "fit-content" }}
                       required
                     >
@@ -224,6 +218,7 @@ const Edit = (props) => {
                           type="text"
                           className="form-control me-2"
                           style={{ width: "100px" }}
+                          placeholder="Cod. area"
                         />
                         <input
                           value={props.client.numero}

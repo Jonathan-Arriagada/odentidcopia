@@ -109,7 +109,7 @@ const Navigation = () => {
         </header>
         {isLoading && (
             <>
-            <Nav title="Dashboard" Icon={FaChartBar} />  
+           <Link to="/dashboard" className="text-decoration-none link-light"><Nav title="Dashboard" Icon={FaChartBar} /></Link>
             <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
                 <div className={open ? "sidebar-item open" : "sidebar-item"}>
                     <div className="sidebar-title d-flex align-items-center justify-content-between">

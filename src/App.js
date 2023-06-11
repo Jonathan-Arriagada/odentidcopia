@@ -18,6 +18,7 @@ import Gastos from "./components/Gastos/Gastos";
 import Materiales from "./components/Gastos/Parametros/Materiales";
 import Proveedores from "./components/Gastos/Parametros/Proveedores";
 import ControlEvolucion from "./components/ControlEvolucion/ControlEvolucion";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 function App() {
   const {currentUser} = useContext(AuthContext)
@@ -55,7 +56,8 @@ function App() {
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
             <Route path="gastos" element={<RequireAuth><Gastos /></RequireAuth>}/>
             <Route path="materiales" element={<RequireAuth><Materiales /></RequireAuth>}/>
-            <Route path="proveedores" element={<RequireAuth><Proveedores /></RequireAuth>}/>        
+            <Route path="proveedores" element={<RequireAuth><Proveedores /></RequireAuth>}/>   
+            <Route path="dashboard" element={<RequireAuth><Dashboard /></RequireAuth>}/>        
         </Routes>
       </BrowserRouter>
     </div>
