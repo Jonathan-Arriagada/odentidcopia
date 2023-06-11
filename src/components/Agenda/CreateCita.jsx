@@ -4,7 +4,6 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import peruFlag from "../../img/peru.png"
-import argentinaFlag from "../../img/argentina.png"
 import moment from "moment";
 
 function CreateCita(props) {
@@ -395,26 +394,57 @@ function CreateCita(props) {
                 <div className="col mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                    <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
-                    <select
-                      value={selectedCode}
-                      onChange={(e) => { setSelectedCode(e.target.value); setNumero("") }}
-                      className="form-control-tipoIDC me-1"
-                      multiple={false}
-                      style={{ width: "fit-content" }}
-                      required
-                    >
-                      <option value="+51">+51</option>
-                      <option value="+54">+54</option>
-                    </select>
-                    <input
-                      value={numero || ""}
-                      onChange={(e) => setNumero(e.target.value)}
-                      type="number"
-                      className="form-control"
-                      required
-                    />
-                  </div>
+    <img
+      src={selectedCode === "+51" ? peruFlag : ""}
+      alt=""
+      style={{ width: "45px", marginRight: "4px" }}
+    />
+    <select
+      value={selectedCode}
+      onChange={(e) => {
+        setSelectedCode(e.target.value);
+        setNumero("");
+      }}
+      className="form-control-tipoIDC me-1"
+      multiple={false}
+      style={{ width: "fit-content" }}
+      required
+    >
+      <option value="+51">+51</option>
+      <option value="+">Otro pais</option>
+    </select>
+    {selectedCode === "+51" ? (
+      <input
+        value={numero}
+        onChange={(e) => setNumero(e.target.value)}
+        type="text"
+        className="form-control"
+        required
+      />
+    ) : (
+      <>
+      <input
+      value={selectedCode}
+      onChange={(e) => {
+        setSelectedCode(e.target.value);
+        setNumero("");
+      }}
+      className="form-control-tipoIDC me-1"
+      placeholder="Cod de area"
+      multiple={false}
+      style={{ width: "120px" }}
+      required
+    />
+      <input
+        value={numero}
+        onChange={(e) => setNumero(e.target.value)}
+        type="number"
+        className="form-control"
+        required
+      />
+      </>
+    )}
+  </div>
                 </div>
 
                 <div className="col mb-3">

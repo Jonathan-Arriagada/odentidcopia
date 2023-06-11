@@ -1,10 +1,9 @@
-import React, { useState, } from "react";
+import React, { useState } from "react";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
-import peruFlag from "../../img/peru.png"
-import argentinaFlag from "../../img/argentina.png"
+import peruFlag from "../../img/peru.png";
 import moment from "moment";
 
 const Create = (props) => {
@@ -19,16 +18,15 @@ const Create = (props) => {
   const [error, setError] = useState("");
   const [selectedCode, setSelectedCode] = useState("+51");
 
-
   const clientsCollection = collection(db, "clients");
 
   const confirm = () => {
     Swal.fire({
-      title: '¡Paciente agregado!',
-      icon: 'success',
-      confirmButtonColor: '#00C5C1'
-    })
-  }
+      title: "¡Paciente agregado!",
+      icon: "success",
+      confirmButtonColor: "#00C5C1",
+    });
+  };
 
   const validateFields = async (e) => {
     e.preventDefault();
@@ -39,13 +37,15 @@ const Create = (props) => {
       numero.trim() === ""
     ) {
       setError("Todos los campos son obligatorios");
-      setTimeout(clearError, 2000)
+      setTimeout(clearError, 2000);
       return false;
     } else {
-      const querySnapshot = await getDocs(query(clientsCollection, where("idc", "==", idc)));
+      const querySnapshot = await getDocs(
+        query(clientsCollection, where("idc", "==", idc))
+      );
       if (!querySnapshot.empty) {
         setError("El IDC ya existe en la Base de Datos");
-        setTimeout(clearError, 2000)
+        setTimeout(clearError, 2000);
         return false;
       } else {
         setError("");
@@ -77,7 +77,7 @@ const Create = (props) => {
     const { value } = event.target;
     const edad = moment().diff(moment(value), "years");
     setFechaNacimiento(value);
-    setEdad(edad)
+    setEdad(edad);
   };
 
   const store = async () => {
@@ -87,8 +87,7 @@ const Create = (props) => {
       idc: idc,
       fechaAlta: hoy,
       fechaNacimiento: fechaNacimiento,
-      selectedCode: selectedCode,
-      numero: numero,
+      numero: selectedCode + numero,
       valorBusqueda: valorBusqueda,
       edad: edad,
       sexo: "",
@@ -128,7 +127,13 @@ const Create = (props) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton onClick={() => { clearFields(); props.onHide(); }}>
+      <Modal.Header
+        closeButton
+        onClick={() => {
+          clearFields();
+          props.onHide();
+        }}
+      >
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Paciente</h1>
         </Modal.Title>
@@ -137,7 +142,7 @@ const Create = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-            <form style={{ transform: "scale(0.96)" }}>
+              <form style={{ transform: "scale(0.96)" }}>
                 {error && (
                   <div className="alert alert-danger" role="alert">
                     {error}
@@ -148,7 +153,10 @@ const Create = (props) => {
                   <div style={{ display: "flex" }}>
                     <select
                       value={tipoIdc}
-                      onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
+                      onChange={(e) => {
+                        setTipoIdc(e.target.value);
+                        setIdc("");
+                      }}
                       className="form-control-tipoIDC"
                       multiple={false}
                       style={{ width: "fit-content" }}
@@ -158,23 +166,44 @@ const Create = (props) => {
                       <option value="ce">CE</option>
                       <option value="ruc">RUC</option>
                       <option value="pas">PAS</option>
-
                     </select>
                     <input
                       value={idc}
                       onChange={(e) => {
                         setIdc(e.target.value);
-                        setValorBusqueda(apellidoConNombre + " " + e.target.value);
+                        setValorBusqueda(
+                          apellidoConNombre + " " + e.target.value
+                        );
                       }}
-                      type={tipoIdc === "dni" || tipoIdc === "ruc" ? "number" : "text"}
+                      type={
+                        tipoIdc === "dni" || tipoIdc === "ruc"
+                          ? "number"
+                          : "text"
+                      }
                       minLength={tipoIdc === "dni" ? 8 : undefined}
-                      maxLength={tipoIdc === "dni" ? 8 : tipoIdc === "ruc" ? 11 : tipoIdc === "ce" || tipoIdc === "pas" ? 12 : undefined}
+                      maxLength={
+                        tipoIdc === "dni"
+                          ? 8
+                          : tipoIdc === "ruc"
+                          ? 11
+                          : tipoIdc === "ce" || tipoIdc === "pas"
+                          ? 12
+                          : undefined
+                      }
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
                         const currentValue = e.target.value;
                         const isTabKey = e.key === "Tab";
-                        const isDeleteKey = e.key === "Delete" || e.key === "Supr" || e.key === "Backspace";
-                        if (maxLength && currentValue.length >= maxLength && !isTabKey && !isDeleteKey) {
+                        const isDeleteKey =
+                          e.key === "Delete" ||
+                          e.key === "Supr" ||
+                          e.key === "Backspace";
+                        if (
+                          maxLength &&
+                          currentValue.length >= maxLength &&
+                          !isTabKey &&
+                          !isDeleteKey
+                        ) {
                           e.preventDefault();
                         }
                       }}
@@ -207,27 +236,53 @@ const Create = (props) => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Telefono*</label>
+                  <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                    <img src={selectedCode === '+51' ? peruFlag : argentinaFlag} alt="Flag" style={{ width: '45px', marginRight: '4px' }} />
+                    <img
+                      src={selectedCode === "+51" ? peruFlag : ""}
+                      alt=""
+                      style={{ width: "45px", marginRight: "4px" }}
+                    />
                     <select
                       value={selectedCode}
-                      onChange={(e) => { setSelectedCode(e.target.value); setNumero("") }}
+                      onChange={(e) => {
+                        setSelectedCode(e.target.value);
+                        setNumero("");
+                      }}
                       className="form-control-tipoIDC me-1"
                       multiple={false}
                       style={{ width: "fit-content" }}
                       required
                     >
                       <option value="+51">+51</option>
-                      <option value="+54">+54</option>
+                      <option value="">Otro pais</option>
                     </select>
-                    <input
-                      value={numero}
-                      onChange={(e) => setNumero(e.target.value)}
-                      type="number"
-                      className="form-control"
-                      required
-                    />
+                    {selectedCode === "+51" ? (
+                      <input
+                        value={numero}
+                        onChange={(e) => setNumero(e.target.value)}
+                        type="number"
+                        className="form-control"
+                        required
+                      />
+                    ) : (
+                      <>
+                      <input
+                      value={selectedCode}
+                      onChange={(e) => setSelectedCode(e.target.value)}
+                      type="text"
+                      className="form-control me-2"
+                      style={{width: "100px"}}
+                      />
+                        <input
+                          value={numero}
+                          onChange={(e) => setNumero(e.target.value)}
+                          type="text"
+                          className="form-control"
+                          required
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
                 <button
