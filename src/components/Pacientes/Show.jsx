@@ -239,7 +239,7 @@ const Show = () => {
                               "DD/MM/YY"
                             )}
                           </td>
-                          <td> {client.numero}</td>
+                          <td> {client.selectedCode}{client.numero}</td>
 
                           <td id="columnaAccion">
                             <Dropdown>

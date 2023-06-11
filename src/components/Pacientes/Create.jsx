@@ -17,6 +17,8 @@ const Create = (props) => {
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [error, setError] = useState("");
   const [selectedCode, setSelectedCode] = useState("+51");
+  const [codigoArea, setCodigoArea] = useState("");
+
 
   const clientsCollection = collection(db, "clients");
 
@@ -70,7 +72,7 @@ const Create = (props) => {
     setEdad("");
     setNumero("");
     setError("");
-    setSelectedCode("+51");
+    setSelectedCode("");
   };
 
   const handleFechaNac = (event) => {
@@ -87,7 +89,7 @@ const Create = (props) => {
       idc: idc,
       fechaAlta: hoy,
       fechaNacimiento: fechaNacimiento,
-      selectedCode: selectedCode,
+      selectedCode: selectedCode || codigoArea,
       numero: numero,
       valorBusqueda: valorBusqueda,
       edad: edad,
@@ -253,7 +255,7 @@ const Create = (props) => {
                       className="form-control-tipoIDC me-1"                 
                       style={{ width: "fit-content" }}                 
                     >
-                      <option value="">+51</option>
+                      <option value="+51">+51</option>
                       <option value="">Otro pais</option>
                     </select>
                     {selectedCode === "+51" ? (
@@ -267,12 +269,12 @@ const Create = (props) => {
                     ) : (
                       <>
                       <input
-                      value={selectedCode}
-                      onChange={(e) => setSelectedCode(e.target.value)}
-                      type="text"
-                      className="form-control me-2"
-                      style={{width: "100px"}}
-                      placeholder="Cod. area"
+                        value={codigoArea}
+                        onChange={(e) => setCodigoArea(e.target.value)}
+                        type="text"
+                        className="form-control me-2"
+                        style={{width: "100px"}}
+                        placeholder="Cod. area"
                       />
                         <input
                           value={numero}
