@@ -81,6 +81,7 @@ const EditTratamiento = (props) => {
       tarifasTratamientos: tarifasTratamientos || tratamientoData.tarifasTratamientos,
       cta: cta || tratamientoData.cta,
       precio: precio || tratamientoData.precio,
+      restoCobro: precio || tratamientoData.precio,
       pieza: pieza ,
       formaPago: formaPago || tratamientoData.formaPago,
       estadosTratamientos: estadosTratamientos || tratamientoData.estadosTratamientos,

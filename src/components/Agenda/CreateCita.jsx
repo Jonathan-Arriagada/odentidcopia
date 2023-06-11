@@ -469,6 +469,7 @@ function CreateCita(props) {
                     onChange={(e) => setFecha(e.target.value)}
                     type="date"
                     className="form-control"
+                    min={hoy}
                     required
                   />
                 </div>

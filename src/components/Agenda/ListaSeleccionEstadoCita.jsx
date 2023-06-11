@@ -10,8 +10,10 @@ const ListaSeleccionEstadoCita = ({ citaId }) => {
         const fetchEstados = async () => {
             const estadosCollection = collection(db, "estados");
             const estadosSnapshot = await getDocs(estadosCollection);
-            const estadosData = estadosSnapshot.docs.map((doc) => doc.data().name);
-            setEstados(estadosData);
+            const estadosData = estadosSnapshot.docs.map((doc) => doc.data());
+            estadosData.sort((a, b) => a.nroOrden - b.nroOrden);
+            const estadosNames = estadosData.map((estado) => estado.name);
+            setEstados(estadosNames);
         };
 
         fetchEstados();
@@ -28,7 +30,7 @@ const ListaSeleccionEstadoCita = ({ citaId }) => {
                 <Dropdown.Toggle variant="secondary" id="dropdown-button2" className="p-2 my-1 border-0" style={{backgroundColor:"#FFF", color: "#808080"}}>
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {estados.map((estado, index) => (
+                {estados.map((estado, index) => (
                         <Dropdown.Item key={index} eventKey={estado}>{estado}</Dropdown.Item>
                     ))}
                 </Dropdown.Menu>

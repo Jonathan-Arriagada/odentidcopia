@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
+import { collection, deleteDoc, doc, query, orderBy, updateDoc } from "firebase/firestore";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
@@ -20,6 +20,8 @@ import { AuthContext } from "../../context/AuthContext";
 import profile from "../../img/profile.png";
 
 function Citas() {
+  const hoy = moment(new Date()).format("YYYY-MM-DD");
+  const mañana = moment().add(1, 'days').startOf('day');
   const [citas, setCitas] = useState([]);
   const [search, setSearch] = useState("");
   const [modalShowCita, setModalShowCita] = useState(false);
@@ -55,9 +57,9 @@ function Citas() {
     Swal.fire({
       title: '¿Desea cerrar sesión?',
       showDenyButton: true,
-      confirmButtonText: 'Si, cerrar sesión',
+      confirmButtonText: 'Cerrar sesión',
       confirmButtonColor: '#00C5C1',
-      denyButtonText: `No, seguir logueado`,
+      denyButtonText: `Cancelar`,
     }).then((result) => {
       if (result.isConfirmed) {
         logout();
@@ -111,6 +113,16 @@ function Citas() {
       return { backgroundColor: colorEncontrado.color, marginBottom: "0" };
     };
   }
+
+  useEffect(() => {
+    citas.forEach((cita) => {
+      const citaDate = moment(cita.fecha, 'YYYY-MM-DD').startOf('day');
+      if ((citaDate.isSame(mañana) || citaDate.isSame(hoy)) && cita.estado !== "Confirmada") {
+        const citaRef = doc(db, "citas", cita.id);
+        updateDoc(citaRef, { estado: "Por Confirmar" })
+      }
+    });
+  }, [citas, mañana, hoy]);
 
   function funcMostrarAjustes() {
     if (mostrarAjustes) {

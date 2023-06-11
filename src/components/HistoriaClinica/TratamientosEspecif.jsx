@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import CreateTratamiento from "../Tratamientos/CreateTratamiento";
 import EditTratamiento from "../Tratamientos/EditTratamiento";
-import ListaSeleccionEstadoPago from "../Tratamientos/ListaSeleccionEstadoPago";
 import ListaSeleccionEstadoTratamiento from "../Tratamientos/ListaSeleccionEstadoTratamiento";
 import moment from "moment";
 import Calendar from "react-calendar";
@@ -12,6 +11,7 @@ import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import CrearControlEvolucion from "../ControlEvolucion/CrearControlEvolucion";
 import "../../style/Main.css";
+import Swal from "sweetalert2";
 
 function TratamientosEspecif(props) {
   const hoy = moment(new Date()).format("YYYY-MM-DD");
@@ -157,35 +157,34 @@ function TratamientosEspecif(props) {
 
   useEffect(() => {
     const hoy = new Date();
-
     const actualizarEstadoPago = async (tratamiento) => {
       const fechaVencimientoBase = tratamiento.fechaVencimiento;
       const tratamientoRef = doc(tratamientosCollectiona, tratamiento.id);
 
-      let fechaVencimiento;
-      if (fechaVencimientoBase && restoCobro > 0 && fechaVencimientoBase !== "" && fechaVencimientoBase !== null && fechaVencimientoBase !== undefined) {
-        fechaVencimiento = new Date(tratamiento.fechaVencimiento)
-        if (fechaVencimiento > hoy && tratamiento.estadoPago !== "Cancelado") {
+      if (tratamiento.restoCobro > 0 && tratamiento.estadoPago !== "Cancelado") {
+        if (fechaVencimientoBase) {
+          const fechaVencimiento = new Date(fechaVencimientoBase);
+          if (fechaVencimiento > hoy) {
+            await updateDoc(tratamientoRef, {
+              estadoPago: "Programado",
+            });
+          } else if (fechaVencimiento <= hoy) {
+            await updateDoc(tratamientoRef, {
+              estadoPago: "Vencido",
+            });
+          }
+        } else {
           await updateDoc(tratamientoRef, {
-            estadoPago: "Programado",
-          });
-        } else if (fechaVencimiento <= hoy && tratamiento.estadoPago !== "Cancelado") {
-          await updateDoc(tratamientoRef, {
-            estadoPago: "Vencido",
+            estadoPago: "Pendiente",
           });
         }
-      }
-      if (restoCobro > 0 && tratamiento.estadoPago === "Cancelado") {
-        await updateDoc(tratamientoRef, {
-          estadoPago: "Pendiente",
-        });
       }
     };
 
     tratamientos.forEach((tratamiento) => {
       actualizarEstadoPago(tratamiento);
     });
-  }, [tratamientos, tratamientosCollectiona, restoCobro]);
+  }, [tratamientos, tratamientosCollectiona]);
 
   const deletetratamiento = async (id) => {
     const tratamientoDoc = doc(db, "tratamientos", id);
@@ -343,7 +342,7 @@ function TratamientosEspecif(props) {
   const guardarCobro = async (e, id) => {
     e.preventDefault();
     try {
-      const tratamientoRef = doc(db, "tratamientos", id);
+      const tratamientoRef = doc(db, "tratamientos", id || idParaEditcobro);
       const tratamientoDoc = await getDoc(tratamientoRef);
       const tratamientoData = tratamientoDoc.data();
 
@@ -379,11 +378,12 @@ function TratamientosEspecif(props) {
       actualizarDatosConRestoCobro(id, resto);
       setMostrarModalAgregarCobro([false, ""]);
     } catch (e) {
-      window.alert(
-        "Hubo inconvenientes al tratar de agregar su cobro. Intentelo más tarde" +
-        e +
-        e.message
-      );
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Hubo inconvenientes al tratar de agregar su cobro. Recargue la página y vuelva a intentar!',
+        icon: 'error',
+        confirmButtonColor: '#d33',
+      })
     }
   };
 
@@ -395,10 +395,73 @@ function TratamientosEspecif(props) {
     }
   }, [restoCobro]);
 
+  const editarCobro = async (e) => {
+    e.preventDefault();
+    try {
+      const tratamientoRef = doc(db, "tratamientos", idParaEditcobro);
+      const tratamientoDoc = await getDoc(tratamientoRef)
+      const tratamientoData = tratamientoDoc.data();
+
+      const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
+      const nroComprobanteArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
+      const importeCobroArray = tratamientoData.cobrosManuales.importeAbonado;
+      const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
+      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
+      const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
+
+      fechaCobroArray[indexParaEditcobro] = fechaEditCobro || fechaCobroArray[indexParaEditcobro];
+      nroComprobanteArray[indexParaEditcobro] = nroComprobanteEditCobro || nroComprobanteArray[indexParaEditcobro];
+      importeCobroArray[indexParaEditcobro] = importeEditCobro || importeCobroArray[indexParaEditcobro];
+      tratamientoCobroArray[indexParaEditcobro] = trataCobro;
+      codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
+      pacienteCobroArray[indexParaEditcobro] = pacienteCobro;
+
+
+      if (tratamientoDoc.exists()) {
+        await updateDoc(tratamientoRef, {
+          "cobrosManuales.fechaCobro": fechaCobroArray,
+          "cobrosManuales.nroComprobanteCobro": nroComprobanteArray,
+          "cobrosManuales.importeAbonado": importeCobroArray,
+          "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
+          "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
+          "cobrosManuales.pacienteCobro": pacienteCobroArray,
+        });
+      }
+      let resto = (tratamientoData.precio - importeCobroArray.reduce((total, importe) => total + Number(importe), 0));
+      setRestoCobro(resto);
+      if (resto > 0) {
+        if (tratamientoData.fechaVencimiento) {
+          if (tratamientoData.fechaVencimiento > hoy) {
+            await updateDoc(tratamientoRef, {
+              estadoPago: "Programado",
+            });
+          } else if (tratamientoData.fechaVencimiento <= hoy) {
+            await updateDoc(tratamientoRef, {
+              estadoPago: "Vencido",
+            });
+          }
+        } else {
+          await updateDoc(tratamientoRef, {
+            estadoPago: "Pendiente",
+          });
+        }
+      }
+      actualizarDatosConRestoCobro(idParaEditcobro, resto);
+      clearFieldsEditarCobro();
+    } catch (e) {
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Hubo inconvenientes al tratar de Editar su cobro. Recargue la página y vuelva a intentar!',
+        icon: 'error',
+        confirmButtonColor: '#d33',
+      })
+    }
+  };
+
   const eliminarCobro = async (e, id, index) => {
     e.preventDefault();
     try {
-      const tratamientoRef = doc(db, "tratamientos", id);
+      const tratamientoRef = doc(db, "tratamientos", id || idParaEditcobro);
       const tratamientoDoc = await getDoc(tratamientoRef);
       const tratamientoData = tratamientoDoc.data();
 
@@ -448,55 +511,32 @@ function TratamientosEspecif(props) {
       }
       let resto = (tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0));
       setRestoCobro(resto);
+      if (resto > 0) {
+        if (tratamientoData.fechaVencimiento) {
+          if (tratamientoData.fechaVencimiento > hoy) {
+            await updateDoc(tratamientoRef, {
+              estadoPago: "Programado",
+            });
+          } else if (tratamientoData.fechaVencimiento <= hoy) {
+            await updateDoc(tratamientoRef, {
+              estadoPago: "Vencido",
+            });
+          }
+        } else {
+          await updateDoc(tratamientoRef, {
+            estadoPago: "Pendiente",
+          });
+        }
+      }
       actualizarDatosConRestoCobro(id, resto)
 
     } catch (e) {
-      window.alert(
-        "Hubo inconvenientes al tratar de eliminar  su cobro. Intentelo más tarde" +
-        e +
-        e.message
-      );
-    }
-  };
-
-  const editarCobro = async (e) => {
-    e.preventDefault();
-    try {
-      const tratamientoRef = doc(db, "tratamientos", idParaEditcobro);
-      const tratamientoDoc = await getDoc(tratamientoRef)
-      const tratamientoData = tratamientoDoc.data();
-
-      const fechaCobroArray = tratamientoData.cobrosManuales.fechaCobro;
-      const nroComprobanteArray = tratamientoData.cobrosManuales.nroComprobanteCobro;
-      const importeCobroArray = tratamientoData.cobrosManuales.importeAbonado;
-      const tratamientoCobroArray = tratamientoData.cobrosManuales.tratamientoCobro;
-      const codigoTratamientoArray = tratamientoData.cobrosManuales.codigoTratamiento;
-      const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
-
-      fechaCobroArray[indexParaEditcobro] = fechaEditCobro || fechaCobroArray[indexParaEditcobro];
-      nroComprobanteArray[indexParaEditcobro] = nroComprobanteEditCobro || nroComprobanteArray[indexParaEditcobro];
-      importeCobroArray[indexParaEditcobro] = importeEditCobro || importeCobroArray[indexParaEditcobro];
-      tratamientoCobroArray[indexParaEditcobro] = trataCobro;
-      codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
-      pacienteCobroArray[indexParaEditcobro] = pacienteCobro;
-
-
-      if (tratamientoDoc.exists()) {
-        await updateDoc(tratamientoRef, {
-          "cobrosManuales.fechaCobro": fechaCobroArray,
-          "cobrosManuales.nroComprobanteCobro": nroComprobanteArray,
-          "cobrosManuales.importeAbonado": importeCobroArray,
-          "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
-          "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
-          "cobrosManuales.pacienteCobro": pacienteCobroArray,
-        });
-      }
-      let resto = (tratamientoData.precio - importeCobroArray.reduce((total, importe) => total + Number(importe), 0));
-      setRestoCobro(resto);
-      actualizarDatosConRestoCobro(idParaEditcobro, resto);
-      clearFieldsEditarCobro();
-    } catch (e) {
-      window.alert("Hubo inconvenientes al tratar de Editar su cobro. Intentelo más tarde" + e + e.message)
+      Swal.fire({
+        title: '¡Error!',
+        text: 'Hubo inconvenientes al tratar de eliminar  su cobro. Recargue la página y vuelva a intentar!',
+        icon: 'error',
+        confirmButtonColor: '#d33',
+      })
     }
   };
 
@@ -509,11 +549,14 @@ function TratamientosEspecif(props) {
 
 
   const actualizarDatosConRestoCobro = async (tratamientoID, resto) => {
+    const tratamientoRef = doc(db, "tratamientos", tratamientoID);
+    await updateDoc(tratamientoRef, {
+      restoCobro: resto
+    });
     if (resto === 0 || resto < 0) {
-      const tratamientoRef = doc(db, "tratamientos", tratamientoID);
       await updateDoc(tratamientoRef, {
         estadoPago: "Cancelado",
-        fechaVencimiento: ""
+        fechaVencimiento: "",
       });
     }
   }
@@ -950,9 +993,6 @@ function TratamientosEspecif(props) {
                                     ></p>
 
                                   )}
-                                  <ListaSeleccionEstadoPago
-                                    tratamientoId={tratamiento.id}
-                                  />
                                 </div>
                               </td>
 

@@ -44,7 +44,7 @@ const EditCita = (props) => {
         <option key={`horarioFin-${index}`} value={horario.id}>{horario.name}</option>
       ));
     setOptionsHoraFin(optionsHoraFin);
-    setHoraFin(optionsHoraFin[0]?.props.children || props.cita.horaFin);
+    setHoraFin(props.cita.horaFin || optionsHoraFin[0]?.props.children);
 
   }, [horaInicio, props.cita.horaFin]);
 
@@ -188,7 +188,7 @@ const EditCita = (props) => {
                   <label className="form-label">Fecha</label>
                   <input
                     defaultValue={props.cita.fecha}
-                    onChange={(e) => setFecha(e.target.value)}
+                    onChange={(e) => { setFecha(e.target.value); setEstado("Agendada") }}
                     type="date"
                     className="form-control"
                   />

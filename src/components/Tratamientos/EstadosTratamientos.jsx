@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Modal } from 'react-bootstrap';
-import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy} from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
@@ -12,7 +12,7 @@ const EstadosTratamientos = ({ show, onHide }) => {
   const [color, setColor] = useState("");
   const estadosTratamientosCollection = collection(db, "estadosTratamientos");
   const estadosTratamientosCollectionOrdenados = useRef(query(estadosTratamientosCollection, orderBy("name")));
-  
+
 
   const updateEstadosTratamientosFromSnapshot = useCallback((snapshot) => {
     const estadosTratamientosArray = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -130,8 +130,15 @@ const EstadosTratamientos = ({ show, onHide }) => {
         <div className="mt-3">
           {estadosTratamientos.map((state, index) => (
             <div key={state.id} className="d-flex align-items-center justify-content-between border p-2">
-              <div>{state.name}</div>
-              <div>
+              <div className="col-3">{state.name}</div>
+              <div className="col-1"
+              ><input
+                  type="color"
+                  className="color-preview"
+                  value={state.color}
+                  readOnly
+                /></div>
+              <div className="col-2">
                 <button className="btn btn-primary mx-1 btn-sm" onClick={() => handleEdit(index)}>
                   <i className="fa-solid fa-edit"></i>
                 </button>

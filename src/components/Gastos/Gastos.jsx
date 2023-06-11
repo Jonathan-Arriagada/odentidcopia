@@ -46,9 +46,9 @@ const Gastos = () => {
         Swal.fire({
             title: '¿Desea cerrar sesión?',
             showDenyButton: true,
-            confirmButtonText: 'Si, cerrar sesión',
+            confirmButtonText: 'Cerrar sesión',
             confirmButtonColor: '#00C5C1',
-            denyButtonText: `No, seguir logueado`,
+            denyButtonText: `Cancelar`,
         }).then((result) => {
             if (result.isConfirmed) {
                 logout();

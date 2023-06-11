@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { collection, addDoc, query, orderBy, limit, getDocs, where } from "firebase/firestore";
 import { db, auth, } from "../../firebaseConfig/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { Modal } from "react-bootstrap";
 import moment from 'moment';
 
 
 const CrearAsistente = (props) => {
   const [codigo, setCodigo] = useState('');
-  const [apellidoConNombre, setApellidoConNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [nombres, setNombres] = useState('');
   const [, setFechaAlta] = useState('');
   const [telefono, setTelefono] = useState('');
   const [correo, setCorreo] = useState('');
@@ -40,13 +41,18 @@ const CrearAsistente = (props) => {
     e.preventDefault();
     const { user } = await createUserWithEmailAndPassword(auth, correo, password);
 
+    await updateProfile(user, {
+      displayName: nombres + " " + apellido,
+    });
+
     await user.getIdTokenResult().then(() => {
       return user;
     });
 
     await addDoc(userCollection, {
       codigo: codigo,
-      apellidoConNombre: apellidoConNombre,
+      nombres: nombres,
+      apellido: apellido,
       correo: correo,
       telefono: telefono,
       rol: rol,
@@ -59,7 +65,8 @@ const CrearAsistente = (props) => {
 
   const clearFields = () => {
     setCodigo("")
-    setApellidoConNombre("");
+    setApellido("");
+    setNombres("");
     setCorreo("");
     setPassword("");
     setTelefono("");
@@ -75,7 +82,7 @@ const CrearAsistente = (props) => {
       setTimeout(clearError, 2000);
       return;
     } else {
-      if (apellidoConNombre.trim() === "" || correo.trim() === "" || password.trim() === "") {
+      if (nombres.trim() === "" || apellido.trim() === "" || correo.trim() === "" || password.trim() === "") {
         setError("Respeta los campos obligatorios *");
         setTimeout(clearError, 2000);
         return;
@@ -126,15 +133,27 @@ const CrearAsistente = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Apellido y Nombres*</label>
-                  <input
-                    value={apellidoConNombre}
-                    onChange={(e) => setApellidoConNombre(e.target.value)}
-                    type="text"
-                    className="form-control"
-                    required
-                  />
+                <div className="row">
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Nombres*</label>
+                    <input
+                      value={nombres}
+                      onChange={(e) => setNombres(e.target.value)}
+                      type="text"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Apellido*</label>
+                    <input
+                      value={apellido}
+                      onChange={(e) => setApellido(e.target.value)}
+                      type="text"
+                      className="form-control"
+                      required
+                    />
+                  </div>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Telefono</label>

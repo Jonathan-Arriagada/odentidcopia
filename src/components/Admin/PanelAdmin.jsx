@@ -30,16 +30,17 @@ function PanelAdmin() {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
-      confirmButtonText: 'Si, cerrar sesión',
-      denyButtonText: `No, seguir logueado`,
+      showDenyButton: true,
+      confirmButtonText: 'Cerrar sesión',
+      confirmButtonColor: '#00C5C1',
+      denyButtonText: `Cancelar`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -78,7 +79,7 @@ const confirmLogout = (e) => {
   } else {
     results = usuarios.filter(
       (dato) =>
-        dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
+        dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
         dato.codigo.toString().includes(search.toString())
     );
   }
@@ -116,22 +117,22 @@ const confirmLogout = (e) => {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Apellido, Nombres o Codigo..."
+                    placeholder="Buscar por Apellido o Codigo..."
                     className="form-control m-2"
                   />
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                        Bienvenido {currentUser.displayName}
+                    Bienvenido {currentUser.displayName}
                   </p>
-                   <div className="d-flex">
-                      <div className="notificacion">
-                         <Link
-                           to="/miPerfil"
-                          className="text-decoration-none"
-                           >
-                            <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                         </Link>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                      </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />
@@ -177,7 +178,8 @@ const confirmLogout = (e) => {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("codigo")}>Código</th>
-                        <th onClick={() => sorting("apellidoConNombre")}>Apellido y Nombres</th>
+                        <th onClick={() => sorting("apellido")}>Apellido</th>
+                        <th onClick={() => sorting("nombres")}>Nombres</th>
                         <th onClick={() => sorting("correo")}>Email</th>
                         <th onClick={() => sorting("telefono")}>Telefono</th>
                         <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
@@ -191,7 +193,8 @@ const confirmLogout = (e) => {
                           className={usuario.rol === process.env.REACT_APP_rolBloq ? "deleted-row" : usuario.rol === process.env.REACT_APP_rolAd ? "admin-row" : ""}
                         >
                           <td> {usuario.codigo} </td>
-                          <td> {usuario.apellidoConNombre}</td>
+                          <td> {usuario.apellido}</td>
+                          <td> {usuario.nombres}</td>
                           <td> {usuario.correo} </td>
                           <td> {usuario.telefono} </td>
                           <td> {usuario.fechaAlta}</td>

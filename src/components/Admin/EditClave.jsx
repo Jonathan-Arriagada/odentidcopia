@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { auth, verifCredenciales, reautenticar, actualizarClave, deslogear } from "../../firebaseConfig/firebase";
 import { Modal, } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
 
 
 const EditClave = (props) => {
@@ -11,7 +12,6 @@ const EditClave = (props) => {
     const navigate = useNavigate()
     const [mostrarPrimerModal, setMostrarPrimerModal] = useState(true);
     const [mostrarSegundoModal, setMostrarSegundoModal] = useState(false);
-
     const [revalidUsuario, setRevalidUsuario] = useState("");
     const [revalidPass, setRevalidPass] = useState("");
 
@@ -35,28 +35,41 @@ const EditClave = (props) => {
 
     const update = async (e) => {
         e.preventDefault();
-      
+
         const credentials = verifCredenciales(revalidUsuario, revalidPass);
- 
-         await reautenticar(auth.currentUser, credentials)
-             .then(({ user }) => {
-                 actualizarClave(user, newPassword).then(() => {
-                     window.alert('Modificacion clave exitosa')
-                     props.onHide();
-                     deslogear(auth);
-                     localStorage.setItem("user", JSON.stringify(null));
-                     navigate("/")
-                 })
-             })
-             .catch((error) => {
-                 setNewPassword("");
-                 setConfirmPassword("");
-                 setError("");
-                 setRevalidPass("");
-                 setRevalidUsuario("");
-                 props.onHide();
-                 window.alert("Error Actualizando. Debe autenticarse correctamente!");
-             });
+
+        await reautenticar(auth.currentUser, credentials)
+            .then(({ user }) => {
+                actualizarClave(user, newPassword).then(() => {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: 'Modificación de clave exitosa.',
+                        icon: 'success',
+                        confirmButtonColor: '#00C5C1',
+                    }).then(() => {
+                        props.onHide();
+                        deslogear(auth);
+                        localStorage.setItem("user", JSON.stringify(null));
+                        navigate("/")
+                    });
+                });
+            })
+            .catch(() => {
+                setNewPassword("");
+                setConfirmPassword("");
+                setError("");
+                setRevalidPass("");
+                setRevalidUsuario("");
+                setMostrarSegundoModal(false)
+                props.onHide();
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'Autenticación Incorrecta.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                })
+                setMostrarPrimerModal(true)
+            });
     };
 
     const clearError = () => {
@@ -185,7 +198,7 @@ const EditClave = (props) => {
                         <div style={{ display: "flex" }}>
                             <button
                                 type="submit"
-                                onClick={(e) => {update(e); props.onHide()}}
+                                onClick={(e) => { update(e); props.onHide() }}
                                 className="btn btn-primary"
                             >
                                 Continuar
