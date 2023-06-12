@@ -6,7 +6,6 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.12.3",
-    "@popperjs/core": "^2.11.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -15,11 +14,8 @@
     "firebase": "^9.18.0",
     "firebase-admin": "^11.8.0",
     "google-auth-library": "^8.8.0",
-    "google-spreadsheet": "^3.3.0",
     "googleapis": "^118.0.0",
     "moment": "^2.29.4",
-    "popper": "^1.0.1",
-    "popper.js": "^1.16.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-calendar": "^4.2.1",
@@ -30,8 +26,7 @@
     "react-scripts": "5.0.1",
     "sweetalert2": "^11.7.10",
     "sweetalert2-react-content": "^5.0.7",
-    "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
