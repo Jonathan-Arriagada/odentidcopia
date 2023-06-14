@@ -28,6 +28,7 @@ const Show = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { currentUser, } = useContext(AuthContext);
+  const [userType, setUserType] = useState("");
 
 
   const logout = useCallback(() => {
@@ -66,6 +67,8 @@ const Show = () => {
   }, []);
 
   useEffect(() => {
+    const type = localStorage.getItem("rol");
+    setUserType(type);
     const unsubscribe = onSnapshot(clientsCollection.current, getClients);
     return unsubscribe;
   }, [getClients]);
@@ -199,13 +202,15 @@ const Show = () => {
                   <br></br>
                   <div className="d-flex justify-content-start">
                     <h1 className="me-2">Pacientes</h1>
-                    <button
-                      variant="primary"
-                      className="btn button-main m-2"
-                      onClick={() => setModalShow(true)}
-                    >
-                      Nuevo
-                    </button>
+                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                      <button
+                        variant="primary"
+                        className="btn button-main m-2"
+                        onClick={() => setModalShow(true)}
+                      >
+                        Nuevo
+                      </button>
+                    ) : null}
                   </div>
                   <table className="table__body">
                     <thead>
@@ -252,17 +257,6 @@ const Show = () => {
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setModalShowEdit(true);
-                                    setClient(client);
-                                    setIdParam(client.id);
-                                  }}
-                                >
-                                  <i className="fa-regular fa-pen-to-square"></i>
-                                  Editar
-                                </Dropdown.Item>
-
                                 <Dropdown.Item>
                                   <Link to={`/historial/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                     <i className="fa-solid fa-file-medical"></i>
@@ -271,24 +265,40 @@ const Show = () => {
                                 </Dropdown.Item>
 
 
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setModalShowCita(true);
-                                    setClient(client);
-                                  }}
-                                >
-                                  <i className="fa-solid fa-plus"></i>
-                                  Crear Cita
-                                </Dropdown.Item>
+                                {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                  <div>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowCita(true);
+                                        setClient(client);
+                                      }}
+                                    >
+                                      <i className="fa-solid fa-plus"></i>
+                                      Crear Cita
+                                    </Dropdown.Item>
 
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    confirmeDelete(client.id);
-                                  }}
-                                >
-                                  <i className="fa-solid fa-trash-can"></i>
-                                  Eliminar
-                                </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowEdit(true);
+                                        setClient(client);
+                                        setIdParam(client.id);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-pen-to-square"></i>
+                                      Editar
+                                    </Dropdown.Item>
+
+
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        confirmeDelete(client.id);
+                                      }}
+                                    >
+                                      <i className="fa-solid fa-trash-can"></i>
+                                      Eliminar
+                                    </Dropdown.Item>
+                                  </div>
+                                ) : null}
                               </Dropdown.Menu>
                             </Dropdown>
                           </td>

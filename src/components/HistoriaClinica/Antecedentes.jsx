@@ -7,6 +7,7 @@ import "../../style/Main.css";
 
 function Antecedentes(id) {
     const [isLoading, setIsLoading] = useState(true);
+    const [userType, setUserType] = useState("");
 
     const [pregunta1, setPregunta1] = useState(["", false]);
     const [pregunta2, setPregunta2] = useState(["", false]);
@@ -114,6 +115,8 @@ function Antecedentes(id) {
     };
 
     useEffect(() => {
+        const type = localStorage.getItem("rol");
+        setUserType(type);
         getClientById(id.id);
     }, [id]);
 
@@ -613,18 +616,19 @@ function Antecedentes(id) {
                                                 </div>
                                             </div>
 
-                                            <div id="botones">
-                                                <button
-                                                    type="submit"
-                                                    className="btn"
-                                                    id="boton-main"
-                                                    style={{ margin: "3px" }}
-                                                    onClick={handleActualizarClick}
-                                                >
-                                                    Actualizar
-                                                </button>
-                                            </div>
-
+                                            {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                                <div id="botones">
+                                                    <button
+                                                        type="submit"
+                                                        className="btn"
+                                                        id="boton-main"
+                                                        style={{ margin: "3px" }}
+                                                        onClick={handleActualizarClick}
+                                                    >
+                                                        Actualizar
+                                                    </button>
+                                                </div>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>

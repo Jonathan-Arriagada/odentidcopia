@@ -24,6 +24,7 @@ function Filiacion(id) {
     const [responsable, setResponsable] = useState("");
     const [nombreResponsable, setNombreResponsable] = useState("");
     const [telefonoResponsable, setTelefonoResponsable] = useState("");
+    const [userType, setUserType] = useState("");
 
     const [, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
@@ -188,9 +189,10 @@ function Filiacion(id) {
     };
 
     useEffect(() => {
+        const type = localStorage.getItem("rol");
+        setUserType(type);
         getClientById(id.id);
     }, [id]);
-
 
     const handleFechaNac = (event) => {
         const { value } = event.target;
@@ -408,31 +410,36 @@ function Filiacion(id) {
                                         />
                                     </div>
                                 </div>
-                                {!id.id ? (
-                                    <div id="botones">
-                                        <button
-                                            type="submit"
-                                            className="btn"
-                                            id="boton-main"
-                                            style={{ margin: "3px" }}
-                                            onClick={validateFields}
-                                        >
-                                            Crear
-                                        </button>
+                                {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                    <div>
+                                        {!id.id ? (
+                                            <div id="botones">
+                                                <button
+                                                    type="submit"
+                                                    className="btn"
+                                                    id="boton-main"
+                                                    style={{ margin: "3px" }}
+                                                    onClick={validateFields}
+                                                >
+                                                    Crear
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div id="botones">
+                                                <button
+                                                    type="submit"
+                                                    className="btn"
+                                                    id="boton-main"
+                                                    style={{ margin: "3px" }}
+                                                    onClick={handleActualizarClick}
+                                                >
+                                                    Actualizar
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
-                                ) : (
-                                    <div id="botones">
-                                        <button
-                                            type="submit"
-                                            className="btn"
-                                            id="boton-main"
-                                            style={{ margin: "3px" }}
-                                            onClick={handleActualizarClick}
-                                        >
-                                            Actualizar
-                                        </button>
-                                    </div>
-                                )}
+                                ) : null}
+
                             </div>
                         </div>
                     </div>

@@ -40,9 +40,16 @@ function Citas() {
   const [taparFiltro, setTaparFiltro] = useState(false);
   const [userType, setUserType] = useState("");
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
+  const [doctoresOption, setDoctoresOption] = useState([]);
+  const [doctor, setDoctor] = useState("");
+
   const { currentUser } = useContext(AuthContext);
+
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
+  const userCollectiona = collection(db, "user");
+  const userCollection = useRef(query(userCollectiona));
+
   const navigate = useNavigate()
 
 
@@ -105,15 +112,28 @@ function Citas() {
     setEstados(estadosArray);
   }, []);
 
-
+  const getOptionsDoctores = useCallback(snapshot => {
+    const docsOptions = snapshot.docs.map((doc, index) => (
+      <option key={`doctores-${index}`}
+        value={JSON.stringify({
+          uid: doc.data().uid || "admin",
+          nombreApellido: doc.data().nombres + " " + doc.data().apellido
+        })}>
+        {doc.data().nombres + " " + doc.data().apellido}
+      </option>
+    ));
+    setDoctoresOption(docsOptions);
+  }, []);
 
   useEffect(() => {
     const type = localStorage.getItem("rol");
     setUserType(type);
     const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => { getCitas(snapshot) });
     const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
-    return () => { unsubscribeCitas(); unsubscribeEstados() };
-  }, [getCitas, getEstados]);
+    const unsubscribeDoctores = onSnapshot(userCollection.current, getOptionsDoctores);
+    return () => { unsubscribeCitas(); unsubscribeEstados(); unsubscribeDoctores(); };
+  }, [getCitas, getEstados, getOptionsDoctores]);
+
 
   const buscarEstilos = (estadoParam) => {
     const colorEncontrado = estados.find((e) => e.name === estadoParam);
@@ -189,18 +209,22 @@ function Citas() {
     }
   };
 
-  var results = !search
-    ? citas
+  var results = doctor
+    ? citas.filter((dato) => JSON.parse(dato.doctor).uid === JSON.parse(doctor).uid)
+    : citas;
+
+  results = !search
+    ? results
     : typeof search === "object"
-      ? citas.filter((dato) => {
+      ? results.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       })
       : search.toString().length === 10 &&
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
-        ? citas.filter((dato) => dato.fecha === search.toString())
-        : citas.filter(
+        ? results.filter((dato) => dato.fecha === search.toString())
+        : results.filter(
           (dato) =>
             dato.apellidoConNombre.toLowerCase().includes(search) ||
             dato.idc.toString().includes(search.toString())
@@ -402,6 +426,21 @@ function Citas() {
                             </button>
                           </div>
                         )}
+                        {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                          <div className="mb-3 align-items-center" style={{ display: "flex" }}>
+                            <label className="form-label" style={{ marginRight: "10px", marginTop: "4px" }}>Doctor:</label>
+                            <select
+                              value={doctor}
+                              onChange={(e) => setDoctor(e.target.value)}
+                              className="form-control"
+                              multiple={false}
+                              required
+                            >
+                              <option value="">Todos...</option>
+                              {doctoresOption}
+                            </select>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
