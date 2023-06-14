@@ -17,6 +17,8 @@ const EditCita = (props) => {
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
   const [, setHorariosAtencion] = useState([]);
+  const [doctor, setDoctor] = useState(props.cita.doctor || "");
+  const [doctoresOption, setDoctoresOption] = useState([]);
 
   const updateOptionsEstado = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => doc.data().name);
@@ -48,14 +50,28 @@ const EditCita = (props) => {
 
   }, [horaInicio, props.cita.horaFin]);
 
+  const updateOptionsDoctores = useCallback(snapshot => {
+    const docsOptions = snapshot.docs.map((doc, index) => (
+      <option key={`doctores-${index}`}
+        value={JSON.stringify({
+          uid: doc.data().uid || "admin",
+          nombreApellido: doc.data().nombres + " " + doc.data().apellido
+        })}>
+        {doc.data().nombres + " " + doc.data().apellido}
+      </option>
+    ));
+    setDoctoresOption(docsOptions);
+  }, []);
+
   useEffect(() => {
     const unsubscribe = [
       onSnapshot(query(collection(db, "estados"), orderBy("name")), updateOptionsEstado),
-      onSnapshot(query(collection(db, "horariosAtencion"), orderBy("name")), updateOptionsHorarios)
+      onSnapshot(query(collection(db, "horariosAtencion"), orderBy("name")), updateOptionsHorarios),
+      onSnapshot(query(collection(db, "user"), orderBy("codigo")), updateOptionsDoctores),
     ];
 
     return () => unsubscribe.forEach(fn => fn());
-  }, [updateOptionsEstado, updateOptionsHorarios]);
+  }, [updateOptionsEstado, updateOptionsHorarios, updateOptionsDoctores]);
 
   const update = async (e) => {
     e.preventDefault();
@@ -73,6 +89,7 @@ const EditCita = (props) => {
       comentario: comentario || citaData.comentario,
       horaInicio: horaInicio || citaData.horaInicio,
       horaFin: horaFin || citaData.horaFin,
+      doctor: doctor || citaData.doctor,
     };
     await updateDoc(citaRef, newData);
     clearFields();
@@ -88,6 +105,7 @@ const EditCita = (props) => {
     setComentario("");
     setHoraInicio("");
     setHoraFin("");
+    setDoctor("");
   };
 
   return (
@@ -109,7 +127,6 @@ const EditCita = (props) => {
         <div className="container">
           <div className="col">
             <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
-
               <div className="row">
                 <div className="col mb-3">
                   <label className="form-label">IDC</label>
@@ -145,6 +162,7 @@ const EditCita = (props) => {
                       }}
                       className="form-control"
                     />
+
                   </div>
                 </div>
 
@@ -167,18 +185,19 @@ const EditCita = (props) => {
                     onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
+                    disabled
                   />
                 </div>
-                <div className="col mb-3">
-                  <label className="form-label">Estado</label>
+                <div className="col-6 mb-3">
+                  <label className="form-label">Doctor*</label>
                   <select
-                    defaultValue={props.cita.estado}
-                    onChange={(e) => setEstado(e.target.value)}
+                    defaultValue={props.cita.doctor}
+                    onChange={(e) => setDoctor(e.target.value)}
                     className="form-control"
                     multiple={false}
+                    required
                   >
-                    <option value="">Selecciona un estado</option>
-                    {estadoOptionsJSX}
+                    {doctoresOption}
                   </select>
                 </div>
               </div>
@@ -192,6 +211,18 @@ const EditCita = (props) => {
                     type="date"
                     className="form-control"
                   />
+                </div>
+                <div className="col mb-3">
+                  <label className="form-label">Estado</label>
+                  <select
+                    defaultValue={props.cita.estado}
+                    onChange={(e) => setEstado(e.target.value)}
+                    className="form-control"
+                    multiple={false}
+                  >
+                    <option value="">Selecciona un estado</option>
+                    {estadoOptionsJSX}
+                  </select>
                 </div>
               </div>
 

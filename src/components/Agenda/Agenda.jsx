@@ -40,7 +40,7 @@ function Citas() {
   const [taparFiltro, setTaparFiltro] = useState(false);
   const [userType, setUserType] = useState("");
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
-  const { currentUser, } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const estadosCollectiona = collection(db, "estados");
   const estadosCollection = useRef(query(estadosCollectiona));
   const navigate = useNavigate()
@@ -73,10 +73,19 @@ function Citas() {
   );
 
   const getCitas = useCallback((snapshot) => {
-    const citasArray = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const citasArray = snapshot.docs.filter((doc) => {
+      if (userType === process.env.REACT_APP_rolDoctorCon) {
+        const doctor = JSON.parse(doc.data().doctor);
+        return doctor.uid === currentUser.uid;
+      } else {
+        return true;
+      }
+    })
+      .map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
     citasArray.sort((a, b) => {
       if (a.fecha === b.fecha) {
         return b.horaInicio.localeCompare(a.horaInicio);
@@ -86,7 +95,7 @@ function Citas() {
     });
     setCitas(citasArray);
     setIsLoading(false);
-  }, []);
+  }, [currentUser, userType]);
 
   const getEstados = useCallback((snapshot) => {
     const estadosArray = snapshot.docs.map((doc) => ({
@@ -99,11 +108,10 @@ function Citas() {
 
 
   useEffect(() => {
-    const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => { getCitas(snapshot) });
-    const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
     const type = localStorage.getItem("rol");
     setUserType(type);
-
+    const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => { getCitas(snapshot) });
+    const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
     return () => { unsubscribeCitas(); unsubscribeEstados() };
   }, [getCitas, getEstados]);
 
@@ -309,13 +317,16 @@ function Citas() {
                           <i className="fa-solid fa-gear"></i>
                         </button>
                       ) : null}
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => setModalShowCita(true)}
-                      >
-                        Agregar Cita
-                      </button>
+                      {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                        <button
+                          variant="primary"
+                          className="btn-blue m-2"
+                          onClick={() => setModalShowCita(true)}
+                        >
+                          Agregar Cita
+                        </button>
+                      ) : null}
+
                       <button
                         variant="primary"
                         className="btn greenWater without mx-1 btn-md ms-3 me-3"
@@ -405,6 +416,7 @@ function Citas() {
                         </th>
                         <th onClick={() => sorting("idc")}>IDC</th>
                         <th onClick={() => sorting("numero")}>Telefono</th>
+                        <th onClick={() => sorting("doctor")}>Doctor</th>
                         <th onClick={() => sorting("estado")}>Estado</th>
                         <th id="columnaAccion"></th>
                       </tr>
@@ -419,6 +431,7 @@ function Citas() {
                           <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
                           <td> {cita.numero} </td>
+                          <td>{JSON.parse(cita.doctor).nombreApellido}</td>
                           <td style={{ paddingBottom: "0", display: "flex" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                               {cita.estado || ""}
@@ -447,16 +460,6 @@ function Citas() {
                               <Dropdown.Menu>
                                 <Dropdown.Item
                                   onClick={() => {
-                                    setModalShowEditCita(true);
-                                    setCita(cita);
-                                    setIdParam(cita.id);
-                                  }}
-                                >
-                                  <i className="fa-regular fa-pen-to-square"></i>
-                                  Editar
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                  onClick={() => {
                                     setModalShowVerNotas([
                                       true,
                                       cita.comentario
@@ -466,14 +469,30 @@ function Citas() {
                                   <i className="fa-regular fa-comment"></i> Ver
                                   Notas
                                 </Dropdown.Item>
-                                <Dropdown.Item
-                                  onClick={() =>
-                                    confirmeDelete(cita.id)
-                                  }
-                                >
-                                  <i className="fa-solid fa-trash-can"></i>
-                                  Eliminar
-                                </Dropdown.Item>
+
+                                {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                  <div>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowEditCita(true);
+                                        setCita(cita);
+                                        setIdParam(cita.id);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-pen-to-square"></i>
+                                      Editar
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        confirmeDelete(cita.id)
+                                      }
+                                    >
+                                      <i className="fa-solid fa-trash-can"></i>
+                                      Eliminar
+                                    </Dropdown.Item>
+                                  </div>
+                                ) : null}
+
                               </Dropdown.Menu>
                             </Dropdown>
                           </td>

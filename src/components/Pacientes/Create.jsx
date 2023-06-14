@@ -72,7 +72,7 @@ const Create = (props) => {
     setEdad("");
     setNumero("");
     setError("");
-    setSelectedCode("");
+    setSelectedCode("+51");
   };
 
   const handleFechaNac = (event) => {
@@ -188,10 +188,10 @@ const Create = (props) => {
                         tipoIdc === "dni"
                           ? 8
                           : tipoIdc === "ruc"
-                          ? 11
-                          : tipoIdc === "ce" || tipoIdc === "pas"
-                          ? 12
-                          : undefined
+                            ? 11
+                            : tipoIdc === "ce" || tipoIdc === "pas"
+                              ? 12
+                              : undefined
                       }
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
@@ -241,19 +241,19 @@ const Create = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                    <img
+                    {selectedCode === "+51" && (<img
                       src={selectedCode === "+51" ? peruFlag : ""}
                       alt=""
                       style={{ width: "45px", marginRight: "4px" }}
-                    />
+                    />)}
                     <select
                       value={selectedCode}
                       onChange={(e) => {
                         setSelectedCode(e.target.value);
                         setNumero("");
                       }}
-                      className="form-control-tipoIDC me-1"                 
-                      style={{ width: "fit-content" }}                 
+                      className="form-control-tipoIDC me-1"
+                      style={{ width: "fit-content" }}
                     >
                       <option value="+51">+51</option>
                       <option value="">Otro pais</option>
@@ -268,14 +268,14 @@ const Create = (props) => {
                       />
                     ) : (
                       <>
-                      <input
-                        value={codigoArea}
-                        onChange={(e) => setCodigoArea(e.target.value)}
-                        type="text"
-                        className="form-control me-2"
-                        style={{width: "100px"}}
-                        placeholder="Cod. area"
-                      />
+                        <input
+                          value={codigoArea}
+                          onChange={(e) => setCodigoArea(e.target.value)}
+                          type="text"
+                          className="form-control me-2"
+                          style={{ width: "100px" }}
+                          placeholder="Cod. area"
+                        />
                         <input
                           value={numero}
                           onChange={(e) => setNumero(e.target.value)}

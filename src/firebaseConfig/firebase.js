@@ -26,15 +26,15 @@ export const db = getFirestore(app)
 export const verifCredenciales = EmailAuthProvider.credential;
 export const reautenticar = reauthenticateWithCredential;
 export const actualizarClave = updatePassword;
-export { updateProfile, updateEmail,onAuthStateChanged,sendPasswordResetEmail } from "firebase/auth";
+export { updateProfile, updateEmail, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
 
 export const deslogear = signOut;
 
-export async function getClient(id){
+export async function getClient(id) {
   const prodsCollectionRef = collection(db, "client");
   const docRef = doc(prodsCollectionRef, id);
 
   const docSnapshot = await getDoc(docRef);
 
-  return {...docSnapshot.data(), id: docSnapshot.id};
+  return { ...docSnapshot.data(), id: docSnapshot.id };
 }

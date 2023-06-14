@@ -4,9 +4,10 @@ import { db, auth, } from "../../firebaseConfig/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { Modal } from "react-bootstrap";
 import moment from 'moment';
+import Swal from "sweetalert2";
 
 
-const CrearAsistente = (props) => {
+const CrearUsuario = (props) => {
   const [codigo, setCodigo] = useState('');
   const [apellido, setApellido] = useState('');
   const [nombres, setNombres] = useState('');
@@ -14,7 +15,8 @@ const CrearAsistente = (props) => {
   const [telefono, setTelefono] = useState('');
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
-  const [rol, setRol] = useState(process.env.REACT_APP_rolAsi);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [rol, setRol] = useState('');
   const [foto,] = useState('');
   const [error, setError] = useState('');
   const [editable] = useState(false);
@@ -50,6 +52,7 @@ const CrearAsistente = (props) => {
     });
 
     await addDoc(userCollection, {
+      uid: user.uid,
       codigo: codigo,
       nombres: nombres,
       apellido: apellido,
@@ -59,8 +62,16 @@ const CrearAsistente = (props) => {
       foto: foto,
       fechaAlta: moment(new Date()).format('DD/MM/YY'),
     });
-    clearFields();
-    props.onHide();
+    Swal.fire({
+      title: '¡Éxito!',
+      text: 'Usuario agregado!.',
+      icon: 'success',
+      confirmButtonColor: '#00C5C1',
+    }).then(() => {
+      clearFields();
+      props.onHide();
+    });
+
   };
 
   const clearFields = () => {
@@ -69,6 +80,7 @@ const CrearAsistente = (props) => {
     setNombres("");
     setCorreo("");
     setPassword("");
+    setConfirmPassword("");
     setTelefono("");
     setRol("");
     setFechaAlta("");
@@ -76,13 +88,14 @@ const CrearAsistente = (props) => {
   };
 
   const validateFields = async (e) => {
+    e.preventDefault();
     const querySnapshot = await getDocs(query(userCollection, where("correo", "==", correo)));
     if (!querySnapshot.empty) {
       setError("El correo ya está registrado");
       setTimeout(clearError, 2000);
       return;
     } else {
-      if (nombres.trim() === "" || apellido.trim() === "" || correo.trim() === "" || password.trim() === "") {
+      if (nombres.trim() === "" || apellido.trim() === "" || correo.trim() === "" || rol.trim() === "" || password.trim() === "" || confirmPassword.trim() === "") {
         setError("Respeta los campos obligatorios *");
         setTimeout(clearError, 2000);
         return;
@@ -92,8 +105,14 @@ const CrearAsistente = (props) => {
           setTimeout(clearError, 2000);
           return;
         } else {
-          setError("");
-          store(e);
+          if (password !== confirmPassword) {
+            setError("Las contraseñas no coinciden!")
+            setTimeout(clearError, 2000);
+            return;
+          } else {
+            setError("");
+            store(e);
+          }
         }
       }
     }
@@ -116,7 +135,7 @@ const CrearAsistente = (props) => {
         clearFields("")
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
-          <h1>Crear Asistente</h1>
+          <h1>Crear Recepcionista</h1>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -155,15 +174,33 @@ const CrearAsistente = (props) => {
                     />
                   </div>
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Telefono</label>
-                  <input
-                    value={telefono}
-                    onChange={(e) => setTelefono(e.target.value)}
-                    type="text"
-                    className="form-control"
-                  />
+                <div className="row">
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Telefono</label>
+                    <input
+                      value={telefono}
+                      onChange={(e) => setTelefono(e.target.value)}
+                      type="text"
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Rol</label>
+                    <select
+                      value={rol}
+                      onChange={(e) => setRol(e.target.value)}
+                      className="form-control"
+                      multiple={false}
+                      required
+                    >
+                      <option value="">Selecciona un rol ....</option>
+                      <option value={process.env.REACT_APP_rolAd}>Admin</option>
+                      <option value={process.env.REACT_APP_rolRecepcionis}>Recepcionista</option>
+                      <option value={process.env.REACT_APP_rolDoctor}>Doctor</option>
+                    </select>
+                  </div>
                 </div>
+
                 <div className="mb-3">
                   <label className="form-label">Email*</label>
                   <input
@@ -175,18 +212,34 @@ const CrearAsistente = (props) => {
                     required
                   />
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Password*</label>
-                  <input
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    className="form-control"
-                    minLength={6}
-                    autoComplete="off"
-                    required
-                  />
+
+                <div className="row">
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Password*</label>
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type="password"
+                      className="form-control"
+                      minLength={6}
+                      autoComplete="off"
+                      required
+                    />
+                  </div>
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Reingresar Password*</label>
+                    <input
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      type="password"
+                      className="form-control"
+                      minLength={6}
+                      autoComplete="off"
+                      required
+                    />
+                  </div>
                 </div>
+
                 <div style={{ display: "flex" }}>
                   <button
                     type="submit"
@@ -211,4 +264,4 @@ const CrearAsistente = (props) => {
   );
 };
 
-export default CrearAsistente;
+export default CrearUsuario;

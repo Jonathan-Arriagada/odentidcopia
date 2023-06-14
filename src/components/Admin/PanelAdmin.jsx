@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from "rea
 import Navigation from "../Navigation";
 import { collection, orderBy, query, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { db, } from "../../firebaseConfig/firebase";
-import CrearAsistente from "./CrearAsistente";
+import CrearUsuario from "./CrearUsuario";
 import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../../style/Main.css"
@@ -61,7 +61,7 @@ function PanelAdmin() {
 
   const enableUsuario = async (id) => {
     const userDoc = doc(db, "user", id);
-    await updateDoc(userDoc, { rol: process.env.REACT_APP_rolAsi });
+    await updateDoc(userDoc, { rol: process.env.REACT_APP_rolRecepcionis });
   };
 
   useEffect(() => {
@@ -169,7 +169,7 @@ function PanelAdmin() {
                             setModalShow(true);
                           }}
                         >
-                          Agregar Asistente
+                          Agregar Usuario
                         </button>
                       </div>
                     </div>
@@ -183,6 +183,7 @@ function PanelAdmin() {
                         <th onClick={() => sorting("correo")}>Email</th>
                         <th onClick={() => sorting("telefono")}>Telefono</th>
                         <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
+                        <th onClick={() => sorting("rol")}>Rol</th>
                         <th>Accion</th>
                       </tr>
                     </thead>
@@ -198,6 +199,7 @@ function PanelAdmin() {
                           <td> {usuario.correo} </td>
                           <td> {usuario.telefono} </td>
                           <td> {usuario.fechaAlta}</td>
+                          <td>{usuario.rol === process.env.REACT_APP_rolAd ? 'Admin' : usuario.rol === process.env.REACT_APP_rolRecepcionis ? 'Recepcionista' : usuario.rol === process.env.REACT_APP_rolDoctor ? 'Doctor' : ''}</td>
                           <td>
                             <button
                               onClick={() => {
@@ -216,10 +218,9 @@ function PanelAdmin() {
                                 enableUsuario(usuario.id);
                               }}
                               className="btn btn-light"
-                              disabled={disabledRows.includes(usuario.id) || usuario.rol === process.env.REACT_APP_rolAsi || usuario.rol === process.env.REACT_APP_rolAd}
+                              disabled={disabledRows.includes(usuario.id) || usuario.rol === process.env.REACT_APP_rolRecepcionis || usuario.rol === process.env.REACT_APP_rolAd || usuario.rol === process.env.REACT_APP_rolDoctor}
                               style={{ marginLeft: "2px" }}
                             >
-                              {" "}
                               <i className="fa-solid fa-power-off"></i>{" "}
                             </button>
                           </td>
@@ -233,7 +234,7 @@ function PanelAdmin() {
           </div>
         )}
       </div>
-      <CrearAsistente show={modalShow} onHide={() => setModalShow(false)} />
+      <CrearUsuario show={modalShow} onHide={() => setModalShow(false)} />
     </>
   );
 }

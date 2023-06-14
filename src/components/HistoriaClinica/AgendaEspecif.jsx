@@ -1,6 +1,6 @@
 import React from "react";
 import { collection, deleteDoc, doc, query, orderBy, updateDoc } from "firebase/firestore";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
 import ListaSeleccionEstadoCita from "../Agenda/ListaSeleccionEstadoCita";
@@ -11,6 +11,7 @@ import Calendar from "react-calendar";
 import { Dropdown, Modal, Button } from "react-bootstrap";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../context/AuthContext";
 
 function AgendaEspecif(id) {
   const hoy = moment(new Date()).format("YYYY-MM-DD");
@@ -22,9 +23,11 @@ function AgendaEspecif(id) {
   const [cita, setCita] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [order, setOrder] = useState("ASC");
+  const [userType, setUserType] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [noHayCitas, setNoHayCitas] = useState(false);
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
+  const { currentUser } = useContext(AuthContext);
 
   const [estados, setEstados] = useState([]);
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
@@ -40,6 +43,14 @@ function AgendaEspecif(id) {
 
   const getCitas = useCallback((snapshot) => {
     const citasArray = snapshot.docs
+      .filter((doc) => {
+        if (userType === process.env.REACT_APP_rolDoctorCon) {
+          const doctor = JSON.parse(doc.data().doctor);
+          return doctor.uid === currentUser.uid;
+        } else {
+          return true;
+        }
+      })
       .filter((doc) => doc.data().idPacienteCita === id.id)
       .map((doc) => ({
         ...doc.data(),
@@ -59,7 +70,7 @@ function AgendaEspecif(id) {
       setNoHayCitas(false)
     }
     setIsLoading(false);
-  }, [id]);
+  }, [id, userType, currentUser]);
 
   const getEstados = useCallback((snapshot) => {
     const estadosArray = snapshot.docs.map((doc) => ({
@@ -71,9 +82,10 @@ function AgendaEspecif(id) {
 
 
   useEffect(() => {
+    const type = localStorage.getItem("rol");
+    setUserType(type);
     const unsubscribeCitas = onSnapshot(citasCollectionOrdenados.current, (snapshot) => { getCitas(snapshot) });
     const unsubscribeEstados = onSnapshot(estadosCollection.current, getEstados);
-
     return () => { unsubscribeCitas(); unsubscribeEstados() };
   }, [getCitas, getEstados]);
 
@@ -205,13 +217,15 @@ function AgendaEspecif(id) {
                 <div className="container mt-2 mw-100" >
                   <div className="row">
                     <h1>Este paciente no ha agendado Citas aún</h1>
-                    <button
-                      variant="primary"
-                      className="btn-blue w-25 m-auto mt-5"
-                      onClick={() => setModalShowCrearCita(true)}
-                    >
-                      Crear Nueva Cita
-                    </button>
+                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                      <button
+                        variant="primary"
+                        className="btn-blue w-25 m-auto mt-5"
+                        onClick={() => setModalShowCrearCita(true)}
+                      >
+                        Crear Nueva Cita
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               )
@@ -248,15 +262,16 @@ function AgendaEspecif(id) {
                           </div>)}
                         </div>
                         <div className="col d-flex align-items-center justify-content-end">
-                          <button
-                            variant="primary"
-                            className="btn-blue m-2"
-                            onClick={() => setModalShowCrearCita(true)}
-                          >
-                            Nueva
-                          </button>
+                          {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                            <button
+                              variant="primary"
+                              className="btn-blue m-2"
+                              onClick={() => setModalShowCrearCita(true)}
+                            >
+                              Nueva
+                            </button>
+                          ) : null}
                         </div>
-
                       </div>
 
                       <div className="d-flex justify-content-between">
@@ -358,16 +373,6 @@ function AgendaEspecif(id) {
                                   <Dropdown.Menu>
                                     <Dropdown.Item
                                       onClick={() => {
-                                        setModalShowEditCita(true);
-                                        setCita(cita);
-                                        setIdParam(cita.id);
-                                      }}
-                                    >
-                                      <i className="fa-regular fa-pen-to-square"></i>
-                                      Editar
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() => {
                                         setModalShowVerNotas([
                                           true,
                                           cita.comentario
@@ -377,14 +382,29 @@ function AgendaEspecif(id) {
                                       <i className="fa-regular fa-comment"></i> Ver
                                       Notas
                                     </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() =>
-                                        confirmeDelete(cita.id)
-                                      }
-                                    >
-                                      <i className="fa-solid fa-trash-can"></i>
-                                      Eliminar
-                                    </Dropdown.Item>
+                                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                      <div>
+                                        <Dropdown.Item
+                                          onClick={() => {
+                                            setModalShowEditCita(true);
+                                            setCita(cita);
+                                            setIdParam(cita.id);
+                                          }}
+                                        >
+                                          <i className="fa-regular fa-pen-to-square"></i>
+                                          Editar
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={() =>
+                                            confirmeDelete(cita.id)
+                                          }
+                                        >
+                                          <i className="fa-solid fa-trash-can"></i>
+                                          Eliminar
+                                        </Dropdown.Item>
+                                      </div>
+                                    ) : null}
+
                                   </Dropdown.Menu>
                                 </Dropdown>
                               </td>

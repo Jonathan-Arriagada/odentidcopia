@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Filiacion from "./Filiacion";
 import Antecedentes from "./Antecedentes";
+import Odontograma from "./Odontograma/Odontograma";
 import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
@@ -240,6 +241,7 @@ export default function History() {
               <Tabs value={value} onChange={handleChange} >
                 <Tab label="Filiacion" />
                 <Tab label="Antecedentes" />
+                <Tab label="Odontograma" />
                 <Tab label="Tratamientos" />
                 <Tab label="Control y Evolución" />
                 <Tab label="Citas" />
@@ -257,18 +259,22 @@ export default function History() {
             </TabPanel >
 
             < TabPanel value={value} index={2} >
-              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion} />
+              <Odontograma id={id} />
             </TabPanel >
 
             < TabPanel value={value} index={3} >
-              <ControlEvolucionEspecif id={id} tratamiento={tratamiento} />
+              <TratamientosEspecif id={id} openControlYEvolucion={openControlYEvolucion} />
             </TabPanel >
 
             < TabPanel value={value} index={4} >
-              <AgendaEspecif id={id} />
+              <ControlEvolucionEspecif id={id} tratamiento={tratamiento} />
             </TabPanel >
 
             < TabPanel value={value} index={5} >
+              <AgendaEspecif id={id} />
+            </TabPanel >
+
+            < TabPanel value={value} index={6} >
               <IngresosEspecif id={id} />
             </TabPanel >
           </Box >

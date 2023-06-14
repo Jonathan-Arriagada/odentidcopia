@@ -120,8 +120,8 @@ const Edit = (props) => {
                         setValorBusqueda(
                           (apellidoConNombre ||
                             props.client.apellidoConNombre) +
-                            " " +
-                            e.target.value
+                          " " +
+                          e.target.value
                         );
                       }}
                       type={
@@ -134,10 +134,10 @@ const Edit = (props) => {
                         tipoIdc === "dni"
                           ? 8
                           : tipoIdc === "ruc"
-                          ? 11
-                          : tipoIdc === "ce" || tipoIdc === "pas"
-                          ? 12
-                          : undefined
+                            ? 11
+                            : tipoIdc === "ce" || tipoIdc === "pas"
+                              ? 12
+                              : undefined
                       }
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
@@ -186,18 +186,18 @@ const Edit = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Telefono</label>
                   <div style={{ display: "flex" }}>
-                    <img
+                    {selectedCode === "+51" && (<img
                       src={selectedCode === "+51" ? peruFlag : ""}
                       alt=""
                       style={{ width: "45px", marginRight: "4px" }}
-                    />
+                    />)}
                     <select
                       defaultValue={selectedCode}
                       onChange={(e) => {
                         setSelectedCode(e.target.value);
                         setNumero("");
                       }}
-                      className="form-control-tipoIDC me-1"              
+                      className="form-control-tipoIDC me-1"
                       style={{ width: "fit-content" }}
                       required
                     >

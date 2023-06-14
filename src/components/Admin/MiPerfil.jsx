@@ -74,7 +74,7 @@ const MiPerfil = () => {
       setTelefono(userData2.telefono);
       setFechaAlta(userData2.fechaAlta);
       setFoto(userData2.foto);
-      setRol(userData2.rol === process.env.REACT_APP_rolAd ? "Admin" : "Asistente");
+      setRol(userData2.rol === process.env.REACT_APP_rolAd ? "Admin" : "Recepcionista");
       setId(userId)
     }
     setIsLoading(false);

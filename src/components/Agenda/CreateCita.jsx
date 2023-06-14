@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
-import { FaSearch } from "react-icons/fa";
 import peruFlag from "../../img/peru.png"
 import moment from "moment";
 
@@ -20,15 +19,18 @@ function CreateCita(props) {
   const [horaFin, setHoraFin] = useState("08:30");
   const [comentario, setComentario] = useState("");
   const [error, setError] = useState("");
+  const [doctor, setDoctor] = useState("");
   const [editable, setEditable] = useState(true);
   const [estadoOptions, setEstadoOptions] = useState([]);
   const [optionsHoraInicio, setOptionsHoraInicio] = useState([]);
   const [optionsHoraFin, setOptionsHoraFin] = useState([]);
+  const [doctoresOption, setDoctoresOption] = useState([]);
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
   const [, setHorariosAtencion] = useState([]);
   const [showBuscador, setShowBuscador] = useState(true);
 
   const citasCollection = collection(db, "citas");
+
   const updateOptionsEstado = useCallback((snapshot) => {
     const options = snapshot.docs.map((doc) => doc.data().name);
     setEstadoOptions(options);
@@ -80,6 +82,19 @@ function CreateCita(props) {
     [horaInicio, horaFin]
   );
 
+  const updateOptionsDoctores = useCallback(snapshot => {
+    const docsOptions = snapshot.docs.map((doc, index) => (
+      <option key={`doctores-${index}`}
+        value={JSON.stringify({
+          uid: doc.data().uid || "admin",
+          nombreApellido: doc.data().nombres + " " + doc.data().apellido
+        })}>
+        {doc.data().nombres + " " + doc.data().apellido}
+      </option>
+    ));
+    setDoctoresOption(docsOptions);
+  }, []);
+
   useEffect(() => {
     const unsubscribe = [
       onSnapshot(
@@ -94,10 +109,14 @@ function CreateCita(props) {
         query(collection(db, "horariosAtencion"), orderBy("name")),
         updateOptionsHorarios
       ),
+      onSnapshot(
+        query(collection(db, "user"), orderBy("codigo")),
+        updateOptionsDoctores
+      ),
     ];
 
     return () => unsubscribe.forEach((fn) => fn());
-  }, [updateOptionsPacientes, updateOptionsEstado, updateOptionsHorarios]);
+  }, [updateOptionsPacientes, updateOptionsEstado, updateOptionsHorarios, updateOptionsDoctores]);
 
   useEffect(() => {
     if (props.client) {
@@ -140,7 +159,7 @@ function CreateCita(props) {
     };
 
     fetchClient();
-  }, [props.id,apellidoConNombre]);
+  }, [props.id, apellidoConNombre]);
 
   const store = async (e) => {
     e.preventDefault();
@@ -160,6 +179,7 @@ function CreateCita(props) {
         comentario: comentario,
         horaInicio: horaInicio,
         horaFin: horaFin,
+        doctor: doctor,
       });
       clearFields();
       props.onHide();
@@ -172,6 +192,7 @@ function CreateCita(props) {
         fechaAlta: hoy,
         selectedCode: selectedCode,
         numero: numero,
+        doctor: doctor,
         valorBusqueda: apellidoConNombre + " " + idc,
         edad: "",
         sexo: "",
@@ -215,6 +236,7 @@ function CreateCita(props) {
         horaInicio: horaInicio,
         horaFin: horaFin,
         comentario: comentario,
+        doctor: doctor,
       });
       clearFields();
       props.onHide();
@@ -263,6 +285,7 @@ function CreateCita(props) {
     setHoraFin("08:30");
     setComentario("");
     setNumero("");
+    setDoctor("");
   };
 
   const validateFields = (e) => {
@@ -273,7 +296,8 @@ function CreateCita(props) {
       numero.trim() === "" ||
       fecha.trim() === "" ||
       horaInicio.trim() === "" ||
-      horaFin.trim() === ""
+      horaFin.trim() === "" ||
+      doctor.trim() === ""
     ) {
       setError("Respeta los campos obligatorios *");
       setTimeout(clearError, 2000);
@@ -306,8 +330,8 @@ function CreateCita(props) {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            {showBuscador && (
-              <div className="col mb-3" style={{ position: "relative" }}>
+            <div className="row">
+              {showBuscador && (<div className="col-6 mb-3" >
                 <input
                   placeholder="Buscador por Apellido, Nombre o DNI"
                   type="text"
@@ -318,22 +342,27 @@ function CreateCita(props) {
                   list="pacientes-list"
                   multiple={false}
                 />
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    right: "10px",
-                    transform: "translateY(-60%)",
-                  }}
-                >
-                  <FaSearch />
-                </span>
+
                 <datalist id="pacientes-list">
                   <option value="">Ingreso manual</option>
                   {valorBusquedaOptionsJSX}
                 </datalist>
+              </div>)}
+
+              <div className="col-6 mb-3 align-items-center" style={{ display: "flex" }}>
+                <label className="form-label" style={{ marginRight: "5px", marginTop: "4px" }}>Doctor*</label>
+                <select
+                  value={doctor}
+                  onChange={(e) => setDoctor(e.target.value)}
+                  className="form-control"
+                  multiple={false}
+                  required
+                >
+                  <option value="">Seleccion un doctor...</option>
+                  {doctoresOption}
+                </select>
               </div>
-            )}
+            </div>
 
             <form style={{ transform: "scale(0.96)" }}>
               <div className="row">
@@ -394,57 +423,57 @@ function CreateCita(props) {
                 <div className="col mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-    <img
-      src={selectedCode === "+51" ? peruFlag : ""}
-      alt=""
-      style={{ width: "45px", marginRight: "4px" }}
-    />
-    <select
-      value={selectedCode}
-      onChange={(e) => {
-        setSelectedCode(e.target.value);
-        setNumero("");
-      }}
-      className="form-control-tipoIDC me-1"
-      multiple={false}
-      style={{ width: "fit-content" }}
-      required
-    >
-      <option value="+51">+51</option>
-      <option value="+">Otro pais</option>
-    </select>
-    {selectedCode === "+51" ? (
-      <input
-        value={numero}
-        onChange={(e) => setNumero(e.target.value)}
-        type="text"
-        className="form-control"
-        required
-      />
-    ) : (
-      <>
-      <input
-      value={selectedCode}
-      onChange={(e) => {
-        setSelectedCode(e.target.value);
-        setNumero("");
-      }}
-      className="form-control-tipoIDC me-1"
-      placeholder="Cod de area"
-      multiple={false}
-      style={{ width: "120px" }}
-      required
-    />
-      <input
-        value={numero}
-        onChange={(e) => setNumero(e.target.value)}
-        type="number"
-        className="form-control"
-        required
-      />
-      </>
-    )}
-  </div>
+                    {selectedCode === "+51" && (<img
+                      src={selectedCode === "+51" ? peruFlag : ""}
+                      alt=""
+                      style={{ width: "45px", marginRight: "4px" }}
+                    />)}
+                    <select
+                      value={selectedCode}
+                      onChange={(e) => {
+                        setSelectedCode(e.target.value);
+                        setNumero("");
+                      }}
+                      className="form-control-tipoIDC me-1"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                      required
+                    >
+                      <option value="+51">+51</option>
+                      <option value="">Otro</option>
+                    </select>
+                    {selectedCode === "+51" ? (
+                      <input
+                        value={numero}
+                        onChange={(e) => setNumero(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        required
+                      />
+                    ) : (
+                      <>
+                        <input
+                          value={selectedCode}
+                          onChange={(e) => {
+                            setSelectedCode(e.target.value);
+                            setNumero("");
+                          }}
+                          className="form-control-tipoIDC me-1"
+                          placeholder="Cod de area"
+                          multiple={false}
+                          style={{ width: "120px" }}
+                          required
+                        />
+                        <input
+                          value={numero}
+                          onChange={(e) => setNumero(e.target.value)}
+                          type="number"
+                          className="form-control"
+                          required
+                        />
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 <div className="col mb-3">
