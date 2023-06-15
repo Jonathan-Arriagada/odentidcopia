@@ -511,6 +511,13 @@ function Citas() {
                                   Notas
                                 </Dropdown.Item>
 
+                                <Dropdown.Item>
+                                  <Link to={`/historia/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
+                                    <i className="fa-solid fa-file-medical"></i>
+                                    Historial Clinico
+                                  </Link>
+                                </Dropdown.Item>
+
                                 {userType !== process.env.REACT_APP_rolDoctorCon ? (
                                   <div>
                                     <Dropdown.Item

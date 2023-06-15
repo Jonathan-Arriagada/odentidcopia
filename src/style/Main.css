@@ -296,6 +296,21 @@ tbody tr.hide td p {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.form-control-selectedCode {
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-light-text);
+  background-color: #e9ecef;
+  background-clip: padding-box;
+  border: 1px solid var(--color-grey-element);
+  border-radius: 0.35rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
 .nav-borders .nav-link.active {
   color: #0061f2;
   border-bottom-color: #0061f2;

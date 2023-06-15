@@ -319,6 +319,7 @@ const CrearGasto = (props) => {
                                                 onChange={(e) => { setFechaGasto(e.target.value) }}
                                                 type="date"
                                                 className="form-control"
+                                                max={hoy}
                                                 required
                                             />
                                         </div>

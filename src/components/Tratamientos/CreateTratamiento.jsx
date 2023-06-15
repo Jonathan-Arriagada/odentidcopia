@@ -31,7 +31,7 @@ function CreateTratamiento(props) {
   const [optionsTarifasTratamientos, setOptionsTarifasTratamientos] = useState([]);
   const [valorBusquedaOptions, setValorBusquedaOptions] = useState([]);
 
-  const [editable, setEditable] = useState(false);
+  const [, setEditable] = useState(false);
 
   const tratamientosCollection = collection(db, "tratamientos");
   const controlesCollection = collection(db, "controlEvoluciones")
@@ -201,6 +201,15 @@ function CreateTratamiento(props) {
   }, [formaPago, fecha, hoy]);
 
   const manejarValorSeleccionado = async (suggestion) => {
+    if (suggestion === "") {
+      setApellidoConNombre("");
+      setIdPaciente("")
+      setTipoIdc("dni")
+      setIdc("");
+      setEditable(true);
+      return;
+    }
+
     const querySnapshot = await getDocs(
       query(collection(db, "clients"), where("valorBusqueda", "==", suggestion))
     );
@@ -275,7 +284,6 @@ function CreateTratamiento(props) {
                 <FaSearch />
               </span>
               <datalist id="pacientes-list">
-                <option value="">Ingreso manual</option>
                 {valorBusquedaOptionsJSX}
               </datalist>
             </div>
@@ -289,9 +297,10 @@ function CreateTratamiento(props) {
                   <select
                     value={tipoIdc}
                     onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
-                    className="form-control-tipoIDC"
+                    className={"form-control-selectedCode me-1"}
                     multiple={false}
                     style={{ width: "fit-content" }}
+                    disabled
                     required
                   >
                     <option value="dni">DNI</option>
@@ -316,7 +325,7 @@ function CreateTratamiento(props) {
                       }
                     }}
                     className="form-control"
-                    disabled={!editable}
+                    disabled
                     required
                   />
                 </div>
@@ -328,7 +337,7 @@ function CreateTratamiento(props) {
                   onChange={(e) => setApellidoConNombre(e.target.value)}
                   type="text"
                   className="form-control"
-                  disabled={!editable}
+                  disabled
                   required
                 />
               </div>
@@ -410,7 +419,7 @@ function CreateTratamiento(props) {
                   onChange={(e) => setFecha(e.target.value)}
                   type="date"
                   className="form-control"
-                  disabled
+                  max={hoy}
                 />
               </div>
               {formaPago === "Cuotas" && (<div className="col mb-3">

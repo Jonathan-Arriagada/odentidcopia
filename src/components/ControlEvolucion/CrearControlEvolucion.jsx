@@ -288,6 +288,7 @@ const CrearControlEvolucion = (props) => {
                                     onChange={(e) => setFechaControlRealizado(e.target.value)}
                                     type="date"
                                     className="form-control m-1 w-100"
+                                    max={hoy}
                                 />
                             </div>
                             <div className="d-flex col-md-8">

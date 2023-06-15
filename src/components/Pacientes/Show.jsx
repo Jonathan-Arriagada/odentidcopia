@@ -219,6 +219,7 @@ const Show = () => {
                         <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                           Apellido Y Nombres
                         </th>
+                        <th onClick={() => sorting("tipoIdc")}>Tipo Doc</th>
                         <th onClick={() => sorting("idc")}>IDC</th>
                         <th onClick={() => sorting("fechaNacimiento")}>
                           Fecha Nacimiento
@@ -238,6 +239,7 @@ const Show = () => {
                             </Link>
 
                           </td>
+                          <td>{client.tipoIdc.toUpperCase()}</td>
                           <td> {client.idc} </td>
                           <td>
                             {moment(client.fefechaNacimientocha).format(

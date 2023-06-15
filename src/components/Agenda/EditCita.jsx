@@ -187,7 +187,6 @@ const EditCita = (props) => {
                     onChange={(e) => setNumero(e.target.value)}
                     type="number"
                     className="form-control"
-                    disabled
                   />
                 </div>
                 <div className="col-6 mb-3">

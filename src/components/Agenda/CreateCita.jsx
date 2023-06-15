@@ -38,7 +38,6 @@ function CreateCita(props) {
 
   const updateOptionsPacientes = useCallback((snapshot) => {
     const options = snapshot.docs.map((doc) => doc.data().valorBusqueda);
-    options.unshift("<---Ingreso manual--->");
     setValorBusquedaOptions(options);
   }, []);
 
@@ -165,88 +164,28 @@ function CreateCita(props) {
 
   const store = async (e) => {
     e.preventDefault();
-    const querySnapshot = await getDocs(
-      query(collection(db, "clients"), where("idc", "==", idc))
-    );
-    if (!querySnapshot.empty) {
-      await addDoc(citasCollection, {
-        apellidoConNombre: apellidoConNombre,
-        tipoIdc: tipoIdc,
-        idc: idc,
-        idPacienteCita: idPacienteCita,
-        estado: estado,
-        selectedCode: selectedCode,
-        numero: numero,
-        fecha: fecha,
-        comentario: comentario,
-        horaInicio: horaInicio,
-        horaFin: horaFin,
-        doctor: doctor,
-      });
-      clearFields();
-      props.onHide();
-    } else {
-      const clientsRef = await addDoc(collection(db, "clients"), {
-        apellidoConNombre: apellidoConNombre,
-        idc: idc,
-        tipoIdc: tipoIdc,
-        fechaNacimiento: "",
-        fechaAlta: hoy,
-        selectedCode: selectedCode,
-        numero: numero,
-        doctor: doctor,
-        valorBusqueda: apellidoConNombre + " " + idc,
-        edad: "",
-        sexo: "",
-        lugarNacimiento: "",
-        procedencia: "",
-        direccion: "",
-        ocupacion: "",
-        correo: "",
-        responsable: "",
-        nombreResponsable: "",
-        telefonoResponsable: "",
-        pregunta1: ["", false],
-        pregunta2: ["", false],
-        pregunta3: ["", false],
-        pregunta4: ["", false],
-        pregunta5: ["", false],
-        pregunta6: ["", false],
-        pregunta7: ["", false],
-        pregunta8: ["", false],
-        pregunta9: ["", false],
-        pregunta10: ["", false],
-        pregunta11: ["", false],
-        pregunta12: ["", false],
-        pregunta13: ["", false],
-        pregunta14: ["", false],
-        pregunta15: ["", false],
-        pregunta16: ["", false],
-        pregunta17: ["", false],
-        pregunta18: ["", false],
-      });
 
-      await addDoc(citasCollection, {
-        apellidoConNombre: apellidoConNombre,
-        idPacienteCita: clientsRef.id,
-        tipoIdc: tipoIdc,
-        idc: idc,
-        estado: estado,
-        selectedCode: selectedCode,
-        numero: numero,
-        fecha: fecha,
-        horaInicio: horaInicio,
-        horaFin: horaFin,
-        comentario: comentario,
-        doctor: doctor,
-      });
-      clearFields();
-      props.onHide();
-    }
+    await addDoc(citasCollection, {
+      apellidoConNombre: apellidoConNombre,
+      tipoIdc: tipoIdc,
+      idc: idc,
+      idPacienteCita: idPacienteCita,
+      estado: estado,
+      selectedCode: selectedCode,
+      numero: numero,
+      fecha: fecha,
+      comentario: comentario,
+      horaInicio: horaInicio,
+      horaFin: horaFin,
+      doctor: doctor,
+    });
+    clearFields();
+    props.onHide();
+
   };
 
   const manejarValorSeleccionado = async (suggestion) => {
-    if (suggestion === "<---Ingreso manual--->" || suggestion === "") {
+    if (suggestion === "") {
       setApellidoConNombre("");
       setIdPacienteCita("")
       setTipoIdc("dni")
@@ -360,7 +299,7 @@ function CreateCita(props) {
                   multiple={false}
                   required
                 >
-                  <option value="">Seleccion un doctor...</option>
+                  <option value="">Selecciona un doctor...</option>
                   {doctoresOption}
                 </select>
               </div>
@@ -374,7 +313,7 @@ function CreateCita(props) {
                     <select
                       value={tipoIdc}
                       onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
-                      className="form-control-tipoIDC"
+                      className={!editable ? "form-control-selectedCode me-1" : "form-control-tipoIDC me-1"}
                       multiple={false}
                       style={{ width: "fit-content" }}
                       required
@@ -436,10 +375,10 @@ function CreateCita(props) {
                         setSelectedCode(e.target.value);
                         setNumero("");
                       }}
-                      className="form-control-tipoIDC me-1"
+                      className={!editable ? "form-control-selectedCode me-1" : "form-control-tipoIDC me-1"}
                       multiple={false}
                       style={{ width: "fit-content" }}
-                      required
+                      disabled={!editable}
                     >
                       <option value="+51">+51</option>
                       <option value="">Otro</option>
@@ -450,7 +389,7 @@ function CreateCita(props) {
                         onChange={(e) => setNumero(e.target.value)}
                         type="text"
                         className="form-control"
-                        required
+                        disabled={!editable}
                       />
                     ) : (
                       <>
@@ -464,14 +403,14 @@ function CreateCita(props) {
                           placeholder="Cod de area"
                           multiple={false}
                           style={{ width: "120px" }}
-                          required
+                          disabled={!editable}
                         />
                         <input
                           value={numero}
                           onChange={(e) => setNumero(e.target.value)}
                           type="number"
                           className="form-control"
-                          required
+                          disabled={!editable}
                         />
                       </>
                     )}
