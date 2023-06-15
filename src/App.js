@@ -32,7 +32,7 @@ function App() {
     if (storedRole === process.env.REACT_APP_rolAdCon) {
       return children;
     } else {
-      return <Navigate to="/clients" />;
+      return <Navigate to="/pacientes" />;
     }
   }
 
@@ -43,16 +43,16 @@ function App() {
             <Route path="/" element={<Login />}/>
             <Route index path="admin" element={<RequireAuth><RequireAdmin><PanelAdmin/></RequireAdmin></RequireAuth>}/>
             <Route index path="miPerfil" element={<RequireAuth><MiPerfil/></RequireAuth>}/>
-            <Route index path="clients" element={<RequireAuth><Show/></RequireAuth>}/>
+            <Route index path="pacientes" element={<RequireAuth><Show/></RequireAuth>}/>
             <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
             <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>
             <Route path="agenda" element={<RequireAuth><Agenda /></RequireAuth>}/>
-            <Route path="tarifas" element={<RequireAuth><Tarifario /></RequireAuth>}/>
+            <Route path="tarifario" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
-            <Route path="historial" element={<RequireAuth><History /></RequireAuth>}/>
+            <Route path="historia" element={<RequireAuth><History /></RequireAuth>}/>
             <Route path="controlEvoluciones" element={<RequireAuth><ControlEvolucion /></RequireAuth>}/>         
-            <Route path="historial/:id" element={<RequireAuth><History /></RequireAuth>}/>      
+            <Route path="historia/:id" element={<RequireAuth><History /></RequireAuth>}/>      
             <Route path="ingresos" element={<RequireAuth><Ingresos /></RequireAuth>}/>
             <Route path="gastos" element={<RequireAuth><Gastos /></RequireAuth>}/>
             <Route path="materiales" element={<RequireAuth><Materiales /></RequireAuth>}/>

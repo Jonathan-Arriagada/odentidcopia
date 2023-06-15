@@ -50,16 +50,18 @@ const EditCita = (props) => {
 
   }, [horaInicio, props.cita.horaFin]);
 
-  const updateOptionsDoctores = useCallback(snapshot => {
-    const docsOptions = snapshot.docs.map((doc, index) => (
-      <option key={`doctores-${index}`}
-        value={JSON.stringify({
-          uid: doc.data().uid || "admin",
-          nombreApellido: doc.data().nombres + " " + doc.data().apellido
-        })}>
-        {doc.data().nombres + " " + doc.data().apellido}
-      </option>
-    ));
+   const updateOptionsDoctores = useCallback(snapshot => {
+    const docsOptions = snapshot.docs
+      .filter(doc => doc.data().uid !== "Recepcionista")
+      .map((doc, index) => (
+        <option key={`doctores-${index}`}
+          value={JSON.stringify({
+            uid: doc.data().uid || "admin",
+            nombreApellido: doc.data().nombres + " " + doc.data().apellido
+          })}>
+          {doc.data().nombres + " " + doc.data().apellido}
+        </option>
+      ));
     setDoctoresOption(docsOptions);
   }, []);
 

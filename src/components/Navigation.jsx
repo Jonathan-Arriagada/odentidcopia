@@ -46,7 +46,7 @@ const Navigation = () => {
         const type = localStorage.getItem("rol");
         setUserType(type);
         setIsLoading(true)
-        if (location.pathname === "/agenda" || location.pathname === "/clients") {
+        if (location.pathname === "/agenda" || location.pathname === "/pacientes") {
             setOpen(false);
             setOpen2(false);
             setOpen3(false);
@@ -56,12 +56,12 @@ const Navigation = () => {
             setOpen2(false)
             setOpen3(false)
         } 
-        if (location.pathname === "/historial" || location.pathname === "/tratamientos" || location.pathname === "/controlEvoluciones") {
+        if (location.pathname === "/historia" || location.pathname === "/tratamientos" || location.pathname === "/controlEvoluciones") {
             setOpen3(true);
             setOpen(false)
             setOpen2(false)
         }
-        if (location.pathname === "/gastos" || location.pathname === "/materiales" || location.pathname === "/proveedores"  || location.pathname === "/tarifas" || location.pathname === "/ingresos") {
+        if (location.pathname === "/gastos" || location.pathname === "/materiales" || location.pathname === "/proveedores"  || location.pathname === "/tarifario" || location.pathname === "/ingresos") {
             setOpen2(true);
             setOpen(false)
             setOpen3(false)
@@ -116,8 +116,8 @@ const Navigation = () => {
                         <Nav title="Pacientes" Icon={FaLaptopMedical} /><FaChevronDown className="toggle-btn" onClick={() => setOpen(!open)} />
                     </div>
                     <div className="sidebar-content">
-                        <Link to="/clients" className="text-decoration-none link-light"><Nav title="Lista de Pacientes" Icon={FaUsers} /></Link>
-                        <Link to="/historial" className="text-decoration-none link-light"><Nav title="Historial Clínica" Icon={FaBookMedical} /></Link>
+                        <Link to="/pacientes" className="text-decoration-none link-light"><Nav title="Lista de Pacientes" Icon={FaUsers} /></Link>
+                        <Link to="/historia" className="text-decoration-none link-light"><Nav title="Historial Clínica" Icon={FaBookMedical} /></Link>
                         <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
                         <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
 
@@ -130,7 +130,7 @@ const Navigation = () => {
                     <div className="sidebar-content">
                         <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Ingresos" Icon={FaDollarSign} /> </Link>
                         <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Gastos" Icon={FaShoppingCart} /> </Link>
-                        <Link to="/tarifas" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
+                        <Link to="/tarifario" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
                         <Nav title="Informes financieros" Icon={FaFileAlt} />  
                     </div>
                 </div>

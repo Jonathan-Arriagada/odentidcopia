@@ -51,8 +51,10 @@ const CrearUsuario = (props) => {
       return user;
     });
 
+    const uid = (rol === process.env.REACT_APP_rolRecepcionis) ? "Recepcionista" : user.uid;
+
     await addDoc(userCollection, {
-      uid: user.uid,
+      uid: uid,
       codigo: codigo,
       nombres: nombres,
       apellido: apellido,

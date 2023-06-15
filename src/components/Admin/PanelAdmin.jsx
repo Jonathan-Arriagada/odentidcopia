@@ -201,28 +201,38 @@ function PanelAdmin() {
                           <td> {usuario.fechaAlta}</td>
                           <td>{usuario.rol === process.env.REACT_APP_rolAd ? 'Admin' : usuario.rol === process.env.REACT_APP_rolRecepcionis ? 'Recepcionista' : usuario.rol === process.env.REACT_APP_rolDoctor ? 'Doctor' : ''}</td>
                           <td>
-                            <button
-                              onClick={() => {
-                                disableUsuario(usuario.id);
-                              }}
-                              className="btn btn-danger"
-                              disabled={
-                                disabledRows.includes(usuario.id) ||
-                                usuario.rol === process.env.REACT_APP_rolBloq || usuario.rol === process.env.REACT_APP_rolAd
-                              }
-                            >
-                              <i className="fa-solid fa-trash"></i>
-                            </button>
-                            <button
-                              onClick={() => {
-                                enableUsuario(usuario.id);
-                              }}
-                              className="btn btn-light"
-                              disabled={disabledRows.includes(usuario.id) || usuario.rol === process.env.REACT_APP_rolRecepcionis || usuario.rol === process.env.REACT_APP_rolAd || usuario.rol === process.env.REACT_APP_rolDoctor}
-                              style={{ marginLeft: "2px" }}
-                            >
-                              <i className="fa-solid fa-power-off"></i>{" "}
-                            </button>
+                            {usuario.rol !== process.env.REACT_APP_rolAd && (
+                              <>
+                                <button
+                                  onClick={() => {
+                                    disableUsuario(usuario.id);
+                                  }}
+                                  className="btn btn-danger"
+                                  disabled={
+                                    disabledRows.includes(usuario.id) ||
+                                    usuario.rol === process.env.REACT_APP_rolBloq ||
+                                    usuario.rol === process.env.REACT_APP_rolAd
+                                  }
+                                >
+                                  <i className="fa-solid fa-trash"></i>
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    enableUsuario(usuario.id);
+                                  }}
+                                  className="btn btn-light"
+                                  disabled={
+                                    disabledRows.includes(usuario.id) ||
+                                    usuario.rol === process.env.REACT_APP_rolRecepcionis ||
+                                    usuario.rol === process.env.REACT_APP_rolAd ||
+                                    usuario.rol === process.env.REACT_APP_rolDoctor
+                                  }
+                                  style={{ marginLeft: "2px" }}
+                                >
+                                  <i className="fa-solid fa-power-off"></i>{" "}
+                                </button>
+                              </>
+                            )}
                           </td>
                         </tr>
                       ))}

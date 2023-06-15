@@ -1083,7 +1083,7 @@ function TratamientosEspecif(props) {
                                       Notas
                                     </Dropdown.Item>
                                     <Dropdown.Item onClick={() => {
-                                      props.openControlYEvolucion(3, tratamiento)
+                                      props.openControlYEvolucion(4, tratamiento)
                                     }}
                                     >
                                       <i className="fa-solid fa-chart-line"></i> Evolucionar

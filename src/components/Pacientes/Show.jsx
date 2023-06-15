@@ -233,7 +233,7 @@ const Show = () => {
                         <tr key={client.id}>
                           <td>{results.length - index}</td>
                           <td style={{ textAlign: "left" }}>
-                            <Link to={`/historial/${client.id}`}>
+                            <Link to={`/historia/${client.id}`}>
                               {client.apellidoConNombre}
                             </Link>
 
@@ -258,7 +258,7 @@ const Show = () => {
 
                               <Dropdown.Menu>
                                 <Dropdown.Item>
-                                  <Link to={`/historial/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
+                                  <Link to={`/historia/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                     <i className="fa-solid fa-file-medical"></i>
                                     Historial Clinico
                                   </Link>

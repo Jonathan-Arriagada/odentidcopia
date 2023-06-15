@@ -59,7 +59,7 @@ const Login = () => {
                   console.log("El rol está bloqueado");
                 } else {
                   // Rol no bloqueado, redirigir al usuario a la página correspondiente
-                  navigate("/clients");
+                  navigate("/pacientes");
                 }
               } else {
                 console.log("No se encontraron documentos");

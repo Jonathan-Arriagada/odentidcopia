@@ -125,13 +125,13 @@ export default function History() {
       (opcion) => opcion.valorBusqueda === search
     );
     if (pacienteSeleccionado) {
-      navigate(`/historial/${pacienteSeleccionado.id}`)
+      navigate(`/historia/${pacienteSeleccionado.id}`)
     }
   };
 
   const handleLimpiar = () => {
     setSearch("")
-    navigate("/historial");
+    navigate("/historia");
   };
 
 
