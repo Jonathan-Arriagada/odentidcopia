@@ -52,8 +52,8 @@ const logout = useCallback(() => {
                 onChange={searcher}
                 type="text"
                 placeholder="Buscar por Apellido y Nombres o IDC..."
-                className="form-control m-2"
-              />
+                className="form-control-upNav  m-2"
+                />
             </div>
             <div className="col d-flex justify-content-end align-items-center right-navbar">
               <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>

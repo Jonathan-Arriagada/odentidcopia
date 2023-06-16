@@ -651,7 +651,7 @@ function Tratamientos() {
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Apellido y Nombres o IDC..."
-                    className="form-control m-2"
+                    className="form-control-upNav  m-2"
                   />
                   {taparFiltro && (
                     <input

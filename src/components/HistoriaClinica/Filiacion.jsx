@@ -294,7 +294,8 @@ function Filiacion(id) {
                       <input
                         value={edad || ""}
                         type="number"
-                        className="form-control m-1"                   
+                        className="form-control m-1"
+                        readOnly                   
                       />
                     </div>
 
