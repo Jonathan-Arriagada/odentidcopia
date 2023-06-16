@@ -1,6 +1,7 @@
 :root {
   --color-primario-normal: #003057;
-  --color-primario-fuerte: #011e30;
+  --color-primario-fuerte: #012942;
+  --color-primario-fuerte-plus: #011e30;
   --color-estilo-main: #00C5C1;
   --color-texto-oscuro: #003057;
   --color-light-text: #8D93AB;
@@ -778,6 +779,10 @@ input,select {
 .sidebar-item.open>.sidebar-content {
   height: auto;
   background-color: var(--color-primario-fuerte);
+}
+
+.sidebar-item.open>.sub-content{
+  background-color: var(--color-primario-fuerte-plus);
 }
 
 .sidebar-item.plain {

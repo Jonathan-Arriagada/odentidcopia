@@ -17,6 +17,8 @@ const Navigation = () => {
     const [open2, setOpen2] = useState(false);
     const [open3, setOpen3] = useState(false);
     const [open4, setOpen4] = useState(false);
+    const [open5, setOpen5] = useState(false);
+    const [open6, setOpen6] = useState(false);
     const [isMouseMoving, setIsMouseMoving] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
@@ -120,18 +122,38 @@ const Navigation = () => {
                         <Link to="/historia" className="text-decoration-none link-light"><Nav title="Historial Clínica" Icon={FaBookMedical} /></Link>
                         <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
                         <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
-
                     </div>
                 </div>
                 <div className={open2 ? "sidebar-item open" : "sidebar-item"}>
                     <div className="sidebar-title d-flex align-items-center justify-content-between">
-                        <Nav title="Finanzas" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />
+                        <Nav title="Contabilidad" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)}/>
                     </div>
                     <div className="sidebar-content">
-                        <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Ingresos" Icon={FaDollarSign} /> </Link>
-                        <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Gastos" Icon={FaShoppingCart} /> </Link>
-                        <Link to="/tarifario" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
-                        <Nav title="Informes financieros" Icon={FaFileAlt} />  
+                        <div className="sidebar-title d-flex align-items-center justify-content-between">
+                            <Link to="/tarifario" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar}/></Link>
+                        </div>
+                        <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
+                            <div className="sidebar-title d-flex align-items-center justify-content-between">
+                                <Nav title="Registros contables" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen5(!open5)}/>
+                            </div>
+                            <div className="sidebar-content sub-content">
+                                <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Registro de ingresos" Icon={FaDollarSign}/> </Link>
+                                <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Registro de compras" Icon={FaShoppingCart}/> </Link>
+                            </div>
+                        </div>
+                        <div className={open6 ? "sidebar-item open" : "sidebar-item"}>
+                            <div className="sidebar-title d-flex align-items-center justify-content-between">
+                                <Nav title="Informes contables" Icon={FaFileAlt} /> <FaChevronDown className="toggle-btn" onClick={() => setOpen6(!open6)} />
+                            </div>  
+                            <div className="sidebar-content sub-content">
+                                <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe de ingresos" Icon={FaDollarSign} /> </Link>
+                                <Link to="/informe-ingresos-tratamiento" className="text-decoration-none link-light"><Nav title="Informe de ingresos por tratamiento" Icon={FaShoppingCart} /> </Link>
+                                <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe de compras" Icon={FaDollarSign} /> </Link>
+                                <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparación de compras" Icon={FaDollarSign} /> </Link>
+                            </div>
+                        </div>
+                        <Nav title="Estados Financieros" Icon={FaFileAlt} />  
+                        <Link to="/estado-resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaDollarSign} /> </Link>
                     </div>
                 </div>
 
