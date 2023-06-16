@@ -125,13 +125,16 @@ const Navigation = () => {
                 </div>
                 <div className={open2 ? "sidebar-item open" : "sidebar-item"}>
                     <div className="sidebar-title d-flex align-items-center justify-content-between">
-                        <Nav title="Finanzas" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />
+                        <Nav title="Contabilidad" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />
                     </div>
                     <div className="sidebar-content">
-                        <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Ingresos" Icon={FaDollarSign} /> </Link>
-                        <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Gastos" Icon={FaShoppingCart} /> </Link>
+                        <Nav title="Registros contables" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />
+                    </div>
+                    <div className="sidebar-content">
                         <Link to="/tarifario" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
-                        <Nav title="Informes financieros" Icon={FaFileAlt} />  
+                        <Link to="/ingresos" className="text-decoration-none link-light"><Nav title="Registro de ingresos" Icon={FaDollarSign} /> </Link>
+                        <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Registro de compras" Icon={FaShoppingCart} /> </Link>
+                        <Nav title="Informes contables" Icon={FaFileAlt} />  
                     </div>
                 </div>
 
