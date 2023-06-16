@@ -16,8 +16,7 @@ const Create = (props) => {
   const [numero, setNumero] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [error, setError] = useState("");
-  const [selectedCode, setSelectedCode] = useState("+51");
-  const [codigoArea, setCodigoArea] = useState("");
+  const [selectedCode, setSelectedCode] = useState("");
 
 
   const clientsCollection = collection(db, "clients");
@@ -89,7 +88,7 @@ const Create = (props) => {
       idc: idc,
       fechaAlta: hoy,
       fechaNacimiento: fechaNacimiento,
-      selectedCode: selectedCode || codigoArea,
+      selectedCode: selectedCode,
       numero: numero,
       valorBusqueda: valorBusqueda,
       edad: edad,
@@ -241,24 +240,19 @@ const Create = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                    {selectedCode === "+51" && (<img
-                      src={selectedCode === "+51" ? peruFlag : ""}
-                      alt=""
-                      style={{ width: "45px", marginRight: "4px" }}
-                    />)}
-                    <select
+                  
+                  {selectedCode === '+51' && <img src={peruFlag} alt="Bandera de Perú" style={{ width: "45px", marginRight: "4px" }}/>}
+                    <input
                       value={selectedCode}
                       onChange={(e) => {
                         setSelectedCode(e.target.value);
-                        setNumero("");
-                      }}
+                      }} 
                       className="form-control-tipoIDC me-1"
+                      type="text"
                       style={{ width: "fit-content" }}
-                    >
-                      <option value="+51">+51</option>
-                      <option value="">Otro pais</option>
-                    </select>
-                    {selectedCode === "+51" ? (
+                      required
+                     />
+                      <>
                       <input
                         value={numero}
                         onChange={(e) => setNumero(e.target.value)}
@@ -266,26 +260,9 @@ const Create = (props) => {
                         className="form-control"
                         required
                       />
-                    ) : (
-                      <>
-                        <input
-                          value={codigoArea}
-                          onChange={(e) => setCodigoArea(e.target.value)}
-                          type="text"
-                          className="form-control me-2"
-                          style={{ width: "100px" }}
-                          placeholder="Cod. area"
-                        />
-                        <input
-                          value={numero}
-                          onChange={(e) => setNumero(e.target.value)}
-                          type="number"
-                          className="form-control"
-                          required
-                        />
                       </>
-                    )}
                   </div>
+                
                 </div>
                 <button
                   type="submit"

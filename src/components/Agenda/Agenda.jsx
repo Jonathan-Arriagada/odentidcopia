@@ -471,7 +471,7 @@ function Citas() {
                           <td> {cita.horaFin} </td>
                           <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
                           <td> {cita.idc} </td>
-                          <td> {cita.numero} </td>
+                          <td> {cita.selectedCode}{cita.numero} </td>
                           <td>{JSON.parse(cita.doctor).nombreApellido}</td>
                           <td style={{ paddingBottom: "0", display: "flex" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>

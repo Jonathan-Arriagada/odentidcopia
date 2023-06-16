@@ -19,7 +19,6 @@ const Edit = (props) => {
   const [numero, setNumero] = useState(props.client.numero || "");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [selectedCode, setSelectedCode] = useState(props.client.selectedCode || "");
-  const [codigoArea, setCodigoArea] = useState(props.client.selectedCode || "");
 
   const handleFechaNac = (event) => {
     const { value } = event.target;
@@ -51,7 +50,7 @@ const Edit = (props) => {
           idc: idc || clientData.idc,
           fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
           edad: edad || clientData.edad,
-          selectedCode: selectedCode || clientData.selectedCode || codigoArea,
+          selectedCode: selectedCode || clientData.selectedCode,
           numero: numero || clientData.numero,
           valorBusqueda: valorBusqueda || clientData.valorBusqueda,
         };
@@ -186,42 +185,18 @@ const Edit = (props) => {
                 <div className="mb-3">
                   <label className="form-label">Telefono</label>
                   <div style={{ display: "flex" }}>
-                    {selectedCode === "+51" && (<img
-                      src={selectedCode === "+51" ? peruFlag : ""}
-                      alt=""
-                      style={{ width: "45px", marginRight: "4px" }}
-                    />)}
-                    <select
-                      defaultValue={selectedCode}
+                  {selectedCode === '+51' && <img src={peruFlag} alt="Bandera de Perú" style={{ width: "45px", marginRight: "4px" }}/>}
+                    <input
+                      defaultValue={props.client.selectedCode}
                       onChange={(e) => {
                         setSelectedCode(e.target.value);
-                        setNumero("");
-                      }}
+                      }} 
                       className="form-control-tipoIDC me-1"
+                      type="text"
                       style={{ width: "fit-content" }}
                       required
-                    >
-                      <option value="+51">+51</option>
-                      <option value="">Otro pais</option>
-                    </select>
-                    {selectedCode === "+51" ? (
-                      <input
-                        value={props.client.numero}
-                        onChange={(e) => setNumero(e.target.value)}
-                        type="number"
-                        className="form-control"
-                        required
-                      />
-                    ) : (
+                     />
                       <>
-                        <input
-                          defaultValue={props.client.selectedCode}
-                          onChange={(e) => setCodigoArea(e.target.value)}
-                          type="text"
-                          className="form-control me-2"
-                          style={{ width: "100px" }}
-                          placeholder="Cod. area"
-                        />
                         <input
                           defaultValue={props.client.numero}
                           onChange={(e) => setNumero(e.target.value)}
@@ -230,14 +205,12 @@ const Edit = (props) => {
                           required
                         />
                       </>
-                    )}
                   </div>
                 </div>
                 <button
                   type="submit"
                   onClick={() => {
                     props.onHide();
-                    setSelectedCode(codigoArea || props.client.selectedCode)
                   }}
                   className="btn btn-primary"
                 >
