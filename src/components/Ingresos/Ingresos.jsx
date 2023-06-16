@@ -255,7 +255,7 @@ const Ingresos = () => {
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Tratamiento o Paciente..."
-                    className="form-control m-2"
+                    className="form-control-upNav  m-2"
                   />
                   {taparFiltro && (
                     <input

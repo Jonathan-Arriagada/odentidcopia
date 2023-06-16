@@ -171,7 +171,7 @@ const confirmLogout = (e) => {
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Denominacion/Proveedor/RUC..."
-                    className="form-control m-2"
+                    className="form-control-upNav  m-2"
                   />
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">

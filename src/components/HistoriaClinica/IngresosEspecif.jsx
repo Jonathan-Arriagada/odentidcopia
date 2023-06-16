@@ -250,7 +250,7 @@ function IngresosEspecif(id) {
                             <h3>Ingresos cobrados al Paciente</h3>
                             <button
                               variant="primary"
-                              className="btn btn-success mx-1 btn-md"
+                              className="btn greenWater without mx-1 btn-md ms-3 me-3"
                               style={{
                                 borderRadius: "12px",
                                 justifyContent: "center",

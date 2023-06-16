@@ -364,56 +364,26 @@ function CreateCita(props) {
                 <div className="col mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                    {selectedCode === "+51" && (<img
-                      src={selectedCode === "+51" ? peruFlag : ""}
-                      alt=""
-                      style={{ width: "45px", marginRight: "4px" }}
-                    />)}
-                    <select
+                  {selectedCode === '+51' && <img src={peruFlag} alt="Bandera de Perú" style={{ width: "45px", marginRight: "4px" }}/>}
+                    <input
                       value={selectedCode}
                       onChange={(e) => {
                         setSelectedCode(e.target.value);
-                        setNumero("");
-                      }}
-                      className={!editable ? "form-control-selectedCode me-1" : "form-control-tipoIDC me-1"}
-                      multiple={false}
+                      }} 
+                      className="form-control-tipoIDC me-1"
+                      type="text"
                       style={{ width: "fit-content" }}
-                      disabled={!editable}
-                    >
-                      <option value="+51">+51</option>
-                      <option value="">Otro</option>
-                    </select>
-                    {selectedCode === "+51" ? (
-                      <input
-                        value={numero}
-                        onChange={(e) => setNumero(e.target.value)}
-                        type="text"
-                        className="form-control"
-                        disabled={!editable}
-                      />
-                    ) : (
+                      required
+                     />
                       <>
-                        <input
-                          value={selectedCode}
-                          onChange={(e) => {
-                            setSelectedCode(e.target.value);
-                            setNumero("");
-                          }}
-                          className="form-control-tipoIDC me-1"
-                          placeholder="Cod de area"
-                          multiple={false}
-                          style={{ width: "120px" }}
-                          disabled={!editable}
-                        />
                         <input
                           value={numero}
                           onChange={(e) => setNumero(e.target.value)}
-                          type="number"
+                          type="text"
                           className="form-control"
-                          disabled={!editable}
+                          required
                         />
                       </>
-                    )}
                   </div>
                 </div>
 

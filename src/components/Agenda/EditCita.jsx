@@ -21,8 +21,7 @@ const EditCita = (props) => {
   const [doctor, setDoctor] = useState(props.cita.doctor || "");
   const [doctoresOption, setDoctoresOption] = useState([]);
   const [selectedCode, setSelectedCode] = useState(props.cita.selectedCode || "");
-  const [codigoArea, setCodigoArea] = useState(props.cita.selectedCode || "");
-
+  
   const updateOptionsEstado = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => doc.data().name);
     setOptionsEstado(options);
@@ -90,7 +89,7 @@ const EditCita = (props) => {
       idc: idc || citaData.idc,
       estado: estado || citaData.estado,
       numero: numero || citaData.numero,
-      selectedCode: selectedCode || citaData.selectedCode || codigoArea,
+      selectedCode: selectedCode || citaData.selectedCode,
       fecha: fecha || citaData.fecha,
       comentario: comentario || citaData.comentario,
       horaInicio: horaInicio || citaData.horaInicio,
@@ -249,42 +248,18 @@ const EditCita = (props) => {
               <div className="mb-3">
                   <label className="form-label">Telefono</label>
                   <div style={{ display: "flex" }}>
-                    {selectedCode === "+51" && (<img
-                      src={selectedCode === "+51" ? peruFlag : ""}
-                      alt=""
-                      style={{ width: "45px", marginRight: "4px" }}
-                    />)}
-                    <select
-                      defaultValue={selectedCode}
+                  {selectedCode === '+51' && <img src={peruFlag} alt="Bandera de Perú" style={{ width: "45px", marginRight: "4px" }}/>}
+                    <input
+                      defaultValue={props.cita.selectedCode}
                       onChange={(e) => {
                         setSelectedCode(e.target.value);
-                        setNumero("");
-                      }}
+                      }} 
                       className="form-control-tipoIDC me-1"
+                      type="text"
                       style={{ width: "fit-content" }}
                       required
-                    >
-                      <option value="+51">+51</option>
-                      <option value="">Otro pais</option>
-                    </select>
-                    {selectedCode === "+51" ? (
-                      <input
-                        value={props.cita.numero}
-                        onChange={(e) => setNumero(e.target.value)}
-                        type="number"
-                        className="form-control"
-                        required
-                      />
-                    ) : (
+                     />
                       <>
-                        <input
-                          defaultValue={props.cita.selectedCode}
-                          onChange={(e) => setCodigoArea(e.target.value)}
-                          type="text"
-                          className="form-control me-2"
-                          style={{ width: "100px" }}
-                          placeholder="Cod. area"
-                        />
                         <input
                           defaultValue={props.cita.numero}
                           onChange={(e) => setNumero(e.target.value)}
@@ -293,7 +268,6 @@ const EditCita = (props) => {
                           required
                         />
                       </>
-                    )}
                   </div>
                 </div>
 

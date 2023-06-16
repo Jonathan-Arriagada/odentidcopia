@@ -239,8 +239,7 @@ const Create = (props) => {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Teléfono*</label>
-                  <div style={{ display: "flex" }}>
-                  
+                  <div style={{ display: "flex" }}>                  
                   {selectedCode === '+51' && <img src={peruFlag} alt="Bandera de Perú" style={{ width: "45px", marginRight: "4px" }}/>}
                     <input
                       value={selectedCode}

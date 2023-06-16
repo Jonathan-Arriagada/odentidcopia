@@ -152,7 +152,7 @@ export default function History() {
                       onChange={searcher}
                       type="text"
                       placeholder="Buscador de Pacientes..."
-                      className="form-control m-2"
+                      className="form-control-upNav  m-2"
                       list="pacientes-list"
                     />
                     <datalist id="pacientes-list">

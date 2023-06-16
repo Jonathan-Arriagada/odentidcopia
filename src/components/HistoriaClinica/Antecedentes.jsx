@@ -168,7 +168,7 @@ function Antecedentes(id) {
                                                         value={pregunta1[0]}
                                                         onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
                                                         type="text"
-                                                        className="form-control w-50 m-1"
+                                                        className="form-control-check w-50 m-1"
                                                         placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
                                                         disabled={!pregunta1[1]}
                                                     />
@@ -200,7 +200,7 @@ function Antecedentes(id) {
                                                         value={pregunta2[0]}
                                                         onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
                                                         type="text"
-                                                        className="form-control m-1 w-50"
+                                                        className="form-control-check m-1 w-50"
                                                         placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
                                                         disabled={!pregunta2[1]}
                                                     />
@@ -232,7 +232,7 @@ function Antecedentes(id) {
                                                         value={pregunta3[0]}
                                                         onChange={(e) => setPregunta3((prevState) => [e.target.value, prevState[1]])}
                                                         type="text"
-                                                        className="form-control m-1 w-50"
+                                                        className="form-control-check m-1 w-50"
                                                         placeholder={pregunta3[1] ? "¿Qué medicamento?" : ""}
                                                         disabled={!pregunta3[1]}
                                                     />
@@ -264,7 +264,7 @@ function Antecedentes(id) {
                                                         value={pregunta4[0]}
                                                         onChange={(e) => setPregunta4((prevState) => [e.target.value, prevState[1]])}
                                                         type="text"
-                                                        className="form-control m-1 w-50"
+                                                        className="form-control-check m-1 w-50"
                                                         placeholder={pregunta4[1] ? "¿A cuál medicamento?" : ""}
                                                         disabled={!pregunta4[1]}
                                                     />
@@ -609,7 +609,7 @@ function Antecedentes(id) {
                                                         value={pregunta18[0]}
                                                         onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
                                                         type="text"
-                                                        className="form-control w-50 m-1"
+                                                        className="form-control-check w-50 m-1"
                                                         placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
                                                         disabled={!pregunta18[1]}
                                                     />

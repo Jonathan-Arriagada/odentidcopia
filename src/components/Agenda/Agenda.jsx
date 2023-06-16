@@ -273,7 +273,7 @@ function Citas() {
                     onChange={searcher}
                     type="text"
                     placeholder="Buscar por Apellido y Nombres o IDC..."
-                    className="form-control m-2"
+                    className="form-control-upNav  m-2"
                   />
                   {taparFiltro && (
                     <input
@@ -434,7 +434,7 @@ function Citas() {
                             <select
                               value={doctor}
                               onChange={(e) => setDoctor(e.target.value)}
-                              className="form-control"
+                              className="form-control-doctor"
                               multiple={false}
                               required
                             >
