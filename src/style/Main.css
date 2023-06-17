@@ -1,10 +1,9 @@
 :root {
   --color-primario-normal: #003057;
   --color-primario-fuerte: #012942;
-  --color-primario-fuerte-plus: #011e30;
   --color-menu: #003057;
-  --color-menu2: #011e30;
-  --color-primario-fuerte: #011e30;
+  --color-menu2: #012942;
+  --color-menu3: #011e30;
   --color-estilo-main: #00C5C1;
   --color-texto-oscuro: #003057;
   --color-light-text: #8D93AB;
@@ -26,8 +25,9 @@
 
 html.modo-nocturno {
   --color-primario-normal: #011b30;
-  --color-menu: #111111;
-  --color-menu2: #000000;
+  --color-menu: #1a1a1a;
+  --color-menu2: #111111;
+  --color-menu3: #050505;
   --color-primario-fuerte: #011725;
   --color-estilo-main: #00C5C1;
   --color-texto-oscuro: #ffffff;
@@ -629,7 +629,6 @@ background-color: var(--color-disabled);
   display: inline-block;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
-
 }
 
 @keyframes rotation {
@@ -758,8 +757,9 @@ background-color: var(--color-disabled);
   min-height: 100vh;
   color: var(--color-letras-menu);
   background-color: var(--color-menu);
-  padding: 5px 10px;
+  padding: 5px 5px;
 }
+
 
 .navigation.active {
   width: max-content;
@@ -778,6 +778,7 @@ background-color: var(--color-disabled);
   align-items: center;
   z-index: 1;
   cursor: pointer;
+  
 }
 
 .navigation.active .menu {
@@ -844,6 +845,9 @@ background-color: var(--color-disabled);
   display: inline-block;
   width: 1.5em;
 }
+.sidebar-title {
+  margin: 0 5px;
+}
 
 .sidebar-title .nav {
   cursor: default !important;
@@ -865,13 +869,21 @@ background-color: var(--color-disabled);
   overflow: hidden;
 }
 
+.nav {
+  padding: 12px;
+  display:flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+
+
 .sidebar-item.open>.sidebar-content {
   height: auto;
   background-color: var(--color-menu2);
 }
 
 .sidebar-item.open>.sub-content{
-  background-color: var(--color-primario-fuerte-plus);
+  background-color: var(--color-menu3);
 }
 
 .sidebar-item.plain {
@@ -887,6 +899,7 @@ background-color: var(--color-disabled);
   display: inline-block;
   width: 1.7em;
 }
+
 
 /*ESTILO PARA CHECKKBOXS*/
 .checkbox-label {
