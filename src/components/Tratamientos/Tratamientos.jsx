@@ -650,9 +650,10 @@ function Tratamientos() {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Apellido y Nombres o IDC..."
+                    placeholder="Buscar..."
                     className="form-control-upNav  m-2"
                   />
+                  <i className="fa-solid fa-magnifying-glass"></i>
                   {taparFiltro && (
                     <input
                       className="form-control m-2 w-25"
@@ -694,7 +695,6 @@ function Tratamientos() {
                       onClick={confirmLogout}
                     >
                       <FaSignOutAlt className="icono" />
-                      <span>Logout</span>
                     </Link>
                   </div>
                 </div>

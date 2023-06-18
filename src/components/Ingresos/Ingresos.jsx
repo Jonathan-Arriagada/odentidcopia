@@ -254,9 +254,11 @@ const Ingresos = () => {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Tratamiento o Paciente..."
+                    placeholder="Buscar..."
                     className="form-control-upNav  m-2"
                   />
+                  <i className="fa-solid fa-magnifying-glass"></i>
+
                   {taparFiltro && (
                     <input
                       className="form-control m-2 w-25"
@@ -298,7 +300,6 @@ const Ingresos = () => {
                       onClick={confirmLogout}
                     >
                       <FaSignOutAlt className="icono" />
-                      <span>Logout</span>
                     </Link>
                   </div>
                 </div>

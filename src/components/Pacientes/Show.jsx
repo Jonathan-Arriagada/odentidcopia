@@ -108,17 +108,29 @@ const Show = () => {
     setSearch(e.target.value);
   };
 
-  let results = [];
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  let filteredResults = [];
 
   if (!search) {
-    results = clients;
+    filteredResults = clients;
   } else {
-    results = clients.filter(
+    filteredResults = clients.filter(
       (dato) =>
         dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
         dato.idc.toString().includes(search.toString())
     );
   }
+
+  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResults = filteredResults.slice(startIndex, endIndex);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -160,9 +172,10 @@ const Show = () => {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Apellido y Nombres o IDC..."
+                    placeholder="Buscar..."
                     className="form-control-upNav  m-2"
                   />
+                  <i className="fa-solid fa-magnifying-glass"></i>
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
@@ -190,7 +203,6 @@ const Show = () => {
                       onClick={confirmLogout}
                     >
                       <FaSignOutAlt className="icono" />
-                      <span>Logout</span>
                     </Link>
                   </div>
                 </div>
@@ -215,7 +227,6 @@ const Show = () => {
                   <table className="table__body">
                     <thead>
                       <tr>
-                        <th>N°</th>
                         <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
                           Apellido Y Nombres
                         </th>
@@ -230,9 +241,8 @@ const Show = () => {
                     </thead>
 
                     <tbody>
-                      {results.map((client, index) => (
+                      {currentResults.map((client) => (
                         <tr key={client.id}>
-                          <td>{results.length - index}</td>
                           <td style={{ textAlign: "left" }}>
                             <Link to={`/historia/${client.id}`}>
                               {client.apellidoConNombre}
@@ -308,6 +318,55 @@ const Show = () => {
                       ))}
                     </tbody>
                   </table>
+                  <div className="table__footer">
+                    <div className="table__footer-left">
+                      Mostrando {startIndex + 1} - {Math.min(endIndex, clients.length)} de {clients.length}
+                    </div>
+
+                    <div className="table__footer-right">
+                      <span>
+                        <button
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          style={{ border: "0", background: "none" }}
+                        >
+                          &lt; Previo
+                        </button>
+                      </span>
+
+                      {[...Array(totalPages)].map((_, index) => {
+                        const page = index + 1;
+                        return (
+                          <span key={page}>
+                            <span
+                              onClick={() => handlePageChange(page)}
+                              className={page === currentPage ? "active" : ""}
+                              style={{
+                                margin: "2px",
+                                backgroundColor: page === currentPage ? "#003057" : "transparent",
+                                color: page === currentPage ? "#FFFFFF" : "#000000",
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                cursor: "pointer"
+                              }}
+                            >
+                              {page}
+                            </span>
+                          </span>
+                        );
+                      })}
+
+                      <span>
+                        <button
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          style={{ border: "0", background: "none" }}
+                        >
+                          Siguiente &gt;
+                        </button>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -40,22 +40,22 @@ const Materiales = () => {
         localStorage.setItem("user", JSON.stringify(null));
         navigate("/");
         window.location.reload();
-      }, [navigate]);
-    
+    }, [navigate]);
+
     const confirmLogout = (e) => {
-        e.preventDefault();       
+        e.preventDefault();
         Swal.fire({
-          title: '¿Desea cerrar sesión?',
-          showDenyButton: true,         
-          confirmButtonText: 'Cerrar sesión',
-          confirmButtonColor: '#00C5C1',
-          denyButtonText: `Cancelar`,
+            title: '¿Desea cerrar sesión?',
+            showDenyButton: true,
+            confirmButtonText: 'Cerrar sesión',
+            confirmButtonColor: '#00C5C1',
+            denyButtonText: `Cancelar`,
         }).then((result) => {
-          if (result.isConfirmed) {
-            logout();         
-          }
+            if (result.isConfirmed) {
+                logout();
+            }
         });
-      };
+    };
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
@@ -176,9 +176,10 @@ const Materiales = () => {
                                         value={search}
                                         onChange={searcher}
                                         type="text"
-                                        placeholder="Buscar por Descripción o Cuenta..."
+                                        placeholder="Buscar..."
                                         className="form-control-upNav  m-2"
-                                        />
+                                    />
+                                    <i className="fa-solid fa-magnifying-glass"></i>
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                                     <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
@@ -186,12 +187,12 @@ const Materiales = () => {
                                     </p>
                                     <div className="d-flex">
                                         <div className="notificacion">
-                                        <Link
-                                            to="/miPerfil"
-                                            className="text-decoration-none"
-                                        >
-                                            <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                                        </Link>
+                                            <Link
+                                                to="/miPerfil"
+                                                className="text-decoration-none"
+                                            >
+                                                <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                                            </Link>
                                         </div>
                                         <div className="notificacion">
                                             <FaBell className="icono" />
@@ -206,7 +207,6 @@ const Materiales = () => {
                                             onClick={confirmLogout}
                                         >
                                             <FaSignOutAlt className="icono" />
-                                            <span>Logout</span>
                                         </Link>
                                     </div>
                                 </div>

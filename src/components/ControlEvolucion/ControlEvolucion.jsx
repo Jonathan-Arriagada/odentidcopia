@@ -151,9 +151,10 @@ const ControlEvolucion = () => {
                                         value={search}
                                         onChange={searcher}
                                         type="text"
-                                        placeholder="Buscar por Apellido y Nombres o IDC..."
+                                        placeholder="Buscar..."
                                         className="form-control-upNav  m-2"
-                                        />
+                                    />
+                                    <i className="fa-solid fa-magnifying-glass"></i>
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                                     <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
@@ -181,7 +182,6 @@ const ControlEvolucion = () => {
                                             onClick={confirmLogout}
                                         >
                                             <FaSignOutAlt className="icono" />
-                                            <span>Logout</span>
                                         </Link>
                                     </div>
                                 </div>

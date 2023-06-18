@@ -34,17 +34,17 @@ const Proveedores = () => {
     window.location.reload();
   }, [navigate]);
 
-const confirmLogout = (e) => {
-    e.preventDefault();       
+  const confirmLogout = (e) => {
+    e.preventDefault();
     Swal.fire({
       title: '¿Desea cerrar sesión?',
-      showDenyButton: true,         
+      showDenyButton: true,
       confirmButtonText: 'Cerrar sesión',
       confirmButtonColor: '#00C5C1',
       denyButtonText: `Cancelar`,
     }).then((result) => {
       if (result.isConfirmed) {
-        logout();         
+        logout();
       }
     });
   };
@@ -170,22 +170,23 @@ const confirmLogout = (e) => {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Denominacion/Proveedor/RUC..."
+                    placeholder="Buscar..."
                     className="form-control-upNav  m-2"
                   />
+                  <i className="fa-solid fa-magnifying-glass"></i>
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                      Bienvenido {currentUser.displayName}
+                    Bienvenido {currentUser.displayName}
                   </p>
-                   <div className="d-flex">
-                      <div className="notificacion">
-                        <Link
-                          to="/miPerfil"
-                          className="text-decoration-none"
-                        >
-                          <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                        </Link>
+                  <div className="d-flex">
+                    <div className="notificacion">
+                      <Link
+                        to="/miPerfil"
+                        className="text-decoration-none"
+                      >
+                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
+                      </Link>
                     </div>
                     <div className="notificacion">
                       <FaBell className="icono" />
@@ -200,7 +201,6 @@ const confirmLogout = (e) => {
                       onClick={confirmLogout}
                     >
                       <FaSignOutAlt className="icono" />
-                      <span>Logout</span>
                     </Link>
                   </div>
                 </div>

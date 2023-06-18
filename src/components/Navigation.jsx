@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import logo from "../img/icono.png"
+import logo from "../img/logo-odentid2.png"
 import "../style/Main.css";
 import Swal from "sweetalert2";
 

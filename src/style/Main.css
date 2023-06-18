@@ -35,7 +35,7 @@ html.modo-nocturno {
   --color-forms: #333333;
   --color-grey-element: #555555;
   --color-popup-semitransparente: #858383cc;
-  --color-background-green: #111111;
+  --color-background-green: #787a7a;
   --color-border: #444444;
   --color-background: #555555;
   --color-white: #FFFFFF;
@@ -63,6 +63,7 @@ h1 {
   color: var(--color-primario-normal) !important;
   letter-spacing: 1px;
   font-weight: 600;
+  font-size: 2rem;
 }
 
 h3 {
@@ -112,7 +113,7 @@ h3 {
   min-height: 100vh;
   align-items: flex-start;
   object-fit: cover;
-  background-color: var(--color-fondo);
+  background-color: var(--color-background-green);
 }
 
 .btn-blue {
@@ -231,6 +232,26 @@ tbody tr.hide td p {
   width: min-content !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+.table__footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.table__footer-left {
+  font-size: 14px;
+}
+
+.table__footer-right {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.table__footer-right select {
+  margin-left: 5px;
 }
 
 /*<!------------Termina estilos tablas---------------->*/
@@ -431,7 +452,7 @@ select {
 }
 
 .form-control-check {
-background-color: var(--color-disabled);
+  background-color: var(--color-disabled);
 }
 
 
@@ -466,7 +487,7 @@ background-color: var(--color-disabled);
   justify-content: center;
   align-items: center;
   left: 20%;
-  top: 20%;
+  top: 10%;
   margin: auto;
   width: 400px;
   aspect-ratio: 1;
@@ -484,7 +505,7 @@ background-color: var(--color-disabled);
 
 .login-page .logo {
   position: absolute;
-  width: 300px;
+  width: 270px;
   height: 40px;
   top: 50px;
 }
@@ -576,6 +597,7 @@ background-color: var(--color-disabled);
   width: 50%;
   height: 100%;
   object-fit: cover;
+  animation: EntradaDerechaAIzquierda 2s ease 0s 1 normal forwards;
 }
 
 .text-overlay {
@@ -592,7 +614,7 @@ background-color: var(--color-disabled);
   font-size: 48px;
   font-weight: bold;
   line-height: 1;
-  animation: Entrance 2s ease 0s 1 normal forwards;
+  animation: EntradaDerechaAIzquierda 2s ease 0s 1 normal forwards;
 }
 
 .welcome-text span:nth-child(1) {
@@ -616,6 +638,18 @@ background-color: var(--color-disabled);
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes EntradaDerechaAIzquierda {
+  0% {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -659,9 +693,15 @@ background-color: var(--color-disabled);
   border: none;
   border-radius: 4px;
   margin-right: 1px;
-  background-color: var(--color-forms);
+  background-color: var(--color-background);
   color: var(--color-light-text);
   width: 291px;
+  border-radius: 50px;
+}
+
+.search-bar i {
+  margin-left: -30px;
+  pointer-events: none;
 }
 
 .icono {
@@ -778,7 +818,7 @@ background-color: var(--color-disabled);
   align-items: center;
   z-index: 1;
   cursor: pointer;
-  
+
 }
 
 .navigation.active .menu {
@@ -790,7 +830,7 @@ background-color: var(--color-disabled);
 }
 
 .navigation header {
-  position: relative;
+  position: static;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -798,7 +838,7 @@ background-color: var(--color-disabled);
   gap: 10px;
   padding: 25px 0 15px;
   border-radius: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 25px;
 }
 
 .navigation header::after {
@@ -827,9 +867,9 @@ background-color: var(--color-disabled);
 }
 
 .profile-img {
-  height: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
+  position: sticky;
+  height: 80px;
+  object-fit: contain;
 }
 
 .navigation.active header .profile {
@@ -845,6 +885,7 @@ background-color: var(--color-disabled);
   display: inline-block;
   width: 1.5em;
 }
+
 .sidebar-title {
   margin: 0 5px;
 }
@@ -871,7 +912,7 @@ background-color: var(--color-disabled);
 
 .nav {
   padding: 12px;
-  display:flex;
+  display: flex;
   flex-wrap: nowrap;
   align-items: stretch;
 }
@@ -882,7 +923,7 @@ background-color: var(--color-disabled);
   background-color: var(--color-menu2);
 }
 
-.sidebar-item.open>.sub-content{
+.sidebar-item.open>.sub-content {
   background-color: var(--color-menu3);
 }
 
