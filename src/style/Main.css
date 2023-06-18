@@ -254,6 +254,11 @@ tbody tr.hide td p {
   margin-left: 5px;
 }
 
+#tdConColor{
+ color: var(--color-estilo-main);
+ background-color: none;
+}
+
 /*<!------------Termina estilos tablas---------------->*/
 
 /*ESTILOS TABPANELS*/
@@ -699,7 +704,7 @@ select {
   border-radius: 50px;
 }
 
-.search-bar i {
+.search-bar i:not(#historyi) {
   margin-left: -30px;
   pointer-events: none;
 }

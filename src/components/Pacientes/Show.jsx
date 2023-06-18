@@ -243,8 +243,8 @@ const Show = () => {
                     <tbody>
                       {currentResults.map((client) => (
                         <tr key={client.id}>
-                          <td style={{ textAlign: "left" }}>
-                            <Link to={`/historia/${client.id}`}>
+                          <td style={{ textAlign: "left" }} >
+                            <Link to={`/historia/${client.id}`} id="tdConColor">
                               {client.apellidoConNombre}
                             </Link>
 
@@ -264,8 +264,9 @@ const Show = () => {
                                 variant="primary"
                                 className="btn btn-secondary mx-1 btn-md"
                                 id="dropdown-actions"
+                                style={{background: "none", border: "none"}}
                               >
-                                <i className="fa-solid fa-ellipsis-vertical"></i>
+                                <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
                               </Dropdown.Toggle>
 
                               <Dropdown.Menu>

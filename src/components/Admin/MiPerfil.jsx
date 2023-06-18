@@ -219,7 +219,6 @@ const MiPerfil = () => {
                       onClick={confirmLogout}
                     >
                       <FaSignOutAlt className="icono" />
-                      <span>Logout</span>
                     </Link>
                   </div>
                 </div>

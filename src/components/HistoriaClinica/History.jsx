@@ -151,7 +151,7 @@ export default function History() {
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscador de Pacientes..."
+                      placeholder="Buscar..."
                       className="form-control-upNav  m-2"
                       list="pacientes-list"
                     />
@@ -189,7 +189,7 @@ export default function History() {
                       style={{ margin: "3px" }}
                       disabled
                     >
-                      <i className="fa-solid fa-magnifying-glass"></i>
+                      <i className="fa-solid fa-magnifying-glass" id="historyi"></i>
                     </button>
                     <button
                       onClick={handleLimpiar}
@@ -197,7 +197,7 @@ export default function History() {
                       id="boton-main"
                       style={{ margin: "3px" }}
                     >
-                      <i className="fa-regular fa-circle-xmark"></i>
+                      <i className="fa-regular fa-circle-xmark" id="historyi"></i>
                     </button>
                   </div>
                 )}
@@ -229,7 +229,6 @@ export default function History() {
                     onClick={confirmLogout}
                   >
                     <FaSignOutAlt className="icono" />
-                    <span>Logout</span>
                   </Link>
                 </div>
               </div>
