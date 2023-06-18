@@ -675,16 +675,16 @@ function Tratamientos() {
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">5</span>
+                    </div>
+                    <div className="notificacion">
                       <Link
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
-                    </div>
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
                     </div>
                   </div>
                   <div className="notificacion">
@@ -1078,149 +1078,153 @@ function Tratamientos() {
                     </Modal>
                   </div>
 
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th>N°</th>
-                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
-                          Apellido y Nombres
-                        </th>
-                        <th onClick={() => sorting("idc")}>IDC</th>
-                        <th onClick={() => sorting("tarifasTratamientos")}>
-                          Tratamiento
-                        </th>
-                        <th onClick={() => sorting("pieza")}>Pieza</th>
-                        <th onClick={() => sorting("fecha")}>Fecha</th>
-                        <th onClick={() => sorting("estadoPago")}>Estado Pago</th>
-                        <th onClick={() => sorting("estadosTratamientos")}>
-                          Estado Tratamiento
-                        </th>
-                        <th id="columnaAccion"></th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {results.map((tratamiento, index) => (
-                        <tr key={tratamiento.id}>
-                          <td>{results.length - index}</td>
-                          <td style={{ textAlign: "left" }}> {tratamiento.apellidoConNombre} </td>
-                          <td> {tratamiento.idc} </td>
-                          <td> {tratamiento.tarifasTratamientos} </td>
-                          <td> {tratamiento.pieza} </td>
-                          <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
-                          <td>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {tratamiento.estadoPago || ""}
-                              {tratamiento.estadoPago && (
-                                <p
-                                  style={buscarEstilosPago(tratamiento.estadoPago)}
-                                  className="color-preview justify-content-center align-items-center"
-                                ></p>
-                              )}
-
-                            </div>
-                          </td>
-                          <td style={{ display: "flex", paddingBottom: "auto" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {tratamiento.estadosTratamientos || ""}
-                              {tratamiento.estadosTratamientos && (
-                                <p
-                                  style={buscarEstilos(tratamiento.estadosTratamientos)}
-                                  className="color-preview justify-content-center align-items-center"
-                                ></p>
-
-                              )}
-                              <ListaSeleccionEstadoTratamiento
-                                tratamientoId={tratamiento.id}
-                              />
-                            </div>
-                          </td>
-
-                          <td id="columnaAccion">
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                variant="primary"
-                                className="btn btn-secondary mx-1 btn-md"
-                                id="dropdown-actions"
-                              >
-                                <i className="fa-solid fa-ellipsis-vertical"></i>
-                              </Dropdown.Toggle>
-
-                              <Dropdown.Menu>
-                                {mostrarVer && (
-                                  <Dropdown.Item
-                                    onClick={() => {
-                                      ocultarTabla(tratamiento.codigo);
-                                      setIdParaCobro(tratamiento.id);
-                                      setCodigoCobro(tratamiento.cta);
-                                      setTrataCobro(
-                                        tratamiento.tarifasTratamientos
-                                      );
-                                      setPacienteCobro(
-                                        tratamiento.apellidoConNombre
-                                      );
-                                      let resto = (
-                                        tratamiento.precio -
-                                        tratamiento.cobrosManuales.importeAbonado.reduce(
-                                          (total, importe) =>
-                                            total + Number(importe),
-                                          0
-                                        )
-                                      );
-                                      setRestoCobro(resto)
-                                      actualizarDatosConRestoCobro(tratamiento.id, resto)
-                                    }}
-                                  >
-                                    <i className="fa-regular fa-eye"></i> Ver
-                                  </Dropdown.Item>
-                                )}
-                                {!mostrarVer && (
-                                  <Dropdown.Item
-                                    onClick={() => {
-                                      ocultarTabla("");
-                                      clearFieldsCobro("");
-                                    }}
-                                  >
-                                    <i className="fa-regular fa-eye-slash"></i>{" "}
-                                    Ocultar
-                                  </Dropdown.Item>
-                                )}
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setModalShowEditTratamiento(true);
-                                    setTratamiento(tratamiento);
-                                    setIdParam(tratamiento.id);
-                                  }}
-                                >
-                                  <i className="fa-regular fa-pen-to-square"></i>{" "}
-                                  Editar
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setModalShowVerNotas([
-                                      true,
-                                      tratamiento.notas,
-                                    ]);
-                                  }}
-                                >
-                                  <i className="fa-regular fa-comment"></i> Ver
-                                  Notas
-                                </Dropdown.Item>
-                                <Dropdown.Item
-                                  onClick={() =>
-                                    confirmeDelete(tratamiento.id)
-                                  }
-                                >
-                                  <i className="fa-solid fa-trash-can"></i>{" "}
-                                  Eliminar
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </td>
+                  <div className="table__container">
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th>N°</th>
+                          <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
+                            Apellido y Nombres
+                          </th>
+                          <th onClick={() => sorting("idc")}>IDC</th>
+                          <th onClick={() => sorting("tarifasTratamientos")}>
+                            Tratamiento
+                          </th>
+                          <th onClick={() => sorting("pieza")}>Pieza</th>
+                          <th onClick={() => sorting("fecha")}>Fecha</th>
+                          <th onClick={() => sorting("estadoPago")}>Estado Pago</th>
+                          <th onClick={() => sorting("estadosTratamientos")}>
+                            Estado Tratamiento
+                          </th>
+                          <th id="columnaAccion"></th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+
+                      <tbody>
+                        {results.map((tratamiento, index) => (
+                          <tr key={tratamiento.id}>
+                            <td>{results.length - index}</td>
+                            <td style={{ textAlign: "left" }}> {tratamiento.apellidoConNombre} </td>
+                            <td> {tratamiento.idc} </td>
+                            <td> {tratamiento.tarifasTratamientos} </td>
+                            <td> {tratamiento.pieza} </td>
+                            <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
+                            <td>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                {tratamiento.estadoPago || ""}
+                                {tratamiento.estadoPago && (
+                                  <p
+                                    style={buscarEstilosPago(tratamiento.estadoPago)}
+                                    className="color-preview justify-content-center align-items-center"
+                                  ></p>
+                                )}
+
+                              </div>
+                            </td>
+                            <td style={{ display: "flex", paddingBottom: "auto" }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                {tratamiento.estadosTratamientos || ""}
+                                {tratamiento.estadosTratamientos && (
+                                  <p
+                                    style={buscarEstilos(tratamiento.estadosTratamientos)}
+                                    className="color-preview justify-content-center align-items-center"
+                                  ></p>
+
+                                )}
+                                <ListaSeleccionEstadoTratamiento
+                                  tratamientoId={tratamiento.id}
+                                />
+                              </div>
+                            </td>
+
+                            <td id="columnaAccion">
+                              <Dropdown>
+                                <Dropdown.Toggle
+                                  variant="primary"
+                                  className="btn btn-secondary mx-1 btn-md"
+                                  id="dropdown-actions"
+                                >
+                                  <i className="fa-solid fa-ellipsis-vertical"></i>
+                                </Dropdown.Toggle>
+
+                                <div className="dropdown__container">
+                                  <Dropdown.Menu>
+                                    {mostrarVer && (
+                                      <Dropdown.Item
+                                        onClick={() => {
+                                          ocultarTabla(tratamiento.codigo);
+                                          setIdParaCobro(tratamiento.id);
+                                          setCodigoCobro(tratamiento.cta);
+                                          setTrataCobro(
+                                            tratamiento.tarifasTratamientos
+                                          );
+                                          setPacienteCobro(
+                                            tratamiento.apellidoConNombre
+                                          );
+                                          let resto = (
+                                            tratamiento.precio -
+                                            tratamiento.cobrosManuales.importeAbonado.reduce(
+                                              (total, importe) =>
+                                                total + Number(importe),
+                                              0
+                                            )
+                                          );
+                                          setRestoCobro(resto)
+                                          actualizarDatosConRestoCobro(tratamiento.id, resto)
+                                        }}
+                                      >
+                                        <i className="fa-regular fa-eye"></i> Ver
+                                      </Dropdown.Item>
+                                    )}
+                                    {!mostrarVer && (
+                                      <Dropdown.Item
+                                        onClick={() => {
+                                          ocultarTabla("");
+                                          clearFieldsCobro("");
+                                        }}
+                                      >
+                                        <i className="fa-regular fa-eye-slash"></i>{" "}
+                                        Ocultar
+                                      </Dropdown.Item>
+                                    )}
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowEditTratamiento(true);
+                                        setTratamiento(tratamiento);
+                                        setIdParam(tratamiento.id);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-pen-to-square"></i>{" "}
+                                      Editar
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setModalShowVerNotas([
+                                          true,
+                                          tratamiento.notas,
+                                        ]);
+                                      }}
+                                    >
+                                      <i className="fa-regular fa-comment"></i> Ver
+                                      Notas
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        confirmeDelete(tratamiento.id)
+                                      }
+                                    >
+                                      <i className="fa-solid fa-trash-can"></i>{" "}
+                                      Eliminar
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </div>
+                              </Dropdown>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
 
                   {modalShowVerNotas[0] && (
                     <Modal
@@ -1255,37 +1259,39 @@ function Tratamientos() {
                   {mostrarTabla && (
                     <div style={{ marginTop: "30px" }}>
                       <h4 style={{ textAlign: "left" }}>Pagos - Gestión Auto</h4>
-                      <table className="table__body">
-                        <thead>
-                          <tr>
-                            <th>Cta</th>
-                            <th>Forma Pago</th>
-                            <th>Precio/Total</th>
-                            <th>Fecha Vto</th>
-                            <th>Estado Pago</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {results.map((tratamiento) => (
-                            <tr key={tratamiento.id}>
-                              <td> {tratamiento.cta} </td>
-                              <td> {tratamiento.formaPago} </td>
-                              <td>{tratamiento.precio}</td>
-                              <td>{tratamiento.fechaVencimiento !== '' && (
-                                moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
-                              )}
-                              </td>
-                              <td style={{ display: "flex" }}>
-                                <span style={{ marginRight: "5px" }}>
-                                  {tratamiento.estadoPago}
-                                </span>
-                              </td>
+                      <div className="table__container">
+                        <table className="table__body">
+                          <thead>
+                            <tr>
+                              <th>Cta</th>
+                              <th>Forma Pago</th>
+                              <th>Precio/Total</th>
+                              <th>Fecha Vto</th>
+                              <th>Estado Pago</th>
+                              <th></th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+
+                          <tbody>
+                            {results.map((tratamiento) => (
+                              <tr key={tratamiento.id}>
+                                <td> {tratamiento.cta} </td>
+                                <td> {tratamiento.formaPago} </td>
+                                <td>{tratamiento.precio}</td>
+                                <td>{tratamiento.fechaVencimiento !== '' && (
+                                  moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
+                                )}
+                                </td>
+                                <td style={{ display: "flex" }}>
+                                  <span style={{ marginRight: "5px" }}>
+                                    {tratamiento.estadoPago}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   )}
 
@@ -1304,82 +1310,84 @@ function Tratamientos() {
                         <h4>Saldo Restante: {restoCobro}</h4>
                       </div>
 
-                      <table className="table__body">
-                        <thead>
-                          <tr>
-                            <th>N°</th>
-                            <th>Fecha Cobro</th>
-                            <th>Nro Comprobante</th>
-                            <th>Importe abonado</th>
-                            <th>Accion</th>
-                            <th>
-                              {!pagoFinalizado && (
-                                <button
-                                  className="btn btn-secondary mx-1 btn-md"
-                                  onClick={() => {
-                                    setMostrarModalAgregarCobro([
-                                      true,
-                                      idParaCobro,
-                                    ]);
-                                  }}
-                                >
-                                  <i className="fa-solid fa-circle-plus"></i>
-                                </button>
-                              )}
-                            </th>
-                          </tr>
-                        </thead>
+                      <div className="table__container">
+                        <table className="table__body">
+                          <thead>
+                            <tr>
+                              <th>N°</th>
+                              <th>Fecha Cobro</th>
+                              <th>Nro Comprobante</th>
+                              <th>Importe abonado</th>
+                              <th>Accion</th>
+                              <th>
+                                {!pagoFinalizado && (
+                                  <button
+                                    className="btn btn-secondary mx-1 btn-md"
+                                    onClick={() => {
+                                      setMostrarModalAgregarCobro([
+                                        true,
+                                        idParaCobro,
+                                      ]);
+                                    }}
+                                  >
+                                    <i className="fa-solid fa-circle-plus"></i>
+                                  </button>
+                                )}
+                              </th>
+                            </tr>
+                          </thead>
 
-                        <tbody>
-                          {results.map((tratamiento) => (
-                            tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
-                              const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
-                              const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
-                              const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
+                          <tbody>
+                            {results.map((tratamiento) => (
+                              tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
+                                const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
+                                const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
+                                const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
 
-                              return (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
-                                  <td>{nroComprobante.toString()}</td>
-                                  <td>{importe.toString()}</td>
-                                  <td>
-                                    {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
-                                      <>
-                                        <button
-                                          variant="primary"
-                                          className="btn btn-secondary sm-1"
-                                          onClick={(e) => {
-                                            setIndexParaEditcobro(index)
-                                            setIdParaEditcobro(idParaCobro)
-                                            setMostrarModalEditarCobro([true, fecha, importe, nroComprobante]);
-                                          }}
-                                          style={{ margin: "1px" }}
-                                        >
-                                          <i className="fa-regular fa-pen-to-square"></i>
-                                        </button>
-                                        <button
-                                          variant="primary"
-                                          className="btn btn-danger sm-1"
-                                          onClick={(e) => {
-                                            eliminarCobro(e, idParaCobro, index);
-                                          }}
-                                          style={{ margin: "1px" }}
-                                        >
-                                          <i className="fa-solid fa-trash-can"></i>
-                                        </button>
-                                      </>
-                                    )}
-                                  </td>
-                                  <td>
-                                    <i className="fa-solid fa-download"></i>
-                                  </td>
-                                </tr>
-                              );
-                            })
-                          ))}
-                        </tbody>
-                      </table>
+                                return (
+                                  <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{moment(fecha.toString()).format("DD/MM/YY")}</td>
+                                    <td>{nroComprobante.toString()}</td>
+                                    <td>{importe.toString()}</td>
+                                    <td>
+                                      {tratamiento.cobrosManuales.fechaCobro[0] !== "" && (
+                                        <>
+                                          <button
+                                            variant="primary"
+                                            className="btn btn-secondary sm-1"
+                                            onClick={(e) => {
+                                              setIndexParaEditcobro(index)
+                                              setIdParaEditcobro(idParaCobro)
+                                              setMostrarModalEditarCobro([true, fecha, importe, nroComprobante]);
+                                            }}
+                                            style={{ margin: "1px" }}
+                                          >
+                                            <i className="fa-regular fa-pen-to-square"></i>
+                                          </button>
+                                          <button
+                                            variant="primary"
+                                            className="btn btn-danger sm-1"
+                                            onClick={(e) => {
+                                              eliminarCobro(e, idParaCobro, index);
+                                            }}
+                                            style={{ margin: "1px" }}
+                                          >
+                                            <i className="fa-solid fa-trash-can"></i>
+                                          </button>
+                                        </>
+                                      )}
+                                    </td>
+                                    <td>
+                                      <i className="fa-solid fa-download"></i>
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   )}
                 </div>

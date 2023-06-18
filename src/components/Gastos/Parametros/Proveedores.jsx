@@ -181,16 +181,16 @@ const Proveedores = () => {
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">5</span>
+                    </div>
+                    <div className="notificacion">
                       <Link
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
-                    </div>
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
                     </div>
                   </div>
                   <div className="notificacion">
@@ -233,43 +233,45 @@ const Proveedores = () => {
                     </div>
                   </div>
 
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th>RUC</th>
-                        <th style={{ textAlign: "left" }}>Denominacion o Nombre Proveedor</th>
-                        <th>Accion</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {results.map((proveedor, index) => (
-                        <tr key={proveedor.id}>
-                          <td>{proveedor.ruc}</td>
-                          <td style={{ textAlign: "left" }}>{proveedor.name}</td>
-                          <td>
-                            <button
-                              className="btn btn-success mx-1 btn-sm"
-                              onClick={() => {
-                                setModalShowGestionProveedores(true);
-                                handleEdit(index);
-                              }}
-                            >
-                              <i className="fa-solid fa-edit"></i>
-                            </button>
-                            <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() => {
-                                handleDelete(index);
-                              }}
-                            >
-                              <i className="fa-solid fa-trash-can"></i>
-                            </button>
-                          </td>
+                  <div className="table__container">
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th>RUC</th>
+                          <th style={{ textAlign: "left" }}>Denominacion o Nombre Proveedor</th>
+                          <th>Accion</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+
+                      <tbody>
+                        {results.map((proveedor, index) => (
+                          <tr key={proveedor.id}>
+                            <td>{proveedor.ruc}</td>
+                            <td style={{ textAlign: "left" }}>{proveedor.name}</td>
+                            <td>
+                              <button
+                                className="btn btn-success mx-1 btn-sm"
+                                onClick={() => {
+                                  setModalShowGestionProveedores(true);
+                                  handleEdit(index);
+                                }}
+                              >
+                                <i className="fa-solid fa-edit"></i>
+                              </button>
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => {
+                                  handleDelete(index);
+                                }}
+                              >
+                                <i className="fa-solid fa-trash-can"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

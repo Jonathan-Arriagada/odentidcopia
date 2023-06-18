@@ -60,6 +60,10 @@ const logout = useCallback(() => {
                 Bienvenido {currentUser.displayName}
               </p>
               <div className="d-flex">
+              <div className="notificacion">
+                  <FaBell className="icono" />
+                  <span className="badge rounded-pill bg-danger">5</span>
+                </div>
                 <div className="notificacion">
                   <Link
                     to="/miPerfil"
@@ -67,10 +71,6 @@ const logout = useCallback(() => {
                   >
                     <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                   </Link>
-                </div>
-                <div className="notificacion">
-                  <FaBell className="icono" />
-                  <span className="badge rounded-pill bg-danger">5</span>
                 </div>
               </div>
               <div className="notificacion">

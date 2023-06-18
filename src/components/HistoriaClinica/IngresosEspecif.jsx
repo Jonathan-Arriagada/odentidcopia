@@ -403,7 +403,7 @@ function IngresosEspecif(id) {
                     </Modal>
 
 
-                    <div className="row">
+                    <div className="table__container">
                       <table className="table__body">
                         <thead>
                           <tr>

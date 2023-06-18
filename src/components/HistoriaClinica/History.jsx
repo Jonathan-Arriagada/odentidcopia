@@ -209,16 +209,16 @@ export default function History() {
                 </p>
                 <div className="d-flex">
                   <div className="notificacion">
+                    <FaBell className="icono" />
+                    <span className="badge rounded-pill bg-danger">5</span>
+                  </div>
+                  <div className="notificacion">
                     <Link
                       to="/miPerfil"
                       className="text-decoration-none"
                     >
                       <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                     </Link>
-                  </div>
-                  <div className="notificacion">
-                    <FaBell className="icono" />
-                    <span className="badge rounded-pill bg-danger">5</span>
                   </div>
                 </div>
                 <div className="notificacion">

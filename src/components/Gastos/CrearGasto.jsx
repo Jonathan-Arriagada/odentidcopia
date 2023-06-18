@@ -226,7 +226,7 @@ const CrearGasto = (props) => {
             cantArticulo: cantArticulo,
             umArticulo: umArticulo || um,
             descripArticulo: descripArticulo,
-            cuentaArticulo: cuentaArticulo || (cuenta-1),
+            cuentaArticulo: cuentaArticulo || (cuenta - 1),
             precioUniArticulo: precioUniArticulo,
             subTotalArticulo: subTotalArticulo,
         };
@@ -464,26 +464,28 @@ const CrearGasto = (props) => {
                                 <h5 style={{ fontWeight: "bold" }}>Productos Agregados</h5>
                                 <h5>Total General: {importeGeneral}</h5>
                                 {productos.length > 0 ? (
-                                    <table className="table__body">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Cant</th>
-                                                <th scope="col">Descrip</th>
-                                                <th scope="col">Precio Uni</th>
-                                                <th scope="col">SubTotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {productos.map((producto, index) => (
-                                                <tr key={index}>
-                                                    <td>{producto.cantArticulo}</td>
-                                                    <td>{producto.descripArticulo}</td>
-                                                    <td>{producto.precioUniArticulo}</td>
-                                                    <td>{producto.subTotalArticulo}</td>
+                                    <div className="table__container">
+                                        <table className="table__body">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Cant</th>
+                                                    <th scope="col">Descrip</th>
+                                                    <th scope="col">Precio Uni</th>
+                                                    <th scope="col">SubTotal</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {productos.map((producto, index) => (
+                                                    <tr key={index}>
+                                                        <td>{producto.cantArticulo}</td>
+                                                        <td>{producto.descripArticulo}</td>
+                                                        <td>{producto.precioUniArticulo}</td>
+                                                        <td>{producto.subTotalArticulo}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 ) : (
                                     <p style={{ fontStyle: "italic" }}>No se han agregado productos</p>
                                 )}

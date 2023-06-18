@@ -308,6 +308,11 @@ function Citas() {
                     Bienvenido {currentUser.displayName}
                   </p>
                   <div className="d-flex">
+
+                    <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">5</span>
+                    </div>
                     <div className="notificacion">
                       <Link
                         to="/miPerfil"
@@ -315,10 +320,6 @@ function Citas() {
                       >
                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
-                    </div>
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
                     </div>
                   </div>
                   <div className="notificacion">
@@ -458,108 +459,112 @@ function Citas() {
                       </div>
                     </div>
                   </div>
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th onClick={() => sorting("fecha")}>Fecha</th>
-                        <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
-                        <th onClick={() => sorting("horaFin")}>Hora Fin</th>
-                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
-                          Apellido y Nombres
-                        </th>
-                        <th onClick={() => sorting("idc")}>IDC</th>
-                        <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th onClick={() => sorting("doctor")}>Doctor</th>
-                        <th onClick={() => sorting("estado")}>Estado</th>
-                        <th id="columnaAccion"></th>
-                      </tr>
-                    </thead>
+                  <div className="table__container">
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th onClick={() => sorting("fecha")}>Fecha</th>
+                          <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
+                          <th onClick={() => sorting("horaFin")}>Hora Fin</th>
+                          <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
+                            Apellido y Nombres
+                          </th>
+                          <th onClick={() => sorting("idc")}>IDC</th>
+                          <th onClick={() => sorting("numero")}>Telefono</th>
+                          <th onClick={() => sorting("doctor")}>Doctor</th>
+                          <th onClick={() => sorting("estado")}>Estado</th>
+                          <th id="columnaAccion"></th>
+                        </tr>
+                      </thead>
 
-                    <tbody>
-                      {currentResults.map((cita, index) => (
-                        <tr key={cita.id}>
-                          <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
-                          <td> {cita.horaInicio} </td>
-                          <td> {cita.horaFin} </td>
-                          <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
-                          <td> {cita.idc} </td>
-                          <td> {cita.selectedCode}{cita.numero} </td>
-                          <td>{JSON.parse(cita.doctor).nombreApellido}</td>
-                          <td style={{ paddingBottom: "0", display: "flex" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {cita.estado || ""}
-                              {cita.estado && (
-                                <p
-                                  style={buscarEstilos(cita.estado)}
-                                  className="color-preview justify-content-center align-items-center"
-                                ></p>
+                      <tbody>
+                        {currentResults.map((cita, index) => (
+                          <tr key={cita.id}>
+                            <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
+                            <td> {cita.horaInicio} </td>
+                            <td> {cita.horaFin} </td>
+                            <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
+                            <td> {cita.idc} </td>
+                            <td> {cita.selectedCode}{cita.numero} </td>
+                            <td>{JSON.parse(cita.doctor).nombreApellido}</td>
+                            <td style={{ paddingBottom: "0", display: "flex" }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                {cita.estado || ""}
+                                {cita.estado && (
+                                  <p
+                                    style={buscarEstilos(cita.estado)}
+                                    className="color-preview justify-content-center align-items-center"
+                                  ></p>
 
-                              )}
-                              <ListaSeleccionEstadoCita
-                                citaId={cita.id}
-                              />
-                            </div>
-                          </td>
-                          <td id="columnaAccion">
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                variant="primary"
-                                className="btn btn-secondary mx-1 btn-md"
-                                id="dropdown-actions"
-                              >
-                                <i className="fa-solid fa-ellipsis-vertical"></i>
-                              </Dropdown.Toggle>
-
-                              <Dropdown.Menu>
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setModalShowVerNotas([
-                                      true,
-                                      cita.comentario
-                                    ]);
-                                  }}
+                                )}
+                                <ListaSeleccionEstadoCita
+                                  citaId={cita.id}
+                                />
+                              </div>
+                            </td>
+                            <td id="columnaAccion">
+                              <Dropdown>
+                                <Dropdown.Toggle
+                                  variant="primary"
+                                  className="btn btn-secondary mx-1 btn-md"
+                                  id="dropdown-actions"
                                 >
-                                  <i className="fa-regular fa-comment"></i> Ver
-                                  Notas
-                                </Dropdown.Item>
+                                  <i className="fa-solid fa-ellipsis-vertical"></i>
+                                </Dropdown.Toggle>
 
-                                <Dropdown.Item>
-                                  <Link to={`/historia/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
-                                    <i className="fa-solid fa-file-medical"></i>
-                                    Historial Clinico
-                                  </Link>
-                                </Dropdown.Item>
-
-                                {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                                  <div>
+                                <div className="dropdown__container">
+                                  <Dropdown.Menu>
                                     <Dropdown.Item
                                       onClick={() => {
-                                        setModalShowEditCita(true);
-                                        setCita(cita);
-                                        setIdParam(cita.id);
+                                        setModalShowVerNotas([
+                                          true,
+                                          cita.comentario
+                                        ]);
                                       }}
                                     >
-                                      <i className="fa-regular fa-pen-to-square"></i>
-                                      Editar
+                                      <i className="fa-regular fa-comment"></i> Ver
+                                      Notas
                                     </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() =>
-                                        confirmeDelete(cita.id)
-                                      }
-                                    >
-                                      <i className="fa-solid fa-trash-can"></i>
-                                      Eliminar
-                                    </Dropdown.Item>
-                                  </div>
-                                ) : null}
 
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                                    <Dropdown.Item>
+                                      <Link to={`/historia/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
+                                        <i className="fa-solid fa-file-medical"></i>
+                                        Historial Clinico
+                                      </Link>
+                                    </Dropdown.Item>
+
+                                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                      <div>
+                                        <Dropdown.Item
+                                          onClick={() => {
+                                            setModalShowEditCita(true);
+                                            setCita(cita);
+                                            setIdParam(cita.id);
+                                          }}
+                                        >
+                                          <i className="fa-regular fa-pen-to-square"></i>
+                                          Editar
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={() =>
+                                            confirmeDelete(cita.id)
+                                          }
+                                        >
+                                          <i className="fa-solid fa-trash-can"></i>
+                                          Eliminar
+                                        </Dropdown.Item>
+                                      </div>
+                                    ) : null}
+
+                                  </Dropdown.Menu>
+                                </div>
+                              </Dropdown>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
 
                   <div className="table__footer">
                     <div className="table__footer-left">

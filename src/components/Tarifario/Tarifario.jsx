@@ -135,16 +135,16 @@ function Tarifario() {
                 </p>
                 <div className="d-flex">
                   <div className="notificacion">
+                    <FaBell className="icono" />
+                    <span className="badge rounded-pill bg-danger">5</span>
+                  </div>
+                  <div className="notificacion">
                     <Link
                       to="/miPerfil"
                       className="text-decoration-none"
                     >
                       <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                     </Link>
-                  </div>
-                  <div className="notificacion">
-                    <FaBell className="icono" />
-                    <span className="badge rounded-pill bg-danger">5</span>
                   </div>
                 </div>
                 <div className="notificacion">
@@ -183,85 +183,87 @@ function Tarifario() {
                   </div>
                 </div>
 
-                <table className="table__body">
-                  <thead>
-                    <tr>
-                      <th onClick={() => sorting("codigo")}>Código</th>
-                      <th style={{ textAlign: "left" }}>Tratamiento</th>
-                      <th>Tarifa</th>
-                      {userType === process.env.REACT_APP_rolAdCon ? <th id="columnaAccion"></th> : null}
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {results.map((tarifa) => (
-                      <tr
-                        key={tarifa.id}
-                        className={tarifa.eliminado ? "deleted-row" : ""}
-                      >
-                        <td> {tarifa.codigo} </td>
-                        <td style={{ textAlign: "left" }}> {tarifa.tratamiento}</td>
-                        <td> {tarifa.tarifa} </td>
-                        {userType === process.env.REACT_APP_rolAdCon ? (
-                          <td id="columnaAccion" >
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                variant="primary"
-                                className="btn btn-secondary mx-1 btn-md"
-                                id="dropdown-actions"
-                              >
-                                <i className="fa-solid fa-ellipsis-vertical"></i>
-                              </Dropdown.Toggle>
-
-                              <Dropdown.Menu style={{ textAlign: "center" }}>
-                                <button
-                                  variant="primary"
-                                  className="btn btn-success mx-1"
-                                  disabled={
-                                    disabledRows.includes(tarifa.id) ||
-                                    tarifa.eliminado
-                                  }
-                                  onClick={() => {
-                                    setModalShowEdit(true);
-                                    setTarifa(tarifa);
-                                    setIdParam(tarifa.id);
-                                  }}
-                                >
-
-                                  <i className="fa-regular fa-pen-to-square"></i>
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    deleteTarifa(tarifa.id);
-                                  }}
-                                  className="btn btn-danger"
-                                  disabled={
-                                    disabledRows.includes(tarifa.id) ||
-                                    tarifa.eliminado
-                                  }
-                                >
-                                  <i className="fa-solid fa-trash"></i>
-                                </button>
-                                {tarifa.eliminado}
-                                <button
-                                  onClick={() => {
-                                    activeTarifa(tarifa.id);
-                                  }}
-                                  className="btn btn-light"
-                                  disabled={disabledRows.includes(tarifa.id)}
-                                  style={{ marginLeft: "2px", background: "#E6E6E6" }}
-                                >
-                                  {" "}
-                                  <i className="fa-solid fa-power-off"></i>{" "}
-                                </button>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </td>
-                        ) : null}
+                <div className="table__container">
+                  <table className="table__body">
+                    <thead>
+                      <tr>
+                        <th onClick={() => sorting("codigo")}>Código</th>
+                        <th style={{ textAlign: "left" }}>Tratamiento</th>
+                        <th>Tarifa</th>
+                        {userType === process.env.REACT_APP_rolAdCon ? <th id="columnaAccion"></th> : null}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+
+                    <tbody>
+                      {results.map((tarifa) => (
+                        <tr
+                          key={tarifa.id}
+                          className={tarifa.eliminado ? "deleted-row" : ""}
+                        >
+                          <td> {tarifa.codigo} </td>
+                          <td style={{ textAlign: "left" }}> {tarifa.tratamiento}</td>
+                          <td> {tarifa.tarifa} </td>
+                          {userType === process.env.REACT_APP_rolAdCon ? (
+                            <td id="columnaAccion" >
+                              <Dropdown>
+                                <Dropdown.Toggle
+                                  variant="primary"
+                                  className="btn btn-secondary mx-1 btn-md"
+                                  id="dropdown-actions"
+                                >
+                                  <i className="fa-solid fa-ellipsis-vertical"></i>
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu style={{ textAlign: "center" }}>
+                                  <button
+                                    variant="primary"
+                                    className="btn btn-success mx-1"
+                                    disabled={
+                                      disabledRows.includes(tarifa.id) ||
+                                      tarifa.eliminado
+                                    }
+                                    onClick={() => {
+                                      setModalShowEdit(true);
+                                      setTarifa(tarifa);
+                                      setIdParam(tarifa.id);
+                                    }}
+                                  >
+
+                                    <i className="fa-regular fa-pen-to-square"></i>
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      deleteTarifa(tarifa.id);
+                                    }}
+                                    className="btn btn-danger"
+                                    disabled={
+                                      disabledRows.includes(tarifa.id) ||
+                                      tarifa.eliminado
+                                    }
+                                  >
+                                    <i className="fa-solid fa-trash"></i>
+                                  </button>
+                                  {tarifa.eliminado}
+                                  <button
+                                    onClick={() => {
+                                      activeTarifa(tarifa.id);
+                                    }}
+                                    className="btn btn-light"
+                                    disabled={disabledRows.includes(tarifa.id)}
+                                    style={{ marginLeft: "2px", background: "#E6E6E6" }}
+                                  >
+                                    {" "}
+                                    <i className="fa-solid fa-power-off"></i>{" "}
+                                  </button>
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </td>
+                          ) : null}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

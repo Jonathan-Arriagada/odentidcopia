@@ -152,13 +152,23 @@ table.table__body_history td:not(#thHistory) {
   }
 }
 
-.table__body {
+.table__container {
+  margin: 0.8rem auto;
   max-height: calc(89% - 1.6rem);
-  margin: .8rem auto;
-  border-radius: .4rem;
+  border-radius: 1rem;
   overflow: auto;
   overflow: overlay;
 }
+
+.table__body {
+  width: 100%;
+}
+
+.dropdown__container {
+  position: fixed;
+  z-index: 2;
+}
+
 
 .table__body::-webkit-scrollbar {
   width: 0.5rem;
@@ -177,12 +187,13 @@ table.table__body_history td:not(#thHistory) {
 
 a {
   color: var(--color-texto-oscuro);
+  text-decoration: none;
 }
 
 table {
   width: 100%;
   background-color: var(--color-fondo);
-  color: var(--color-texto-oscuro)
+  color: var(--color-texto-oscuro);
 }
 
 table,
@@ -197,7 +208,7 @@ thead th {
   position: sticky;
   top: 0;
   left: 0;
-  background-color: var(--color-border);
+  background-color: var(--color-background);
   cursor: pointer;
   text-transform: capitalize;
   color: var(--color-light-text);
@@ -217,7 +228,7 @@ tbody tr.hide {
 }
 
 tbody tr:not(.admin-row):hover {
-  background-color: var(--color-forms) !important;
+  background-color: var(--color-background-green) !important;
 }
 
 
@@ -254,9 +265,9 @@ tbody tr.hide td p {
   margin-left: 5px;
 }
 
-#tdConColor{
- color: var(--color-estilo-main);
- background-color: none;
+#tdConColor {
+  color: var(--color-estilo-main);
+  background-color: none;
 }
 
 /*<!------------Termina estilos tablas---------------->*/
@@ -683,9 +694,10 @@ select {
 
 /*ESTILOS UPNAV.CSS*/
 .navbar {
-  background-color: var(--color-forms);
+  background-color: var(--color-background-green);
   color: var(--color-light-text) !important;
   font-weight: 700 !important;
+  padding: 12px;
 }
 
 .search-bar {
@@ -702,6 +714,11 @@ select {
   color: var(--color-light-text);
   width: 291px;
   border-radius: 50px;
+  will-change: border;
+}
+
+.search-bar input:hover {
+  border: 2px solid var(--color-estilo-main);
 }
 
 .search-bar i:not(#historyi) {

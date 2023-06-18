@@ -151,16 +151,16 @@ const Gastos = () => {
                                     </p>
                                     <div className="d-flex">
                                         <div className="notificacion">
+                                            <FaBell className="icono" />
+                                            <span className="badge rounded-pill bg-danger">5</span>
+                                        </div>
+                                        <div className="notificacion">
                                             <Link
                                                 to="/miPerfil"
                                                 className="text-decoration-none"
                                             >
                                                 <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                                             </Link>
-                                        </div>
-                                        <div className="notificacion">
-                                            <FaBell className="icono" />
-                                            <span className="badge rounded-pill bg-danger">5</span>
                                         </div>
                                     </div>
                                     <div className="notificacion">
@@ -220,77 +220,80 @@ const Gastos = () => {
                                         </div>
                                     </div>
 
-
-                                    <table className="table__body">
-                                        <thead>
-                                            <tr>
-                                                <th onClick={() => sorting("fechaGasto")}>Fecha</th>
-                                                <th onClick={() => sorting("ruc")}>RUC</th>
-                                                <th onClick={() => sorting("proveedor")}>Proveedor</th>
-                                                <th onClick={() => sorting("tipoGasto")}>Tipo</th>
-                                                <th onClick={() => sorting("comprobanteGasto")}>Comprobante</th>
-                                                <th onClick={() => sorting("cantArticulo")}>Cantidad</th>
-                                                <th onClick={() => sorting("umArticulo")}>U.M.</th>
-                                                <th onClick={() => sorting("cuentaArticulo")}>Cuenta</th>
-                                                <th onClick={() => sorting("descripArticulo")}>Descripcion</th>
-                                                <th onClick={() => sorting("precioUniArticulo")}>Precio Uni</th>
-                                                <th onClick={() => sorting("subTotalArticulo")}>SubTotal</th>
-                                                <th id="columnaAccion"></th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {results.map((gasto) => (
-                                                <tr key={gasto.id}>
-                                                    <td>{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
-                                                    <td> {gasto.ruc} </td>
-                                                    <td> {gasto.proveedor} </td>
-                                                    <td> {gasto.tipoGasto} </td>
-                                                    <td> {gasto.comprobanteGasto} </td>
-                                                    <td> {gasto.cantArticulo} </td>
-                                                    <td> {gasto.umArticulo} </td>
-                                                    <td> {gasto.cuentaArticulo} </td>
-                                                    <td> {gasto.descripArticulo} </td>
-                                                    <td> {gasto.precioUniArticulo} </td>
-                                                    <td> {gasto.subTotalArticulo} </td>
-                                                    <td id="columnaAccion">
-                                                        <Dropdown>
-                                                            <Dropdown.Toggle
-                                                                variant="primary"
-                                                                className="btn btn-secondary mx-1 btn-md"
-                                                                id="dropdown-actions"
-                                                            >
-                                                                <i className="fa-solid fa-ellipsis-vertical"></i>
-                                                            </Dropdown.Toggle>
-
-                                                            <Dropdown.Menu>
-                                                                <Dropdown.Item
-                                                                    onClick={() => {
-
-                                                                        setModalShowEdit(true);
-                                                                        setGasto(gasto);
-                                                                        setIdParam(gasto.id);
-                                                                    }}
-                                                                >
-                                                                    <i className="fa-regular fa-pen-to-square"></i>
-                                                                    Editar
-                                                                </Dropdown.Item>
-
-                                                                <Dropdown.Item
-                                                                    onClick={() => {
-                                                                        deleteGasto(gasto.id);
-                                                                    }}
-                                                                >
-                                                                    <i className="fa-solid fa-trash-can"></i>
-                                                                    Eliminar
-                                                                </Dropdown.Item>
-                                                            </Dropdown.Menu>
-                                                        </Dropdown>
-                                                    </td>
+                                    <div className="table__container">
+                                        <table className="table__body">
+                                            <thead>
+                                                <tr>
+                                                    <th onClick={() => sorting("fechaGasto")}>Fecha</th>
+                                                    <th onClick={() => sorting("ruc")}>RUC</th>
+                                                    <th onClick={() => sorting("proveedor")}>Proveedor</th>
+                                                    <th onClick={() => sorting("tipoGasto")}>Tipo</th>
+                                                    <th onClick={() => sorting("comprobanteGasto")}>Comprobante</th>
+                                                    <th onClick={() => sorting("cantArticulo")}>Cantidad</th>
+                                                    <th onClick={() => sorting("umArticulo")}>U.M.</th>
+                                                    <th onClick={() => sorting("cuentaArticulo")}>Cuenta</th>
+                                                    <th onClick={() => sorting("descripArticulo")}>Descripcion</th>
+                                                    <th onClick={() => sorting("precioUniArticulo")}>Precio Uni</th>
+                                                    <th onClick={() => sorting("subTotalArticulo")}>SubTotal</th>
+                                                    <th id="columnaAccion"></th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+
+                                            <tbody>
+                                                {results.map((gasto) => (
+                                                    <tr key={gasto.id}>
+                                                        <td>{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
+                                                        <td> {gasto.ruc} </td>
+                                                        <td> {gasto.proveedor} </td>
+                                                        <td> {gasto.tipoGasto} </td>
+                                                        <td> {gasto.comprobanteGasto} </td>
+                                                        <td> {gasto.cantArticulo} </td>
+                                                        <td> {gasto.umArticulo} </td>
+                                                        <td> {gasto.cuentaArticulo} </td>
+                                                        <td> {gasto.descripArticulo} </td>
+                                                        <td> {gasto.precioUniArticulo} </td>
+                                                        <td> {gasto.subTotalArticulo} </td>
+                                                        <td id="columnaAccion">
+                                                            <Dropdown>
+                                                                <Dropdown.Toggle
+                                                                    variant="primary"
+                                                                    className="btn btn-secondary mx-1 btn-md"
+                                                                    id="dropdown-actions"
+                                                                >
+                                                                    <i className="fa-solid fa-ellipsis-vertical"></i>
+                                                                </Dropdown.Toggle>
+
+                                                                <div className="dropdown__container">
+                                                                    <Dropdown.Menu>
+                                                                        <Dropdown.Item
+                                                                            onClick={() => {
+
+                                                                                setModalShowEdit(true);
+                                                                                setGasto(gasto);
+                                                                                setIdParam(gasto.id);
+                                                                            }}
+                                                                        >
+                                                                            <i className="fa-regular fa-pen-to-square"></i>
+                                                                            Editar
+                                                                        </Dropdown.Item>
+
+                                                                        <Dropdown.Item
+                                                                            onClick={() => {
+                                                                                deleteGasto(gasto.id);
+                                                                            }}
+                                                                        >
+                                                                            <i className="fa-solid fa-trash-can"></i>
+                                                                            Eliminar
+                                                                        </Dropdown.Item>
+                                                                    </Dropdown.Menu>
+                                                                </div>
+                                                            </Dropdown>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

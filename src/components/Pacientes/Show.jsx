@@ -183,16 +183,16 @@ const Show = () => {
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">5</span>
+                    </div>
+                    <div className="notificacion">
                       <Link
                         to="/miPerfil"
                         className="text-decoration-none"
                       >
                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
-                    </div>
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
                     </div>
                   </div>
                   <div className="notificacion">
@@ -224,101 +224,106 @@ const Show = () => {
                       </button>
                     ) : null}
                   </div>
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
-                          Apellido Y Nombres
-                        </th>
-                        <th onClick={() => sorting("tipoIdc")}>Tipo Doc</th>
-                        <th onClick={() => sorting("idc")}>IDC</th>
-                        <th onClick={() => sorting("fechaNacimiento")}>
-                          Fecha Nacimiento
-                        </th>
-                        <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th id="columnaAccion"></th>
-                      </tr>
-                    </thead>
 
-                    <tbody>
-                      {currentResults.map((client) => (
-                        <tr key={client.id}>
-                          <td style={{ textAlign: "left" }} >
-                            <Link to={`/historia/${client.id}`} id="tdConColor">
-                              {client.apellidoConNombre}
-                            </Link>
-
-                          </td>
-                          <td>{client.tipoIdc.toUpperCase()}</td>
-                          <td> {client.idc} </td>
-                          <td>
-                            {moment(client.fefechaNacimientocha).format(
-                              "DD/MM/YY"
-                            )}
-                          </td>
-                          <td> {client.selectedCode}{client.numero}</td>
-
-                          <td id="columnaAccion">
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                variant="primary"
-                                className="btn btn-secondary mx-1 btn-md"
-                                id="dropdown-actions"
-                                style={{background: "none", border: "none"}}
-                              >
-                                <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
-                              </Dropdown.Toggle>
-
-                              <Dropdown.Menu>
-                                <Dropdown.Item>
-                                  <Link to={`/historia/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
-                                    <i className="fa-solid fa-file-medical"></i>
-                                    Historial Clinico
-                                  </Link>
-                                </Dropdown.Item>
-
-
-                                {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                                  <div>
-                                    <Dropdown.Item
-                                      onClick={() => {
-                                        setModalShowCita(true);
-                                        setClient(client);
-                                      }}
-                                    >
-                                      <i className="fa-solid fa-plus"></i>
-                                      Crear Cita
-                                    </Dropdown.Item>
-
-                                    <Dropdown.Item
-                                      onClick={() => {
-                                        setModalShowEdit(true);
-                                        setClient(client);
-                                        setIdParam(client.id);
-                                      }}
-                                    >
-                                      <i className="fa-regular fa-pen-to-square"></i>
-                                      Editar
-                                    </Dropdown.Item>
-
-
-                                    <Dropdown.Item
-                                      onClick={() => {
-                                        confirmeDelete(client.id);
-                                      }}
-                                    >
-                                      <i className="fa-solid fa-trash-can"></i>
-                                      Eliminar
-                                    </Dropdown.Item>
-                                  </div>
-                                ) : null}
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </td>
+                  <div className="table__container">
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
+                            Apellido Y Nombres
+                          </th>
+                          <th onClick={() => sorting("tipoIdc")}>Tipo Doc</th>
+                          <th onClick={() => sorting("idc")}>IDC</th>
+                          <th onClick={() => sorting("fechaNacimiento")}>
+                            Fecha Nacimiento
+                          </th>
+                          <th onClick={() => sorting("numero")}>Telefono</th>
+                          <th id="columnaAccion"></th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+
+                      <tbody>
+                        {currentResults.map((client) => (
+                          <tr key={client.id}>
+                            <td style={{ textAlign: "left" }} >
+                              <Link to={`/historia/${client.id}`} id="tdConColor">
+                                {client.apellidoConNombre}
+                              </Link>
+
+                            </td>
+                            <td>{client.tipoIdc.toUpperCase()}</td>
+                            <td> {client.idc} </td>
+                            <td>
+                              {moment(client.fefechaNacimientocha).format(
+                                "DD/MM/YY"
+                              )}
+                            </td>
+                            <td> {client.selectedCode}{client.numero}</td>
+
+                            <td id="columnaAccion">
+                              <Dropdown>
+                                <Dropdown.Toggle
+                                  variant="primary"
+                                  className="btn btn-secondary mx-1 btn-md"
+                                  id="dropdown-actions"
+                                  style={{ background: "none", border: "none" }}
+                                >
+                                  <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
+                                </Dropdown.Toggle>
+
+                                <div className="dropdown__container">
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item>
+                                      <Link to={`/historia/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
+                                        <i className="fa-solid fa-file-medical"></i>
+                                        Historial Clinico
+                                      </Link>
+                                    </Dropdown.Item>
+
+
+                                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                      <div>
+                                        <Dropdown.Item
+                                          onClick={() => {
+                                            setModalShowCita(true);
+                                            setClient(client);
+                                          }}
+                                        >
+                                          <i className="fa-solid fa-plus"></i>
+                                          Crear Cita
+                                        </Dropdown.Item>
+
+                                        <Dropdown.Item
+                                          onClick={() => {
+                                            setModalShowEdit(true);
+                                            setClient(client);
+                                            setIdParam(client.id);
+                                          }}
+                                        >
+                                          <i className="fa-regular fa-pen-to-square"></i>
+                                          Editar
+                                        </Dropdown.Item>
+
+
+                                        <Dropdown.Item
+                                          onClick={() => {
+                                            confirmeDelete(client.id);
+                                          }}
+                                        >
+                                          <i className="fa-solid fa-trash-can"></i>
+                                          Eliminar
+                                        </Dropdown.Item>
+                                      </div>
+                                    ) : null}
+                                  </Dropdown.Menu>
+                                </div>
+                              </Dropdown>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                   <div className="table__footer">
                     <div className="table__footer-left">
                       Mostrando {startIndex + 1} - {Math.min(endIndex, clients.length)} de {clients.length}

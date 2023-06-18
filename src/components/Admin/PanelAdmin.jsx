@@ -127,6 +127,10 @@ function PanelAdmin() {
                     Bienvenido {currentUser.displayName}
                   </p>
                   <div className="d-flex">
+                  <div className="notificacion">
+                      <FaBell className="icono" />
+                      <span className="badge rounded-pill bg-danger">5</span>
+                    </div>
                     <div className="notificacion">
                       <Link
                         to="/miPerfil"
@@ -134,10 +138,6 @@ function PanelAdmin() {
                       >
                         <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                       </Link>
-                    </div>
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
                     </div>
                   </div>
                   <div className="notificacion">
@@ -174,70 +174,72 @@ function PanelAdmin() {
                       </div>
                     </div>
                   </div>
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th onClick={() => sorting("codigo")}>Código</th>
-                        <th onClick={() => sorting("apellido")}>Apellido</th>
-                        <th onClick={() => sorting("nombres")}>Nombres</th>
-                        <th onClick={() => sorting("correo")}>Email</th>
-                        <th onClick={() => sorting("telefono")}>Telefono</th>
-                        <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
-                        <th onClick={() => sorting("rol")}>Rol</th>
-                        <th>Accion</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {results.map((usuario) => (
-                        <tr key={usuario.id}
-                          className={usuario.rol === process.env.REACT_APP_rolBloq ? "deleted-row" : usuario.rol === process.env.REACT_APP_rolAd ? "admin-row" : ""}
-                        >
-                          <td> {usuario.codigo} </td>
-                          <td> {usuario.apellido}</td>
-                          <td> {usuario.nombres}</td>
-                          <td> {usuario.correo} </td>
-                          <td> {usuario.telefono} </td>
-                          <td> {usuario.fechaAlta}</td>
-                          <td>{usuario.rol === process.env.REACT_APP_rolAd ? 'Admin' : usuario.rol === process.env.REACT_APP_rolRecepcionis ? 'Recepcionista' : usuario.rol === process.env.REACT_APP_rolDoctor ? 'Doctor' : ''}</td>
-                          <td>
-                            {usuario.rol !== process.env.REACT_APP_rolAd && (
-                              <>
-                                <button
-                                  onClick={() => {
-                                    disableUsuario(usuario.id);
-                                  }}
-                                  className="btn btn-danger"
-                                  disabled={
-                                    disabledRows.includes(usuario.id) ||
-                                    usuario.rol === process.env.REACT_APP_rolBloq ||
-                                    usuario.rol === process.env.REACT_APP_rolAd
-                                  }
-                                >
-                                  <i className="fa-solid fa-trash"></i>
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    enableUsuario(usuario.id);
-                                  }}
-                                  className="btn btn-light"
-                                  disabled={
-                                    disabledRows.includes(usuario.id) ||
-                                    usuario.rol === process.env.REACT_APP_rolRecepcionis ||
-                                    usuario.rol === process.env.REACT_APP_rolAd ||
-                                    usuario.rol === process.env.REACT_APP_rolDoctor
-                                  }
-                                  style={{ marginLeft: "2px" }}
-                                >
-                                  <i className="fa-solid fa-power-off"></i>{" "}
-                                </button>
-                              </>
-                            )}
-                          </td>
+                  <div className="table__container">
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th onClick={() => sorting("codigo")}>Código</th>
+                          <th onClick={() => sorting("apellido")}>Apellido</th>
+                          <th onClick={() => sorting("nombres")}>Nombres</th>
+                          <th onClick={() => sorting("correo")}>Email</th>
+                          <th onClick={() => sorting("telefono")}>Telefono</th>
+                          <th onClick={() => sorting("fechaAlta")}>Fecha Agregado</th>
+                          <th onClick={() => sorting("rol")}>Rol</th>
+                          <th>Accion</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+
+                      <tbody>
+                        {results.map((usuario) => (
+                          <tr key={usuario.id}
+                            className={usuario.rol === process.env.REACT_APP_rolBloq ? "deleted-row" : usuario.rol === process.env.REACT_APP_rolAd ? "admin-row" : ""}
+                          >
+                            <td> {usuario.codigo} </td>
+                            <td> {usuario.apellido}</td>
+                            <td> {usuario.nombres}</td>
+                            <td> {usuario.correo} </td>
+                            <td> {usuario.telefono} </td>
+                            <td> {usuario.fechaAlta}</td>
+                            <td>{usuario.rol === process.env.REACT_APP_rolAd ? 'Admin' : usuario.rol === process.env.REACT_APP_rolRecepcionis ? 'Recepcionista' : usuario.rol === process.env.REACT_APP_rolDoctor ? 'Doctor' : ''}</td>
+                            <td>
+                              {usuario.rol !== process.env.REACT_APP_rolAd && (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      disableUsuario(usuario.id);
+                                    }}
+                                    className="btn btn-danger"
+                                    disabled={
+                                      disabledRows.includes(usuario.id) ||
+                                      usuario.rol === process.env.REACT_APP_rolBloq ||
+                                      usuario.rol === process.env.REACT_APP_rolAd
+                                    }
+                                  >
+                                    <i className="fa-solid fa-trash"></i>
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      enableUsuario(usuario.id);
+                                    }}
+                                    className="btn btn-light"
+                                    disabled={
+                                      disabledRows.includes(usuario.id) ||
+                                      usuario.rol === process.env.REACT_APP_rolRecepcionis ||
+                                      usuario.rol === process.env.REACT_APP_rolAd ||
+                                      usuario.rol === process.env.REACT_APP_rolDoctor
+                                    }
+                                    style={{ marginLeft: "2px" }}
+                                  >
+                                    <i className="fa-solid fa-power-off"></i>{" "}
+                                  </button>
+                                </>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

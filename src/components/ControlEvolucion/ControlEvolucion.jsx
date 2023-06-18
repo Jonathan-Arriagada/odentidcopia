@@ -162,16 +162,16 @@ const ControlEvolucion = () => {
                                     </p>
                                     <div className="d-flex">
                                         <div className="notificacion">
+                                            <FaBell className="icono" />
+                                            <span className="badge rounded-pill bg-danger">5</span>
+                                        </div>
+                                        <div className="notificacion">
                                             <Link
                                                 to="/miPerfil"
                                                 className="text-decoration-none"
                                             >
                                                 <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
                                             </Link>
-                                        </div>
-                                        <div className="notificacion">
-                                            <FaBell className="icono" />
-                                            <span className="badge rounded-pill bg-danger">5</span>
                                         </div>
                                     </div>
                                     <div className="notificacion">
@@ -194,75 +194,77 @@ const ControlEvolucion = () => {
                                     <div className="d-flex justify-content-between">
                                         <h1>Control y Evoluciones</h1>
                                     </div>
-                                    <table className="table__body">
-                                        <thead>
-                                            <tr>
-                                                <th>N°</th>
-                                                <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
-                                                    Apellido Y Nombres
-                                                </th>
-                                                <th onClick={() => sorting("idc")}>IDC</th>
-                                                <th onClick={() => sorting("tratamiento")}>Tratamiento</th>
-                                                <th onClick={() => sorting("pieza")}>Pieza</th>
-                                                <th onClick={() => sorting("doctor")}>Doctor</th>
-                                                <th onClick={() => sorting("fechaControlRealizado")}>Fecha</th>
-                                                <th>Accion</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {results.map((control, index) => (
-                                                <tr key={control.id}>
-                                                    <td>{results.length - index}</td>
-                                                    <td> {control.apellidoConNombre} </td>
-                                                    <td> {control.idc} </td>
-                                                    <td> {control.tratamientoControl} </td>
-                                                    <td> {control.pieza} </td>
-                                                    <td> {control.doctor} </td>
-                                                    <td>
-                                                        {moment(control.fechaControlRealizado).format(
-                                                            "DD/MM/YY"
-                                                        )}
-                                                    </td>
-
-                                                    <td style={{ padding: "10px" }}>
-                                                        <button
-                                                            variant="primary"
-                                                            className="btn btn-secondary mx-1"
-                                                            onClick={() => {
-                                                                setModalShowVerDetalle([
-                                                                    true,
-                                                                    control.detalleTratamiento,
-                                                                ]);
-                                                            }}>
-                                                            <i className="fa-regular fa-comment"></i> Ver
-                                                            Notas
-                                                        </button>
-                                                        <button
-                                                            variant="primary"
-                                                            className="btn btn-success mx-1"
-                                                            onClick={() => {
-                                                                setModalShowEditar(true);
-                                                                setControl(control);
-                                                                setIdParam(control.id);
-                                                            }}
-                                                        >
-                                                            <i className="fa-regular fa-pen-to-square"></i>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                confirmeDelete(control.id);
-                                                            }}
-                                                            variant="primary"
-                                                            className="btn btn-danger mx-1"
-                                                        >
-                                                            <i className="fa-solid fa-trash-can"></i>
-                                                        </button>
-                                                    </td>
+                                    <div className="table__container">
+                                        <table className="table__body">
+                                            <thead>
+                                                <tr>
+                                                    <th>N°</th>
+                                                    <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
+                                                        Apellido Y Nombres
+                                                    </th>
+                                                    <th onClick={() => sorting("idc")}>IDC</th>
+                                                    <th onClick={() => sorting("tratamiento")}>Tratamiento</th>
+                                                    <th onClick={() => sorting("pieza")}>Pieza</th>
+                                                    <th onClick={() => sorting("doctor")}>Doctor</th>
+                                                    <th onClick={() => sorting("fechaControlRealizado")}>Fecha</th>
+                                                    <th>Accion</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+
+                                            <tbody>
+                                                {results.map((control, index) => (
+                                                    <tr key={control.id}>
+                                                        <td>{results.length - index}</td>
+                                                        <td> {control.apellidoConNombre} </td>
+                                                        <td> {control.idc} </td>
+                                                        <td> {control.tratamientoControl} </td>
+                                                        <td> {control.pieza} </td>
+                                                        <td> {control.doctor} </td>
+                                                        <td>
+                                                            {moment(control.fechaControlRealizado).format(
+                                                                "DD/MM/YY"
+                                                            )}
+                                                        </td>
+
+                                                        <td style={{ padding: "10px" }}>
+                                                            <button
+                                                                variant="primary"
+                                                                className="btn btn-secondary mx-1"
+                                                                onClick={() => {
+                                                                    setModalShowVerDetalle([
+                                                                        true,
+                                                                        control.detalleTratamiento,
+                                                                    ]);
+                                                                }}>
+                                                                <i className="fa-regular fa-comment"></i> Ver
+                                                                Notas
+                                                            </button>
+                                                            <button
+                                                                variant="primary"
+                                                                className="btn btn-success mx-1"
+                                                                onClick={() => {
+                                                                    setModalShowEditar(true);
+                                                                    setControl(control);
+                                                                    setIdParam(control.id);
+                                                                }}
+                                                            >
+                                                                <i className="fa-regular fa-pen-to-square"></i>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    confirmeDelete(control.id);
+                                                                }}
+                                                                variant="primary"
+                                                                className="btn btn-danger mx-1"
+                                                            >
+                                                                <i className="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     {modalShowVerDetalle[0] && (
                                         <Modal
                                             show={modalShowVerDetalle[0]}
