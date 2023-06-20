@@ -407,8 +407,9 @@ function AgendaEspecif(id) {
                                       variant="primary"
                                       className="btn btn-secondary mx-1 btn-md"
                                       id="dropdown-actions"
+                                      style={{ background: "none", border: "none" }}
                                     >
-                                      <i className="fa-solid fa-ellipsis-vertical"></i>
+                                      <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
                                     </Dropdown.Toggle>
 
                                     <div className="dropdown__container">

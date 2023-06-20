@@ -620,7 +620,7 @@ function Antecedentes(id) {
                                                 <div id="botones">
                                                     <button
                                                         type="submit"
-                                                        className="btn"
+                                                        className="btn button-main"
                                                         id="boton-main"
                                                         style={{ margin: "3px" }}
                                                         onClick={handleActualizarClick}

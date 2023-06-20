@@ -1,5 +1,5 @@
 import React from "react";
-import { collection,  doc,  query,  getDocs,  where,  getDoc,  updateDoc,  addDoc,} from "firebase/firestore";
+import { collection, doc, query, getDocs, where, getDoc, updateDoc, addDoc, } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import moment from "moment";
@@ -88,7 +88,7 @@ function Filiacion(id) {
       apellidoConNombre: apellidoConNombre || clientData.apellidoConNombre,
       tipoIdc: tipoIdc || clientData.tipoIdc,
       idc: idc || clientData.idc,
-      fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,      
+      fechaNacimiento: fechaNacimiento || clientData.fechaNacimiento,
       numero: numero || clientData.numero,
       selectedCode: selectedCode || clientData.selectedCode,
       edad: edad || clientData.edad,
@@ -210,11 +210,11 @@ function Filiacion(id) {
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
           <div className="w-100">
-            <div className="container mw-100 mt-2">
+            <div className="container mw-100 mt-2" id="contenedorFiliacion">
               <div className="row">
                 <div className="col">
                   <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                       <label className="form-label">Apellido y Nombres:</label>
                       <input
                         value={apellidoConNombre || ""}
@@ -261,10 +261,10 @@ function Filiacion(id) {
                             tipoIdc === "dni"
                               ? 8
                               : tipoIdc === "ruc"
-                              ? 11
-                              : tipoIdc === "ce" || tipoIdc === "pas"
-                              ? 12
-                              : undefined
+                                ? 11
+                                : tipoIdc === "ce" || tipoIdc === "pas"
+                                  ? 12
+                                  : undefined
                           }
                           onKeyDown={(e) => {
                             const maxLength = e.target.maxLength;
@@ -289,17 +289,17 @@ function Filiacion(id) {
                       </div>
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                       <label className="form-label">Edad*</label>
                       <input
                         value={edad || ""}
                         type="number"
                         className="form-control m-1"
-                        readOnly                   
+                        readOnly
                       />
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-3" style={{width: "276px"}}>
                       <label className="form-label">Sexo:</label>
                       <select
                         value={sexo}
@@ -364,7 +364,7 @@ function Filiacion(id) {
                       required
                     />
                   </div>
-      
+
                   <div className="col-md-4">
                     <label className="form-label">Ocupacion:</label>
                     <input
@@ -379,7 +379,7 @@ function Filiacion(id) {
                 <div className="row">
                   <div className="mb-3">
                     <label className="form-label">Teléfono*</label>
-                    <div style={{ display: "flex"}}>
+                    <div style={{ display: "flex" }}>
                       {selectedCode === "+51" && (
                         <img
                           src={peruFlag}
@@ -407,13 +407,17 @@ function Filiacion(id) {
                           required
                         />
                       </>
-                    </div>                    
+                    </div>
                   </div>
                 </div>
+                <div className="row">
+                </div>
+                <br></br>
 
                 <hr />
+                <br></br>
 
-                <h3> En caso de emergencia comunicarse con:</h3>
+                <h4 style={{ textAlign: "left" }}> En caso de emergencia comunicarse con:</h4>
 
                 <div className="row">
                   <div className="col-md-4">

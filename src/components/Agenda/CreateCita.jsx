@@ -455,7 +455,7 @@ function CreateCita(props) {
                 <button
                   type="submit"
                   onClick={validateFields}
-                  className="btn btn-primary"
+                  className="btn button-main"
                   style={{ margin: "1px" }}
                 >
                   Agregar

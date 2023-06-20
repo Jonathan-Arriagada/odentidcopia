@@ -670,32 +670,58 @@ function Tratamientos() {
                   )}
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido {currentUser.displayName}
+                  <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
+                    Hola, {currentUser.displayName}
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
                       <FaBell className="icono" />
                       <span className="badge rounded-pill bg-danger">5</span>
                     </div>
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                      </Link>
-                    </div>
                   </div>
+
                   <div className="notificacion">
-                    <Link
-                      to="/"
-                      className="text-decoration-none"
-                      style={{ color: "#8D93AB" }}
-                      onClick={confirmLogout}
-                    >
-                      <FaSignOutAlt className="icono" />
-                    </Link>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="primary"
+                        className="btn btn-secondary mx-1 btn-md"
+                        id="dropdown-actions"
+                        style={{ background: "none", border: "none" }}
+                      >
+                        <img
+                          src={currentUser.photoURL || profile}
+                          alt="profile"
+                          className="profile-picture"
+                        />
+                      </Dropdown.Toggle>
+                      <div className="dropdown__container">
+                        <Dropdown.Menu>
+                          <Dropdown.Item>
+                            <Link
+                              to="/miPerfil"
+                              className="text-decoration-none"
+                              style={{ color: "#8D93AB" }}
+                            >
+                              <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
+                              Mi Perfil
+                            </Link>
+                          </Dropdown.Item>
+
+                          <Dropdown.Item>
+
+                            <Link
+                              to="/"
+                              className="text-decoration-none"
+                              style={{ color: "#8D93AB" }}
+                              onClick={confirmLogout}
+                            >
+                              <FaSignOutAlt className="icono" />
+                              Cerrar Sesión
+                            </Link>
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </div>
+                    </Dropdown>
                   </div>
                 </div>
               </div>
@@ -1143,8 +1169,9 @@ function Tratamientos() {
                                   variant="primary"
                                   className="btn btn-secondary mx-1 btn-md"
                                   id="dropdown-actions"
+                                  style={{ background: "none", border: "none" }}
                                 >
-                                  <i className="fa-solid fa-ellipsis-vertical"></i>
+                                  <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
                                 </Dropdown.Toggle>
 
                                 <div className="dropdown__container">
@@ -1482,7 +1509,7 @@ function Tratamientos() {
                 onClick={(e) => {
                   guardarCobro(e, mostrarModalAgregarCobro[1]);
                 }}
-                className="btn btn-primary"
+                className="btn button-main"
               >
                 Guardar Cobro
               </button>
@@ -1546,7 +1573,7 @@ function Tratamientos() {
               <button
                 type="submit"
                 onClick={(e) => { editarCobro(e) }}
-                className="btn btn-primary"
+                className="btn button-main"
               >
                 Editar Cobro
               </button>

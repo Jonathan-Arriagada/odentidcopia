@@ -298,7 +298,7 @@ const CrearGasto = (props) => {
             >
                 <Modal.Header closeButton onClick={() => { clearFields(); props.onHide(); handleCloseModal(); }}>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        <h1>Crear Gasto</h1>
+                        <h1>Registrar Compra</h1>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -372,7 +372,7 @@ const CrearGasto = (props) => {
                                             </select>
                                         </div>
                                         <div className="col mb-6">
-                                            <label className="form-label">Comprobante Gasto*</label>
+                                            <label className="form-label">Comprobante Compra*</label>
                                             <input
                                                 value={comprobanteGasto}
                                                 onChange={(e) => setComprobanteGasto(e.target.value)}
@@ -421,7 +421,7 @@ const CrearGasto = (props) => {
                                             <button
                                                 type="button"
                                                 onClick={() => setModalAgregarArticulo([true, descripArticulo])}
-                                                className="btn btn-primary btn-sm"
+                                                className="btn button-main btn-sm"
                                                 style={{ marginBottom: "5px" }}
                                             >
                                                 Nuevo
@@ -449,7 +449,7 @@ const CrearGasto = (props) => {
                                             <button
                                                 type="button"
                                                 onClick={agregarProducto}
-                                                className="btn btn-primary"
+                                                className="btn button-main"
                                                 style={{ marginBottom: "5px" }}
                                             >
                                                 +
@@ -496,7 +496,7 @@ const CrearGasto = (props) => {
                 <Modal.Footer>
                     <button
                         onClick={validateFields}
-                        className="btn btn-primary"
+                        className="btn button-main"
                     >
                         Guardar
                     </button>
@@ -549,7 +549,7 @@ const CrearGasto = (props) => {
                                 </select>
                                 {error && <small className="text-danger">{error}</small>}
                             </div>
-                            <button className="btn btn-primary" type="submit">
+                            <button className="btn button-main" type="submit">
                                 Crear
                             </button>
                         </form>

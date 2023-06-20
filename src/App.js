@@ -50,11 +50,11 @@ function App() {
             <Route path="tarifario" element={<RequireAuth><Tarifario /></RequireAuth>}/>
             <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
             <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
-            <Route path="historia" element={<RequireAuth><History /></RequireAuth>}/>
+            <Route path="historias" element={<RequireAuth><History /></RequireAuth>}/>
             <Route path="controlEvoluciones" element={<RequireAuth><ControlEvolucion /></RequireAuth>}/>         
-            <Route path="historia/:id" element={<RequireAuth><History /></RequireAuth>}/>      
+            <Route path="historias/:id" element={<RequireAuth><History /></RequireAuth>}/>      
             <Route path="ventas" element={<RequireAuth><Ingresos /></RequireAuth>}/>
-            <Route path="gastos" element={<RequireAuth><Gastos /></RequireAuth>}/>
+            <Route path="compras" element={<RequireAuth><Gastos /></RequireAuth>}/>
             <Route path="materiales" element={<RequireAuth><Materiales /></RequireAuth>}/>
             <Route path="proveedores" element={<RequireAuth><Proveedores /></RequireAuth>}/>   
             <Route path="dashboard" element={<RequireAuth><Dashboard /></RequireAuth>}/>        

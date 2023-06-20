@@ -149,7 +149,7 @@ const Estados = ({ show, onHide }) => {
             </div>
           </div>
 
-          <button className="btn btn-primary" type="submit">
+          <button className="btn button-main" type="submit">
             {editIndex !== null ? "Actualizar" : "Crear"}
           </button>
 
@@ -179,7 +179,7 @@ const Estados = ({ show, onHide }) => {
                 /></div>
               <div className="col-2">
                 <button
-                  className="btn btn-primary mx-1 btn-sm"
+                  className="btn button-main mx-1 btn-sm"
                   onClick={() => handleEdit(index)}
                 >
                   <i className="fa-solid fa-edit"></i>

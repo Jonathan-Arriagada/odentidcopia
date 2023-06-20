@@ -446,7 +446,7 @@ function CreateTratamiento(props) {
               </div>
             </div>
             <div style={{ display: "flex" }}>
-              <button type="submit" onClick={validateFields} className="btn btn-primary" style={{ margin: '10px' }}>
+              <button type="submit" onClick={validateFields} className="btn button-main" style={{ margin: '10px' }}>
                 Agregar
               </button>
               {error && (

@@ -53,7 +53,7 @@ const Navigation = () => {
             setOpen2(false);
             setOpen3(false);
         } else {
-            if (location.pathname === "/pacientes" || location.pathname === "/historia" || location.pathname === "/tratamientos" || location.pathname === "/controlEvoluciones") {
+            if (location.pathname === "/pacientes" || location.pathname === "/historias" || location.pathname === "/tratamientos" || location.pathname === "/controlEvoluciones") {
                 setOpen(true);
                 setOpen2(false)
                 setOpen3(false)
@@ -69,7 +69,7 @@ const Navigation = () => {
                 setOpen5(false)
                 setOpen6(false)
             }
-            if (location.pathname === "/gastos" || location.pathname === "/ventas") {
+            if (location.pathname === "/compras" || location.pathname === "/ventas") {
                 setOpen4(true);
                 setOpen(false)
                 setOpen2(true)
@@ -159,7 +159,7 @@ const Navigation = () => {
                     </div>
                     <div className="sidebar-content">
                         <Link to="/pacientes" className="text-decoration-none link-light"><Nav title="Lista de Pacientes" Icon={FaUsers} /></Link>
-                        <Link to="/historia" className="text-decoration-none link-light"><Nav title="Historial Clínica" Icon={FaBookMedical} /></Link>
+                        <Link to="/historias" className="text-decoration-none link-light"><Nav title="Historias" Icon={FaBookMedical} /></Link>
                         <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
                         <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
                     </div>
@@ -177,8 +177,8 @@ const Navigation = () => {
                                 <Nav title="Registros contables" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen4(!open4)}/>
                             </div>
                             <div className="sidebar-content sub-content">
-                                <Link to="/ventas" className="text-decoration-none link-light"><Nav title="Registro de ingresos" Icon={FaDollarSign}/> </Link>
-                                <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Registro de compras" Icon={FaShoppingCart}/> </Link>
+                                <Link to="/ventas" className="text-decoration-none link-light"><Nav title="Registro de ventas" Icon={FaDollarSign}/> </Link>
+                                <Link to="/compras" className="text-decoration-none link-light"><Nav title="Registro de compras" Icon={FaShoppingCart}/> </Link>
                             </div>
                         </div>
                         <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
