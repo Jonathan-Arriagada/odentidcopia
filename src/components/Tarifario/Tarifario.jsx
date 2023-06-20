@@ -226,11 +226,11 @@ function Tarifario() {
                           key={tarifa.id}
                           className={tarifa.eliminado ? "deleted-row" : ""}
                         >
-                          <td> {tarifa.codigo} </td>
+                          <td id="colIzquierda"> {tarifa.codigo} </td>
                           <td style={{ textAlign: "left" }}> {tarifa.tratamiento}</td>
                           <td> {tarifa.tarifa} </td>
                           {userType === process.env.REACT_APP_rolAdCon ? (
-                            <td id="columnaAccion" >
+                            <td id="columnaAccion" className="colDerecha">
                               <Dropdown>
                                 <Dropdown.Toggle
                                   variant="primary"

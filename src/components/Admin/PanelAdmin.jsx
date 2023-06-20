@@ -220,14 +220,14 @@ function PanelAdmin() {
                           <tr key={usuario.id}
                             className={usuario.rol === process.env.REACT_APP_rolBloq ? "deleted-row" : usuario.rol === process.env.REACT_APP_rolAd ? "admin-row" : ""}
                           >
-                            <td> {usuario.codigo} </td>
+                            <td id="colIzquierda"> {usuario.codigo} </td>
                             <td> {usuario.apellido}</td>
                             <td> {usuario.nombres}</td>
                             <td> {usuario.correo} </td>
                             <td> {usuario.telefono} </td>
                             <td> {usuario.fechaAlta}</td>
                             <td>{usuario.rol === process.env.REACT_APP_rolAd ? 'Admin' : usuario.rol === process.env.REACT_APP_rolRecepcionis ? 'Recepcionista' : usuario.rol === process.env.REACT_APP_rolDoctor ? 'Doctor' : ''}</td>
-                            <td>
+                            <td className="colDerecha">
                               {usuario.rol !== process.env.REACT_APP_rolAd && (
                                 <>
                                   <button

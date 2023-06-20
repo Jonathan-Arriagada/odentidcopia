@@ -12,6 +12,7 @@ import "../../style/Main.css";
 import Swal from "sweetalert2";
 import profile from "../../img/profile.png";
 import { AuthContext } from "../../context/AuthContext";
+import iconoDinero from "../../img/icono-dinero.png";
 
 const Ingresos = () => {
   const [tratamientos, setTratamientos] = useState([]);
@@ -19,7 +20,7 @@ const Ingresos = () => {
   const [order, setOrder] = useState("ASC");
   const [isLoading, setIsLoading] = useState(true);
   const [totalIngresos, setTotalIngresos] = useState(0);
-  const [cantIngresos, setCantIngresos] = useState(0);
+  //const [cantIngresos, setCantIngresos] = useState(0);
 
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -183,19 +184,19 @@ const Ingresos = () => {
 
   useEffect(() => {
     let total = 0;
-    let cantidad = 0;
+    //let cantidad = 0;
 
     results.forEach((tratamiento) => {
       const importes = tratamiento.cobrosManuales.importeAbonado;
 
       importes.forEach((importe, index) => {
         total += Number(importe);
-        cantidad++;
+        //cantidad++;
       });
     });
 
     setTotalIngresos(total);
-    setCantIngresos(cantidad);
+    //setCantIngresos(cantidad);
   }, [results]);
 
   const sorting = (col) => {
@@ -276,7 +277,7 @@ const Ingresos = () => {
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                  Hola, {currentUser.displayName}
+                    Hola, {currentUser.displayName}
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
@@ -338,8 +339,7 @@ const Ingresos = () => {
                   <div className="d-grid gap-2">
                     <div className="d-flex justify-content-between">
                       <div className="col d-flex justify-content-start">
-                        <h1>Ingresos</h1>
-
+                        <h1 id="tituloVentas">Ventas</h1>
                         <button
                           variant="primary"
                           className="btn greenWater without mx-1 btn-md"
@@ -408,12 +408,13 @@ const Ingresos = () => {
                           </div>
                         )}
                       </div>
-                      <div className="col d-flex justify-content-end">
-                        <div className="d-flex flex-column">
-                          <h5>Cant Ingresos: {cantIngresos} </h5>
-                          <h5>Total Ingresos: {totalIngresos}</h5>
+                      <div className="col d-flex justify-content-end align-items-center">
+                        <div className="d-flex form-control-dash">
+                          <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
+                          <h5 id="tituloVentas">Total Ventas: {totalIngresos}</h5>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -520,7 +521,7 @@ const Ingresos = () => {
 
                             return (
                               <tr key={index}>
-                                <td>
+                                <td id="colIzquierda">
                                   {moment(fecha.toString()).format(
                                     "DD/MM/YY"
                                   )}
@@ -528,7 +529,7 @@ const Ingresos = () => {
                                 <td style={{ textAlign: "left" }}>{paciente.toString()}</td>
                                 <td style={{ textAlign: "left" }}>{tratamientoz.toString()}</td>
                                 <td>{nroComprobante.toString()}</td>
-                                <td>{importe.toString()}</td>
+                                <td className="colDerecha">{importe.toString()}</td>
                               </tr>
                             );
 

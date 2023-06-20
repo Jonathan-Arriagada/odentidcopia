@@ -232,7 +232,16 @@ tbody tr.hide {
 
 tbody tr:not(.admin-row):hover {
   background-color: var(--color-background-green) !important;
-  border: 3px solid var(--color-white) !important;
+
+  /*border: 2px solid var(--color-white) !important;*/
+  #colIzquierda {
+    border-radius: 30px 0 0 30px;
+  }
+
+  .colDerecha {
+    border-radius: 0 30px 30px 0;
+
+  }
 }
 
 
@@ -487,7 +496,7 @@ select {
 }
 
 .form-control-check {
-  background-color: var(--color-disabled);
+  background-color: var(--color-white);
 }
 
 
@@ -765,6 +774,13 @@ select {
   margin-right: 10px;
 }
 
+.profile-dinero {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
 .right-navbar {
   width: 28%;
 }
@@ -780,6 +796,25 @@ select {
   background-color: var(--color-disabled);
   background-clip: padding-box;
   border-radius: 0.35rem;
+}
+
+.form-control-dash {
+  display: block;
+  width: 40% !important;
+  padding: 0.875rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-texto-oscuro);
+  background-color: var(--color-fondo-inputs);
+  background-clip: padding-box;
+  border: 1px solid var(--color-grey-element);
+  border-radius: 0.85rem;
+  align-items: center;
+}
+
+#tituloVentas {
+  margin: 0;
 }
 
 @media (max-width: 1440px) and (max-height: 768px) {
@@ -917,6 +952,12 @@ select {
   object-fit: contain;
 }
 
+.profile-img-inactive {
+  position: sticky;
+  height: 50px;
+  object-fit: contain;
+}
+
 .navigation.active header .profile {
   height: 40px;
 }
@@ -990,8 +1031,9 @@ select {
 
 #contenedorFiliacion {
   background-color: var(--color-fondo);
-  padding: 10px;
+  padding: 20px;
   border-radius: 1rem;
+  margin: 5px;
 }
 
 

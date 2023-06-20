@@ -239,7 +239,7 @@ const ControlEvolucion = () => {
                                             <tbody>
                                                 {results.map((control, index) => (
                                                     <tr key={control.id}>
-                                                        <td>{results.length - index}</td>
+                                                        <td id="colIzquierda">{results.length - index}</td>
                                                         <td> {control.apellidoConNombre} </td>
                                                         <td> {control.idc} </td>
                                                         <td> {control.tratamientoControl} </td>
@@ -251,7 +251,7 @@ const ControlEvolucion = () => {
                                                             )}
                                                         </td>
 
-                                                        <td style={{ padding: "10px" }}>
+                                                        <td style={{ padding: "10px" }} className="colDerecha">
                                                             <button
                                                                 variant="primary"
                                                                 className="btn btn-secondary mx-1"

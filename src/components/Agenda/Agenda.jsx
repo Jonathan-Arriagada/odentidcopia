@@ -504,7 +504,7 @@ function Citas() {
                       <tbody>
                         {currentResults.map((cita, index) => (
                           <tr key={cita.id}>
-                            <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
+                            <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
                             <td> {cita.horaInicio} </td>
                             <td> {cita.horaFin} </td>
                             <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
@@ -526,7 +526,7 @@ function Citas() {
                                 />
                               </div>
                             </td>
-                            <td id="columnaAccion">
+                            <td id="columnaAccion" className="colDerecha">
                               <Dropdown>
                                 <Dropdown.Toggle
                                   variant="primary"

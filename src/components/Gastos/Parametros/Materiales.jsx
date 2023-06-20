@@ -275,10 +275,10 @@ const Materiales = () => {
                                             <tbody>
                                                 {results.map((material, index) => (
                                                     <tr key={material.id}>
-                                                        <td>{material.cuenta}</td>
+                                                        <td id="colIzquierda">{material.cuenta}</td>
                                                         <td style={{ textAlign: "left" }}>{material.name}</td>
                                                         <td>{material.um}</td>
-                                                        <td>
+                                                        <td className="colDerecha">
                                                             <button
                                                                 className="btn btn-success mx-1 btn-sm"
                                                                 onClick={() => { setModalShowGestionMateriales(true); handleEdit(index) }}

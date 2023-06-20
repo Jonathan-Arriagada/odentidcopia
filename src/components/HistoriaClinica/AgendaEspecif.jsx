@@ -379,14 +379,14 @@ function AgendaEspecif(id) {
                           <tbody>
                             {results.map((cita) => (
                               <tr key={cita.id}>
-                                <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
+                                <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
                                 <td> {cita.horaInicio} </td>
                                 <td> {cita.horaFin} </td>
                                 <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
                                 <td> {cita.idc} </td>
                                 <td> {cita.numero} </td>
                                 <td>{JSON.parse(cita.doctor).nombreApellido}</td>
-                                <td>
+                                <td className="colDerecha">
                                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     {cita.estado || ""}
                                     {cita.estado && (

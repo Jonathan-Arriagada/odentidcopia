@@ -974,7 +974,7 @@ function TratamientosEspecif(props) {
                           <tbody>
                             {results.map((tratamiento, index) => (
                               <tr key={tratamiento.id}>
-                                <td>{results.length - index}</td>
+                                <td id="colIzquierda">{results.length - index}</td>
                                 <td> {tratamiento.tarifasTratamientos} </td>
                                 <td> {tratamiento.pieza} </td>
                                 <td> {tratamiento.precio} </td>
@@ -984,7 +984,7 @@ function TratamientosEspecif(props) {
                                   moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
                                 )}
                                 </td>
-                                <td>
+                                <td className="colDerecha">
                                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     {tratamiento.estadoPago || ""}
                                     {tratamiento.estadoPago && (

@@ -272,9 +272,9 @@ const Proveedores = () => {
                       <tbody>
                         {results.map((proveedor, index) => (
                           <tr key={proveedor.id}>
-                            <td>{proveedor.ruc}</td>
+                            <td id="colIzquierda">{proveedor.ruc}</td>
                             <td style={{ textAlign: "left" }}>{proveedor.name}</td>
-                            <td>
+                            <td className="colDerecha">
                               <button
                                 className="btn btn-success mx-1 btn-sm"
                                 onClick={() => {

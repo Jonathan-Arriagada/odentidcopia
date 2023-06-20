@@ -268,7 +268,7 @@ const Gastos = () => {
                                             <tbody>
                                                 {results.map((gasto) => (
                                                     <tr key={gasto.id}>
-                                                        <td>{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
+                                                        <td id="colIzquierda">{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
                                                         <td> {gasto.ruc} </td>
                                                         <td> {gasto.proveedor} </td>
                                                         <td> {gasto.tipoGasto} </td>
@@ -279,7 +279,7 @@ const Gastos = () => {
                                                         <td> {gasto.descripArticulo} </td>
                                                         <td> {gasto.precioUniArticulo} </td>
                                                         <td> {gasto.subTotalArticulo} </td>
-                                                        <td id="columnaAccion">
+                                                        <td id="columnaAccion" className="colDerecha">
                                                             <Dropdown>
                                                                 <Dropdown.Toggle
                                                                     variant="primary"

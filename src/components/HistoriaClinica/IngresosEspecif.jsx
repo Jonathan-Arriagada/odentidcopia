@@ -6,6 +6,7 @@ import moment from "moment";
 import Calendar from "react-calendar";
 import { Modal, Button } from "react-bootstrap";
 import "../../style/Main.css";
+import iconoDinero from "../../img/icono-dinero.png";
 
 function IngresosEspecif(id) {
   const [tratamientos, setTratamientos] = useState([]);
@@ -13,7 +14,7 @@ function IngresosEspecif(id) {
   const [order, setOrder] = useState("ASC");
   const [isLoading, setIsLoading] = useState(true);
   const [totalIngresos, setTotalIngresos] = useState(0);
-  const [cantIngresos, setCantIngresos] = useState(0);
+  //const [cantIngresos, setCantIngresos] = useState(0);
   const [noHayIngresos, setNoHayIngresos] = useState(false);
 
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
@@ -161,19 +162,19 @@ function IngresosEspecif(id) {
 
   useEffect(() => {
     let total = 0;
-    let cantidad = 0;
+    //let cantidad = 0;
 
     results.forEach((tratamiento) => {
       const importes = tratamiento.cobrosManuales.importeAbonado;
 
       importes.forEach((importe, index) => {
         total += Number(importe);
-        cantidad++;
+        //cantidad++;
       });
     });
 
     setTotalIngresos(total);
-    setCantIngresos(cantidad);
+    //setCantIngresos(cantidad);
   }, [results]);
 
   const sorting = (col) => {
@@ -234,8 +235,8 @@ function IngresosEspecif(id) {
               ) : (
                 <div className="container mt-2 mw-100" >
                   <div className="row">
-                    <h1>A Este paciente no se le han registrado Ingresos aún</h1>
-                    <h3>Para registrar Ingresos diríjase a Tratamientos</h3>
+                    <h1>A Este paciente no se le han registrado Ventas aún</h1>
+                    <h3 id="tituloVentas">Para registrar Ventas diríjase a Tratamientos</h3>
                   </div>
                 </div>
               )
@@ -247,7 +248,7 @@ function IngresosEspecif(id) {
                       <div className="d-grid gap-2">
                         <div className="d-flex justify-content-between">
                           <div className="col d-flex justify-content-start align-items-center">
-                            <h3>Ingresos cobrados al Paciente</h3>
+                            <h3>Ventas cobrados al Paciente</h3>
                             <button
                               variant="primary"
                               className="btn greenWater without mx-1 btn-md ms-3 me-3"
@@ -340,9 +341,9 @@ function IngresosEspecif(id) {
                               className="form-control m-2 w-25"
                               style={{ display: "none" }}
                             />
-                            <div className="d-flex flex-column">
-                              <h5>Cant Ingresos: {cantIngresos} </h5>
-                              <h5>Total Ingresos: {totalIngresos}</h5>
+                            <div className="d-flex form-control-dash">
+                              <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
+                              <h5 id="tituloVentas">Total Ventas: {totalIngresos}</h5>
                             </div>
                           </div>
                         </div>
@@ -448,7 +449,7 @@ function IngresosEspecif(id) {
 
                                 return (
                                   <tr key={index}>
-                                    <td>
+                                    <td id="colIzquierda">
                                       {moment(fecha.toString()).format(
                                         "DD/MM/YY"
                                       )}
@@ -456,7 +457,7 @@ function IngresosEspecif(id) {
                                     <td style={{ textAlign: "left" }}>{paciente.toString()}</td>
                                     <td style={{ textAlign: "left" }}>{tratamientoz.toString()}</td>
                                     <td>{nroComprobante.toString()}</td>
-                                    <td>{importe.toString()}</td>
+                                    <td className="colDerecha">{importe.toString()}</td>
                                   </tr>
                                 );
                               }

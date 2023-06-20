@@ -299,7 +299,7 @@ function Filiacion(id) {
                       />
                     </div>
 
-                    <div className="col-md-3" style={{width: "276px"}}>
+                    <div className="col-md-3" style={{width: "274px"}}>
                       <label className="form-label">Sexo:</label>
                       <select
                         value={sexo}

@@ -271,7 +271,7 @@ const Show = () => {
                       <tbody>
                         {currentResults.map((client) => (
                           <tr key={client.id}>
-                            <td style={{ textAlign: "left" }} >
+                            <td style={{ textAlign: "left" }} id="colIzquierda">
                               <Link to={`/historias/${client.id}`} id="tdConColor">
                                 {client.apellidoConNombre}
                               </Link>
@@ -286,7 +286,7 @@ const Show = () => {
                             </td>
                             <td> {client.selectedCode}{client.numero}</td>
 
-                            <td id="columnaAccion">
+                            <td id="columnaAccion" className="colDerecha">
                               <Dropdown>
                                 <Dropdown.Toggle
                                   variant="primary"

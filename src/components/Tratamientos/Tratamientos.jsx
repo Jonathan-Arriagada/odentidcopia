@@ -1129,7 +1129,7 @@ function Tratamientos() {
                       <tbody>
                         {results.map((tratamiento, index) => (
                           <tr key={tratamiento.id}>
-                            <td>{results.length - index}</td>
+                            <td id="colIzquierda">{results.length - index}</td>
                             <td style={{ textAlign: "left" }}> {tratamiento.apellidoConNombre} </td>
                             <td> {tratamiento.idc} </td>
                             <td> {tratamiento.tarifasTratamientos} </td>
@@ -1163,7 +1163,7 @@ function Tratamientos() {
                               </div>
                             </td>
 
-                            <td id="columnaAccion">
+                            <td id="columnaAccion" className="colDerecha">
                               <Dropdown>
                                 <Dropdown.Toggle
                                   variant="primary"
