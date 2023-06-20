@@ -82,16 +82,28 @@ function Tarifario() {
     setSearch(e.target.value);
   };
 
-  let results = [];
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  let filteredResults = [];
   if (!search) {
-    results = tarifas;
+    filteredResults = tarifas;
   } else {
-    results = tarifas.filter(
+    filteredResults = tarifas.filter(
       (dato) =>
         dato.tratamiento.toLowerCase().includes(search.toLowerCase()) ||
         dato.codigo.toString().includes(search.toString())
     );
   }
+
+  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResults = filteredResults.slice(startIndex, endIndex);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -131,7 +143,7 @@ function Tarifario() {
               </div>
               <div className="col d-flex justify-content-end align-items-center right-navbar">
                 <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                Hola, {currentUser.displayName}
+                  Hola, {currentUser.displayName}
                 </p>
                 <div className="d-flex">
                   <div className="notificacion">
@@ -221,7 +233,7 @@ function Tarifario() {
                     </thead>
 
                     <tbody>
-                      {results.map((tarifa) => (
+                      {currentResults.map((tarifa) => (
                         <tr
                           key={tarifa.id}
                           className={tarifa.eliminado ? "deleted-row" : ""}
@@ -290,6 +302,55 @@ function Tarifario() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+                <div className="table__footer">
+                  <div className="table__footer-left">
+                    Mostrando {startIndex + 1} - {Math.min(endIndex, tarifas.length)} de {tarifas.length}
+                  </div>
+
+                  <div className="table__footer-right">
+                    <span>
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        style={{ border: "0", background: "none" }}
+                      >
+                        &lt; Previo
+                      </button>
+                    </span>
+
+                    {[...Array(totalPages)].map((_, index) => {
+                      const page = index + 1;
+                      return (
+                        <span key={page}>
+                          <span
+                            onClick={() => handlePageChange(page)}
+                            className={page === currentPage ? "active" : ""}
+                            style={{
+                              margin: "2px",
+                              backgroundColor: page === currentPage ? "#003057" : "transparent",
+                              color: page === currentPage ? "#FFFFFF" : "#000000",
+                              padding: "4px 8px",
+                              borderRadius: "4px",
+                              cursor: "pointer"
+                            }}
+                          >
+                            {page}
+                          </span>
+                        </span>
+                      );
+                    })}
+
+                    <span>
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        style={{ border: "0", background: "none" }}
+                      >
+                        Siguiente &gt;
+                      </button>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

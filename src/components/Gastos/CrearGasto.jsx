@@ -404,8 +404,9 @@ const CrearGasto = (props) => {
                                                 <input
                                                     value={descripArticulo}
                                                     onChange={(e) => {
-                                                        setDescripArticulo(e.target.value);
-                                                        buscarCuentaArticulo(e.target.value);
+                                                        var inputValue = e.target.value.toUpperCase();
+                                                        setDescripArticulo(inputValue);
+                                                        buscarCuentaArticulo(inputValue);
                                                     }}
                                                     className="form-control"
                                                     list="materiales-list"

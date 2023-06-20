@@ -227,12 +227,19 @@ function TratamientosEspecif(props) {
     }
   };
 
-  var results;
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  var filteredResults;
   if (!search) {
-    results = tratamientos;
+    filteredResults = tratamientos;
   } else {
     if (typeof search === "object") {
-      results = tratamientos.filter((dato) => {
+      filteredResults = tratamientos.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       });
@@ -242,12 +249,12 @@ function TratamientosEspecif(props) {
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
       ) {
-        results = tratamientos.filter(
+        filteredResults = tratamientos.filter(
           (dato) => dato.fecha === search.toString()
         );
       } else {
         if (search.toString().length === 1 && !isNaN(search)) {
-          results = tratamientos.filter((dato) => dato.codigo === search);
+          filteredResults = tratamientos.filter((dato) => dato.codigo === search);
         } else {
           if (
             filtroBusqueda &&
@@ -259,7 +266,7 @@ function TratamientosEspecif(props) {
                 tratamiento[filtroBusqueda] !== null
             )
           ) {
-            results = tratamientos.filter(
+            filteredResults = tratamientos.filter(
               (dato) =>
                 dato[filtroBusqueda]?.includes(search) &&
                 dato[filtroBusqueda] !== "" &&
@@ -267,7 +274,7 @@ function TratamientosEspecif(props) {
                 dato[filtroBusqueda] !== null
             );
           } else {
-            results = tratamientos.filter(
+            filteredResults = tratamientos.filter(
               (dato) =>
                 dato.apellidoConNombre.toLowerCase().includes(search) ||
                 dato.idc.toString().includes(search.toString())
@@ -277,6 +284,11 @@ function TratamientosEspecif(props) {
       }
     }
   }
+
+  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResults = filteredResults.slice(startIndex, endIndex);
 
   const handleCheckboxChange = (event) => {
     setSelectedCheckbox(event.target.name);
@@ -972,9 +984,9 @@ function TratamientosEspecif(props) {
                           </thead>
 
                           <tbody>
-                            {results.map((tratamiento, index) => (
+                            {currentResults.map((tratamiento, index) => (
                               <tr key={tratamiento.id}>
-                                <td id="colIzquierda">{results.length - index}</td>
+                                <td id="colIzquierda">{currentResults.length - index}</td>
                                 <td> {tratamiento.tarifasTratamientos} </td>
                                 <td> {tratamiento.pieza} </td>
                                 <td> {tratamiento.precio} </td>
@@ -1108,6 +1120,55 @@ function TratamientosEspecif(props) {
                           </tbody>
                         </table>
                       </div>
+                      <div className="table__footer">
+                        <div className="table__footer-left">
+                          Mostrando {startIndex + 1} - {Math.min(endIndex, tratamientos.length)} de {tratamientos.length}
+                        </div>
+
+                        <div className="table__footer-right">
+                          <span>
+                            <button
+                              onClick={() => handlePageChange(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              style={{ border: "0", background: "none" }}
+                            >
+                              &lt; Previo
+                            </button>
+                          </span>
+
+                          {[...Array(totalPages)].map((_, index) => {
+                            const page = index + 1;
+                            return (
+                              <span key={page}>
+                                <span
+                                  onClick={() => handlePageChange(page)}
+                                  className={page === currentPage ? "active" : ""}
+                                  style={{
+                                    margin: "2px",
+                                    backgroundColor: page === currentPage ? "#003057" : "transparent",
+                                    color: page === currentPage ? "#FFFFFF" : "#000000",
+                                    padding: "4px 8px",
+                                    borderRadius: "4px",
+                                    cursor: "pointer"
+                                  }}
+                                >
+                                  {page}
+                                </span>
+                              </span>
+                            );
+                          })}
+
+                          <span>
+                            <button
+                              onClick={() => handlePageChange(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              style={{ border: "0", background: "none" }}
+                            >
+                              Siguiente &gt;
+                            </button>
+                          </span>
+                        </div>
+                      </div>
 
                       {modalShowVerNotas[0] && (
                         <Modal
@@ -1182,7 +1243,7 @@ function TratamientosEspecif(props) {
                               </thead>
 
                               <tbody>
-                                {results.map((tratamiento) => (
+                                {currentResults.map((tratamiento) => (
                                   tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
                                     const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
                                     const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";

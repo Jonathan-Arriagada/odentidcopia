@@ -4,82 +4,82 @@ import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy, } from "fir
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
 
-const TipoGasto = ({ show, onHide }) => {
+const UnidadesMedidas = ({ show, onHide }) => {
     const [editIndex, setEditIndex] = useState(null);
-    const [tipoGasto, setTipoGasto] = useState("");
-    const [tipoGastos, setTipoGastos] = useState([]);
+    const [unidadMedida, setUnidadMedida] = useState("");
+    const [unidadesMedidas, setUnidadesMedidas] = useState([]);
     const [error, setError] = useState("");
 
-    const tipoGastosCollection = collection(db, "tipoGasto");
-    const tipoGastosCollectionOrdenados = useRef(query(tipoGastosCollection, orderBy("name")));
+    const unidadesMedidasCollection = collection(db, "unidadesMedidas");
+    const unidadesMedidasCollectionOrdenados = useRef(query(unidadesMedidasCollection, orderBy("name")));
 
-    const updateTipoGastoFromSnapshot = useCallback((snapshot) => {
-        const tipoGastosArray = snapshot.docs.map((doc) => ({
+    const updateUnidadesMedidasFromSnapshot = useCallback((snapshot) => {
+        const unidadesMedidasArray = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
         }));
-        setTipoGastos(tipoGastosArray);
+        setUnidadesMedidas(unidadesMedidasArray);
     }, []);
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
-            tipoGastosCollectionOrdenados.current,
-            updateTipoGastoFromSnapshot
+            unidadesMedidasCollectionOrdenados.current,
+            updateUnidadesMedidasFromSnapshot
         );
         return unsubscribe;
-    }, [updateTipoGastoFromSnapshot]);
+    }, [updateUnidadesMedidasFromSnapshot]);
 
     const inputRef = useRef(null);
 
-    const tipoGastoExiste = (name) => {
-        return tipoGastos.some(
-            (tipoGasto) => tipoGasto.name.toLowerCase() === name.toLowerCase()
+    const unidadMedidaExiste = (name) => {
+        return unidadesMedidas.some(
+            (unidadMedida) => unidadMedida.name.toLowerCase() === name.toLowerCase()
         );
     };
 
     const handleCreate = (e) => {
         e.preventDefault();
-        if (tipoGasto.trim() === "") {
-            setError("El Tipo Gasto no puede estar vacío");
+        if (unidadMedida.trim() === "") {
+            setError("La unidad medida no puede estar vacío");
             return;
         }
-        if (tipoGastoExiste(tipoGasto)) {
-            setError("El Tipo Gasto ya existe");
+        if (unidadMedidaExiste(unidadMedida)) {
+            setError("La unidad medida ya existe");
             return;
         }
-        const newState = { name: tipoGasto };
-        addDoc(tipoGastosCollection, newState).then(() => {
-            setTipoGasto("");
+        const newState = { name: unidadMedida };
+        addDoc(unidadesMedidasCollection, newState).then(() => {
+            setUnidadMedida("");
             setError("");
         });
     };
 
     const handleEdit = (index) => {
         setEditIndex(index);
-        setTipoGasto(tipoGastos[index].name);
+        setUnidadMedida(unidadesMedidas[index].name);
         setError("");
     };
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        if (tipoGasto.trim() === "") {
-            setError("El Tipo Gasto no puede estar vacío");
+        if (unidadMedida.trim() === "") {
+            setError("La unidad medida no puede estar vacío");
             return;
         }
-        const tipoGastoToUpdate = tipoGastos[editIndex];
-        const newState = { name: tipoGasto };
-        setDoc(doc(tipoGastosCollection, tipoGastoToUpdate.id), newState).then(() => {
+        const unidadMedidaToUpdate = unidadesMedidas[editIndex];
+        const newState = { name: unidadMedida };
+        setDoc(doc(unidadesMedidasCollection, unidadMedidaToUpdate.id), newState).then(() => {
             setEditIndex(null);
-            setTipoGasto("");
+            setUnidadMedida("");
             setError("");
         });
     };
 
     const handleDelete = async (index) => {
-        await deleteDoc(doc(tipoGastosCollection, tipoGastos[index].id));
-        const newStates = tipoGastos.filter((_, i) => i !== index);
-        setTipoGastos(newStates);
-        setTipoGasto("");
+        await deleteDoc(doc(unidadesMedidasCollection, unidadesMedidas[index].id));
+        const newStates = unidadesMedidas.filter((_, i) => i !== index);
+        setUnidadesMedidas(newStates);
+        setUnidadMedida("");
         setError("");
     };
 
@@ -91,17 +91,17 @@ const TipoGasto = ({ show, onHide }) => {
             centered
         >
             <Modal.Header closeButton>
-                <Modal.Title>Crear/Editar/Eliminar Tipo Compra</Modal.Title>
+                <Modal.Title>Crear/Editar/Eliminar Unidad Medida</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <form onSubmit={editIndex !== null ? handleUpdate : handleCreate}>
                     <div className="mb-3">
-                        <label className="form-label">Tipo Gasto</label>
+                        <label className="form-label">Unidad Medida</label>
                         <input
                             type="text"
                             className="form-control"
-                            value={tipoGasto}
-                            onChange={(e) => setTipoGasto(e.target.value)}
+                            value={unidadMedida}
+                            onChange={(e) => setUnidadMedida(e.target.value)}
                             ref={inputRef}
                         />
                         {error && <small className="text-danger">{error}</small>}
@@ -120,12 +120,12 @@ const TipoGasto = ({ show, onHide }) => {
                     )}
                 </form>
                 <div className="mt-3">
-                    {tipoGastos.map((tipo, index) => (
+                    {unidadesMedidas.map((uniMedida, index) => (
                         <div
-                            key={tipo.id}
+                            key={uniMedida.id}
                             className="d-flex align-items-center justify-content-between border p-2"
                         >
-                            <div>{tipo.name}</div>
+                            <div>{uniMedida.name}</div>
                             <div>
                                 <button
                                     className="btn button-main mx-1 btn-sm"
@@ -148,4 +148,4 @@ const TipoGasto = ({ show, onHide }) => {
     );
 };
 
-export default TipoGasto;
+export default UnidadesMedidas;

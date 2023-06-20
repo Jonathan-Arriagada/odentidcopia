@@ -159,7 +159,7 @@ const Navigation = () => {
                             <Nav title="Pacientes" Icon={FaLaptopMedical} /><FaChevronDown className="toggle-btn" onClick={() => setOpen(!open)} />
                         </div>
                         <div className="sidebar-content">
-                            <Link to="/pacientes" className="text-decoration-none link-light"><Nav title="Lista de Pacientes" Icon={FaUsers} /></Link>
+                            <Link to="/pacientes" className="text-decoration-none link-light"><Nav title="Listado Pacientes" Icon={FaUsers} /></Link>
                             <Link to="/historias" className="text-decoration-none link-light"><Nav title="Historias" Icon={FaBookMedical} /></Link>
                             <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
                             <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
@@ -178,8 +178,8 @@ const Navigation = () => {
                                     <Nav title="Registros contables" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen4(!open4)} />
                                 </div>
                                 <div className="sidebar-content sub-content">
-                                    <Link to="/ventas" className="text-decoration-none link-light"><Nav title="Registro de ventas" Icon={FaDollarSign} /> </Link>
-                                    <Link to="/compras" className="text-decoration-none link-light"><Nav title="Registro de compras" Icon={FaShoppingCart} /> </Link>
+                                    <Link to="/ventas" className="text-decoration-none link-light"><Nav title="Ventas" Icon={FaDollarSign} /> </Link>
+                                    <Link to="/compras" className="text-decoration-none link-light"><Nav title="Compras" Icon={FaShoppingCart} /> </Link>
                                 </div>
                             </div>
                             <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
@@ -187,10 +187,10 @@ const Navigation = () => {
                                     <Nav title="Informes contables" Icon={FaFileAlt} /> <FaChevronDown className="toggle-btn" onClick={() => setOpen5(!open5)} />
                                 </div>
                                 <div className="sidebar-content sub-content">
-                                    <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe de ingresos" Icon={FaDonate} /> </Link>
-                                    <Link to="/informe-ingresos-tratamiento" className="text-decoration-none link-light"><Nav title="Informe de ingresos por tratamiento" Icon={FaNotesMedical} /> </Link>
-                                    <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe de compras" Icon={FaMoneyCheckAlt} /> </Link>
-                                    <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparación de compras" Icon={FaBalanceScale} /> </Link>
+                                    <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe ingresos" Icon={FaDonate} /> </Link>
+                                    <Link to="/informe-ingresos-tratamiento" className="text-decoration-none link-light"><Nav title="Informe Tratamientos" Icon={FaNotesMedical} /> </Link>
+                                    <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe Compras" Icon={FaMoneyCheckAlt} /> </Link>
+                                    <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparaciones" Icon={FaBalanceScale} /> </Link>
                                 </div>
                             </div>
                             <div className={open7 ? "sidebar-item open" : "sidebar-item"}>

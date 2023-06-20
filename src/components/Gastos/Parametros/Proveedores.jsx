@@ -135,17 +135,29 @@ const Proveedores = () => {
     setSearch(e.target.value);
   };
 
-  let results = [];
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  let filteredResults = [];
 
   if (!search) {
-    results = proveedores;
+    filteredResults = proveedores;
   } else {
-    results = proveedores.filter(
+    filteredResults = proveedores.filter(
       (dato) =>
         dato.name.toLowerCase().includes(search.toLowerCase()) ||
         dato.ruc.toString().includes(search.toString())
     );
   }
+
+  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResults = filteredResults.slice(startIndex, endIndex);
 
   const handleCloseModal = () => {
     setEditIndex(null);
@@ -177,7 +189,7 @@ const Proveedores = () => {
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                   <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                  Hola, {currentUser.displayName}
+                    Hola, {currentUser.displayName}
                   </p>
                   <div className="d-flex">
                     <div className="notificacion">
@@ -270,7 +282,7 @@ const Proveedores = () => {
                       </thead>
 
                       <tbody>
-                        {results.map((proveedor, index) => (
+                        {currentResults.map((proveedor, index) => (
                           <tr key={proveedor.id}>
                             <td id="colIzquierda">{proveedor.ruc}</td>
                             <td style={{ textAlign: "left" }}>{proveedor.name}</td>
@@ -297,6 +309,55 @@ const Proveedores = () => {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                  <div className="table__footer">
+                    <div className="table__footer-left">
+                      Mostrando {startIndex + 1} - {Math.min(endIndex, proveedores.length)} de {proveedores.length}
+                    </div>
+
+                    <div className="table__footer-right">
+                      <span>
+                        <button
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          style={{ border: "0", background: "none" }}
+                        >
+                          &lt; Previo
+                        </button>
+                      </span>
+
+                      {[...Array(totalPages)].map((_, index) => {
+                        const page = index + 1;
+                        return (
+                          <span key={page}>
+                            <span
+                              onClick={() => handlePageChange(page)}
+                              className={page === currentPage ? "active" : ""}
+                              style={{
+                                margin: "2px",
+                                backgroundColor: page === currentPage ? "#003057" : "transparent",
+                                color: page === currentPage ? "#FFFFFF" : "#000000",
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                cursor: "pointer"
+                              }}
+                            >
+                              {page}
+                            </span>
+                          </span>
+                        );
+                      })}
+
+                      <span>
+                        <button
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          style={{ border: "0", background: "none" }}
+                        >
+                          Siguiente &gt;
+                        </button>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

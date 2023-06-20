@@ -57,12 +57,19 @@ function IngresosEspecif(id) {
     }
   };
 
-  var results;
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  var filteredResults;
   if (!search || search === "") {
-    results = tratamientos;
+    filteredResults = tratamientos;
   } else {
     if (typeof search === "object") {
-      results = tratamientos.map((tratamiento) => {
+      filteredResults = tratamientos.map((tratamiento) => {
         const {
           fechaCobro,
           importeAbonado,
@@ -106,7 +113,7 @@ function IngresosEspecif(id) {
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
       ) {
-        results = tratamientos.map((tratamiento) => {
+        filteredResults = tratamientos.map((tratamiento) => {
           const {
             fechaCobro,
             importeAbonado,
@@ -145,7 +152,7 @@ function IngresosEspecif(id) {
           };
         });
       } else {
-        results = tratamientos.filter(
+        filteredResults = tratamientos.filter(
           (dato) =>
             dato.cobrosManuales.pacienteCobro
               ?.toString()
@@ -160,11 +167,16 @@ function IngresosEspecif(id) {
     }
   }
 
+  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResults = filteredResults.slice(startIndex, endIndex);
+
   useEffect(() => {
     let total = 0;
     //let cantidad = 0;
 
-    results.forEach((tratamiento) => {
+    currentResults.forEach((tratamiento) => {
       const importes = tratamiento.cobrosManuales.importeAbonado;
 
       importes.forEach((importe, index) => {
@@ -175,7 +187,7 @@ function IngresosEspecif(id) {
 
     setTotalIngresos(total);
     //setCantIngresos(cantidad);
-  }, [results]);
+  }, [currentResults]);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -246,9 +258,9 @@ function IngresosEspecif(id) {
                   <div className="col">
                     <div className="row">
                       <div className="d-grid gap-2">
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex justify-content-between align-items-center">
                           <div className="col d-flex justify-content-start align-items-center">
-                            <h3>Ventas cobrados al Paciente</h3>
+                            <h3 id="tituloVentas">Ventas cobradas al Paciente</h3>
                             <button
                               variant="primary"
                               className="btn greenWater without mx-1 btn-md ms-3 me-3"
@@ -333,7 +345,7 @@ function IngresosEspecif(id) {
                               </div>
                             )}
                           </div>
-                          <div className="col d-flex justify-content-end">
+                          <div className="col d-flex justify-content-end align-items-center">
                             <input
                               value={search}
                               onChange={searcher}
@@ -343,7 +355,7 @@ function IngresosEspecif(id) {
                             />
                             <div className="d-flex form-control-dash">
                               <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
-                              <h5 id="tituloVentas">Total Ventas: {totalIngresos}</h5>
+                              <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalIngresos}</span></h5>
                             </div>
                           </div>
                         </div>
@@ -425,7 +437,7 @@ function IngresosEspecif(id) {
                         </thead>
 
                         <tbody>
-                          {results.map((tratamiento) => {
+                          {currentResults.map((tratamiento) => {
                             return tratamiento.cobrosManuales.fechaCobro.map(
                               (_, index) => {
                                 const fecha =
@@ -465,6 +477,55 @@ function IngresosEspecif(id) {
                           })}
                         </tbody>
                       </table>
+                    </div>
+                    <div className="table__footer">
+                      <div className="table__footer-left">
+                        Mostrando {startIndex + 1} - {Math.min(endIndex, tratamientos.length)} de {tratamientos.length}
+                      </div>
+
+                      <div className="table__footer-right">
+                        <span>
+                          <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            style={{ border: "0", background: "none" }}
+                          >
+                            &lt; Previo
+                          </button>
+                        </span>
+
+                        {[...Array(totalPages)].map((_, index) => {
+                          const page = index + 1;
+                          return (
+                            <span key={page}>
+                              <span
+                                onClick={() => handlePageChange(page)}
+                                className={page === currentPage ? "active" : ""}
+                                style={{
+                                  margin: "2px",
+                                  backgroundColor: page === currentPage ? "#003057" : "transparent",
+                                  color: page === currentPage ? "#FFFFFF" : "#000000",
+                                  padding: "4px 8px",
+                                  borderRadius: "4px",
+                                  cursor: "pointer"
+                                }}
+                              >
+                                {page}
+                              </span>
+                            </span>
+                          );
+                        })}
+
+                        <span>
+                          <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            style={{ border: "0", background: "none" }}
+                          >
+                            Siguiente &gt;
+                          </button>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

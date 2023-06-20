@@ -245,8 +245,9 @@ const EditGasto = (props) => {
                         <select
                           defaultValue={props.gasto.descripArticulo}
                           onChange={(e) => {
-                            setDescripArticulo(e.target.value);
-                            buscarCuentaArticulo(e.target.value);
+                            var inputValue = e.target.value.toUpperCase();
+                            setDescripArticulo(inputValue);
+                            buscarCuentaArticulo(inputValue);
                           }}
                           className="form-control"
                           multiple={false}
