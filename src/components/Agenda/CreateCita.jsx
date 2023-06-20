@@ -361,29 +361,53 @@ function CreateCita(props) {
               </div>
 
               <div className="row">
-                <div className="col mb-3">
+              <div className="mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                  {selectedCode === '+51' && <img src={peruFlag} alt="Bandera de Perú" style={{ width: "45px", marginRight: "4px" }}/>}
-                    <input
+                    {selectedCode === "+51" && (
+                      <img
+                        src={peruFlag}
+                        alt="Bandera de Perú"
+                        style={{ width: "45px", marginRight: "4px" }}
+                      />
+                    )}
+                    <select
                       value={selectedCode}
                       onChange={(e) => {
-                        setSelectedCode(e.target.value);
-                      }} 
+                        const codArea = e.target.value;
+                        setSelectedCode(codArea);
+                        if (codArea !== "+51") {
+                          setNumero("");
+                        }
+                      }}
                       className="form-control-tipoIDC me-1"
-                      type="text"
+                      multiple={false}
                       style={{ width: "fit-content" }}
                       required
-                     />
-                      <>
-                        <input
-                          value={numero}
-                          onChange={(e) => setNumero(e.target.value)}
-                          type="text"
-                          className="form-control"
-                          required
-                        />
-                      </>
+                    >
+                      <option value="">Otro Pais</option>
+                      <option value="+51">Perú (+51)</option>
+                    </select>
+                    {selectedCode !== "+51" && (
+                      <input
+                        value={selectedCode}
+                        onChange={(e) => {
+                          setSelectedCode(e.target.value);
+                        }}
+                        className="form-control-tipoIDC me-1"
+                        type="text"
+                        style={{ width: "fit-content" }}
+                        placeholder="Cod. area"
+                        required
+                      />
+                    )}
+                    <input
+                      value={numero}
+                      onChange={(e) => setNumero(e.target.value)}
+                      type="number"
+                      className="form-control"
+                      required
+                    />
                   </div>
                 </div>
 
