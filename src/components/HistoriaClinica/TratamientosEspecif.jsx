@@ -974,7 +974,7 @@ function TratamientosEspecif(props) {
                           <tbody>
                             {results.map((tratamiento, index) => (
                               <tr key={tratamiento.id}>
-                                <td>{results.length - index}</td>
+                                <td id="colIzquierda">{results.length - index}</td>
                                 <td> {tratamiento.tarifasTratamientos} </td>
                                 <td> {tratamiento.pieza} </td>
                                 <td> {tratamiento.precio} </td>
@@ -984,7 +984,7 @@ function TratamientosEspecif(props) {
                                   moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
                                 )}
                                 </td>
-                                <td>
+                                <td className="colDerecha">
                                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     {tratamiento.estadoPago || ""}
                                     {tratamiento.estadoPago && (
@@ -1019,8 +1019,9 @@ function TratamientosEspecif(props) {
                                       variant="primary"
                                       className="btn btn-secondary mx-1 btn-md"
                                       id="dropdown-actions"
+                                      style={{ background: "none", border: "none" }}
                                     >
-                                      <i className="fa-solid fa-ellipsis-vertical"></i>
+                                      <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
                                     </Dropdown.Toggle>
 
                                     <div className="dropdown__container">
@@ -1324,7 +1325,7 @@ function TratamientosEspecif(props) {
                   onClick={(e) => {
                     guardarCobro(e, mostrarModalAgregarCobro[1]);
                   }}
-                  className="btn btn-primary"
+                  className="btn button-main"
                 >
                   Guardar Cobro
                 </button>
@@ -1391,7 +1392,7 @@ function TratamientosEspecif(props) {
                 <button
                   type="submit"
                   onClick={(e) => { editarCobro(e) }}
-                  className="btn btn-primary"
+                  className="btn button-main"
                 >
                   Editar Cobro
                 </button>

@@ -288,7 +288,7 @@ const Create = (props) => {
                 <button
                   type="submit"
                   onClick={validateFields}
-                  className="btn btn-primary"
+                  className="btn button-main"
                 >
                   Agregar
                 </button>

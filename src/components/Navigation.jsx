@@ -1,10 +1,11 @@
 import Nav from "./zNavIcons/Nav";
-import { FaUsers, FaMoon, FaCalendarAlt, FaFileInvoiceDollar,FaMoneyCheckAlt, FaNotesMedical, FaPoll,FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt, FaChevronDown, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax, FaChartBar, FaFileAlt, FaBox, FaArchive, FaDonate, FaBalanceScale, FaChartLine } from 'react-icons/fa';
+import { FaUsers, FaMoon, FaCalendarAlt, FaFileInvoiceDollar, FaMoneyCheckAlt, FaNotesMedical, FaPoll, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt, FaChevronDown, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax, FaChartBar, FaFileAlt, FaBox, FaArchive, FaDonate, FaBalanceScale, FaChartLine } from 'react-icons/fa';
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import logo from "../img/logo-odentid2.png"
+import icono from "../img/icono.png"
 import "../style/Main.css";
 import Swal from "sweetalert2";
 
@@ -53,7 +54,7 @@ const Navigation = () => {
             setOpen2(false);
             setOpen3(false);
         } else {
-            if (location.pathname === "/pacientes" || location.pathname === "/historia" || location.pathname === "/tratamientos" || location.pathname === "/controlEvoluciones") {
+            if (location.pathname === "/pacientes" || location.pathname === "/historias" || location.pathname === "/tratamientos" || location.pathname === "/controlEvoluciones") {
                 setOpen(true);
                 setOpen2(false)
                 setOpen3(false)
@@ -69,7 +70,7 @@ const Navigation = () => {
                 setOpen5(false)
                 setOpen6(false)
             }
-            if (location.pathname === "/gastos" || location.pathname === "/ventas") {
+            if (location.pathname === "/compras" || location.pathname === "/ventas") {
                 setOpen4(true);
                 setOpen(false)
                 setOpen2(true)
@@ -138,82 +139,82 @@ const Navigation = () => {
     }
 
     return (
-        <div className={`navigation ${isActive && "active"}` } style={{ fontFamily: 'Goldplay'}}>
+        <div className={`navigation ${isActive && "active"}`} style={{ fontFamily: 'Goldplay' }}>
             <div className={`menu ${isActive && "active"}`} onClick={() => setIsActive(!isActive)}>
                 <FaAngleLeft className="menu-icon" />
             </div>
-        <header>
-            <div className="profile">
-                <img src={logo} alt="profile" className="profile-img" />
-            </div>
-        </header>
-        {isLoading && (
-            <>
-            <div className="sidebar-title">
-                <Link to="/dashboard" className="text-decoration-none link-light"><Nav title="Dashboard" Icon={FaChartBar} /></Link>
-                <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
-            </div>
-                <div className={open ? "sidebar-item open" : "sidebar-item"}>
-                    <div className="sidebar-title d-flex align-items-center justify-content-between">
-                        <Nav title="Pacientes" Icon={FaLaptopMedical} /><FaChevronDown className="toggle-btn" onClick={() => setOpen(!open)} />
-                    </div>
-                    <div className="sidebar-content">
-                        <Link to="/pacientes" className="text-decoration-none link-light"><Nav title="Lista de Pacientes" Icon={FaUsers} /></Link>
-                        <Link to="/historia" className="text-decoration-none link-light"><Nav title="Historial Clínica" Icon={FaBookMedical} /></Link>
-                        <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
-                        <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
-                    </div>
+            <header>
+                <div className="profile">
+                    <img src={isActive ? icono : logo} alt="profile" className={isActive ? "profile-img-inactive" : "profile-img"} />
                 </div>
-                <div className={open2 ? "sidebar-item open" : "sidebar-item"}>
-                    <div className="sidebar-title d-flex align-items-center justify-content-between">
-                        <Nav title="Contabilidad" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)}/>
+            </header>
+            {isLoading && (
+                <>
+                    <div className="sidebar-title">
+                        <Link to="/dashboard" className="text-decoration-none link-light"><Nav title="Dashboard" Icon={FaChartBar} /></Link>
+                        <Link to="/agenda" className="text-decoration-none link-light"><Nav title="Agenda" Icon={FaCalendarAlt} /></Link>
                     </div>
-                    <div className="sidebar-content">
+                    <div className={open ? "sidebar-item open" : "sidebar-item"}>
                         <div className="sidebar-title d-flex align-items-center justify-content-between">
-                            <Link to="/tarifario" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar}/></Link>
+                            <Nav title="Pacientes" Icon={FaLaptopMedical} /><FaChevronDown className="toggle-btn" onClick={() => setOpen(!open)} />
                         </div>
-                        <div className={open4 ? "sidebar-item open" : "sidebar-item"}>
-                            <div className="sidebar-title d-flex align-items-center justify-content-between">
-                                <Nav title="Registros contables" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen4(!open4)}/>
-                            </div>
-                            <div className="sidebar-content sub-content">
-                                <Link to="/ventas" className="text-decoration-none link-light"><Nav title="Registro de ingresos" Icon={FaDollarSign}/> </Link>
-                                <Link to="/gastos" className="text-decoration-none link-light"><Nav title="Registro de compras" Icon={FaShoppingCart}/> </Link>
-                            </div>
+                        <div className="sidebar-content">
+                            <Link to="/pacientes" className="text-decoration-none link-light"><Nav title="Lista de Pacientes" Icon={FaUsers} /></Link>
+                            <Link to="/historias" className="text-decoration-none link-light"><Nav title="Historias" Icon={FaBookMedical} /></Link>
+                            <Link to="/tratamientos" className="text-decoration-none link-light"><Nav title="Tratamientos" Icon={FaStethoscope} /></Link>
+                            <Link to="/controlEvoluciones" className="text-decoration-none link-light"><Nav title="Control y Evolucion" Icon={FaHeartbeat} /></Link>
                         </div>
-                        <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
-                            <div className="sidebar-title d-flex align-items-center justify-content-between">
-                                <Nav title="Informes contables" Icon={FaFileAlt} /> <FaChevronDown className="toggle-btn" onClick={() => setOpen5(!open5)} />
-                            </div>  
-                            <div className="sidebar-content sub-content">
-                                <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe de ingresos" Icon={FaDonate} /> </Link>
-                                <Link to="/informe-ingresos-tratamiento" className="text-decoration-none link-light"><Nav title="Informe de ingresos por tratamiento" Icon={FaNotesMedical} /> </Link>
-                                <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe de compras" Icon={FaMoneyCheckAlt} /> </Link>
-                                <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparación de compras" Icon={FaBalanceScale} /> </Link>
-                            </div>
+                    </div>
+                    <div className={open2 ? "sidebar-item open" : "sidebar-item"}>
+                        <div className="sidebar-title d-flex align-items-center justify-content-between">
+                            <Nav title="Contabilidad" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen2(!open2)} />
                         </div>
-                        <div className={open7 ? "sidebar-item open" : "sidebar-item"}>
+                        <div className="sidebar-content">
                             <div className="sidebar-title d-flex align-items-center justify-content-between">
-                                <Nav title="Estados Financieros" Icon={FaChartLine} /> <FaChevronDown className="toggle-btn" onClick={() => setOpen7(!open7)} />
+                                <Link to="/tarifario" className="text-decoration-none link-light"><Nav title="Tarifario" Icon={FaFileInvoiceDollar} /></Link>
                             </div>
-                            <div className="sidebar-content sub-content">
-                                <Link to="/estado-resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaPoll} /> </Link>
+                            <div className={open4 ? "sidebar-item open" : "sidebar-item"}>
+                                <div className="sidebar-title d-flex align-items-center justify-content-between">
+                                    <Nav title="Registros contables" Icon={FaFax} /><FaChevronDown className="toggle-btn" onClick={() => setOpen4(!open4)} />
+                                </div>
+                                <div className="sidebar-content sub-content">
+                                    <Link to="/ventas" className="text-decoration-none link-light"><Nav title="Registro de ventas" Icon={FaDollarSign} /> </Link>
+                                    <Link to="/compras" className="text-decoration-none link-light"><Nav title="Registro de compras" Icon={FaShoppingCart} /> </Link>
+                                </div>
+                            </div>
+                            <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
+                                <div className="sidebar-title d-flex align-items-center justify-content-between">
+                                    <Nav title="Informes contables" Icon={FaFileAlt} /> <FaChevronDown className="toggle-btn" onClick={() => setOpen5(!open5)} />
+                                </div>
+                                <div className="sidebar-content sub-content">
+                                    <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe de ingresos" Icon={FaDonate} /> </Link>
+                                    <Link to="/informe-ingresos-tratamiento" className="text-decoration-none link-light"><Nav title="Informe de ingresos por tratamiento" Icon={FaNotesMedical} /> </Link>
+                                    <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe de compras" Icon={FaMoneyCheckAlt} /> </Link>
+                                    <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparación de compras" Icon={FaBalanceScale} /> </Link>
+                                </div>
+                            </div>
+                            <div className={open7 ? "sidebar-item open" : "sidebar-item"}>
+                                <div className="sidebar-title d-flex align-items-center justify-content-between">
+                                    <Nav title="Estados Financieros" Icon={FaChartLine} /> <FaChevronDown className="toggle-btn" onClick={() => setOpen7(!open7)} />
+                                </div>
+                                <div className="sidebar-content sub-content">
+                                    <Link to="/estado-resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaPoll} /> </Link>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className={open3 ? "sidebar-item open" : "sidebar-item"}>
-                    <div className="sidebar-title d-flex align-items-center justify-content-between">
-                        <Nav title="Inventarios" Icon={FaArchive} /><FaChevronDown className="toggle-btn" onClick={() => setOpen3(!open3)} />
+                    <div className={open3 ? "sidebar-item open" : "sidebar-item"}>
+                        <div className="sidebar-title d-flex align-items-center justify-content-between">
+                            <Nav title="Inventarios" Icon={FaArchive} /><FaChevronDown className="toggle-btn" onClick={() => setOpen3(!open3)} />
+                        </div>
+                        <div className="sidebar-content">
+                            <Nav title="Inventario" Icon={FaBox} />
+                            <Link to="/materiales" className="text-decoration-none link-light"><Nav title="Materiales" Icon={FaPeopleCarry} /> </Link>
+                            <Link to="/proveedores" className="text-decoration-none link-light"><Nav title="Proveedores" Icon={FaTruck} /> </Link>
+                        </div>
                     </div>
-                    <div className="sidebar-content">
-                        <Nav title="Inventario" Icon={FaBox} />
-                        <Link to="/materiales" className="text-decoration-none link-light"><Nav title="Materiales" Icon={FaPeopleCarry} /> </Link>
-                        <Link to="/proveedores" className="text-decoration-none link-light"><Nav title="Proveedores" Icon={FaTruck} /> </Link>
-                    </div>
-                </div>
-                
+
                     <div className="sidebar">
                         <div className={open6 ? "sidebar-item open" : "sidebar-item"}>
                             <div className="sidebar-title d-flex align-items-center justify-content-between">

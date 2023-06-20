@@ -117,7 +117,7 @@ const EstadosTratamientos = ({ show, onHide }) => {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary" type="submit">
+          <button className="btn button-main" type="submit">
             {editIndex !== null ? 'Actualizar' : 'Crear'}
           </button>
 
@@ -139,7 +139,7 @@ const EstadosTratamientos = ({ show, onHide }) => {
                   readOnly
                 /></div>
               <div className="col-2">
-                <button className="btn btn-primary mx-1 btn-sm" onClick={() => handleEdit(index)}>
+                <button className="btn button-main mx-1 btn-sm" onClick={() => handleEdit(index)}>
                   <i className="fa-solid fa-edit"></i>
                 </button>
                 <button className="btn btn-danger btn-sm" onClick={() => handleDelete(index)}>

@@ -304,33 +304,57 @@ function Citas() {
                   )}
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido {currentUser.displayName}
+                  <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
+                    Hola, {currentUser.displayName}
                   </p>
                   <div className="d-flex">
-
                     <div className="notificacion">
                       <FaBell className="icono" />
                       <span className="badge rounded-pill bg-danger">5</span>
                     </div>
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                      </Link>
-                    </div>
                   </div>
                   <div className="notificacion">
-                    <Link
-                      to="/"
-                      className="text-decoration-none"
-                      style={{ color: "#8D93AB" }}
-                      onClick={confirmLogout}
-                    >
-                      <FaSignOutAlt className="icono" />
-                    </Link>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="primary"
+                        className="btn btn-secondary mx-1 btn-md"
+                        id="dropdown-actions"
+                        style={{ background: "none", border: "none" }}
+                      >
+                        <img
+                          src={currentUser.photoURL || profile}
+                          alt="profile"
+                          className="profile-picture"
+                        />
+                      </Dropdown.Toggle>
+                      <div className="dropdown__container">
+                        <Dropdown.Menu>
+                          <Dropdown.Item>
+                            <Link
+                              to="/miPerfil"
+                              className="text-decoration-none"
+                              style={{ color: "#8D93AB" }}
+                            >
+                              <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
+                              Mi Perfil
+                            </Link>
+                          </Dropdown.Item>
+
+                          <Dropdown.Item>
+
+                            <Link
+                              to="/"
+                              className="text-decoration-none"
+                              style={{ color: "#8D93AB" }}
+                              onClick={confirmLogout}
+                            >
+                              <FaSignOutAlt className="icono" />
+                              Cerrar Sesión
+                            </Link>
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </div>
+                    </Dropdown>
                   </div>
                 </div>
               </div>
@@ -480,7 +504,7 @@ function Citas() {
                       <tbody>
                         {currentResults.map((cita, index) => (
                           <tr key={cita.id}>
-                            <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
+                            <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
                             <td> {cita.horaInicio} </td>
                             <td> {cita.horaFin} </td>
                             <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
@@ -502,14 +526,15 @@ function Citas() {
                                 />
                               </div>
                             </td>
-                            <td id="columnaAccion">
+                            <td id="columnaAccion" className="colDerecha">
                               <Dropdown>
                                 <Dropdown.Toggle
                                   variant="primary"
                                   className="btn btn-secondary mx-1 btn-md"
                                   id="dropdown-actions"
+                                  style={{ background: "none", border: "none" }}
                                 >
-                                  <i className="fa-solid fa-ellipsis-vertical"></i>
+                                  <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
                                 </Dropdown.Toggle>
 
                                 <div className="dropdown__container">
@@ -527,9 +552,9 @@ function Citas() {
                                     </Dropdown.Item>
 
                                     <Dropdown.Item>
-                                      <Link to={`/historia/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
+                                      <Link to={`/historias/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
                                         <i className="fa-solid fa-file-medical"></i>
-                                        Historial Clinico
+                                        Historias
                                       </Link>
                                     </Dropdown.Item>
 

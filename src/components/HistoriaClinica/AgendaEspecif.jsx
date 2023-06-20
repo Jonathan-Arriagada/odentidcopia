@@ -379,14 +379,14 @@ function AgendaEspecif(id) {
                           <tbody>
                             {results.map((cita) => (
                               <tr key={cita.id}>
-                                <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
+                                <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
                                 <td> {cita.horaInicio} </td>
                                 <td> {cita.horaFin} </td>
                                 <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
                                 <td> {cita.idc} </td>
                                 <td> {cita.numero} </td>
                                 <td>{JSON.parse(cita.doctor).nombreApellido}</td>
-                                <td>
+                                <td className="colDerecha">
                                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     {cita.estado || ""}
                                     {cita.estado && (
@@ -407,8 +407,9 @@ function AgendaEspecif(id) {
                                       variant="primary"
                                       className="btn btn-secondary mx-1 btn-md"
                                       id="dropdown-actions"
+                                      style={{ background: "none", border: "none" }}
                                     >
-                                      <i className="fa-solid fa-ellipsis-vertical"></i>
+                                      <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
                                     </Dropdown.Toggle>
 
                                     <div className="dropdown__container">
