@@ -24,6 +24,8 @@ const Materiales = () => {
     const [editable] = useState(false);
     const navigate = useNavigate()
     const { currentUser, } = useContext(AuthContext);
+    const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
+
     const materialesCollection = collection(db, "materiales");
     const materialesCollectionOrdenados = useRef(query(materialesCollection, orderBy("cuenta")));
 
@@ -34,6 +36,13 @@ const Materiales = () => {
         }));
         setMateriales(materialesArray);
         setIsLoading(false);
+    }, []);
+
+    const updateOptionsUnidadMedida = useCallback(snapshot => {
+        const unidadMedidaOptions = snapshot.docs.map((doc, index) => (
+            <option key={`unidadMedida-${index}`} value={doc.data().name}>{doc.data().name}</option>
+        ));
+        setUnidadMedidaOptions(unidadMedidaOptions);
     }, []);
 
     const logout = useCallback(() => {
@@ -58,12 +67,12 @@ const Materiales = () => {
     };
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(
-            materialesCollectionOrdenados.current,
-            updateMaterialesFromSnapshot
-        );
-        return unsubscribe;
-    }, [updateMaterialesFromSnapshot]);
+        const unsubscribe = [
+            onSnapshot(materialesCollectionOrdenados.current, updateMaterialesFromSnapshot),
+            onSnapshot(query(collection(db, "unidadesMedidas"), orderBy("name")), updateOptionsUnidadMedida),
+        ];
+        return () => unsubscribe.forEach(fn => fn());
+    }, [updateMaterialesFromSnapshot, updateOptionsUnidadMedida]);
 
     const inputRef = useRef(null);
 
@@ -408,10 +417,7 @@ const Materiales = () => {
                                     ref={inputRef}
                                 >
                                     <option value=""></option>
-                                    <option value="UND">UND</option>
-                                    <option value="CAJA">CAJA</option>
-                                    <option value="KITS">KITS</option>
-                                    <option value="BOLSA">BOLSA</option>
+                                    {unidadMedidaOptions}
                                 </select>
                                 {error && <small className="text-danger">{error}</small>}
                             </div>

@@ -19,6 +19,7 @@ const CrearGasto = (props) => {
 
     const [error, setError] = useState("");
     const [tipoGastoOptions, setTipoGastoOptions] = useState([]);
+    const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
     const [proveedoresOptions, setProveedoresOptions] = useState([]);
     const [materialesOptions, setMaterialesOptions] = useState([]);
 
@@ -48,6 +49,13 @@ const CrearGasto = (props) => {
         setTipoGastoOptions(tipoGastoOptions);
     }, []);
 
+    const updateOptionsUnidadMedida = useCallback(snapshot => {
+        const unidadMedidaOptions = snapshot.docs.map((doc, index) => (
+            <option key={`unidadMedida-${index}`} value={doc.data().name}>{doc.data().name}</option>
+        ));
+        setUnidadMedidaOptions(unidadMedidaOptions);
+    }, []);
+
     const updateOptionsProveedores = useCallback(snapshot => {
         const proveedoresOptions = snapshot.docs.map((doc, index) => (
             <option key={`proveedores-${index}`} value={doc.data().valorBusquedaProveedor}>{doc.data().valorBusquedaProveedor}</option>
@@ -67,10 +75,11 @@ const CrearGasto = (props) => {
             onSnapshot(query(collection(db, "tipoGasto"), orderBy("name")), updateOptionsTipoGasto),
             onSnapshot(query(collection(db, "proveedores"), orderBy("name")), updateOptionsProveedores),
             onSnapshot(query(collection(db, "materiales"), orderBy("name")), updateOptionsMateriales),
+            onSnapshot(query(collection(db, "unidadesMedidas"), orderBy("name")), updateOptionsUnidadMedida),
         ];
 
         return () => unsubscribe.forEach(fn => fn());
-    }, [updateOptionsTipoGasto, updateOptionsProveedores, updateOptionsMateriales]);
+    }, [updateOptionsTipoGasto, updateOptionsProveedores, updateOptionsMateriales, updateOptionsUnidadMedida]);
 
     useEffect(() => {
         if (fechaGasto === "") {
@@ -543,10 +552,7 @@ const CrearGasto = (props) => {
                                     onChange={(e) => setUm(e.target.value)}
                                 >
                                     <option value=""></option>
-                                    <option value="UND">UND</option>
-                                    <option value="CAJA">CAJA</option>
-                                    <option value="KITS">KITS</option>
-                                    <option value="BOLSA">BOLSA</option>
+                                    {unidadMedidaOptions}
                                 </select>
                                 {error && <small className="text-danger">{error}</small>}
                             </div>
