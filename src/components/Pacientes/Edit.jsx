@@ -4,7 +4,6 @@ import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import moment from "moment";
-import peruFlag from "../../img/peru.png";
 
 const Edit = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
@@ -94,7 +93,7 @@ const Edit = (props) => {
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
-                      value={tipoIdc}
+                      defaultValue={props.client.tipoIdc}
                       onChange={(e) => {
                         setTipoIdc(e.target.value);
                         setIdc("");
@@ -179,16 +178,9 @@ const Edit = (props) => {
                     className="form-control"
                   />
                 </div>
-                  <div className="mb-3">
+                <div className="mb-3">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                    {selectedCode === "+51" && (
-                      <img
-                        src={peruFlag}
-                        alt="Bandera de Perú"
-                        style={{ width: "45px", marginRight: "4px" }}
-                      />
-                    )}
                     <select
                       defaultValue={props.client.selectedCode}
                       onChange={(e) => {
@@ -201,7 +193,6 @@ const Edit = (props) => {
                       className="form-control-tipoIDC me-1"
                       multiple={false}
                       style={{ width: "fit-content" }}
-                      required
                     >
                       <option value="">Otro Pais</option>
                       <option value="+51">Perú (+51)</option>
@@ -216,7 +207,6 @@ const Edit = (props) => {
                         type="text"
                         style={{ width: "fit-content" }}
                         placeholder="Cod. area"
-                        required
                       />
                     )}
                     <input
