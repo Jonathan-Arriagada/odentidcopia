@@ -138,7 +138,7 @@ const EditTratamiento = (props) => {
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
-                      defaultValue={props.client.tipoIdc}
+                      defaultValue={props.tratamiento.tipoIdc}
                       onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
                       className="form-control-tipoIDC"
                       multiple={false}

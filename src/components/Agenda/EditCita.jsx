@@ -136,7 +136,7 @@ const EditCita = (props) => {
                   <label className="form-label">IDC</label>
                   <div style={{ display: "flex" }}>
                     <select
-                      defaultValue={props.client.tipoIdc}
+                      defaultValue={props.cita.tipoIdc}
                       onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
                       className="form-control-tipoIDC"
                       multiple={false}

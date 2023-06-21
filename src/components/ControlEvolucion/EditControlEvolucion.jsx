@@ -57,7 +57,7 @@ const Edit = (props) => {
                     <label className="form-label">IDC*</label>
                     <div style={{ display: "flex" }}>
                       <select
-                        defaultValue={props.client.tipoIdc}
+                        defaultValue={props.control.tipoIdc}
                         onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
                         className="form-control-tipoIDC"
                         multiple={false}

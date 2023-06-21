@@ -20,7 +20,6 @@ const Navigation = () => {
     const [open5, setOpen5] = useState(false);
     const [open6, setOpen6] = useState(false);
     const [open7, setOpen7] = useState(false);
-    const [isMouseMoving, setIsMouseMoving] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -106,32 +105,6 @@ const Navigation = () => {
         }
     }, [location.pathname]);
 
-    useEffect(() => {
-        const tiempoInactivoMax = 15 * 60 * 1000; // 15 minuto
-        let inactivityTimeout;
-
-        const resetInactivityTimeout = () => {
-            clearTimeout(inactivityTimeout);
-            inactivityTimeout = setTimeout(() => {
-                if (!isMouseMoving) {
-                    logout();
-                }
-            }, tiempoInactivoMax);
-        };
-
-        const handleMouseMove = () => {
-            setIsMouseMoving(true);
-            resetInactivityTimeout();
-        };
-
-        document.addEventListener("mousemove", handleMouseMove);
-        resetInactivityTimeout();
-
-        return () => {
-            clearTimeout(inactivityTimeout);
-            document.removeEventListener("mousemove", handleMouseMove);
-        };
-    }, [isMouseMoving, logout]);
 
     function toggleDarkMode() {
         const html = document.querySelector('html');
