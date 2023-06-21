@@ -186,10 +186,10 @@ const Create = (props) => {
                         tipoIdc === "dni"
                           ? 8
                           : tipoIdc === "ruc"
-                          ? 11
-                          : tipoIdc === "ce" || tipoIdc === "pas"
-                          ? 12
-                          : undefined
+                            ? 11
+                            : tipoIdc === "ce" || tipoIdc === "pas"
+                              ? 12
+                              : undefined
                       }
                       onKeyDown={(e) => {
                         const maxLength = e.target.maxLength;
@@ -249,16 +249,14 @@ const Create = (props) => {
                     <select
                       value={selectedCode}
                       onChange={(e) => {
-                        const codArea = e.target.value;
-                        setSelectedCode(codArea);
-                        if (codArea !== "+51") {
+                        setSelectedCode(e.target.value);
+                        if (e.target.value !== "+51") {
                           setNumero("");
                         }
                       }}
                       className="form-control-tipoIDC me-1"
                       multiple={false}
                       style={{ width: "fit-content" }}
-                      required
                     >
                       <option value="">Otro Pais</option>
                       <option value="+51">Perú (+51)</option>

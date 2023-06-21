@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { getDoc, updateDoc, doc, query, collection, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
-import peruFlag from "../../img/peru.png";
 
 const EditCita = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.cita.apellidoConNombre || "");
@@ -21,7 +20,7 @@ const EditCita = (props) => {
   const [doctor, setDoctor] = useState(props.cita.doctor || "");
   const [doctoresOption, setDoctoresOption] = useState([]);
   const [selectedCode, setSelectedCode] = useState(props.cita.selectedCode || "");
-  
+
   const updateOptionsEstado = useCallback(snapshot => {
     const options = snapshot.docs.map(doc => doc.data().name);
     setOptionsEstado(options);
@@ -52,7 +51,7 @@ const EditCita = (props) => {
 
   }, [horaInicio, props.cita.horaFin]);
 
-   const updateOptionsDoctores = useCallback(snapshot => {
+  const updateOptionsDoctores = useCallback(snapshot => {
     const docsOptions = snapshot.docs
       .filter(doc => doc.data().uid !== "Recepcionista")
       .map((doc, index) => (
@@ -137,7 +136,7 @@ const EditCita = (props) => {
                   <label className="form-label">IDC</label>
                   <div style={{ display: "flex" }}>
                     <select
-                      value={tipoIdc}
+                      defaultValue={props.client.tipoIdc}
                       onChange={(e) => { setTipoIdc(e.target.value); setIdc("") }}
                       className="form-control-tipoIDC"
                       multiple={false}
@@ -246,54 +245,45 @@ const EditCita = (props) => {
                 </div>
               </div>
               <div className="mb-3">
-                  <label className="form-label">Teléfono*</label>
-                  <div style={{ display: "flex" }}>
-                    {selectedCode === "+51" && (
-                      <img
-                        src={peruFlag}
-                        alt="Bandera de Perú"
-                        style={{ width: "45px", marginRight: "4px" }}
-                      />
-                    )}
-                    <select
+                <label className="form-label">Teléfono*</label>
+                <div style={{ display: "flex" }}>
+                  <select
+                    defaultValue={props.cita.selectedCode}
+                    onChange={(e) => {
+                      const codArea = e.target.value;
+                      setSelectedCode(codArea);
+                      if (codArea !== "+51") {
+                        setNumero("");
+                      }
+                    }}
+                    className="form-control-tipoIDC me-1"
+                    multiple={false}
+                    style={{ width: "fit-content" }}
+                  >
+                    <option value="">Otro Pais</option>
+                    <option value="+51">Perú (+51)</option>
+                  </select>
+                  {selectedCode !== "+51" && (
+                    <input
                       defaultValue={props.cita.selectedCode}
                       onChange={(e) => {
-                        const codArea = e.target.value;
-                        setSelectedCode(codArea);
-                        if (codArea !== "+51") {
-                          setNumero("");
-                        }
+                        setSelectedCode(e.target.value);
                       }}
                       className="form-control-tipoIDC me-1"
-                      multiple={false}
+                      type="text"
                       style={{ width: "fit-content" }}
-                      required
-                    >
-                      <option value="">Otro Pais</option>
-                      <option value="+51">Perú (+51)</option>
-                    </select>
-                    {selectedCode !== "+51" && (
-                      <input
-                        defaultValue={props.cita.selectedCode}
-                        onChange={(e) => {
-                          setSelectedCode(e.target.value);
-                        }}
-                        className="form-control-tipoIDC me-1"
-                        type="text"
-                        style={{ width: "fit-content" }}
-                        placeholder="Cod. area"
-                        required
-                      />
-                    )}
-                    <input
-                      defaultValue={props.cita.numero}
-                      onChange={(e) => setNumero(e.target.value)}
-                      type="number"
-                      className="form-control"
-                      required
+                      placeholder="Cod. area"
                     />
-                  </div>
+                  )}
+                  <input
+                    defaultValue={props.cita.numero}
+                    onChange={(e) => setNumero(e.target.value)}
+                    type="number"
+                    className="form-control"
+                    required
+                  />
                 </div>
+              </div>
 
               <div className="row">
                 <div className="col mb-3">
