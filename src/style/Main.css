@@ -1201,10 +1201,52 @@ select {
   background-color: #e6e6e6;
 }
 
+/* Propiedades GENERALES */
+
 .fondo-color-primario{
   background-color: var(--color-primario-normal);
-}
+} 
 
 .fuente{
   font-family: 'Goldplay';
+}
+.fuente-color-primario{
+  color: var(--color-primario-fuerte)
+}
+
+.border-hover:hover{
+  border: 1px solid var(--color-estilo-main);
+}
+
+/* DASHBOARD */
+
+.dashboard-sup{
+  width: 70vw;
+  height: 45vh;
+  animation: Entrance 1s ease 0s 1 normal forwards;
+}
+
+.dashboard-inf{
+  width: 70vw;
+  height: 35vh;
+  animation: Entrance 1s ease 0s 1 normal forwards;
+}
+
+
+@media screen and (max-width: 1360px) and (max-height: 768px) {
+  .dashboard-sup{
+    width: 75vw;
+    height: 45vh;
+    margin-left: 1.25rem;
+  }
+  
+  .dashboard-inf{
+    width: 75vw;
+    height: 35vh;
+    margin-left: 1.25rem;
+  }
+}
+
+.numbers{
+  color:var(--color-light-text) !important;
 }

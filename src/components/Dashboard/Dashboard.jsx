@@ -89,7 +89,7 @@ const [isLoading, setIsLoading] = useState(true);
     },
     scales: {
       y: {
-        min: 5,
+        min: 0,
         max: 60,
         ticks: {
           stepSize: 10,
@@ -184,43 +184,42 @@ const [isLoading, setIsLoading] = useState(true);
           </div>
         </nav>
         <div className='container mt-2'>
-          <div className="row m-2 flex-nowrap" style={{width: "70vw"}}>
-            <div className="col-7 pb-3 me-2 rounded-4 shadow fondo-color-primario" style={{ height: '40vh' }}>
+          <div className="row flex-nowrap dashboard-sup">
+            <div className="col-7 pt-3 me-2 rounded-4 shadow fondo-color-primario">
               <Bar data={data} options={options}></Bar>
             </div>
-            <div className="col-5 ms-2 rounded-4 d-flex justify-content-center align-items-start flex-column shadow" style={{ height: '40vh' }}>
-              <h2 className="fw-bold fs-6">Productividad de los dentistas</h2>
-              <h3 className="fs-1">78%</h3>
-              <h2 className="fw-bold fs-6">Eficiencia en el proceso de facturacion</h2>
-              <h3 className="fs-1">48%</h3>
+            <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario">
+              <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
+              <h3 className="fs-1 ms-2 numbers">4</h3>
+              <h2 className="fw-bold fs-5 mt-3 ms-2">Pacientes atendidos</h2>
+              <h3 className="fs-1 ms-2 numbers">21</h3>
+              <h2 className="fw-bold fs-5 mt-3 ms-2">Nuevos casos de ortodoncia</h2>
+              <h3 className="fs-1 ms-2 numbers">3</h3>
             </div>
           </div>
-          <div className="row m-2 mt-4 flex-nowrap " style={{width: "70vw"}}>
-          <div className="col-3 me-1 rounded-4 d-flex justify-content-center align-items-start flex-column shadow" style={{ height: '40vh' }}>
-            <h2 className="fw-bold fs-6">Pacientes nuevos</h2>
-            <h3 className="fs-1">4</h3>
-            <h2 className="fw-bold fs-6">Pacientes atendidos</h2>
-            <h3 className="fs-1">21</h3>
-            <h2 className="fw-bold fs-6">Nuevos casos de ortodoncia</h2>
-            <h3 className="fs-1">3</h3>
-          </div>
-          <div className="col-3 mx-1 rounded-4 d-flex justify-content-center align-items-start flex-column shadow" style={{ height: '40vh' }}>
-            <h2 className="fw-bold fs-6">Índice de satisfacción del paciente</h2>
-            <h3 className="fs-1">4.2</h3>
-            <h2 className="fw-bold fs-6">Índice de cancelación y ausencia de citas</h2>
-            <h3 className="fs-1">34%</h3>
-          </div>
-          <div className="col-3 mx-1 rounded-4 d-flex justify-content-center align-items-start flex-column shadow" style={{ height: '40vh' }}>
-            <h2 className="fw-bold fs-6">Ingresos y Rentabilidad</h2>
-            <h3 className="fs-1">4</h3>
-            <h2 className="fw-bold fs-6">Ingresos por tratamiento</h2>
-            <h3 className="fs-1">7</h3>
-          </div>
-          <div className="col-3 ms-1 rounded-4 d-flex justify-content-center align-items-start flex-column shadow" style={{ height: '40vh' }}>
-            <h2 className="fw-bold fs-6">Tasa de retención de pacientes</h2>
-            <h3 className="fs-1">78%</h3>
-          </div>
-
+          <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
+            <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
+            <h2 className="fw-bold fs-6 mt-3 ">Productividad de los dentistas</h2>
+                <h3 className="fs-1 numbers">78%</h3>
+                <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
+                <h3 className="fs-1 numbers">48%</h3>
+            </div>
+            <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
+              <h2 className="fw-bold fs-6 mt-3">Satisfacción del paciente</h2>
+              <h3 className="fs-1 numbers">4.2</h3>
+              <h2 className="fw-bold fs-6">Cancelación / ausencia de citas</h2>
+              <h3 className="fs-1 numbers">34%</h3>
+            </div>
+            <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
+              <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
+              <h3 className="fs-1 numbers">5</h3>
+              <h2 className="fw-bold fs-6">Ingresos por tratamiento</h2>
+              <h3 className="fs-1 numbers">$900</h3>
+            </div>
+            <div className="col-3 ms-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
+              <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
+              <h3 className="fs-1 numbers">76%</h3>
+            </div>
           </div>
         </div>
      </div>
