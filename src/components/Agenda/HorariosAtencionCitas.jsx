@@ -104,7 +104,7 @@ const HorariosAtencionCitas = ({ show, onHide }) => {
                         />
                         {error && <small className="text-danger">{error}</small>}
                     </div>
-                    <button className="btn btn-primary" type="submit">
+                    <button className="btn button-main" type="submit">
                         {editIndex !== null ? 'Actualizar' : 'Crear'}
                     </button>
                     {editIndex !== null && (
@@ -118,7 +118,7 @@ const HorariosAtencionCitas = ({ show, onHide }) => {
                         <div key={horario.id} className="d-flex align-items-center justify-content-between border p-2" style={{ borderRadius: '30px', margin: '5px'}}>
                             <div>{horario.name}</div>
                             <div>
-                                <button className="btn btn-primary mx-1 btn-sm" onClick={() => handleEdit(index)}>
+                                <button className="button-main mx-1 btn-sm" onClick={() => handleEdit(index)}>
                                     <i className="fa-solid fa-edit"></i>
                                 </button>
                                 <button className="btn btn-danger btn-sm" onClick={() => handleDelete(index)}>

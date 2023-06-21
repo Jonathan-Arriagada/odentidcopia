@@ -27,13 +27,15 @@ const ListaSeleccionEstadoCita = ({ citaId }) => {
     return (
         <div>
             <Dropdown onSelect={handleEstadoChange}>
-                <Dropdown.Toggle variant="secondary" id="dropdown-button2" className="p-2 my-1 border-0" style={{backgroundColor:"#FFF", color: "#808080"}}>
+                <Dropdown.Toggle variant="secondary" id="dropdown-button2" className="p-2 my-1 border-0" style={{ backgroundColor: "#FFF", color: "#808080" }}>
                 </Dropdown.Toggle>
-                <Dropdown.Menu>
-                {estados.map((estado, index) => (
-                        <Dropdown.Item key={index} eventKey={estado}>{estado}</Dropdown.Item>
-                    ))}
-                </Dropdown.Menu>
+                <div className="dropdown__container">
+                    <Dropdown.Menu>
+                        {estados.map((estado, index) => (
+                            <Dropdown.Item key={index} eventKey={estado}>{estado}</Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </div>
             </Dropdown>
         </div>
     );

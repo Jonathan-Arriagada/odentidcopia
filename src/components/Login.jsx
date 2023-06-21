@@ -232,7 +232,7 @@ const Login = () => {
                   pedirReseteoClave(e);
                   setMostrarModal(false);
                 }}
-                className="btn btn-primary"
+                className="btn button-main"
               >
                 Enviar Correo
               </button>

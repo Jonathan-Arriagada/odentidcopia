@@ -19,6 +19,7 @@ const CrearGasto = (props) => {
 
     const [error, setError] = useState("");
     const [tipoGastoOptions, setTipoGastoOptions] = useState([]);
+    const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
     const [proveedoresOptions, setProveedoresOptions] = useState([]);
     const [materialesOptions, setMaterialesOptions] = useState([]);
 
@@ -48,6 +49,13 @@ const CrearGasto = (props) => {
         setTipoGastoOptions(tipoGastoOptions);
     }, []);
 
+    const updateOptionsUnidadMedida = useCallback(snapshot => {
+        const unidadMedidaOptions = snapshot.docs.map((doc, index) => (
+            <option key={`unidadMedida-${index}`} value={doc.data().name}>{doc.data().name}</option>
+        ));
+        setUnidadMedidaOptions(unidadMedidaOptions);
+    }, []);
+
     const updateOptionsProveedores = useCallback(snapshot => {
         const proveedoresOptions = snapshot.docs.map((doc, index) => (
             <option key={`proveedores-${index}`} value={doc.data().valorBusquedaProveedor}>{doc.data().valorBusquedaProveedor}</option>
@@ -67,10 +75,11 @@ const CrearGasto = (props) => {
             onSnapshot(query(collection(db, "tipoGasto"), orderBy("name")), updateOptionsTipoGasto),
             onSnapshot(query(collection(db, "proveedores"), orderBy("name")), updateOptionsProveedores),
             onSnapshot(query(collection(db, "materiales"), orderBy("name")), updateOptionsMateriales),
+            onSnapshot(query(collection(db, "unidadesMedidas"), orderBy("name")), updateOptionsUnidadMedida),
         ];
 
         return () => unsubscribe.forEach(fn => fn());
-    }, [updateOptionsTipoGasto, updateOptionsProveedores, updateOptionsMateriales]);
+    }, [updateOptionsTipoGasto, updateOptionsProveedores, updateOptionsMateriales, updateOptionsUnidadMedida]);
 
     useEffect(() => {
         if (fechaGasto === "") {
@@ -226,7 +235,7 @@ const CrearGasto = (props) => {
             cantArticulo: cantArticulo,
             umArticulo: umArticulo || um,
             descripArticulo: descripArticulo,
-            cuentaArticulo: cuentaArticulo || (cuenta-1),
+            cuentaArticulo: cuentaArticulo || (cuenta - 1),
             precioUniArticulo: precioUniArticulo,
             subTotalArticulo: subTotalArticulo,
         };
@@ -298,7 +307,7 @@ const CrearGasto = (props) => {
             >
                 <Modal.Header closeButton onClick={() => { clearFields(); props.onHide(); handleCloseModal(); }}>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        <h1>Crear Gasto</h1>
+                        <h1>Registrar Compra</h1>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -372,7 +381,7 @@ const CrearGasto = (props) => {
                                             </select>
                                         </div>
                                         <div className="col mb-6">
-                                            <label className="form-label">Comprobante Gasto*</label>
+                                            <label className="form-label">Comprobante Compra*</label>
                                             <input
                                                 value={comprobanteGasto}
                                                 onChange={(e) => setComprobanteGasto(e.target.value)}
@@ -404,8 +413,9 @@ const CrearGasto = (props) => {
                                                 <input
                                                     value={descripArticulo}
                                                     onChange={(e) => {
-                                                        setDescripArticulo(e.target.value);
-                                                        buscarCuentaArticulo(e.target.value);
+                                                        var inputValue = e.target.value.toUpperCase();
+                                                        setDescripArticulo(inputValue);
+                                                        buscarCuentaArticulo(inputValue);
                                                     }}
                                                     className="form-control"
                                                     list="materiales-list"
@@ -421,7 +431,7 @@ const CrearGasto = (props) => {
                                             <button
                                                 type="button"
                                                 onClick={() => setModalAgregarArticulo([true, descripArticulo])}
-                                                className="btn btn-primary btn-sm"
+                                                className="btn button-main btn-sm"
                                                 style={{ marginBottom: "5px" }}
                                             >
                                                 Nuevo
@@ -449,7 +459,7 @@ const CrearGasto = (props) => {
                                             <button
                                                 type="button"
                                                 onClick={agregarProducto}
-                                                className="btn btn-primary"
+                                                className="btn button-main"
                                                 style={{ marginBottom: "5px" }}
                                             >
                                                 +
@@ -464,26 +474,28 @@ const CrearGasto = (props) => {
                                 <h5 style={{ fontWeight: "bold" }}>Productos Agregados</h5>
                                 <h5>Total General: {importeGeneral}</h5>
                                 {productos.length > 0 ? (
-                                    <table className="table__body">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Cant</th>
-                                                <th scope="col">Descrip</th>
-                                                <th scope="col">Precio Uni</th>
-                                                <th scope="col">SubTotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {productos.map((producto, index) => (
-                                                <tr key={index}>
-                                                    <td>{producto.cantArticulo}</td>
-                                                    <td>{producto.descripArticulo}</td>
-                                                    <td>{producto.precioUniArticulo}</td>
-                                                    <td>{producto.subTotalArticulo}</td>
+                                    <div className="table__container">
+                                        <table className="table__body">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Cant</th>
+                                                    <th scope="col">Descrip</th>
+                                                    <th scope="col">Precio Uni</th>
+                                                    <th scope="col">SubTotal</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {productos.map((producto, index) => (
+                                                    <tr key={index}>
+                                                        <td>{producto.cantArticulo}</td>
+                                                        <td>{producto.descripArticulo}</td>
+                                                        <td>{producto.precioUniArticulo}</td>
+                                                        <td>{producto.subTotalArticulo}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 ) : (
                                     <p style={{ fontStyle: "italic" }}>No se han agregado productos</p>
                                 )}
@@ -494,7 +506,7 @@ const CrearGasto = (props) => {
                 <Modal.Footer>
                     <button
                         onClick={validateFields}
-                        className="btn btn-primary"
+                        className="btn button-main"
                     >
                         Guardar
                     </button>
@@ -540,14 +552,11 @@ const CrearGasto = (props) => {
                                     onChange={(e) => setUm(e.target.value)}
                                 >
                                     <option value=""></option>
-                                    <option value="UND">UND</option>
-                                    <option value="CAJA">CAJA</option>
-                                    <option value="KITS">KITS</option>
-                                    <option value="BOLSA">BOLSA</option>
+                                    {unidadMedidaOptions}
                                 </select>
                                 {error && <small className="text-danger">{error}</small>}
                             </div>
-                            <button className="btn btn-primary" type="submit">
+                            <button className="btn button-main" type="submit">
                                 Crear
                             </button>
                         </form>

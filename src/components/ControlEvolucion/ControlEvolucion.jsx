@@ -7,7 +7,7 @@ import EditControlEvolucion from "./EditControlEvolucion";
 import moment from "moment";
 import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { Modal } from "react-bootstrap";
+import { Dropdown, Modal } from "react-bootstrap";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
 import profile from "../../img/profile.png";
@@ -151,38 +151,63 @@ const ControlEvolucion = () => {
                                         value={search}
                                         onChange={searcher}
                                         type="text"
-                                        placeholder="Buscar por Apellido y Nombres o IDC..."
+                                        placeholder="Buscar..."
                                         className="form-control-upNav  m-2"
-                                        />
+                                    />
+                                    <i className="fa-solid fa-magnifying-glass"></i>
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                                    <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                                        Bienvenido {currentUser.displayName}
+                                    <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
+                                    Hola, {currentUser.displayName}
                                     </p>
                                     <div className="d-flex">
                                         <div className="notificacion">
-                                            <Link
-                                                to="/miPerfil"
-                                                className="text-decoration-none"
-                                            >
-                                                <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                                            </Link>
-                                        </div>
-                                        <div className="notificacion">
                                             <FaBell className="icono" />
                                             <span className="badge rounded-pill bg-danger">5</span>
-                                        </div>
-                                    </div>
+                                        </div>                                        </div>
+
                                     <div className="notificacion">
-                                        <Link
-                                            to="/"
-                                            className="text-decoration-none"
-                                            style={{ color: "#8D93AB" }}
-                                            onClick={confirmLogout}
-                                        >
-                                            <FaSignOutAlt className="icono" />
-                                            <span>Logout</span>
-                                        </Link>
+                                        <Dropdown>
+                                            <Dropdown.Toggle
+                                                variant="primary"
+                                                className="btn btn-secondary mx-1 btn-md"
+                                                id="dropdown-actions"
+                                                style={{ background: "none", border: "none" }}
+                                            >
+                                                <img
+                                                    src={currentUser.photoURL || profile}
+                                                    alt="profile"
+                                                    className="profile-picture"
+                                                />
+                                            </Dropdown.Toggle>
+                                            <div className="dropdown__container">
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item>
+                                                        <Link
+                                                            to="/miPerfil"
+                                                            className="text-decoration-none"
+                                                            style={{ color: "#8D93AB" }}
+                                                        >
+                                                            <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
+                                                            Mi Perfil
+                                                        </Link>
+                                                    </Dropdown.Item>
+
+                                                    <Dropdown.Item>
+
+                                                        <Link
+                                                            to="/"
+                                                            className="text-decoration-none"
+                                                            style={{ color: "#8D93AB" }}
+                                                            onClick={confirmLogout}
+                                                        >
+                                                            <FaSignOutAlt className="icono" />
+                                                            Cerrar Sesión
+                                                        </Link>
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </div>
+                                        </Dropdown>
                                     </div>
                                 </div>
                             </div>
@@ -194,75 +219,77 @@ const ControlEvolucion = () => {
                                     <div className="d-flex justify-content-between">
                                         <h1>Control y Evoluciones</h1>
                                     </div>
-                                    <table className="table__body">
-                                        <thead>
-                                            <tr>
-                                                <th>N°</th>
-                                                <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
-                                                    Apellido Y Nombres
-                                                </th>
-                                                <th onClick={() => sorting("idc")}>IDC</th>
-                                                <th onClick={() => sorting("tratamiento")}>Tratamiento</th>
-                                                <th onClick={() => sorting("pieza")}>Pieza</th>
-                                                <th onClick={() => sorting("doctor")}>Doctor</th>
-                                                <th onClick={() => sorting("fechaControlRealizado")}>Fecha</th>
-                                                <th>Accion</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {results.map((control, index) => (
-                                                <tr key={control.id}>
-                                                    <td>{results.length - index}</td>
-                                                    <td> {control.apellidoConNombre} </td>
-                                                    <td> {control.idc} </td>
-                                                    <td> {control.tratamientoControl} </td>
-                                                    <td> {control.pieza} </td>
-                                                    <td> {control.doctor} </td>
-                                                    <td>
-                                                        {moment(control.fechaControlRealizado).format(
-                                                            "DD/MM/YY"
-                                                        )}
-                                                    </td>
-
-                                                    <td style={{ padding: "10px" }}>
-                                                        <button
-                                                            variant="primary"
-                                                            className="btn btn-secondary mx-1"
-                                                            onClick={() => {
-                                                                setModalShowVerDetalle([
-                                                                    true,
-                                                                    control.detalleTratamiento,
-                                                                ]);
-                                                            }}>
-                                                            <i className="fa-regular fa-comment"></i> Ver
-                                                            Notas
-                                                        </button>
-                                                        <button
-                                                            variant="primary"
-                                                            className="btn btn-success mx-1"
-                                                            onClick={() => {
-                                                                setModalShowEditar(true);
-                                                                setControl(control);
-                                                                setIdParam(control.id);
-                                                            }}
-                                                        >
-                                                            <i className="fa-regular fa-pen-to-square"></i>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                confirmeDelete(control.id);
-                                                            }}
-                                                            variant="primary"
-                                                            className="btn btn-danger mx-1"
-                                                        >
-                                                            <i className="fa-solid fa-trash-can"></i>
-                                                        </button>
-                                                    </td>
+                                    <div className="table__container">
+                                        <table className="table__body">
+                                            <thead>
+                                                <tr>
+                                                    <th>N°</th>
+                                                    <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
+                                                        Apellido Y Nombres
+                                                    </th>
+                                                    <th onClick={() => sorting("idc")}>IDC</th>
+                                                    <th onClick={() => sorting("tratamiento")}>Tratamiento</th>
+                                                    <th onClick={() => sorting("pieza")}>Pieza</th>
+                                                    <th onClick={() => sorting("doctor")}>Doctor</th>
+                                                    <th onClick={() => sorting("fechaControlRealizado")}>Fecha</th>
+                                                    <th>Accion</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+
+                                            <tbody>
+                                                {results.map((control, index) => (
+                                                    <tr key={control.id}>
+                                                        <td id="colIzquierda">{results.length - index}</td>
+                                                        <td> {control.apellidoConNombre} </td>
+                                                        <td> {control.idc} </td>
+                                                        <td> {control.tratamientoControl} </td>
+                                                        <td> {control.pieza} </td>
+                                                        <td> {control.doctor} </td>
+                                                        <td>
+                                                            {moment(control.fechaControlRealizado).format(
+                                                                "DD/MM/YY"
+                                                            )}
+                                                        </td>
+
+                                                        <td style={{ padding: "10px" }} className="colDerecha">
+                                                            <button
+                                                                variant="primary"
+                                                                className="btn btn-secondary mx-1"
+                                                                onClick={() => {
+                                                                    setModalShowVerDetalle([
+                                                                        true,
+                                                                        control.detalleTratamiento,
+                                                                    ]);
+                                                                }}>
+                                                                <i className="fa-regular fa-comment"></i> Ver
+                                                                Notas
+                                                            </button>
+                                                            <button
+                                                                variant="primary"
+                                                                className="btn btn-success mx-1"
+                                                                onClick={() => {
+                                                                    setModalShowEditar(true);
+                                                                    setControl(control);
+                                                                    setIdParam(control.id);
+                                                                }}
+                                                            >
+                                                                <i className="fa-regular fa-pen-to-square"></i>
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    confirmeDelete(control.id);
+                                                                }}
+                                                                variant="primary"
+                                                                className="btn btn-danger mx-1"
+                                                            >
+                                                                <i className="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     {modalShowVerDetalle[0] && (
                                         <Modal
                                             show={modalShowVerDetalle[0]}

@@ -132,7 +132,7 @@ const EditClave = (props) => {
                                             <button
                                                 type="submit"
                                                 onClick={validateFields}
-                                                className="btn btn-primary"
+                                                className="btn button-main"
                                                 style={{ margin: "4px" }}
                                             >
                                                 Guardar Nueva Clave
@@ -199,7 +199,7 @@ const EditClave = (props) => {
                             <button
                                 type="submit"
                                 onClick={(e) => { update(e); props.onHide() }}
-                                className="btn btn-primary"
+                                className="btn button-main"
                             >
                                 Continuar
                             </button>

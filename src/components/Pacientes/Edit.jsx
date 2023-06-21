@@ -7,15 +7,11 @@ import moment from "moment";
 import peruFlag from "../../img/peru.png";
 
 const Edit = (props) => {
-  const [apellidoConNombre, setApellidoConNombre] = useState(
-    props.client.apellidoConNombre || ""
-  );
+  const [apellidoConNombre, setApellidoConNombre] = useState(props.client.apellidoConNombre || "");
   const [tipoIdc, setTipoIdc] = useState(props.client.tipoIdc || "");
   const [idc, setIdc] = useState(props.client.idc || "");
   const [edad, setEdad] = useState(props.client.edad || "");
-  const [fechaNacimiento, setFechaNacimiento] = useState(
-    props.client.fechaNacimiento || ""
-  );
+  const [fechaNacimiento, setFechaNacimiento] = useState(props.client.fechaNacimiento || "");
   const [numero, setNumero] = useState(props.client.numero || "");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [selectedCode, setSelectedCode] = useState(props.client.selectedCode || "");
@@ -71,6 +67,7 @@ const Edit = (props) => {
     setIdc("");
     setFechaNacimiento("");
     setEdad("");
+    setSelectedCode("");
     setNumero("");
     setValorBusqueda("");
     setSelectedCode("");
@@ -182,29 +179,53 @@ const Edit = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Telefono</label>
+                  <div className="mb-3">
+                  <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
-                  {selectedCode === '+51' && <img src={peruFlag} alt="Bandera de Perú" style={{ width: "45px", marginRight: "4px" }}/>}
-                    <input
+                    {selectedCode === "+51" && (
+                      <img
+                        src={peruFlag}
+                        alt="Bandera de Perú"
+                        style={{ width: "45px", marginRight: "4px" }}
+                      />
+                    )}
+                    <select
                       defaultValue={props.client.selectedCode}
                       onChange={(e) => {
-                        setSelectedCode(e.target.value);
-                      }} 
+                        const codArea = e.target.value;
+                        setSelectedCode(codArea);
+                        if (codArea !== "+51") {
+                          setNumero("");
+                        }
+                      }}
                       className="form-control-tipoIDC me-1"
-                      type="text"
+                      multiple={false}
                       style={{ width: "fit-content" }}
                       required
-                     />
-                      <>
-                        <input
-                          defaultValue={props.client.numero}
-                          onChange={(e) => setNumero(e.target.value)}
-                          type="text"
-                          className="form-control"
-                          required
-                        />
-                      </>
+                    >
+                      <option value="">Otro Pais</option>
+                      <option value="+51">Perú (+51)</option>
+                    </select>
+                    {selectedCode !== "+51" && (
+                      <input
+                        defaultValue={props.client.selectedCode}
+                        onChange={(e) => {
+                          setSelectedCode(e.target.value);
+                        }}
+                        className="form-control-tipoIDC me-1"
+                        type="text"
+                        style={{ width: "fit-content" }}
+                        placeholder="Cod. area"
+                        required
+                      />
+                    )}
+                    <input
+                      defaultValue={props.client.numero}
+                      onChange={(e) => setNumero(e.target.value)}
+                      type="number"
+                      className="form-control"
+                      required
+                    />
                   </div>
                 </div>
                 <button
@@ -212,7 +233,7 @@ const Edit = (props) => {
                   onClick={() => {
                     props.onHide();
                   }}
-                  className="btn btn-primary"
+                  className="btn button-main"
                 >
                   Editar
                 </button>

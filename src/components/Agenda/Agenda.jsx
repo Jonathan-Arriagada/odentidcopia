@@ -52,7 +52,6 @@ function Citas() {
 
   const navigate = useNavigate()
 
-
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
     navigate("/");
@@ -211,26 +210,38 @@ function Citas() {
     }
   };
 
-  var results = doctor
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  let filteredResults = doctor
     ? citas.filter((dato) => JSON.parse(dato.doctor).uid === JSON.parse(doctor).uid)
     : citas;
 
-  results = !search
-    ? results
+  filteredResults = !search
+    ? filteredResults
     : typeof search === "object"
-      ? results.filter((dato) => {
+      ? filteredResults.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       })
       : search.toString().length === 10 &&
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
-        ? results.filter((dato) => dato.fecha === search.toString())
-        : results.filter(
+        ? filteredResults.filter((dato) => dato.fecha === search.toString())
+        : filteredResults.filter(
           (dato) =>
             dato.apellidoConNombre.toLowerCase().includes(search) ||
             dato.idc.toString().includes(search.toString())
         );
+
+  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentResults = filteredResults.slice(startIndex, endIndex);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -257,6 +268,7 @@ function Citas() {
     }
   };
 
+
   return (
     <>
       <div className="mainpage">
@@ -272,9 +284,10 @@ function Citas() {
                     value={search}
                     onChange={searcher}
                     type="text"
-                    placeholder="Buscar por Apellido y Nombres o IDC..."
+                    placeholder="Buscar..."
                     className="form-control-upNav  m-2"
                   />
+                  <i className="fa-solid fa-magnifying-glass"></i>
                   {taparFiltro && (
                     <input
                       className="form-control m-2 w-25"
@@ -291,33 +304,57 @@ function Citas() {
                   )}
                 </div>
                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                    Bienvenido {currentUser.displayName}
+                  <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
+                    Hola, {currentUser.displayName}
                   </p>
                   <div className="d-flex">
-                    <div className="notificacion">
-                      <Link
-                        to="/miPerfil"
-                        className="text-decoration-none"
-                      >
-                        <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                      </Link>
-                    </div>
                     <div className="notificacion">
                       <FaBell className="icono" />
                       <span className="badge rounded-pill bg-danger">5</span>
                     </div>
                   </div>
                   <div className="notificacion">
-                    <Link
-                      to="/"
-                      className="text-decoration-none"
-                      style={{ color: "#8D93AB" }}
-                      onClick={confirmLogout}
-                    >
-                      <FaSignOutAlt className="icono" />
-                      <span>Logout</span>
-                    </Link>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="primary"
+                        className="btn btn-secondary mx-1 btn-md"
+                        id="dropdown-actions"
+                        style={{ background: "none", border: "none" }}
+                      >
+                        <img
+                          src={currentUser.photoURL || profile}
+                          alt="profile"
+                          className="profile-picture"
+                        />
+                      </Dropdown.Toggle>
+                      <div className="dropdown__container">
+                        <Dropdown.Menu>
+                          <Dropdown.Item>
+                            <Link
+                              to="/miPerfil"
+                              className="text-decoration-none"
+                              style={{ color: "#8D93AB" }}
+                            >
+                              <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
+                              Mi Perfil
+                            </Link>
+                          </Dropdown.Item>
+
+                          <Dropdown.Item>
+
+                            <Link
+                              to="/"
+                              className="text-decoration-none"
+                              style={{ color: "#8D93AB" }}
+                              onClick={confirmLogout}
+                            >
+                              <FaSignOutAlt className="icono" />
+                              Cerrar Sesión
+                            </Link>
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </div>
+                    </Dropdown>
                   </div>
                 </div>
               </div>
@@ -446,108 +483,163 @@ function Citas() {
                       </div>
                     </div>
                   </div>
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th onClick={() => sorting("fecha")}>Fecha</th>
-                        <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
-                        <th onClick={() => sorting("horaFin")}>Hora Fin</th>
-                        <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
-                          Apellido y Nombres
-                        </th>
-                        <th onClick={() => sorting("idc")}>IDC</th>
-                        <th onClick={() => sorting("numero")}>Telefono</th>
-                        <th onClick={() => sorting("doctor")}>Doctor</th>
-                        <th onClick={() => sorting("estado")}>Estado</th>
-                        <th id="columnaAccion"></th>
-                      </tr>
-                    </thead>
+                  <div className="table__container">
+                    <table className="table__body">
+                      <thead>
+                        <tr>
+                          <th onClick={() => sorting("fecha")}>Fecha</th>
+                          <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
+                          <th onClick={() => sorting("horaFin")}>Hora Fin</th>
+                          <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
+                            Apellido y Nombres
+                          </th>
+                          <th onClick={() => sorting("idc")}>IDC</th>
+                          <th onClick={() => sorting("numero")}>Telefono</th>
+                          <th onClick={() => sorting("doctor")}>Doctor</th>
+                          <th onClick={() => sorting("estado")}>Estado</th>
+                          <th id="columnaAccion"></th>
+                        </tr>
+                      </thead>
 
-                    <tbody>
-                      {results.map((cita) => (
-                        <tr key={cita.id}>
-                          <td>{moment(cita.fecha).format("DD/MM/YY")}</td>
-                          <td> {cita.horaInicio} </td>
-                          <td> {cita.horaFin} </td>
-                          <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
-                          <td> {cita.idc} </td>
-                          <td> {cita.selectedCode}{cita.numero} </td>
-                          <td>{JSON.parse(cita.doctor).nombreApellido}</td>
-                          <td style={{ paddingBottom: "0", display: "flex" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              {cita.estado || ""}
-                              {cita.estado && (
-                                <p
-                                  style={buscarEstilos(cita.estado)}
-                                  className="color-preview justify-content-center align-items-center"
-                                ></p>
+                      <tbody>
+                        {currentResults.map((cita, index) => (
+                          <tr key={cita.id}>
+                            <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
+                            <td> {cita.horaInicio} </td>
+                            <td> {cita.horaFin} </td>
+                            <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
+                            <td> {cita.idc} </td>
+                            <td> {cita.selectedCode}{cita.numero} </td>
+                            <td>{JSON.parse(cita.doctor).nombreApellido}</td>
+                            <td style={{ paddingBottom: "0", display: "flex" }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                {cita.estado || ""}
+                                {cita.estado && (
+                                  <p
+                                    style={buscarEstilos(cita.estado)}
+                                    className="color-preview justify-content-center align-items-center"
+                                  ></p>
 
-                              )}
-                              <ListaSeleccionEstadoCita
-                                citaId={cita.id}
-                              />
-                            </div>
-                          </td>
-                          <td id="columnaAccion">
-                            <Dropdown>
-                              <Dropdown.Toggle
-                                variant="primary"
-                                className="btn btn-secondary mx-1 btn-md"
-                                id="dropdown-actions"
-                              >
-                                <i className="fa-solid fa-ellipsis-vertical"></i>
-                              </Dropdown.Toggle>
-
-                              <Dropdown.Menu>
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    setModalShowVerNotas([
-                                      true,
-                                      cita.comentario
-                                    ]);
-                                  }}
+                                )}
+                                <ListaSeleccionEstadoCita
+                                  citaId={cita.id}
+                                />
+                              </div>
+                            </td>
+                            <td id="columnaAccion" className="colDerecha">
+                              <Dropdown>
+                                <Dropdown.Toggle
+                                  variant="primary"
+                                  className="btn btn-secondary mx-1 btn-md"
+                                  id="dropdown-actions"
+                                  style={{ background: "none", border: "none" }}
                                 >
-                                  <i className="fa-regular fa-comment"></i> Ver
-                                  Notas
-                                </Dropdown.Item>
+                                  <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
+                                </Dropdown.Toggle>
 
-                                <Dropdown.Item>
-                                  <Link to={`/historia/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
-                                    <i className="fa-solid fa-file-medical"></i>
-                                    Historial Clinico
-                                  </Link>
-                                </Dropdown.Item>
-
-                                {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                                  <div>
+                                <div className="dropdown__container">
+                                  <Dropdown.Menu>
                                     <Dropdown.Item
                                       onClick={() => {
-                                        setModalShowEditCita(true);
-                                        setCita(cita);
-                                        setIdParam(cita.id);
+                                        setModalShowVerNotas([
+                                          true,
+                                          cita.comentario
+                                        ]);
                                       }}
                                     >
-                                      <i className="fa-regular fa-pen-to-square"></i>
-                                      Editar
+                                      <i className="fa-regular fa-comment"></i> Ver
+                                      Notas
                                     </Dropdown.Item>
-                                    <Dropdown.Item
-                                      onClick={() =>
-                                        confirmeDelete(cita.id)
-                                      }
-                                    >
-                                      <i className="fa-solid fa-trash-can"></i>
-                                      Eliminar
-                                    </Dropdown.Item>
-                                  </div>
-                                ) : null}
 
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                                    <Dropdown.Item>
+                                      <Link to={`/historias/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
+                                        <i className="fa-solid fa-file-medical"></i>
+                                        Historias
+                                      </Link>
+                                    </Dropdown.Item>
+
+                                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                      <div>
+                                        <Dropdown.Item
+                                          onClick={() => {
+                                            setModalShowEditCita(true);
+                                            setCita(cita);
+                                            setIdParam(cita.id);
+                                          }}
+                                        >
+                                          <i className="fa-regular fa-pen-to-square"></i>
+                                          Editar
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={() =>
+                                            confirmeDelete(cita.id)
+                                          }
+                                        >
+                                          <i className="fa-solid fa-trash-can"></i>
+                                          Eliminar
+                                        </Dropdown.Item>
+                                      </div>
+                                    ) : null}
+
+                                  </Dropdown.Menu>
+                                </div>
+                              </Dropdown>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="table__footer">
+                    <div className="table__footer-left">
+                      Mostrando {startIndex + 1} - {Math.min(endIndex, citas.length)} de {citas.length}
+                    </div>
+
+                    <div className="table__footer-right">
+                      <span>
+                        <button
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                          style={{ border: "0", background: "none" }}
+                        >
+                          &lt; Previo
+                        </button>
+                      </span>
+
+                      {[...Array(totalPages)].map((_, index) => {
+                        const page = index + 1;
+                        return (
+                          <span key={page}>
+                            <span
+                              onClick={() => handlePageChange(page)}
+                              className={page === currentPage ? "active" : ""}
+                              style={{
+                                margin: "2px",
+                                backgroundColor: page === currentPage ? "#003057" : "transparent",
+                                color: page === currentPage ? "#FFFFFF" : "#000000",
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                cursor: "pointer"
+                              }}
+                            >
+                              {page}
+                            </span>
+                          </span>
+                        );
+                      })}
+
+                      <span>
+                        <button
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                          style={{ border: "0", background: "none" }}
+                        >
+                          Siguiente &gt;
+                        </button>
+                      </span>
+                    </div>
+                  </div>
 
                   {modalShowVerNotas[0] && (
                     <Modal
@@ -583,7 +675,7 @@ function Citas() {
             </div>
           </div>
         )}
-      </div>
+      </div >
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
       <EditCita
         id={idParam}

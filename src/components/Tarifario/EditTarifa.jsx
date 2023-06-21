@@ -98,7 +98,7 @@ const EditTarifa = (props) => {
                 onClick={() => {
                   props.onHide();
                 }}
-                className="btn btn-primary"
+                className="btn button-main"
               >
                 Editar
               </button>

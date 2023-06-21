@@ -52,7 +52,6 @@ const EditGasto = (props) => {
       onSnapshot(query(collection(db, "tipoGasto"), orderBy("name")), updateOptionsTipoGasto),
       onSnapshot(query(collection(db, "proveedores"), orderBy("name")), updateOptionsProveedores),
       onSnapshot(query(collection(db, "materiales"), orderBy("name")), updateOptionsMateriales),
-
     ];
 
     return () => unsubscribe.forEach(fn => fn());
@@ -142,7 +141,7 @@ const EditGasto = (props) => {
       >
         <Modal.Header closeButton onClick={() => { clearFields(); props.onHide(); }}>
           <Modal.Title id="contained-modal-title-vcenter">
-            <h1>Editar Gasto</h1>
+            <h1>Editar Compra</h1>
             <h2 style={{ fontStyle: "italic" }}>(No posee funciones para agregar, solo edición)</h2>
           </Modal.Title>
         </Modal.Header>
@@ -211,7 +210,7 @@ const EditGasto = (props) => {
                       </select>
                     </div>
                     <div className="col mb-6">
-                      <label className="form-label">Comprobante Gasto*</label>
+                      <label className="form-label">Comprobante Compra*</label>
                       <input
                         defaultValue={props.gasto.comprobanteGasto}
                         onChange={(e) => setComprobanteGasto(e.target.value)}
@@ -245,8 +244,9 @@ const EditGasto = (props) => {
                         <select
                           defaultValue={props.gasto.descripArticulo}
                           onChange={(e) => {
-                            setDescripArticulo(e.target.value);
-                            buscarCuentaArticulo(e.target.value);
+                            var inputValue = e.target.value.toUpperCase();
+                            setDescripArticulo(inputValue);
+                            buscarCuentaArticulo(inputValue);
                           }}
                           className="form-control"
                           multiple={false}
@@ -287,7 +287,7 @@ const EditGasto = (props) => {
         <Modal.Footer>
           <button
             onClick={update}
-            className="btn btn-primary"
+            className="btn button-main"
           >
             Guardar
           </button>

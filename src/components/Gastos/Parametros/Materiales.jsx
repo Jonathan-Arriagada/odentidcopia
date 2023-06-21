@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
-import { Modal } from "react-bootstrap";
+import { Dropdown, Modal } from "react-bootstrap";
 import Navigation from "../../Navigation.jsx";
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy, getDocs, limit } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
@@ -24,6 +24,8 @@ const Materiales = () => {
     const [editable] = useState(false);
     const navigate = useNavigate()
     const { currentUser, } = useContext(AuthContext);
+    const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
+
     const materialesCollection = collection(db, "materiales");
     const materialesCollectionOrdenados = useRef(query(materialesCollection, orderBy("cuenta")));
 
@@ -36,34 +38,41 @@ const Materiales = () => {
         setIsLoading(false);
     }, []);
 
+    const updateOptionsUnidadMedida = useCallback(snapshot => {
+        const unidadMedidaOptions = snapshot.docs.map((doc, index) => (
+            <option key={`unidadMedida-${index}`} value={doc.data().name}>{doc.data().name}</option>
+        ));
+        setUnidadMedidaOptions(unidadMedidaOptions);
+    }, []);
+
     const logout = useCallback(() => {
         localStorage.setItem("user", JSON.stringify(null));
         navigate("/");
         window.location.reload();
-      }, [navigate]);
-    
+    }, [navigate]);
+
     const confirmLogout = (e) => {
-        e.preventDefault();       
+        e.preventDefault();
         Swal.fire({
-          title: '¿Desea cerrar sesión?',
-          showDenyButton: true,         
-          confirmButtonText: 'Cerrar sesión',
-          confirmButtonColor: '#00C5C1',
-          denyButtonText: `Cancelar`,
+            title: '¿Desea cerrar sesión?',
+            showDenyButton: true,
+            confirmButtonText: 'Cerrar sesión',
+            confirmButtonColor: '#00C5C1',
+            denyButtonText: `Cancelar`,
         }).then((result) => {
-          if (result.isConfirmed) {
-            logout();         
-          }
+            if (result.isConfirmed) {
+                logout();
+            }
         });
-      };
+    };
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(
-            materialesCollectionOrdenados.current,
-            updateMaterialesFromSnapshot
-        );
-        return unsubscribe;
-    }, [updateMaterialesFromSnapshot]);
+        const unsubscribe = [
+            onSnapshot(materialesCollectionOrdenados.current, updateMaterialesFromSnapshot),
+            onSnapshot(query(collection(db, "unidadesMedidas"), orderBy("name")), updateOptionsUnidadMedida),
+        ];
+        return () => unsubscribe.forEach(fn => fn());
+    }, [updateMaterialesFromSnapshot, updateOptionsUnidadMedida]);
 
     const inputRef = useRef(null);
 
@@ -141,17 +150,29 @@ const Materiales = () => {
         setSearch(e.target.value);
     };
 
-    let results = [];
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    let filteredResults = [];
 
     if (!search) {
-        results = materiales;
+        filteredResults = materiales;
     } else {
-        results = materiales.filter(
+        filteredResults = materiales.filter(
             (dato) =>
                 dato.name.toLowerCase().includes(search.toLowerCase()) ||
                 dato.cuenta.toString().includes(search.toString())
         );
     }
+
+    const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentResults = filteredResults.slice(startIndex, endIndex);
 
     const handleCloseModal = () => {
         setEditIndex(null)
@@ -176,38 +197,64 @@ const Materiales = () => {
                                         value={search}
                                         onChange={searcher}
                                         type="text"
-                                        placeholder="Buscar por Descripción o Cuenta..."
+                                        placeholder="Buscar..."
                                         className="form-control-upNav  m-2"
-                                        />
+                                    />
+                                    <i className="fa-solid fa-magnifying-glass"></i>
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
-                                    <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                                        Bienvenido {currentUser.displayName}
+                                    <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
+                                        Hola, {currentUser.displayName}
                                     </p>
                                     <div className="d-flex">
-                                        <div className="notificacion">
-                                        <Link
-                                            to="/miPerfil"
-                                            className="text-decoration-none"
-                                        >
-                                            <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                                        </Link>
-                                        </div>
                                         <div className="notificacion">
                                             <FaBell className="icono" />
                                             <span className="badge rounded-pill bg-danger">5</span>
                                         </div>
                                     </div>
+
                                     <div className="notificacion">
-                                        <Link
-                                            to="/"
-                                            className="text-decoration-none"
-                                            style={{ color: "#8D93AB" }}
-                                            onClick={confirmLogout}
-                                        >
-                                            <FaSignOutAlt className="icono" />
-                                            <span>Logout</span>
-                                        </Link>
+                                        <Dropdown>
+                                            <Dropdown.Toggle
+                                                variant="primary"
+                                                className="btn btn-secondary mx-1 btn-md"
+                                                id="dropdown-actions"
+                                                style={{ background: "none", border: "none" }}
+                                            >
+                                                <img
+                                                    src={currentUser.photoURL || profile}
+                                                    alt="profile"
+                                                    className="profile-picture"
+                                                />
+                                            </Dropdown.Toggle>
+                                            <div className="dropdown__container">
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item>
+                                                        <Link
+                                                            to="/miPerfil"
+                                                            className="text-decoration-none"
+                                                            style={{ color: "#8D93AB" }}
+                                                        >
+                                                            <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
+                                                            Mi Perfil
+                                                        </Link>
+                                                    </Dropdown.Item>
+
+                                                    <Dropdown.Item>
+
+                                                        <Link
+                                                            to="/"
+                                                            className="text-decoration-none"
+                                                            style={{ color: "#8D93AB" }}
+                                                            onClick={confirmLogout}
+                                                        >
+                                                            <FaSignOutAlt className="icono" />
+                                                            Cerrar Sesión
+                                                        </Link>
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </div>
+                                        </Dropdown>
                                     </div>
                                 </div>
                             </div>
@@ -235,41 +282,91 @@ const Materiales = () => {
                                         </div>
                                     </div>
 
-
-                                    <table className="table__body">
-                                        <thead>
-                                            <tr>
-                                                <th>Cuenta</th>
-                                                <th style={{ textAlign: "left" }}>Descripcion</th>
-                                                <th>U.M.</th>
-                                                <th>Accion</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {results.map((material, index) => (
-                                                <tr key={material.id}>
-                                                    <td>{material.cuenta}</td>
-                                                    <td style={{ textAlign: "left" }}>{material.name}</td>
-                                                    <td>{material.um}</td>
-                                                    <td>
-                                                        <button
-                                                            className="btn btn-success mx-1 btn-sm"
-                                                            onClick={() => { setModalShowGestionMateriales(true); handleEdit(index) }}
-                                                        >
-                                                            <i className="fa-solid fa-edit"></i>
-                                                        </button>
-                                                        <button
-                                                            className="btn btn-danger btn-sm"
-                                                            onClick={() => { handleDelete(index) }}
-                                                        >
-                                                            <i className="fa-solid fa-trash-can"></i>
-                                                        </button>
-                                                    </td>
+                                    <div className="table__container">
+                                        <table className="table__body">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cuenta</th>
+                                                    <th style={{ textAlign: "left" }}>Descripcion</th>
+                                                    <th>U.M.</th>
+                                                    <th>Accion</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+
+                                            <tbody>
+                                                {currentResults.map((material, index) => (
+                                                    <tr key={material.id}>
+                                                        <td id="colIzquierda">{material.cuenta}</td>
+                                                        <td style={{ textAlign: "left" }}>{material.name}</td>
+                                                        <td>{material.um}</td>
+                                                        <td className="colDerecha">
+                                                            <button
+                                                                className="btn btn-success mx-1 btn-sm"
+                                                                onClick={() => { setModalShowGestionMateriales(true); handleEdit(index) }}
+                                                            >
+                                                                <i className="fa-solid fa-edit"></i>
+                                                            </button>
+                                                            <button
+                                                                className="btn btn-danger btn-sm"
+                                                                onClick={() => { handleDelete(index) }}
+                                                            >
+                                                                <i className="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="table__footer">
+                                        <div className="table__footer-left">
+                                            Mostrando {startIndex + 1} - {Math.min(endIndex, materiales.length)} de {materiales.length}
+                                        </div>
+
+                                        <div className="table__footer-right">
+                                            <span>
+                                                <button
+                                                    onClick={() => handlePageChange(currentPage - 1)}
+                                                    disabled={currentPage === 1}
+                                                    style={{ border: "0", background: "none" }}
+                                                >
+                                                    &lt; Previo
+                                                </button>
+                                            </span>
+
+                                            {[...Array(totalPages)].map((_, index) => {
+                                                const page = index + 1;
+                                                return (
+                                                    <span key={page}>
+                                                        <span
+                                                            onClick={() => handlePageChange(page)}
+                                                            className={page === currentPage ? "active" : ""}
+                                                            style={{
+                                                                margin: "2px",
+                                                                backgroundColor: page === currentPage ? "#003057" : "transparent",
+                                                                color: page === currentPage ? "#FFFFFF" : "#000000",
+                                                                padding: "4px 8px",
+                                                                borderRadius: "4px",
+                                                                cursor: "pointer"
+                                                            }}
+                                                        >
+                                                            {page}
+                                                        </span>
+                                                    </span>
+                                                );
+                                            })}
+
+                                            <span>
+                                                <button
+                                                    onClick={() => handlePageChange(currentPage + 1)}
+                                                    disabled={currentPage === totalPages}
+                                                    style={{ border: "0", background: "none" }}
+                                                >
+                                                    Siguiente &gt;
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -303,7 +400,10 @@ const Materiales = () => {
                                     type="text"
                                     className="form-control"
                                     value={material}
-                                    onChange={(e) => setMaterial(e.target.value)}
+                                    onChange={(e) => {
+                                        var inputValue = e.target.value.toUpperCase();
+                                        setMaterial(inputValue)
+                                    }}
                                     ref={inputRef}
                                 />
                                 {error && <small className="text-danger">{error}</small>}
@@ -317,14 +417,11 @@ const Materiales = () => {
                                     ref={inputRef}
                                 >
                                     <option value=""></option>
-                                    <option value="UND">UND</option>
-                                    <option value="CAJA">CAJA</option>
-                                    <option value="KITS">KITS</option>
-                                    <option value="BOLSA">BOLSA</option>
+                                    {unidadMedidaOptions}
                                 </select>
                                 {error && <small className="text-danger">{error}</small>}
                             </div>
-                            <button className="btn btn-primary" type="submit">
+                            <button className="btn button-main" type="submit">
                                 {editIndex !== null ? "Actualizar" : "Crear"}
                             </button>
 

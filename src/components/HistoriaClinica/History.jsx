@@ -19,6 +19,7 @@ import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
 import profile from "../../img/profile.png";
 import { AuthContext } from "../../context/AuthContext";
 import "../../style/Main.css";
+import { Dropdown } from "react-bootstrap";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -125,13 +126,13 @@ export default function History() {
       (opcion) => opcion.valorBusqueda === search
     );
     if (pacienteSeleccionado) {
-      navigate(`/historia/${pacienteSeleccionado.id}`)
+      navigate(`/historias/${pacienteSeleccionado.id}`)
     }
   };
 
   const handleLimpiar = () => {
     setSearch("")
-    navigate("/historia");
+    navigate("/historias");
   };
 
 
@@ -151,7 +152,7 @@ export default function History() {
                       value={search}
                       onChange={searcher}
                       type="text"
-                      placeholder="Buscador de Pacientes..."
+                      placeholder="Buscar..."
                       className="form-control-upNav  m-2"
                       list="pacientes-list"
                     />
@@ -166,7 +167,7 @@ export default function History() {
                       id="boton-main"
                       style={{ margin: "3px" }}
                     >
-                      <i className="fa-solid fa-magnifying-glass"></i>
+                      <i className="fa-solid fa-magnifying-glass" id="historyi"></i>
                     </button>
                   </div>
                 ) : (
@@ -189,7 +190,7 @@ export default function History() {
                       style={{ margin: "3px" }}
                       disabled
                     >
-                      <i className="fa-solid fa-magnifying-glass"></i>
+                      <i className="fa-solid fa-magnifying-glass" id="historyi"></i>
                     </button>
                     <button
                       onClick={handleLimpiar}
@@ -197,40 +198,65 @@ export default function History() {
                       id="boton-main"
                       style={{ margin: "3px" }}
                     >
-                      <i className="fa-regular fa-circle-xmark"></i>
+                      <i className="fa-regular fa-circle-xmark" id="historyi"></i>
                     </button>
                   </div>
                 )}
               </>
 
               <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-bold mb-0" style={{ marginRight: "20px" }}>
-                  Bienvenido {currentUser.displayName}
+                <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
+                Hola, {currentUser.displayName}
                 </p>
                 <div className="d-flex">
-                  <div className="notificacion">
-                    <Link
-                      to="/miPerfil"
-                      className="text-decoration-none"
-                    >
-                      <img src={currentUser.photoURL || profile} alt="profile" className="profile-picture" />
-                    </Link>
-                  </div>
                   <div className="notificacion">
                     <FaBell className="icono" />
                     <span className="badge rounded-pill bg-danger">5</span>
                   </div>
                 </div>
+
                 <div className="notificacion">
-                  <Link
-                    to="/"
-                    className="text-decoration-none"
-                    style={{ color: "#8D93AB" }}
-                    onClick={confirmLogout}
-                  >
-                    <FaSignOutAlt className="icono" />
-                    <span>Logout</span>
-                  </Link>
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      variant="primary"
+                      className="btn btn-secondary mx-1 btn-md"
+                      id="dropdown-actions"
+                      style={{ background: "none", border: "none" }}
+                    >
+                      <img
+                        src={currentUser.photoURL || profile}
+                        alt="profile"
+                        className="profile-picture"
+                      />
+                    </Dropdown.Toggle>
+                    <div className="dropdown__container">
+                      <Dropdown.Menu>
+                        <Dropdown.Item>
+                          <Link
+                            to="/miPerfil"
+                            className="text-decoration-none"
+                            style={{ color: "#8D93AB" }}
+                          >
+                            <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
+                            Mi Perfil
+                          </Link>
+                        </Dropdown.Item>
+
+                        <Dropdown.Item>
+
+                          <Link
+                            to="/"
+                            className="text-decoration-none"
+                            style={{ color: "#8D93AB" }}
+                            onClick={confirmLogout}
+                          >
+                            <FaSignOutAlt className="icono" />
+                            Cerrar Sesión
+                          </Link>
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </div>
+                  </Dropdown>
                 </div>
               </div>
             </div>
