@@ -280,7 +280,7 @@ const Show = () => {
                             <td>{client.tipoIdc.toUpperCase()}</td>
                             <td> {client.idc} </td>
                             <td>
-                              {moment(client.fefechaNacimientocha).format(
+                              {moment(client.fechaNacimiento).format(
                                 "DD/MM/YY"
                               )}
                             </td>

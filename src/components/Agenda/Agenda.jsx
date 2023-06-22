@@ -198,13 +198,13 @@ function Citas() {
     if (param === "Dia") {
       setSearch(moment().format("YYYY-MM-DD"));
     }
-    if (param === "Semana") {
+    if (param === "Ultimos 7") {
       const fechaInicio = moment().subtract(7, "days").format("YYYY-MM-DD");
       const fechaFin = moment().format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
     if (param === "Mes") {
-      const fechaInicio = moment().subtract(30, "days").format("YYYY-MM-DD");
+      const fechaInicio = moment().subtract(30, "days").startOf('month').format("YYYY-MM-DD");
       const fechaFin = moment().format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
@@ -222,17 +222,17 @@ function Citas() {
     : citas;
 
   filteredResults = !search
-    ? filteredResults
+    ? citas
     : typeof search === "object"
-      ? filteredResults.filter((dato) => {
+      ? citas.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       })
       : search.toString().length === 10 &&
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
-        ? filteredResults.filter((dato) => dato.fecha === search.toString())
-        : filteredResults.filter(
+        ? citas.filter((dato) => dato.fecha === search.toString())
+        : citas.filter(
           (dato) =>
             dato.apellidoConNombre.toLowerCase().includes(search) ||
             dato.idc.toString().includes(search.toString())
@@ -403,7 +403,7 @@ function Citas() {
                       </button>
                       {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
                         <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
-                        <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Semana'); setTaparFiltro(true) }}>Semana</button>
+                        <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Ultimos 7'); setTaparFiltro(true) }}>Ultimos 7</button>
                         <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Mes'); setTaparFiltro(true) }}>Mes</button>
                         <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { setModalSeleccionFechaShow(true) }}>Seleccionar</button>
                       </div>)}
@@ -488,13 +488,13 @@ function Citas() {
                       <thead>
                         <tr>
                           <th onClick={() => sorting("fecha")}>Fecha</th>
-                          <th onClick={() => sorting("horaInicio")}>Hora Inicio</th>
-                          <th onClick={() => sorting("horaFin")}>Hora Fin</th>
-                          <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
+                          <th>Hora Inicio</th>
+                          <th>Hora Fin</th>
+                          <th style={{ textAlign: "left" }}>
                             Apellido y Nombres
                           </th>
-                          <th onClick={() => sorting("idc")}>IDC</th>
-                          <th onClick={() => sorting("numero")}>Telefono</th>
+                          <th>IDC</th>
+                          <th>Telefono</th>
                           <th onClick={() => sorting("doctor")}>Doctor</th>
                           <th onClick={() => sorting("estado")}>Estado</th>
                           <th id="columnaAccion"></th>
