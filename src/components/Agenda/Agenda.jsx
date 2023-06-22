@@ -146,7 +146,7 @@ function Citas() {
   useEffect(() => {
     citas.forEach((cita) => {
       const citaDate = moment(cita.fecha, 'YYYY-MM-DD').startOf('day');
-      if ((citaDate.isSame(mañana) || citaDate.isSame(hoy)) && cita.estado !== "Confirmada") {
+      if ((citaDate.isSame(mañana) || citaDate.isSame(hoy)) && cita.estado !== "Finalizada" && cita.estado !== "Confirmada" && cita.estado !== "Cancelada") {
         const citaRef = doc(db, "citas", cita.id);
         updateDoc(citaRef, { estado: "Por Confirmar" })
       }
@@ -204,7 +204,7 @@ function Citas() {
       setSearch({ fechaInicio, fechaFin });
     }
     if (param === "Mes") {
-      const fechaInicio = moment().subtract(30, "days").startOf('month').format("YYYY-MM-DD");
+      const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
       const fechaFin = moment().format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
