@@ -94,7 +94,7 @@ function Citas() {
 
     citasArray.sort((a, b) => {
       if (a.fecha === b.fecha) {
-        return b.horaInicio.localeCompare(a.horaInicio);
+        return a.horaInicio.localeCompare(b.horaInicio);
       } else {
         return b.fecha.localeCompare(a.fecha);
       }

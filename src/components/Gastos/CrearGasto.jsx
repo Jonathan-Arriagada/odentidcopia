@@ -314,14 +314,14 @@ const CrearGasto = (props) => {
                     <div className="container">
                         <div className="row">
                             <div className="col">
-                                <form>
+                            <form style={{transform: "scale(0.98)"}}>
                                     {error && (
                                         <div className="alert alert-danger" role="alert">
                                             {error}
                                         </div>
                                     )}
                                     <div className="row">
-                                        <div className="col mb-6">
+                                        <div className="col-6 mb-2">
                                             <label className="form-label">Fecha*</label>
                                             <input
                                                 defaultValue={hoy}
@@ -332,7 +332,7 @@ const CrearGasto = (props) => {
                                                 required
                                             />
                                         </div>
-                                        <div className="col mb-6">
+                                        <div className="col-6 mb-2">
                                             <label className="form-label">Buscador Proveedor*</label>
                                             <div className="d-flex">
                                                 <input
@@ -353,7 +353,7 @@ const CrearGasto = (props) => {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="col mb-12">
+                                        <div className="col-12 mb-2">
                                             <label className="form-label">Nombre Proveedor*</label>
                                             <input
                                                 value={proveedor}
@@ -367,7 +367,7 @@ const CrearGasto = (props) => {
                                     </div>
 
                                     <div className="row">
-                                        <div className="col mb-6">
+                                        <div className="col-6 mb-2">
                                             <label className="form-label">Tipo*</label>
                                             <select
                                                 value={tipoGasto}
@@ -380,7 +380,7 @@ const CrearGasto = (props) => {
                                                 {tipoGastoOptions}
                                             </select>
                                         </div>
-                                        <div className="col mb-6">
+                                        <div className="col-6 mb-2">
                                             <label className="form-label">Comprobante Compra*</label>
                                             <input
                                                 value={comprobanteGasto}
@@ -392,11 +392,6 @@ const CrearGasto = (props) => {
                                         </div>
                                     </div>
 
-                                    <div className="row">
-                                        <div className="col mb-12">
-                                            <br></br>
-                                        </div>
-                                    </div>
                                     <div className="row align-items-lg-end">
                                         <div className="col-2 sm-2">
                                             <label className="form-label">Cantidad</label>
@@ -524,7 +519,7 @@ const CrearGasto = (props) => {
                     </Modal.Header>
                     <Modal.Body>
                         <form onSubmit={handleCreate}>
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label className="form-label">Cuenta</label>
                                 <input
                                     value={cuenta}
@@ -533,7 +528,7 @@ const CrearGasto = (props) => {
                                     className="form-control"
                                 />
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label className="form-label">Materiales*</label>
                                 <input
                                     type="text"
@@ -544,7 +539,7 @@ const CrearGasto = (props) => {
                                 />
                                 {error && <small className="text-danger">{error}</small>}
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label className="form-label">U.M.*</label>
                                 <select
                                     className="form-select"

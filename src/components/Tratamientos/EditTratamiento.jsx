@@ -131,10 +131,10 @@ const EditTratamiento = (props) => {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
+            <form onSubmit={update} style={{ transform: "scale(0.98)" }}>
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -170,7 +170,7 @@ const EditTratamiento = (props) => {
                     />
                   </div>
                 </div>
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
                     defaultValue={props.tratamiento.apellidoConNombre}
@@ -182,7 +182,7 @@ const EditTratamiento = (props) => {
               </div>
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">Tratamiento</label>
                   <select
                     defaultValue={props.tratamiento.tarifasTratamientos}
@@ -194,7 +194,7 @@ const EditTratamiento = (props) => {
                     {optionsTarifasTratamientos}
                   </select>
                 </div>
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">Estado del Tratamiento</label>
                   <select
                     defaultValue={props.tratamiento.estadosTratamientos}
@@ -209,7 +209,7 @@ const EditTratamiento = (props) => {
               </div>
 
               <div className="row">
-                <div className="col mb-2">
+                <div className="col-4 mb-2">
                   <label className="form-label">Forma de Pago</label>
                   <select
                     defaultValue={props.tratamiento.formaPago}
@@ -223,7 +223,7 @@ const EditTratamiento = (props) => {
                   </select>
                 </div>
 
-                <div className="col mb-2">
+                <div className="col-4 mb-2">
                   <label className="form-label">Precio</label>
                   <input
                     defaultValue={props.tratamiento.precio}
@@ -232,7 +232,7 @@ const EditTratamiento = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="col mb-2">
+                <div className="col-4 mb-2">
                   <label className="form-label">Pieza</label>
                   <input
                     defaultValue={props.tratamiento.pieza}
@@ -244,7 +244,7 @@ const EditTratamiento = (props) => {
               </div>
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col mb-2">
                   <label className="form-label">Fecha</label>
                   <input
                     defaultValue={props.tratamiento.fecha}
@@ -255,7 +255,7 @@ const EditTratamiento = (props) => {
                 </div>
 
                 {((formaPago === "Cuotas") || (props.tratamiento.formaPago === "Cuotas")) && (
-                  <div className="col mb-3">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Fecha Vencimiento</label>
                     <input
                       defaultValue={props.tratamiento.fechaVencimiento}
@@ -267,7 +267,7 @@ const EditTratamiento = (props) => {
               </div>
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col-12 mb-2">
                   <label className="form-label">Notas</label>
                   <input
                     defaultValue={props.tratamiento.notas}

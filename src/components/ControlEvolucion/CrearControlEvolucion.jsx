@@ -154,7 +154,7 @@ const CrearControlEvolucion = (props) => {
     return (
         <Modal
             {...props}
-            size="lg"
+            size="md"
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
@@ -271,9 +271,9 @@ const CrearControlEvolucion = (props) => {
 
                         {!ocultar && (<hr />)}
 
-                        <div className="row">
-                            <div className="d-flex col-md-8">
-                                <label className="col-form-label me-5 w-25">Doctor:</label>
+                        <div className="row" style={{ marginTop: "-30px", justifyContent: 'center'}}>
+                            <div className="d-flex col-md-12">
+                                <label className="col-form-label me-6 w-25">Doctor:</label>
                                 <input
                                     value={currentUser.displayName}
                                     disabled
@@ -281,8 +281,8 @@ const CrearControlEvolucion = (props) => {
                                     className="form-control m-1 w-100"
                                 />
                             </div>
-                            <div className="d-flex col-md-8">
-                                <label className="col-form-label me-5 w-25">Fecha:</label>
+                            <div className="d-flex col-md-12">
+                                <label className="col-form-label me-6 w-25">Fecha:</label>
                                 <input
                                     value={fechaControlRealizado ?? ''}
                                     onChange={(e) => setFechaControlRealizado(e.target.value)}
@@ -291,8 +291,8 @@ const CrearControlEvolucion = (props) => {
                                     max={hoy}
                                 />
                             </div>
-                            <div className="d-flex col-md-8">
-                                <label className="col-form-label me-5 w-25">Detalle:</label>
+                            <div className="d-flex col-md-12">
+                                <label className="col-form-label me-6 w-25">Detalle:</label>
                                 <textarea
                                     value={detalleTratamiento}
                                     onChange={(e) => setDetalleTratamiento(e.target.value)}

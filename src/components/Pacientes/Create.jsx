@@ -16,7 +16,7 @@ const Create = (props) => {
   const [numero, setNumero] = useState("");
   const [valorBusqueda, setValorBusqueda] = useState("");
   const [error, setError] = useState("");
-  const [selectedCode, setSelectedCode] = useState("");
+  const [selectedCode, setSelectedCode] = useState("+51");
 
   const clientsCollection = collection(db, "clients");
 
@@ -124,7 +124,7 @@ const Create = (props) => {
   return (
     <Modal
       {...props}
-      size="lg"
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -143,13 +143,13 @@ const Create = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form style={{ transform: "scale(0.96)" }}>
+              <form style={{ transform: "scale(0.98)" }}>
                 {error && (
                   <div className="alert alert-danger" role="alert">
                     {error}
                   </div>
                 )}
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -213,7 +213,7 @@ const Create = (props) => {
                     />
                   </div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Apellido y Nombres*</label>
                   <input
                     value={apellidoConNombre}
@@ -226,7 +226,7 @@ const Create = (props) => {
                     required
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Fecha Nacimiento*</label>
                   <input
                     value={fechaNacimiento}
@@ -236,7 +236,7 @@ const Create = (props) => {
                     required
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
                     {selectedCode === "+51" && (
@@ -287,6 +287,7 @@ const Create = (props) => {
                   type="submit"
                   onClick={validateFields}
                   className="btn button-main"
+                  style={{marginTop: "15px"}}
                 >
                   Agregar
                 </button>

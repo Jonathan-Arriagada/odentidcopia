@@ -21,14 +21,14 @@ import ControlEvolucion from "./components/ControlEvolucion/ControlEvolucion";
 import Dashboard from "./components/Dashboard/Dashboard";
 
 function App() {
-  const {currentUser} = useContext(AuthContext)
-  const RequireAuth = ({children}) => {
-    return currentUser ? children : <Navigate to="/"/>
+  const { currentUser } = useContext(AuthContext)
+  const RequireAuth = ({ children }) => {
+    return currentUser ? children : <Navigate to="/" />
   };
 
   function RequireAdmin({ children }) {
     const storedRole = localStorage.getItem('rol');
-    
+
     if (storedRole === process.env.REACT_APP_rolAdCon) {
       return children;
     } else {
@@ -40,24 +40,24 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-            <Route path="/" element={<Login />}/>
-            <Route index path="admin" element={<RequireAuth><RequireAdmin><PanelAdmin/></RequireAdmin></RequireAuth>}/>
-            <Route index path="miPerfil" element={<RequireAuth><MiPerfil/></RequireAuth>}/>
-            <Route index path="pacientes" element={<RequireAuth><Show/></RequireAuth>}/>
-            <Route path="create" element={<RequireAuth><Create /></RequireAuth>}/>
-            <Route path="edit/:id" element={<RequireAuth><Edit /></RequireAuth>}/>
-            <Route path="agenda" element={<RequireAuth><Agenda /></RequireAuth>}/>
-            <Route path="tarifario" element={<RequireAuth><Tarifario /></RequireAuth>}/>
-            <Route path="CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>}/>
-            <Route path="tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>}/>
-            <Route path="historias" element={<RequireAuth><History /></RequireAuth>}/>
-            <Route path="controlEvoluciones" element={<RequireAuth><ControlEvolucion /></RequireAuth>}/>         
-            <Route path="historias/:id" element={<RequireAuth><History /></RequireAuth>}/>      
-            <Route path="ventas" element={<RequireAuth><Ingresos /></RequireAuth>}/>
-            <Route path="compras" element={<RequireAuth><Gastos /></RequireAuth>}/>
-            <Route path="materiales" element={<RequireAuth><Materiales /></RequireAuth>}/>
-            <Route path="proveedores" element={<RequireAuth><Proveedores /></RequireAuth>}/>   
-            <Route path="dashboard" element={<RequireAuth><Dashboard /></RequireAuth>}/>        
+          <Route path="/" element={<Login />} />
+          <Route index path="/admin" element={<RequireAuth><RequireAdmin><PanelAdmin /></RequireAdmin></RequireAuth>} />
+          <Route index path="/miPerfil" element={<RequireAuth><MiPerfil /></RequireAuth>} />
+          <Route index path="/pacientes" element={<RequireAuth><Show /></RequireAuth>} />
+          <Route path="/create" element={<RequireAuth><Create /></RequireAuth>} />
+          <Route path="/edit/:id" element={<RequireAuth><Edit /></RequireAuth>} />
+          <Route path="/agenda" element={<RequireAuth><Agenda /></RequireAuth>} />
+          <Route path="/tarifario" element={<RequireAuth><Tarifario /></RequireAuth>} />
+          <Route path="/CreateTarifa" element={<RequireAuth><CreateTarifa /></RequireAuth>} />
+          <Route path="/tratamientos" element={<RequireAuth><Tratamientos /></RequireAuth>} />
+          <Route path="/historias" element={<RequireAuth><History /></RequireAuth>} />
+          <Route path="/controlEvoluciones" element={<RequireAuth><ControlEvolucion /></RequireAuth>} />
+          <Route path="/historias/:id" element={<RequireAuth><History /></RequireAuth>} />
+          <Route path="/ventas" element={<RequireAuth><Ingresos /></RequireAuth>} />
+          <Route path="/compras" element={<RequireAuth><Gastos /></RequireAuth>} />
+          <Route path="/materiales" element={<RequireAuth><Materiales /></RequireAuth>} />
+          <Route path="/proveedores" element={<RequireAuth><Proveedores /></RequireAuth>} />
+          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
         </Routes>
       </BrowserRouter>
     </div>

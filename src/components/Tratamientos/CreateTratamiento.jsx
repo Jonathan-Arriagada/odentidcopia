@@ -3,7 +3,6 @@ import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, 
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
-import { FaSearch } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 import moment from "moment";
 
@@ -262,7 +261,7 @@ function CreateTratamiento(props) {
       <Modal.Body>
         <div className="container">
           {showBuscador && (
-            <div className="col mb-3" style={{ position: "relative" }}>
+            <div className="col-6 mb-2" style={{ display: "flex" }}>
               <input
                 placeholder="Buscador por Apellido, Nombre o DNI"
                 type="text"
@@ -273,25 +272,16 @@ function CreateTratamiento(props) {
                 list="pacientes-list"
                 multiple={false}
               />
-              <span
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "10px",
-                  transform: "translateY(-60%)",
-                }}
-              >
-                <FaSearch />
-              </span>
+              <i className="fa-solid fa-magnifying-glass" style={{ display: "flex", alignItems: "center", marginLeft: "-26px" }}></i>
               <datalist id="pacientes-list">
                 {valorBusquedaOptionsJSX}
               </datalist>
             </div>
           )}
 
-          <form style={{ transform: "scale(0.96)" }}>
+          <form style={{ transform: "scale(0.98)" }}>
             <div className="row">
-              <div className="col mb-3">
+              <div className="col-6 mb-2">
                 <label className="form-label">IDC*</label>
                 <div style={{ display: "flex" }}>
                   <select
@@ -330,7 +320,7 @@ function CreateTratamiento(props) {
                   />
                 </div>
               </div>
-              <div className="col mb-3">
+              <div className="col-6 mb-2">
                 <label className="form-label">Apellido y Nombres*</label>
                 <input
                   value={apellidoConNombre}
@@ -344,7 +334,7 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col mb-3">
+              <div className="col-6 mb-2">
                 <label className="form-label">Tratamiento*</label>
                 <select
                   value={tarifasTratamientos}
@@ -360,7 +350,7 @@ function CreateTratamiento(props) {
                   {optionsTarifasTratamientos}
                 </select>
               </div>
-              <div className="col mb-3">
+              <div className="col-6 mb-2">
                 <label className="form-label">Estado del Tratamiento*</label>
                 <select
                   value={estadosTratamientos}
@@ -376,7 +366,7 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col mb-2">
+              <div className="col-4 mb-2">
                 <label className="form-label">Forma de Pago</label>
                 <select
                   value={formaPago}
@@ -390,7 +380,7 @@ function CreateTratamiento(props) {
                 </select>
               </div>
 
-              <div className="col mb-2">
+              <div className="col-4 mb-2">
                 <label className="form-label">Precio</label>
                 <input
                   value={precio}
@@ -400,7 +390,7 @@ function CreateTratamiento(props) {
                 />
               </div>
 
-              <div className="col mb-2">
+              <div className="col-4 mb-2">
                 <label className="form-label">Pieza</label>
                 <input
                   value={pieza}
@@ -412,7 +402,7 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col mb-3">
+              <div className="col mb-2">
                 <label className="form-label">Fecha*</label>
                 <input
                   value={hoy}
@@ -422,7 +412,7 @@ function CreateTratamiento(props) {
                   max={hoy}
                 />
               </div>
-              {formaPago === "Cuotas" && (<div className="col mb-3">
+              {formaPago === "Cuotas" && (<div className="col-6 mb-2">
                 <label className="form-label">Fecha Vencimiento*</label>
                 <input
                   value={fechaVencimiento}
@@ -435,7 +425,7 @@ function CreateTratamiento(props) {
             </div>
 
             <div className="row">
-              <div className="col mb-3">
+              <div className="col-12 mb-2">
                 <label className="form-label">Notas</label>
                 <input
                   value={notas}

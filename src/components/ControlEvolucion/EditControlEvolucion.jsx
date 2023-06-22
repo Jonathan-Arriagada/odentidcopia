@@ -48,12 +48,12 @@ const Edit = (props) => {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="row">
+          <div className="row" style={{marginTop:"-40px"}}>
             <div className="col">
               <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
                 <br></br>
                 <div className="row">
-                  <div className="col mb-6">
+                  <div className="col-6 mb-2">
                     <label className="form-label">IDC*</label>
                     <div style={{ display: "flex" }}>
                       <select
@@ -90,7 +90,7 @@ const Edit = (props) => {
                       />
                     </div>
                   </div>
-                  <div className="col mb-6">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Apellido y Nombres:</label>
                     <input
                       defaultValue={props.control.apellidoConNombre}
@@ -102,7 +102,7 @@ const Edit = (props) => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col mb-6">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Tratamiento:</label>
                     <input
                       defaultValue={props.control.tratamientoControl}
@@ -114,13 +114,13 @@ const Edit = (props) => {
                     >
                     </input>
                   </div>
-                  <div className="col mb-6">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Pieza:</label>
                     <input
                       defaultValue={props.control.pieza}
                       onChange={(e) => setPieza(e.target.value)}
                       type="number"
-                      className="form-control m-1 w-100"
+                      className="form-control"
                       disabled
                     />
                   </div>
@@ -129,7 +129,7 @@ const Edit = (props) => {
                 <hr />
 
                 <div className="row">
-                  <div className="d-flex col-md-8">
+                  <div className="d-flex col-md-9">
                     <label className="col-form-label me-5 w-25">Doctor:</label>
                     <input
                       value={currentUser.displayName}
@@ -138,7 +138,7 @@ const Edit = (props) => {
                       disabled
                     />
                   </div>
-                  <div className="d-flex col-md-8">
+                  <div className="d-flex col-md-9">
                     <label className="col-form-label me-5 w-25">Fecha:</label>
                     <input
                       defaultValue={props.control.fechaControlRealizado}
@@ -147,7 +147,7 @@ const Edit = (props) => {
                       className="form-control m-1 w-100"
                     />
                   </div>
-                  <div className="d-flex col-md-8">
+                  <div className="d-flex col-md-9">
                     <label className="col-form-label me-5 w-25">Detalle:</label>
                     <textarea
                       defaultValue={props.control.detalleTratamiento}

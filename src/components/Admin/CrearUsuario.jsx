@@ -144,8 +144,8 @@ const CrearUsuario = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={store} style={{ transform: "scale(0.96)" }}>
-                <div className="mb-3">
+              <form onSubmit={store} style={{ transform: "scale(0.98)" }}>
+                <div className="col-12 mb-2">
                   <label className="form-label">Codigo</label>
                   <input
                     value={codigo}
@@ -155,7 +155,7 @@ const CrearUsuario = (props) => {
                   />
                 </div>
                 <div className="row">
-                  <div className="col-6 mb-3">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Nombres*</label>
                     <input
                       value={nombres}
@@ -165,7 +165,7 @@ const CrearUsuario = (props) => {
                       required
                     />
                   </div>
-                  <div className="col-6 mb-3">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Apellido*</label>
                     <input
                       value={apellido}
@@ -177,7 +177,7 @@ const CrearUsuario = (props) => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-6 mb-3">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Telefono</label>
                     <input
                       value={telefono}
@@ -186,13 +186,14 @@ const CrearUsuario = (props) => {
                       className="form-control"
                     />
                   </div>
-                  <div className="col-6 mb-3">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Rol</label>
                     <select
                       value={rol}
                       onChange={(e) => setRol(e.target.value)}
                       className="form-control"
                       multiple={false}
+                      style={{height:"48px"}}
                       required
                     >
                       <option value="">Selecciona un rol ....</option>
@@ -203,7 +204,7 @@ const CrearUsuario = (props) => {
                   </div>
                 </div>
 
-                <div className="mb-3">
+                <div className="col-12 mb-2">
                   <label className="form-label">Email*</label>
                   <input
                     value={correo}
@@ -216,7 +217,7 @@ const CrearUsuario = (props) => {
                 </div>
 
                 <div className="row">
-                  <div className="col-6 mb-3">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Password*</label>
                     <input
                       value={password}
@@ -228,7 +229,7 @@ const CrearUsuario = (props) => {
                       required
                     />
                   </div>
-                  <div className="col-6 mb-3">
+                  <div className="col-6 mb-2">
                     <label className="form-label">Reingresar Password*</label>
                     <input
                       value={confirmPassword}

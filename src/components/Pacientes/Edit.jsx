@@ -75,7 +75,7 @@ const Edit = (props) => {
   return (
     <Modal
       {...props}
-      size="lg"
+      size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -88,8 +88,8 @@ const Edit = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
-                <div className="mb-3">
+              <form onSubmit={update} style={{ transform: "scale(0.98)" }}>
+                <div className="mb-2">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -155,7 +155,7 @@ const Edit = (props) => {
                     />
                   </div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
                     defaultValue={props.client.apellidoConNombre}
@@ -169,7 +169,7 @@ const Edit = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Fecha Nacimiento</label>
                   <input
                     defaultValue={props.client.fechaNacimiento}
@@ -178,7 +178,7 @@ const Edit = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -224,6 +224,7 @@ const Edit = (props) => {
                     props.onHide();
                   }}
                   className="btn button-main"
+                  style={{marginTop: "8px"}}
                 >
                   Editar
                 </button>

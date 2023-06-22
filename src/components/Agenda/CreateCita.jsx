@@ -74,11 +74,11 @@ function CreateCita(props) {
               {horario.name}
             </option>
           ));
-        setHoraFin(optionsHoraFin[0]?.props.children || horaFin);
+        setHoraFin(optionsHoraFin[0]?.props.children);
         setOptionsHoraFin(optionsHoraFin);
       }
     },
-    [horaInicio, horaFin]
+    [horaInicio]
   );
 
   const updateOptionsDoctores = useCallback(snapshot => {
@@ -258,11 +258,7 @@ function CreateCita(props) {
     <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton onClick={() => {
         setEditable(true);
-        setApellidoConNombre("");
-        setTipoIdc("dni");
-        setIdc("");
-        setSelectedCode("+51");
-        setNumero("");
+        clearFields();
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Cita</h1>
@@ -272,7 +268,7 @@ function CreateCita(props) {
         <div className="container">
           <div className="col">
             <div className="row">
-              {showBuscador && (<div className="col-6 mb-3" >
+              {showBuscador && (<div className="col-6 mb-2" style={{ display: "flex" }}>
                 <input
                   placeholder="Buscador por Apellido, Nombre o DNI"
                   type="text"
@@ -282,15 +278,15 @@ function CreateCita(props) {
                   }
                   list="pacientes-list"
                   multiple={false}
+                  style={{ height: "43px" }}
                 />
 
                 <datalist id="pacientes-list">
-                  <option value="">Ingreso manual</option>
                   {valorBusquedaOptionsJSX}
                 </datalist>
+                <i className="fa-solid fa-magnifying-glass" style={{ display: "flex", alignItems: "center", marginLeft: "-26px" }}></i>
               </div>)}
-
-              <div className="col-6 mb-3 align-items-center" style={{ display: "flex" }}>
+              <div className="col-6 mb-2 align-items-center" style={{ display: "flex" }}>
                 <label className="form-label" style={{ marginRight: "5px", marginTop: "4px" }}>Doctor*</label>
                 <select
                   value={doctor}
@@ -305,9 +301,9 @@ function CreateCita(props) {
               </div>
             </div>
 
-            <form style={{ transform: "scale(0.96)" }}>
+            <form style={{ transform: "scale(0.98)" }}>
               <div className="row">
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">IDC*</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -346,7 +342,7 @@ function CreateCita(props) {
                   </div>
                 </div>
 
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">Apellido y Nombres*</label>
                   <input
                     value={apellidoConNombre || ""}
@@ -361,7 +357,7 @@ function CreateCita(props) {
               </div>
 
               <div className="row">
-              <div className="mb-3">
+                <div className="col-8 mb-2">
                   <label className="form-label">Teléfono*</label>
                   <div style={{ display: "flex" }}>
                     {selectedCode === "+51" && (
@@ -382,6 +378,7 @@ function CreateCita(props) {
                       }}
                       className="form-control-tipoIDC me-1"
                       multiple={false}
+                      disabled={!editable}
                       style={{ width: "fit-content" }}
                       required
                     >
@@ -398,6 +395,7 @@ function CreateCita(props) {
                         type="text"
                         style={{ width: "fit-content" }}
                         placeholder="Cod. area"
+                        disabled={!editable}
                         required
                       />
                     )}
@@ -406,12 +404,12 @@ function CreateCita(props) {
                       onChange={(e) => setNumero(e.target.value)}
                       type="number"
                       className="form-control"
+                      disabled={!editable}
                       required
                     />
                   </div>
                 </div>
-
-                <div className="col mb-3">
+                <div className="col-4 mb-2">
                   <label className="form-label">Estado*</label>
                   <select
                     value={estado}
@@ -426,7 +424,7 @@ function CreateCita(props) {
               </div>
 
               <div className="row">
-                <div className="col mb-6">
+                <div className="col-4 mb-2">
                   <label className="form-label">Fecha*</label>
                   <input
                     value={fecha}
@@ -438,7 +436,7 @@ function CreateCita(props) {
                   />
                 </div>
 
-                <div className="col mb-3">
+                <div className="col-4 mb-2">
                   <label className="form-label">Hora Inicio*</label>
                   <select
                     value={horaInicio}
@@ -450,7 +448,7 @@ function CreateCita(props) {
                     {optionsHoraInicio}
                   </select>
                 </div>
-                <div className="col mb-3">
+                <div className="col-4 mb-2">
                   <label className="form-label">Hora Fin*</label>
                   <select
                     value={horaFin}
@@ -465,7 +463,7 @@ function CreateCita(props) {
               </div>
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">Comentarios</label>
                   <input
                     value={comentario}

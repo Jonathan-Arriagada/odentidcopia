@@ -56,8 +56,8 @@ const CreateTarifa = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={store}style={{ transform: "scale(0.96)" }}>
-                <div className="mb-3">
+              <form onSubmit={store}style={{ transform: "scale(0.98)" }}>
+                <div className="mb-2">
                   <label className="form-label">Codigo</label>
                   <input
                     value={codigo}
@@ -66,7 +66,7 @@ const CreateTarifa = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Tratamiento</label>
                   <input
                     value={tratamiento}
@@ -75,7 +75,7 @@ const CreateTarifa = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="mb-3">
+                <div className="mb-2">
                   <label className="form-label">Tarifa</label>
                   <input
                     value={tarifa}

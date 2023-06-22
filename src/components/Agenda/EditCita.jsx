@@ -121,7 +121,7 @@ const EditCita = (props) => {
     >
       <Modal.Header closeButton onClick={() => {
         props.onHide();
-        setHoraFin("");
+        clearFields();
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Editar Cita</h1>
@@ -132,7 +132,7 @@ const EditCita = (props) => {
           <div className="col">
             <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
               <div className="row">
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">IDC</label>
                   <div style={{ display: "flex" }}>
                     <select
@@ -170,7 +170,7 @@ const EditCita = (props) => {
                   </div>
                 </div>
 
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">Apellido y Nombres</label>
                   <input
                     defaultValue={props.cita.apellidoConNombre}
@@ -182,7 +182,62 @@ const EditCita = (props) => {
               </div>
 
               <div className="row">
-                <div className="col-6 mb-3">
+                <div className="col mb-2">
+                  <label className="form-label">Teléfono*</label>
+                  <div style={{ display: "flex" }}>
+                    <select
+                      defaultValue={props.cita.selectedCode}
+                      onChange={(e) => {
+                        const codArea = e.target.value;
+                        setSelectedCode(codArea);
+                        if (codArea !== "+51") {
+                          setNumero("");
+                        }
+                      }}
+                      className="form-control-tipoIDC me-1"
+                      multiple={false}
+                      style={{ width: "fit-content" }}
+                    >
+                      <option value="">Otro Pais</option>
+                      <option value="+51">Perú (+51)</option>
+                    </select>
+                    {selectedCode !== "+51" && (
+                      <input
+                        defaultValue={props.cita.selectedCode}
+                        onChange={(e) => {
+                          setSelectedCode(e.target.value);
+                        }}
+                        className="form-control-tipoIDC me-1"
+                        type="text"
+                        style={{ width: "fit-content" }}
+                        placeholder="Cod. area"
+                      />
+                    )}
+                    <input
+                      defaultValue={props.cita.numero}
+                      onChange={(e) => setNumero(e.target.value)}
+                      type="number"
+                      className="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-6 mb-2">
+                  <label className="form-label">Estado</label>
+                  <select
+                    defaultValue={props.cita.estado}
+                    onChange={(e) => setEstado(e.target.value)}
+                    className="form-control"
+                    multiple={false}
+                  >
+                    <option value="">Selecciona un estado</option>
+                    {estadoOptionsJSX}
+                  </select>
+                </div>
+                <div className="col-6 mb-2">
                   <label className="form-label">Doctor*</label>
                   <select
                     defaultValue={props.cita.doctor}
@@ -196,8 +251,9 @@ const EditCita = (props) => {
                 </div>
               </div>
 
+
               <div className="row">
-                <div className="col mb-6">
+                <div className="col-4 mb-2">
                   <label className="form-label">Fecha</label>
                   <input
                     defaultValue={props.cita.fecha}
@@ -206,22 +262,7 @@ const EditCita = (props) => {
                     className="form-control"
                   />
                 </div>
-                <div className="col mb-3">
-                  <label className="form-label">Estado</label>
-                  <select
-                    defaultValue={props.cita.estado}
-                    onChange={(e) => setEstado(e.target.value)}
-                    className="form-control"
-                    multiple={false}
-                  >
-                    <option value="">Selecciona un estado</option>
-                    {estadoOptionsJSX}
-                  </select>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col mb-3">
+                <div className="col-4 mb-2">
                   <label className="form-label">Hora Inicio</label>
                   <select
                     defaultValue={props.cita.horaInicio}
@@ -232,7 +273,7 @@ const EditCita = (props) => {
                     {optionsHoraInicio}
                   </select>
                 </div>
-                <div className="col mb-3">
+                <div className="col-4 mb-2">
                   <label className="form-label">Hora Fin</label>
                   <select
                     defaultValue={props.cita.horaFin}
@@ -244,49 +285,10 @@ const EditCita = (props) => {
                   </select>
                 </div>
               </div>
-              <div className="mb-3">
-                <label className="form-label">Teléfono*</label>
-                <div style={{ display: "flex" }}>
-                  <select
-                    defaultValue={props.cita.selectedCode}
-                    onChange={(e) => {
-                      const codArea = e.target.value;
-                      setSelectedCode(codArea);
-                      if (codArea !== "+51") {
-                        setNumero("");
-                      }
-                    }}
-                    className="form-control-tipoIDC me-1"
-                    multiple={false}
-                    style={{ width: "fit-content" }}
-                  >
-                    <option value="">Otro Pais</option>
-                    <option value="+51">Perú (+51)</option>
-                  </select>
-                  {selectedCode !== "+51" && (
-                    <input
-                      defaultValue={props.cita.selectedCode}
-                      onChange={(e) => {
-                        setSelectedCode(e.target.value);
-                      }}
-                      className="form-control-tipoIDC me-1"
-                      type="text"
-                      style={{ width: "fit-content" }}
-                      placeholder="Cod. area"
-                    />
-                  )}
-                  <input
-                    defaultValue={props.cita.numero}
-                    onChange={(e) => setNumero(e.target.value)}
-                    type="number"
-                    className="form-control"
-                    required
-                  />
-                </div>
-              </div>
+
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col-6 mb-2">
                   <label className="form-label">Notas</label>
                   <input
                     defaultValue={props.cita.comentario}

@@ -149,9 +149,9 @@ const EditGasto = (props) => {
           <div className="container">
             <div className="row">
               <div className="col">
-                <form>
+                <form style={{transform: "scale(0.98)"}}>
                   <div className="row">
-                    <div className="col mb-6">
+                    <div className="col-6 mb-2">
                       <label className="form-label">Fecha*</label>
                       <input
                         defaultValue={moment(props.gasto.fechaGasto).format("YYYY-MM-DD")}
@@ -161,7 +161,7 @@ const EditGasto = (props) => {
                         required
                       />
                     </div>
-                    <div className="col mb-6">
+                    <div className="col-6 mb-2">
                       <label className="form-label">Buscador Proveedor*</label>
                       <div className="d-flex">
                         <input
@@ -181,7 +181,7 @@ const EditGasto = (props) => {
                   </div>
 
                   <div className="row">
-                    <div className="col mb-12">
+                    <div className="col-12 mb-2">
                       <label className="form-label">Nombre Proveedor*</label>
                       <input
                         placeholder={props.gasto.proveedor}
@@ -196,7 +196,7 @@ const EditGasto = (props) => {
                   </div>
 
                   <div className="row">
-                    <div className="col mb-6">
+                    <div className="col-6 mb-2">
                       <label className="form-label">Tipo*</label>
                       <select
                         defaultValue={props.gasto.tipoGasto}
@@ -209,23 +209,19 @@ const EditGasto = (props) => {
                         {tipoGastoOptions}
                       </select>
                     </div>
-                    <div className="col mb-6">
+                    <div className="col-6 mb-2">
                       <label className="form-label">Comprobante Compra*</label>
                       <input
                         defaultValue={props.gasto.comprobanteGasto}
                         onChange={(e) => setComprobanteGasto(e.target.value)}
                         type="text"
                         className="form-control"
+                        style={{height: "43px"}}
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="row">
-                    <div className="col mb-12">
-                      <br></br>
-                    </div>
-                  </div>
                   <div className="row align-items-lg-end">
                     <div className="col-2 sm-2">
                       <label className="form-label">Cantidad</label>

@@ -7,7 +7,7 @@ const EditTarifa = (props) => {
   const [codigo, setCodigo] = useState(props.tarifa.codigo || "");
   const [tratamiento, setTratamiento] = useState(props.tarifa.tratamiento || "");
   const [tarifa, setTarifa] = useState(props.tarifa.tarifa || "");
-  const [editable, ] = useState(false);
+  const [editable,] = useState(false);
   const [editable2, setEditable2] = useState(false);
 
   const [clickCount, setClickCount] = useState(0);
@@ -48,10 +48,10 @@ const EditTarifa = (props) => {
       <Modal.Body>
         <div className="container">
           <div className="col">
-            <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
+            <form onSubmit={update} style={{ transform: "scale(0.98)" }}>
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col mb-2">
                   <label className="form-label">Codigo</label>
                   <input
                     defaultValue={props.tarifa.codigo}
@@ -66,7 +66,7 @@ const EditTarifa = (props) => {
               </div>
 
               <div className="row">
-                <div className="col mb-6">
+                <div className="col mb-2">
                   <label className="form-label" onClick={handleEdit}>Tratamiento</label>
                   <input
                     defaultValue={props.tarifa.tratamiento}
@@ -77,11 +77,11 @@ const EditTarifa = (props) => {
                     className="form-control"
                     disabled={!editable2}
                   />
-                  </div>
+                </div>
               </div>
 
               <div className="row">
-                <div className="col mb-3">
+                <div className="col mb-2">
                   <label className="form-label">Tarifa</label>
                   <input
                     defaultValue={props.tarifa.tarifa}
