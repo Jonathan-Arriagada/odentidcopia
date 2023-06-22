@@ -165,7 +165,7 @@ function AgendaEspecif(id) {
   filteredResults = !search
     ? filteredResults
     : typeof search === "object"
-      ? filteredResults.filter((dato) => {
+      ? citas.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       })

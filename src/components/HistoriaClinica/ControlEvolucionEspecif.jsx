@@ -310,26 +310,31 @@ function ControlEvolucionEspecif(props) {
                               </div>
 
 
-                              <div className="col-9 p-3 bg-body-tertiary ">
+                              <div className="col-9 p-3 bg-body-tertiary">
 
                                 {mostrarBuscadores ? (<div>
-                                  <input type="text" value={control.tratamientoControl}
+                                  <input
+                                    type="text"
+                                    value={control.tratamientoControl}
                                     disabled
                                     className="bg-body-tertiary"
                                     style={{ border: "0", fontWeight: "bold", width: `calc(${control.tratamientoControl.length}ch - 1%)` }} />
                                   <span className="mx-2">|</span>
-                                  <input type="text" value={control.pieza}
+                                  <input
+                                    type="text"
+                                    value={control.pieza}
                                     disabled
                                     className="bg-body-tertiary"
                                     style={{ backgroundColor: "white", border: "0", fontWeight: "bold", width: "5%" }} />
-                                </div>) : (<br></br>
+                                </div>
+                                ) : (
+                                  <br></br>
                                 )}
-                                <input
-                                  type="text"
+                                <textarea
                                   value={control.detalleTratamiento}
                                   disabled
-                                  className="mt-2 bg-body-tertiary"
-                                  style={{ border: "0", width: "100%" }}
+                                  className="mt-2 bg-body-tertiary textarea-no-resize"
+                                  style={{ border: "0", width:"100%",wordWrap: "break-word" }}
                                 />
                               </div>
 

@@ -56,17 +56,16 @@ const Login = () => {
                 if (doc.data().rol === process.env.REACT_APP_rolBloq) {
                   // Rol bloqueado, no permitir el inicio de sesión
                   signOut(auth);
-                  console.log("El rol está bloqueado");
                 } else {
                   // Rol no bloqueado, redirigir al usuario a la página correspondiente
                   navigate("/pacientes");
                 }
               } else {
-                console.log("No se encontraron documentos");
+                console.log("No documents");
               }
             })
             .catch((error) => {
-              console.log("Error al obtener los documentos: ", error);
+              console.log("Error no documents: ", error);
             });
         })
         .catch(() => {

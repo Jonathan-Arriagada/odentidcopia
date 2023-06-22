@@ -290,7 +290,7 @@ function Citas() {
                   <i className="fa-solid fa-magnifying-glass"></i>
                   {taparFiltro && (
                     <input
-                      className="form-control m-2 w-25"
+                      className="form-control m-2 w-90"
                       value="<-FILTRO ENTRE FECHAS APLICADO->"
                       style={{
                         position: "absolute",
@@ -451,17 +451,17 @@ function Citas() {
                           <div className="d-flex">
                             <button
                               variant="secondary"
-                              className="btn-blue me-2"
+                              className="btn-blue m-2"
                               onClick={() => setModalShowEstados(true)}
                             >
                               Estados
                             </button>
                             <button
                               variant="tertiary"
-                              className="btn-blue me-2"
+                              className="btn-blue m-2"
                               onClick={() => setModalShowHorarios(true)}
                             >
-                              Horarios Atencion
+                              Horarios
                             </button>
                           </div>
                         )}

@@ -158,7 +158,7 @@ const ControlEvolucion = () => {
                                 </div>
                                 <div className="col d-flex justify-content-end align-items-center right-navbar">
                                     <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                                    Hola, {currentUser.displayName}
+                                        Hola, {currentUser.displayName}
                                     </p>
                                     <div className="d-flex">
                                         <div className="notificacion">
