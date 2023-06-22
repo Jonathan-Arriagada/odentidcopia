@@ -28,6 +28,7 @@ function AgendaEspecif(id) {
   const [noHayCitas, setNoHayCitas] = useState(false);
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
   const { currentUser } = useContext(AuthContext);
+  const [ocultarCalendario, setOcultarCalendario] = useState(false);
 
   const [estados, setEstados] = useState([]);
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
@@ -146,44 +147,48 @@ function AgendaEspecif(id) {
     }
     if (param === "Mes") {
       const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
-      const fechaFin = moment().format("YYYY-MM-DD");
+      const fechaFin = moment().endOf('month').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const [paginaActual, setPaginaActual] = useState(1);
+  const filasPorPagina = 20;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handleCambioPagina = (pagina) => {
+    setPaginaActual(pagina);
+    if (pagina > 1) {
+      setOcultarCalendario(true);
+    } else {
+      setOcultarCalendario(false);
+    }
   };
 
-  var filteredResults = doctor
+  let results = doctor
     ? citas.filter((dato) => JSON.parse(dato.doctor).uid === JSON.parse(doctor).uid)
     : citas;
 
-  filteredResults = !search
-    ? citas
+  results = !search
+    ? results
     : typeof search === "object"
-      ? citas.filter((dato) => {
+      ? results.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       })
       : search.toString().length === 10 &&
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
-        ? citas.filter((dato) => dato.fecha === search.toString())
-        : citas.filter(
+        ? results.filter((dato) => dato.fecha === search.toString())
+        : results.filter(
           (dato) =>
             dato.apellidoConNombre.toLowerCase().includes(search) ||
             dato.idc.toString().includes(search.toString())
         );
 
-
-  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResults = filteredResults.slice(startIndex, endIndex);
+  var paginasTotales = Math.ceil(results.length / filasPorPagina);
+  var startIndex = (paginaActual - 1) * filasPorPagina;
+  var endIndex = startIndex + filasPorPagina;
+  var resultsPaginados = results.slice(startIndex, endIndex);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -277,7 +282,7 @@ function AgendaEspecif(id) {
                           <h3>Citas agendadas por este Paciente</h3>
 
 
-                          <button
+                          {!ocultarCalendario && (<button
                             variant="primary"
                             className="btn greenWater without mx-1 btn-md ms-3 me-3"
                             style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center", alignSelf: "center", height: "45px" }}
@@ -287,7 +292,7 @@ function AgendaEspecif(id) {
                               className="fa-regular fa-calendar-check"
                               style={{ transform: "scale(1.4)" }}
                             ></i>
-                          </button>
+                          </button>)}
                           {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
                             <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
                             <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Ultimos 7'); setTaparFiltro(true) }}>Ultimos 7</button>
@@ -390,7 +395,7 @@ function AgendaEspecif(id) {
                           </thead>
 
                           <tbody>
-                            {currentResults.map((cita) => (
+                            {resultsPaginados.map((cita) => (
                               <tr key={cita.id}>
                                 <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
                                 <td> {cita.horaInicio} </td>
@@ -472,37 +477,37 @@ function AgendaEspecif(id) {
                       </div>
                       <div className="table__footer">
                         <div className="table__footer-left">
-                          Mostrando {startIndex + 1} - {Math.min(endIndex, citas.length)} de {citas.length}
+                          Mostrando {startIndex + 1} - {endIndex} de {results.length}
                         </div>
 
                         <div className="table__footer-right">
                           <span>
                             <button
-                              onClick={() => handlePageChange(currentPage - 1)}
-                              disabled={currentPage === 1}
+                              onClick={() => handleCambioPagina(paginaActual - 1)}
+                              disabled={paginaActual === 1}
                               style={{ border: "0", background: "none" }}
                             >
                               &lt; Previo
                             </button>
                           </span>
 
-                          {[...Array(totalPages)].map((_, index) => {
-                            const page = index + 1;
+                          {[...Array(paginasTotales)].map((_, index) => {
+                            const pagina = index + 1;
                             return (
-                              <span key={page}>
+                              <span key={pagina}>
                                 <span
-                                  onClick={() => handlePageChange(page)}
-                                  className={page === currentPage ? "active" : ""}
+                                  onClick={() => handleCambioPagina(pagina)}
+                                  className={pagina === paginaActual ? "active" : ""}
                                   style={{
                                     margin: "2px",
-                                    backgroundColor: page === currentPage ? "#003057" : "transparent",
-                                    color: page === currentPage ? "#FFFFFF" : "#000000",
+                                    backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
+                                    color: pagina === paginaActual ? "#FFFFFF" : "#000000",
                                     padding: "4px 8px",
                                     borderRadius: "4px",
                                     cursor: "pointer"
                                   }}
                                 >
-                                  {page}
+                                  {pagina}
                                 </span>
                               </span>
                             );
@@ -510,8 +515,8 @@ function AgendaEspecif(id) {
 
                           <span>
                             <button
-                              onClick={() => handlePageChange(currentPage + 1)}
-                              disabled={currentPage === totalPages}
+                              onClick={() => handleCambioPagina(paginaActual + 1)}
+                              disabled={paginaActual === paginasTotales}
                               style={{ border: "0", background: "none" }}
                             >
                               Siguiente &gt;

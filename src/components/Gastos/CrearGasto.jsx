@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, getDocs, query, where, onSnapshot, orderBy, doc, writeBatch, addDoc, limit } from "firebase/firestore";
+import { collection, getDocs, query, where, onSnapshot, orderBy, doc, writeBatch, addDoc, limit,serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
@@ -143,6 +143,7 @@ const CrearGasto = (props) => {
                     ruc: ruc,
                     proveedor: proveedor,
                     tipoGasto: tipoGasto,
+                    timestamp: serverTimestamp(),
                     comprobanteGasto: comprobanteGasto,
                     cantArticulo: producto.cantArticulo,
                     umArticulo: producto.umArticulo || umArticulo,
@@ -176,6 +177,7 @@ const CrearGasto = (props) => {
                     ruc: ruc,
                     proveedor: proveedor,
                     tipoGasto: tipoGasto,
+                    timestamp: serverTimestamp(),
                     comprobanteGasto: comprobanteGasto,
                     cantArticulo: producto.cantArticulo,
                     umArticulo: producto.umArticulo || umArticulo,

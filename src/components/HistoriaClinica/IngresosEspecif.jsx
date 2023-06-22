@@ -20,6 +20,7 @@ function IngresosEspecif(id) {
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
+  const [ocultarCalendario, setOcultarCalendario] = useState(false);
 
   const tratamientosCollectionRef = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectionRef));
@@ -57,19 +58,24 @@ function IngresosEspecif(id) {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const [paginaActual, setPaginaActual] = useState(1);
+  const filasPorPagina = 20;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handleCambioPagina = (pagina) => {
+    setPaginaActual(pagina);
+    if (pagina > 1) {
+      setOcultarCalendario(true);
+    } else {
+      setOcultarCalendario(false);
+    }
   };
 
-  var filteredResults;
+  var results;
   if (!search || search === "") {
-    filteredResults = tratamientos;
+    results = tratamientos;
   } else {
     if (typeof search === "object") {
-      filteredResults = tratamientos.map((tratamiento) => {
+      results = tratamientos.map((tratamiento) => {
         const {
           fechaCobro,
           importeAbonado,
@@ -113,7 +119,7 @@ function IngresosEspecif(id) {
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
       ) {
-        filteredResults = tratamientos.map((tratamiento) => {
+        results = tratamientos.map((tratamiento) => {
           const {
             fechaCobro,
             importeAbonado,
@@ -152,7 +158,7 @@ function IngresosEspecif(id) {
           };
         });
       } else {
-        filteredResults = tratamientos.filter(
+        results = tratamientos.filter(
           (dato) =>
             dato.cobrosManuales.pacienteCobro
               ?.toString()
@@ -167,16 +173,16 @@ function IngresosEspecif(id) {
     }
   }
 
-  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResults = filteredResults.slice(startIndex, endIndex);
+  var paginasTotales = Math.ceil(results.length / filasPorPagina);
+  var startIndex = (paginaActual - 1) * filasPorPagina;
+  var endIndex = startIndex + filasPorPagina;
+  var resultsPaginados = results.slice(startIndex, endIndex);
 
   useEffect(() => {
     let total = 0;
     //let cantidad = 0;
 
-    currentResults.forEach((tratamiento) => {
+    resultsPaginados.forEach((tratamiento) => {
       const importes = tratamiento.cobrosManuales.importeAbonado;
 
       importes.forEach((importe, index) => {
@@ -187,7 +193,7 @@ function IngresosEspecif(id) {
 
     setTotalIngresos(total);
     //setCantIngresos(cantidad);
-  }, [currentResults]);
+  }, [resultsPaginados]);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -261,7 +267,7 @@ function IngresosEspecif(id) {
                         <div className="d-flex justify-content-between align-items-center">
                           <div className="col d-flex justify-content-start align-items-center">
                             <h3 id="tituloVentas">Ventas cobradas al Paciente</h3>
-                            <button
+                            {!ocultarCalendario && (<button
                               variant="primary"
                               className="btn greenWater without mx-1 btn-md ms-3 me-3"
                               style={{
@@ -280,7 +286,7 @@ function IngresosEspecif(id) {
                                 className="fa-regular fa-calendar-check"
                                 style={{ transform: "scale(1.4)" }}
                               ></i>
-                            </button>
+                            </button>)}
                             {mostrarBotonesFechas && (
                               <div
                                 style={{
@@ -437,7 +443,7 @@ function IngresosEspecif(id) {
                         </thead>
 
                         <tbody>
-                          {currentResults.map((tratamiento) => {
+                          {resultsPaginados.map((tratamiento) => {
                             return tratamiento.cobrosManuales.fechaCobro.map(
                               (_, index) => {
                                 const fecha =
@@ -480,37 +486,37 @@ function IngresosEspecif(id) {
                     </div>
                     <div className="table__footer">
                       <div className="table__footer-left">
-                        Mostrando {startIndex + 1} - {Math.min(endIndex, tratamientos.length)} de {tratamientos.length}
+                        Mostrando {startIndex + 1} - {endIndex} de {results.length}
                       </div>
 
                       <div className="table__footer-right">
                         <span>
                           <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
+                            onClick={() => handleCambioPagina(paginaActual - 1)}
+                            disabled={paginaActual === 1}
                             style={{ border: "0", background: "none" }}
                           >
                             &lt; Previo
                           </button>
                         </span>
 
-                        {[...Array(totalPages)].map((_, index) => {
-                          const page = index + 1;
+                        {[...Array(paginasTotales)].map((_, index) => {
+                          const pagina = index + 1;
                           return (
-                            <span key={page}>
+                            <span key={pagina}>
                               <span
-                                onClick={() => handlePageChange(page)}
-                                className={page === currentPage ? "active" : ""}
+                                onClick={() => handleCambioPagina(pagina)}
+                                className={pagina === paginaActual ? "active" : ""}
                                 style={{
                                   margin: "2px",
-                                  backgroundColor: page === currentPage ? "#003057" : "transparent",
-                                  color: page === currentPage ? "#FFFFFF" : "#000000",
+                                  backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
+                                  color: pagina === paginaActual ? "#FFFFFF" : "#000000",
                                   padding: "4px 8px",
                                   borderRadius: "4px",
                                   cursor: "pointer"
                                 }}
                               >
-                                {page}
+                                {pagina}
                               </span>
                             </span>
                           );
@@ -518,8 +524,8 @@ function IngresosEspecif(id) {
 
                         <span>
                           <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
+                            onClick={() => handleCambioPagina(paginaActual + 1)}
+                            disabled={paginaActual === paginasTotales}
                             style={{ border: "0", background: "none" }}
                           >
                             Siguiente &gt;

@@ -29,6 +29,7 @@ function Tratamientos() {
   const [tratamiento, setTratamiento] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [ocultarCalendario, setOcultarCalendario] = useState(false);
 
   const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] = useState(false);
   const [modalShowEditPago, setModalShowEditPago] = useState(false);
@@ -274,19 +275,24 @@ function Tratamientos() {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const [paginaActual, setPaginaActual] = useState(1);
+  const filasPorPagina = 20;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handleCambioPagina = (pagina) => {
+    setPaginaActual(pagina);
+    if (pagina > 1) {
+      setOcultarCalendario(true);
+    } else {
+      setOcultarCalendario(false);
+    }
   };
 
-  var filteredResults;
+  var results;
   if (!search) {
-    filteredResults = tratamientos;
+    results = tratamientos;
   } else {
     if (typeof search === "object") {
-      filteredResults = tratamientos.filter((dato) => {
+      results = tratamientos.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       });
@@ -296,12 +302,12 @@ function Tratamientos() {
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
       ) {
-        filteredResults = tratamientos.filter(
+        results = tratamientos.filter(
           (dato) => dato.fecha === search.toString()
         );
       } else {
         if (search.toString().length === 1 && !isNaN(search)) {
-          filteredResults = tratamientos.filter((dato) => dato.codigo === search);
+          results = tratamientos.filter((dato) => dato.codigo === search);
         } else {
           if (
             filtroBusqueda &&
@@ -313,7 +319,7 @@ function Tratamientos() {
                 tratamiento[filtroBusqueda] !== null
             )
           ) {
-            filteredResults = tratamientos.filter(
+            results = tratamientos.filter(
               (dato) =>
                 dato[filtroBusqueda]?.includes(search) &&
                 dato[filtroBusqueda] !== "" &&
@@ -321,7 +327,7 @@ function Tratamientos() {
                 dato[filtroBusqueda] !== null
             );
           } else {
-            filteredResults = tratamientos.filter(
+            results = tratamientos.filter(
               (dato) =>
                 dato.apellidoConNombre.toLowerCase().includes(search) ||
                 dato.idc.toString().includes(search.toString())
@@ -332,10 +338,10 @@ function Tratamientos() {
     }
   }
 
-  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResults = filteredResults.slice(startIndex, endIndex);
+  var paginasTotales = Math.ceil(results.length / filasPorPagina);
+  var startIndex = (paginaActual - 1) * filasPorPagina;
+  var endIndex = startIndex + filasPorPagina;
+  var resultsPaginados = results.slice(startIndex, endIndex);
 
   function funcMostrarAjustes() {
     if (mostrarAjustes) {
@@ -758,7 +764,7 @@ function Tratamientos() {
                           <i className="fa-solid fa-gear"></i>
                         </button>
                       ) : null}
-                      <button
+                      {!ocultarCalendario && (<button
                         variant="primary"
                         className="btn greenWater without mx-1 btn-md"
                         style={{
@@ -778,7 +784,7 @@ function Tratamientos() {
                           className="fa-regular fa-calendar-check"
                           style={{ transform: "scale(1.4)" }}
                         ></i>
-                      </button>
+                      </button>)}
                       {mostrarBotonesFechas && (
                         <div
                           style={{
@@ -1139,9 +1145,9 @@ function Tratamientos() {
                       </thead>
 
                       <tbody>
-                        {currentResults.map((tratamiento, index) => (
+                        {resultsPaginados.map((tratamiento, index) => (
                           <tr key={tratamiento.id}>
-                            <td id="colIzquierda">{currentResults.length - index}</td>
+                            <td id="colIzquierda">{resultsPaginados.length - index}</td>
                             <td style={{ textAlign: "left" }}> {tratamiento.apellidoConNombre} </td>
                             <td> {tratamiento.idc} </td>
                             <td> {tratamiento.tarifasTratamientos} </td>
@@ -1266,37 +1272,37 @@ function Tratamientos() {
                   </div>
                   <div className="table__footer">
                     <div className="table__footer-left">
-                      Mostrando {startIndex + 1} - {Math.min(endIndex, tratamientos.length)} de {tratamientos.length}
+                      Mostrando {startIndex + 1} - {endIndex} de {results.length}
                     </div>
 
                     <div className="table__footer-right">
                       <span>
                         <button
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
+                          onClick={() => handleCambioPagina(paginaActual - 1)}
+                          disabled={paginaActual === 1}
                           style={{ border: "0", background: "none" }}
                         >
                           &lt; Previo
                         </button>
                       </span>
 
-                      {[...Array(totalPages)].map((_, index) => {
-                        const page = index + 1;
+                      {[...Array(paginasTotales)].map((_, index) => {
+                        const pagina = index + 1;
                         return (
-                          <span key={page}>
+                          <span key={pagina}>
                             <span
-                              onClick={() => handlePageChange(page)}
-                              className={page === currentPage ? "active" : ""}
+                              onClick={() => handleCambioPagina(pagina)}
+                              className={pagina === paginaActual ? "active" : ""}
                               style={{
                                 margin: "2px",
-                                backgroundColor: page === currentPage ? "#003057" : "transparent",
-                                color: page === currentPage ? "#FFFFFF" : "#000000",
+                                backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
+                                color: pagina === paginaActual ? "#FFFFFF" : "#000000",
                                 padding: "4px 8px",
                                 borderRadius: "4px",
                                 cursor: "pointer"
                               }}
                             >
-                              {page}
+                              {pagina}
                             </span>
                           </span>
                         );
@@ -1304,8 +1310,8 @@ function Tratamientos() {
 
                       <span>
                         <button
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
+                          onClick={() => handleCambioPagina(paginaActual + 1)}
+                          disabled={paginaActual === paginasTotales}
                           style={{ border: "0", background: "none" }}
                         >
                           Siguiente &gt;
@@ -1361,7 +1367,7 @@ function Tratamientos() {
                           </thead>
 
                           <tbody>
-                            {currentResults.map((tratamiento) => (
+                            {resultsPaginados.map((tratamiento) => (
                               <tr key={tratamiento.id}>
                                 <td> {tratamiento.cta} </td>
                                 <td> {tratamiento.formaPago} </td>
@@ -1426,7 +1432,7 @@ function Tratamientos() {
                           </thead>
 
                           <tbody>
-                            {currentResults.map((tratamiento) => (
+                            {resultsPaginados.map((tratamiento) => (
                               tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
                                 const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
                                 const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";

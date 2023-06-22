@@ -29,7 +29,7 @@ const Gastos = () => {
     const { currentUser, } = useContext(AuthContext);
 
     const gastosCollectiona = collection(db, "gastos");
-    const gastosCollection = useRef(query(gastosCollectiona, orderBy("fechaGasto", "desc")));
+    const gastosCollection = useRef(query(gastosCollectiona, orderBy("timestamp", "desc")));
 
     const [mostrarAjustes, setMostrarAjustes] = useState(false);
     const [modalShowTipoGasto, setModalShowTipoGasto] = useState(false);

@@ -42,6 +42,16 @@ function Citas() {
   const [modalShowVerNotas, setModalShowVerNotas] = useState(false);
   const [doctoresOption, setDoctoresOption] = useState([]);
   const [doctor, setDoctor] = useState("");
+  const [ocultarCalendario, setOcultarCalendario] = useState(false);
+  const [modalShowFiltros, setModalShowFiltros] = useState(false);
+  const [modalShowFiltros2, setModalShowFiltros2] = useState(false);
+  const [quitarFiltro, setQuitarFiltro] = useState(false);
+  const [selectedCheckbox, setSelectedCheckbox] = useState("");
+  const [selectedCheckbox2, setSelectedCheckbox2] = useState("");
+  const [tituloParametroModal, setTituloParametroModal] = useState("");
+  const [parametroModal, setParametroModal] = useState("");
+  const [filtroBusqueda, setFiltroBusqueda] = useState("");
+
 
   const { currentUser } = useContext(AuthContext);
 
@@ -149,6 +159,7 @@ function Citas() {
       if ((citaDate.isSame(mañana) || citaDate.isSame(hoy)) && cita.estado !== "Finalizada" && cita.estado !== "Confirmada" && cita.estado !== "Cancelada") {
         const citaRef = doc(db, "citas", cita.id);
         updateDoc(citaRef, { estado: "Por Confirmar" })
+      } else {
       }
     });
   }, [citas, mañana, hoy]);
@@ -191,8 +202,39 @@ function Citas() {
   }
 
   const searcher = (e) => {
-    setSearch(e.target.value);
+    if (typeof e === "string") {
+      setSearch(e);
+    } else {
+      setSearch(e.target.value);
+    }
   };
+
+  const handleCheckboxChange = (event) => {
+    setSelectedCheckbox(event.target.name);
+    setParametroModal(event.target.name);
+  };
+
+  const handleCheckboxChange2 = (event) => {
+    setSelectedCheckbox2(event.target.name);
+  };
+
+  function handleTituloModal(parametroModal) {
+    setFiltroBusqueda(parametroModal);
+    switch (parametroModal) {
+      case "doctor":
+        setTituloParametroModal("Por Doctor");
+        break;
+      case "estado":
+        setTituloParametroModal("Por Estado");
+        break;
+      case "fecha":
+        setTituloParametroModal("Por Fecha");
+        break;
+      default:
+        setTituloParametroModal("");
+    }
+    return;
+  }
 
   const filtroFecha = (param) => {
     if (param === "Dia") {
@@ -205,43 +247,63 @@ function Citas() {
     }
     if (param === "Mes") {
       const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
-      const fechaFin = moment().format("YYYY-MM-DD");
+      const fechaFin = moment().endOf('month').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const [paginaActual, setPaginaActual] = useState(1);
+  const filasPorPagina = 20;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handleCambioPagina = (pagina) => {
+    setPaginaActual(pagina);
+    if (pagina > 1) {
+      setOcultarCalendario(true);
+    } else {
+      setOcultarCalendario(false);
+    }
   };
 
-  let filteredResults = doctor
+  let results = doctor
     ? citas.filter((dato) => JSON.parse(dato.doctor).uid === JSON.parse(doctor).uid)
     : citas;
-
-  filteredResults = !search
-    ? citas
+  console.log(search)
+  results = !search
+    ? results
     : typeof search === "object"
-      ? citas.filter((dato) => {
+      ? results.filter((dato) => {
         const fecha = moment(dato.fecha).format("YYYY-MM-DD");
         return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       })
       : search.toString().length === 10 &&
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
-        ? citas.filter((dato) => dato.fecha === search.toString())
-        : citas.filter(
-          (dato) =>
-            dato.apellidoConNombre.toLowerCase().includes(search) ||
-            dato.idc.toString().includes(search.toString())
-        );
+        ? results.filter((dato) => dato.fecha === search.toString())
+        : filtroBusqueda &&
+          results.some(
+            (cita) =>
+              cita[filtroBusqueda]?.includes(search) &&
+              cita[filtroBusqueda] !== "" &&
+              cita[filtroBusqueda] !== undefined &&
+              cita[filtroBusqueda] !== null
+          ) ?
+          (results = results.filter(
+            (dato) =>
+              dato[filtroBusqueda]?.includes(search) &&
+              dato[filtroBusqueda] !== "" &&
+              dato[filtroBusqueda] !== undefined &&
+              dato[filtroBusqueda] !== null
+          ))
+          : results.filter(
+            (dato) =>
+              dato.apellidoConNombre.toLowerCase().includes(search) ||
+              dato.idc.toString().includes(search.toString())
+          );
 
-  const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentResults = filteredResults.slice(startIndex, endIndex);
+  var paginasTotales = Math.ceil(results.length / filasPorPagina);
+  var startIndex = (paginaActual - 1) * filasPorPagina;
+  var endIndex = startIndex + filasPorPagina;
+  var resultsPaginados = results.slice(startIndex, endIndex);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -389,8 +451,29 @@ function Citas() {
                           Agregar Cita
                         </button>
                       ) : null}
-
                       <button
+                        variant="primary"
+                        className="btn-blue m-2"
+                        onClick={() => {
+                          setModalShowFiltros(true);
+                          setQuitarFiltro(true);
+                        }}
+                      >
+                        Filtros
+                      </button>
+                      {quitarFiltro && (
+                        <button
+                          variant="primary"
+                          className="btn-blue m-2"
+                          onClick={() => {
+                            setSearch("");
+                            setQuitarFiltro(false);
+                          }}
+                        >
+                          Limpiar Filtros
+                        </button>
+                      )}
+                      {!ocultarCalendario && (<button
                         variant="primary"
                         className="btn greenWater without mx-1 btn-md ms-3 me-3"
                         style={{ borderRadius: "12px", justifyContent: "center", verticalAlign: "center", alignSelf: "center", height: "45px" }}
@@ -400,7 +483,7 @@ function Citas() {
                           className="fa-regular fa-calendar-check"
                           style={{ transform: "scale(1.4)" }}
                         ></i>
-                      </button>
+                      </button>)}
                       {mostrarBotonesFechas && (<div style={{ display: 'flex', justifyContent: "center", verticalAlign: "center", alignItems: "center" }}>
                         <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Dia'); setTaparFiltro(false) }}>Dia</button>
                         <button style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey" onClick={() => { filtroFecha('Ultimos 7'); setTaparFiltro(true) }}>Ultimos 7</button>
@@ -441,6 +524,172 @@ function Citas() {
                         <Modal.Footer>
                           <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); setMostrarBotonesFechas(false) }}>
                             Buscar Fecha
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+
+                      <Modal
+                        show={modalShowFiltros}
+                        onHide={() => {
+                          setSelectedCheckbox("");
+                          setParametroModal("");
+                          setSelectedCheckbox2("");
+                        }}
+                      >
+                        <Modal.Header
+                          closeButton
+                          onClick={() => {
+                            setModalShowFiltros(false);
+                            setSelectedCheckbox("");
+                            setSelectedCheckbox2("");
+                            setParametroModal("");
+                            setQuitarFiltro(false);
+                          }}
+                        >
+                          <Modal.Title>
+                            <h1 style={{ fontWeight: "bold" }}>
+                              Filtros Generales
+                            </h1>
+                          </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div>
+                            <label className="checkbox-label">
+                              <input
+                                type="checkbox"
+                                name="doctor"
+                                checked={
+                                  selectedCheckbox === "doctor"
+                                }
+                                onChange={handleCheckboxChange}
+                              />
+                              Filtrar Por Doctor
+                            </label>
+                            <br />
+                            <label className="checkbox-label">
+                              <input
+                                type="checkbox"
+                                name="estado"
+                                checked={selectedCheckbox === "estado"}
+                                onChange={handleCheckboxChange}
+                              />
+                              Filtrar Por Estado
+                            </label>
+                            <br />
+                            <label className="checkbox-label">
+                              <input
+                                type="checkbox"
+                                name="fecha"
+                                checked={selectedCheckbox === "fecha"}
+                                onChange={handleCheckboxChange}
+                              />
+                              Filtrar Por Fecha
+                            </label>
+                            <br />
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              setSelectedCheckbox(selectedCheckbox);
+                              handleTituloModal(selectedCheckbox);
+                              setModalShowFiltros2(true);
+                              setModalShowFiltros(false);
+                            }}
+                          >
+                            Seleccionar y Continuar
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+
+                      <Modal
+                        show={modalShowFiltros2}
+                        onHide={() => {
+                          setModalShowFiltros2(false);
+                          setSelectedCheckbox2("");
+                        }}
+                      >
+                        <Modal.Header
+                          closeButton
+                          onClick={() => {
+                            setModalShowFiltros2(false);
+                            setParametroModal("");
+                            setSelectedCheckbox("");
+                            setSelectedCheckbox2("");
+                          }}
+                        >
+                          <Modal.Title>
+                            <h3 style={{ fontWeight: "bold" }}>
+                              Filtro Seleccionado :{" "}
+                            </h3>
+                            <h6>{tituloParametroModal}</h6>
+                          </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div>
+                            {citas
+                              .map((cita) => cita[parametroModal])
+                              .filter(
+                                (valor, index, self) =>
+                                  self.indexOf(valor) === index &&
+                                  valor !== "" &&
+                                  valor !== undefined &&
+                                  valor !== null
+                              )
+                              .map((parametroModal, index) => (
+                                <label className="checkbox-label" key={index}>
+                                  <input
+                                    type="checkbox"
+                                    name={parametroModal}
+                                    checked={
+                                      selectedCheckbox2 === parametroModal
+                                    }
+                                    onChange={handleCheckboxChange2}
+                                  />
+                                  {parametroModal}
+                                </label>
+                              ))}
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              setModalShowFiltros(true);
+                              handleTituloModal("");
+                              setModalShowFiltros2(false);
+                              setSelectedCheckbox("");
+                              setSelectedCheckbox2("");
+                              setParametroModal("");
+                            }}
+                          >
+                            Volver
+                          </Button>
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              searcher(selectedCheckbox2);
+                              setModalShowFiltros2(false);
+                              setParametroModal("");
+                              setTituloParametroModal("");
+                              setSelectedCheckbox("");
+                              setSelectedCheckbox2("");
+                            }}
+                          >
+                            Aplicar Filtro
                           </Button>
                         </Modal.Footer>
                       </Modal>
@@ -502,7 +751,7 @@ function Citas() {
                       </thead>
 
                       <tbody>
-                        {currentResults.map((cita, index) => (
+                        {resultsPaginados.map((cita, index) => (
                           <tr key={cita.id}>
                             <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
                             <td> {cita.horaInicio} </td>
@@ -593,37 +842,37 @@ function Citas() {
 
                   <div className="table__footer">
                     <div className="table__footer-left">
-                      Mostrando {startIndex + 1} - {Math.min(endIndex, citas.length)} de {citas.length}
+                      Mostrando {startIndex + 1} - {endIndex} de {results.length}
                     </div>
 
                     <div className="table__footer-right">
                       <span>
                         <button
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
+                          onClick={() => handleCambioPagina(paginaActual - 1)}
+                          disabled={paginaActual === 1}
                           style={{ border: "0", background: "none" }}
                         >
                           &lt; Previo
                         </button>
                       </span>
 
-                      {[...Array(totalPages)].map((_, index) => {
-                        const page = index + 1;
+                      {[...Array(paginasTotales)].map((_, index) => {
+                        const pagina = index + 1;
                         return (
-                          <span key={page}>
+                          <span key={pagina}>
                             <span
-                              onClick={() => handlePageChange(page)}
-                              className={page === currentPage ? "active" : ""}
+                              onClick={() => handleCambioPagina(pagina)}
+                              className={pagina === paginaActual ? "active" : ""}
                               style={{
                                 margin: "2px",
-                                backgroundColor: page === currentPage ? "#003057" : "transparent",
-                                color: page === currentPage ? "#FFFFFF" : "#000000",
+                                backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
+                                color: pagina === paginaActual ? "#FFFFFF" : "#000000",
                                 padding: "4px 8px",
                                 borderRadius: "4px",
                                 cursor: "pointer"
                               }}
                             >
-                              {page}
+                              {pagina}
                             </span>
                           </span>
                         );
@@ -631,8 +880,8 @@ function Citas() {
 
                       <span>
                         <button
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
+                          onClick={() => handleCambioPagina(paginaActual + 1)}
+                          disabled={paginaActual === paginasTotales}
                           style={{ border: "0", background: "none" }}
                         >
                           Siguiente &gt;
