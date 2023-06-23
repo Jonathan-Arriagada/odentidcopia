@@ -104,7 +104,7 @@ const Ingresos = () => {
   };
 
   const [paginaActual, setPaginaActual] = useState(1);
-  const filasPorPagina = 20;
+  const filasPorPagina = 50;
 
   const handleCambioPagina = (pagina) => {
     setPaginaActual(pagina);

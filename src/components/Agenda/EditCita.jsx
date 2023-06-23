@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { getDoc, updateDoc, doc, query, collection, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
-import moment from "moment";
 
 const EditCita = (props) => {
   const [apellidoConNombre, setApellidoConNombre] = useState(props.cita.apellidoConNombre || "");
@@ -83,7 +82,6 @@ const EditCita = (props) => {
     const citaRef = doc(db, "citas", props.id);
     const citaDoc = await getDoc(citaRef);
     const citaData = citaDoc.data();
-    var mesVariable = moment(fecha || citaData.fecha).locale("es").format("MMMM");
 
     const newData = {
       apellidoConNombre: apellidoConNombre || citaData.apellidoConNombre,
@@ -93,7 +91,6 @@ const EditCita = (props) => {
       numero: numero || citaData.numero,
       selectedCode: selectedCode || citaData.selectedCode,
       fecha: fecha || citaData.fecha,
-      mes: mesVariable,
       comentario: comentario || citaData.comentario,
       horaInicio: horaInicio || citaData.horaInicio,
       horaFin: horaFin || citaData.horaFin,

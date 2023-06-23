@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect, useContext } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, doc, getDoc,serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthContext";
+import 'moment/locale/es';
 import moment from "moment";
 
 function CreateTratamiento(props) {
@@ -133,7 +134,8 @@ function CreateTratamiento(props) {
 
   const store = async (e) => {
     e.preventDefault();
-    var mesVariable = moment(fecha).locale("es").format("MMMM");
+    moment.locale('es')
+    var mesVariable = moment(fecha).format("MMMM");
 
     await addDoc(tratamientosCollection, {
       codigo: codigo,

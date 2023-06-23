@@ -29,7 +29,6 @@ function Tratamientos() {
   const [tratamiento, setTratamiento] = useState([]);
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [ocultarCalendario, setOcultarCalendario] = useState(false);
 
   const [modalShowEstadosTratamientos, setModalShowEstadosTratamientos] = useState(false);
   const [modalShowEditPago, setModalShowEditPago] = useState(false);
@@ -43,19 +42,21 @@ function Tratamientos() {
   const [mostrarVer, setMostrarVer] = useState(true);
   const [mostrarAjustes, setMostrarAjustes] = useState(false);
 
-  const [modalShowFiltros, setModalShowFiltros] = useState(false);
-  const [selectedCheckbox, setSelectedCheckbox] = useState("");
+  const [ocultrarFiltrosGenerales, setOcultrarFiltrosGenerales] = useState(false);
+  const [estadoTratamientoFiltro, setEstadoTratamientoFiltro] = useState("");
+  const [estadosTratamientosOptions, setEstadosTratamientosOptions] = useState([]);
+  const [estadoPagoFiltro, setEstadoPagoFiltro] = useState("");
+  const [estadoPagoOption, setEstadoPagoOption] = useState([]);
+
   const [modalShowFiltros2, setModalShowFiltros2] = useState(false);
   const [selectedCheckbox2, setSelectedCheckbox2] = useState("");
   const [parametroModal, setParametroModal] = useState("");
   const [tituloParametroModal, setTituloParametroModal] = useState("");
   const [filtroBusqueda, setFiltroBusqueda] = useState("");
-  const [quitarFiltro, setQuitarFiltro] = useState(false);
   const [userType, setUserType] = useState("");
 
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
   const [taparFiltro, setTaparFiltro] = useState(false);
 
   const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
@@ -156,27 +157,35 @@ function Tratamientos() {
     setEstadoPago(estadoPagoArray);
   }, []);
 
+  const getOptionsDesdeCollection = useCallback((snapshot, valueField, textField) => {
+    const options = snapshot.docs.map((doc, index) => (
+      <option key={`option-${index}`} value={doc.data()[valueField]}>
+        {doc.data()[textField]}
+      </option>
+    ));
+    return options;
+  }, []);
+
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      tratamientosCollection.current,
-      getTratamientos
-    );
-    const unsubscribeEstados = onSnapshot(
-      estadosTratamientoCollection.current,
-      getEstadoTratamientos
-    );
-    const unsubscribeEstadosPago = onSnapshot(
-      estadosPagoCollection.current,
-      getEstadoPago
-    );
     const type = localStorage.getItem("rol");
     setUserType(type);
-    return () => {
-      unsubscribe();
-      unsubscribeEstados();
-      unsubscribeEstadosPago();
-    };
-  }, [getTratamientos, getEstadoTratamientos, getEstadoPago]);
+
+    const unsubscribeTratamientos = onSnapshot(tratamientosCollection.current, getTratamientos);
+    const unsubscribeEstadoTratamientos = onSnapshot(estadosTratamientoCollection.current, getEstadoTratamientos);
+    const unsubscribeEstadoPago = onSnapshot(estadosPagoCollection.current, getEstadoPago);
+    const unsubscribeEstadosTrataOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
+      const options = getOptionsDesdeCollection(snapshot, 'estadosTratamientos', 'estadosTratamientos');
+      setEstadosTratamientosOptions(options);
+    });
+
+    const unsubscribeEstadosPagoOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
+      const options = getOptionsDesdeCollection(snapshot, 'estadoPago', 'estadoPago');
+      setEstadoPagoOption(options);
+    });
+
+    return () => { unsubscribeTratamientos(); unsubscribeEstadoTratamientos(); unsubscribeEstadoPago(); unsubscribeEstadosTrataOptions(); unsubscribeEstadosPagoOptions(); };
+  }, [getTratamientos, getEstadoTratamientos, getEstadoPago, getOptionsDesdeCollection]);
 
 
   useEffect(() => {
@@ -276,18 +285,33 @@ function Tratamientos() {
   };
 
   const [paginaActual, setPaginaActual] = useState(1);
-  const filasPorPagina = 20;
+  const filasPorPagina = 50;
 
   const handleCambioPagina = (pagina) => {
     setPaginaActual(pagina);
     if (pagina > 1) {
-      setOcultarCalendario(true);
+      setOcultrarFiltrosGenerales(true);
     } else {
-      setOcultarCalendario(false);
+      setOcultrarFiltrosGenerales(false);
     }
   };
 
   var results;
+
+  if (estadoTratamientoFiltro && estadoPagoFiltro) {
+    results = tratamientos.filter((dato) => {
+      const estadoTrataMinusc = estadoTratamientoFiltro.toLowerCase()
+      const estadoPagoMinusc = estadoPagoFiltro.toLowerCase();
+      return dato.estadosTratamientos.toLowerCase() === estadoTrataMinusc && dato.estadoPago.toLowerCase() === estadoPagoMinusc;
+    });
+  } else if (estadoTratamientoFiltro && !estadoPagoFiltro) {
+    results = tratamientos.filter((dato) => dato.estadosTratamientos.toLowerCase() === estadoTratamientoFiltro.toLowerCase());
+  } else if (!estadoTratamientoFiltro && estadoPagoFiltro) {
+    results = tratamientos.filter((dato) => dato.estadoPago.toLowerCase() === estadoPagoFiltro.toLowerCase());
+  } else {
+    results = tratamientos;
+  }
+
   if (!search) {
     results = tratamientos;
   } else {
@@ -306,7 +330,7 @@ function Tratamientos() {
           (dato) => dato.fecha === search.toString()
         );
       } else {
-        if (search.toString().length === 1 && !isNaN(search)) {
+        if (!isNaN(search)) {
           results = tratamientos.filter((dato) => dato.codigo === search);
         } else {
           if (
@@ -329,8 +353,7 @@ function Tratamientos() {
           } else {
             results = tratamientos.filter(
               (dato) =>
-                dato.apellidoConNombre.toLowerCase().includes(search) ||
-                dato.idc.toString().includes(search.toString())
+                dato.apellidoConNombre.toLowerCase().includes(search)
             );
           }
         }
@@ -363,11 +386,6 @@ function Tratamientos() {
     return `${years}    .    ${months}    .    ${days} `;
   }*/
 
-  const handleCheckboxChange = (event) => {
-    setSelectedCheckbox(event.target.name);
-    setParametroModal(event.target.name);
-  };
-
   const handleCheckboxChange2 = (event) => {
     setSelectedCheckbox2(event.target.name);
   };
@@ -375,17 +393,8 @@ function Tratamientos() {
   function handleTituloModal(parametroModal) {
     setFiltroBusqueda(parametroModal);
     switch (parametroModal) {
-      case "tarifasTratamientos":
-        setTituloParametroModal("Por Tratamiento");
-        break;
-      case "estadoPago":
-        setTituloParametroModal("Por Estado Pago");
-        break;
       case "mes":
         setTituloParametroModal("Por Mes");
-        break;
-      case "estadosTratamientos":
-        setTituloParametroModal("Por Estado Tratamiento");
         break;
       default:
         setTituloParametroModal("");
@@ -394,15 +403,15 @@ function Tratamientos() {
   }
 
   const filtroFecha = (param) => {
-    if (param === "Dia") {
+    if (param === "Hoy") {
       setSearch(moment().format("YYYY-MM-DD"));
     }
-    if (param === "Ultimos 7") {
-      const fechaInicio = moment().subtract(7, "days").format("YYYY-MM-DD");
-      const fechaFin = moment().format("YYYY-MM-DD");
+    if (param === "Esta Semana") {
+      const fechaInicio = moment().startOf('isoWeek').format("YYYY-MM-DD");
+      const fechaFin = moment().endOf('isoWeek').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
-    if (param === "Mes") {
+    if (param === "Este Mes") {
       const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
       const fechaFin = moment().endOf('month').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
@@ -773,75 +782,6 @@ function Tratamientos() {
                           <i className="fa-solid fa-gear"></i>
                         </button>
                       ) : null}
-                      {!ocultarCalendario && (<button
-                        variant="primary"
-                        className="btn greenWater without mx-1 btn-md"
-                        style={{
-                          borderRadius: "12px",
-                          justifyContent: "center",
-                          verticalAlign: "center",
-                          alignSelf: "center",
-                          height: "45px",
-                        }}
-                        onClick={() => {
-                          setMostrarBotonesFechas(!mostrarBotonesFechas);
-                          setSearch("");
-                          setTaparFiltro(false);
-                        }}
-                      >
-                        <i
-                          className="fa-regular fa-calendar-check"
-                          style={{ transform: "scale(1.4)" }}
-                        ></i>
-                      </button>)}
-                      {mostrarBotonesFechas && (
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            verticalAlign: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <button
-                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                            onClick={() => {
-                              filtroFecha("Dia");
-                              setTaparFiltro(false);
-                            }}
-                          >
-                            Dia
-                          </button>
-                          <button
-                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                            onClick={() => {
-                              filtroFecha("Ultimos 7");
-                              setTaparFiltro(true);
-                            }}
-                          >
-                            Ultimos 7
-                          </button>
-                          <button
-                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                            onClick={() => {
-                              filtroFecha("Mes");
-                              setTaparFiltro(true);
-                            }}
-                          >
-                            Mes
-                          </button>
-                          <button
-                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                            onClick={() => {
-                              setModalSeleccionFechaShow(true);
-                            }}
-                          >
-                            Seleccionar
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <div className="col d-flex justify-content-end">
                       <button
                         variant="primary"
                         className="btn-blue m-2"
@@ -849,28 +789,6 @@ function Tratamientos() {
                       >
                         Agregar Tratamiento
                       </button>
-                      <button
-                        variant="primary"
-                        className="btn-blue m-2"
-                        onClick={() => {
-                          setModalShowFiltros(true);
-                          setQuitarFiltro(true);
-                        }}
-                      >
-                        Filtros
-                      </button>
-                      {quitarFiltro && (
-                        <button
-                          variant="primary"
-                          className="btn-blue m-2"
-                          onClick={() => {
-                            setSearch("");
-                            setQuitarFiltro(false);
-                          }}
-                        >
-                          Limpiar Filtros
-                        </button>
-                      )}
                       {mostrarAjustes && (
                         <div className="d-flex">
                           <button
@@ -892,244 +810,186 @@ function Tratamientos() {
                         </div>
                       )}
                     </div>
-                  </div>
 
-                  <div className="d-flex justify-content-between">
-
-                    <Modal
-                      show={modalSeleccionFechaShow}
-                      onHide={() => {
-                        setModalSeleccionFechaShow(false);
-                        setSelectedDate("");
-                        setTaparFiltro(false);
-                        setSearch("");
-                        setMostrarBotonesFechas(false);
-                      }}
-                    >
-                      <Modal.Header
-                        closeButton
-                        onClick={() => {
-                          setModalSeleccionFechaShow(false);
-                          setSelectedDate("");
-                          setTaparFiltro(false);
-                          setSearch("");
-                          setMostrarBotonesFechas(false);
-                        }}
-                      >
-                        <Modal.Title>
-                          Seleccione una fecha para filtrar:
-                        </Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Calendar
-                          defaultValue={moment().format("YYYY-MM-DD")}
-                          onChange={(date) => {
-                            const formattedDate =
-                              moment(date).format("YYYY-MM-DD");
-                            setSelectedDate(formattedDate);
-                          }}
-                          value={selectedDate}
-                        />
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button
-                          variant="primary"
-                          onClick={() => {
-                            setSearch(selectedDate);
-                            setTaparFiltro(false);
-                            setModalSeleccionFechaShow(false);
-                            setMostrarBotonesFechas(false);
+                    {!ocultrarFiltrosGenerales && (<div className="col d-flex justify-content-end align-items-center">
+                      <div className="mb-3 m-1">
+                        <select
+                          className="form-control-doctor"
+                          multiple={false}
+                          onChange={(e) => {
+                            const selectedOption = e.target.value;
+                            if (selectedOption === "") {
+                              setSearch("")
+                              setTaparFiltro(false);
+                            } else if (selectedOption === "Hoy") {
+                              filtroFecha("Hoy");
+                              setTaparFiltro(false);
+                            } else if (selectedOption === "Esta Semana") {
+                              filtroFecha("Esta Semana");
+                              setTaparFiltro(true);
+                            } else if (selectedOption === "Este Mes") {
+                              filtroFecha("Este Mes");
+                              setTaparFiltro(true);
+                            } else if (selectedOption === "Seleccionar") {
+                              setModalSeleccionFechaShow(true);
+                            }
+                            else if (selectedOption === "Meses") {
+                              handleTituloModal("mes");
+                              setParametroModal("mes");
+                              setModalShowFiltros2(true);
+                            }
                           }}
                         >
-                          Buscar Fecha
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
+                          <option value="">Todas las Fechas</option>
+                          <option value="Hoy">Hoy</option>
+                          <option value="Esta Semana">Esta Semana</option>
+                          <option value="Este Mes">Este Mes</option>
+                          <option value="Seleccionar">Seleccionar Fecha</option>
+                          <option value="Meses">Agrupar por Mes</option>
+                        </select>
+                      </div>
 
+                      <div className="mb-3 m-1">
+                        <select
+                          value={estadoTratamientoFiltro}
+                          onChange={(e) => setEstadoTratamientoFiltro(e.target.value)}
+                          className="form-control-doctor"
+                          multiple={false}
+                        >
+                          <option value="">Todos los Estados</option>
+                          {estadosTratamientosOptions}
+                        </select>
+                      </div>
 
-                    <Modal
-                      show={modalShowFiltros}
-                      onHide={() => {
-                        setSelectedCheckbox("");
+                      <div className="mb-3 m-1">
+                        <select
+                          value={estadoPagoFiltro}
+                          onChange={(e) => setEstadoPagoFiltro(e.target.value)}
+                          className="form-control-doctor"
+                          multiple={false}
+                        >
+                          <option value="">Todos los Estados Pago</option>
+                          {estadoPagoOption}
+                        </select>
+                      </div>
+                    </div>)}
+                  </div>
+
+                  <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); }}>
+                    <Modal.Header closeButton onClick={() => {
+                      setModalSeleccionFechaShow(false);
+                      setSelectedDate("");
+                      setTaparFiltro(false);
+                      setSearch("");
+                    }}>
+                      <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Calendar
+                        defaultValue={moment().format("YYYY-MM-DD")}
+                        onChange={(date) => {
+                          const formattedDate =
+                            moment(date).format("YYYY-MM-DD");
+                          setSelectedDate(formattedDate);
+                        }}
+                        value={selectedDate}
+                      />
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); }}>
+                        Buscar Fecha
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
+                  <Modal
+                    show={modalShowFiltros2}
+                    onHide={() => {
+                      setModalShowFiltros2(false);
+                      setSelectedCheckbox2("");
+                    }}
+                  >
+                    <Modal.Header
+                      closeButton
+                      onClick={() => {
+                        setModalShowFiltros2(false);
                         setParametroModal("");
                         setSelectedCheckbox2("");
                       }}
                     >
-                      <Modal.Header
-                        closeButton
-                        onClick={() => {
-                          setModalShowFiltros(false);
-                          setSelectedCheckbox("");
-                          setSelectedCheckbox2("");
-                          setParametroModal("");
-                          setQuitarFiltro(false);
-                        }}
-                      >
-                        <Modal.Title>
-                          <h1 style={{ fontWeight: "bold" }}>
-                            Filtros Generales
-                          </h1>
-                        </Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div>
-                          <label className="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="tarifasTratamientos"
-                              checked={
-                                selectedCheckbox === "tarifasTratamientos"
-                              }
-                              onChange={handleCheckboxChange}
-                            />
-                            Filtrar Por Tratamiento
-                          </label>
-                          <br />
-                          <label className="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="mes"
-                              checked={selectedCheckbox === "mes"}
-                              onChange={handleCheckboxChange}
-                            />
-                            Filtrar Por Mes
-                          </label>
-                          <br />
-                          <label className="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="estadoPago"
-                              checked={selectedCheckbox === "estadoPago"}
-                              onChange={handleCheckboxChange}
-                            />
-                            Filtrar Por Estado Pago
-                          </label>
-                          <br />
-                          <label className="checkbox-label">
-                            <input
-                              type="checkbox"
-                              name="estadosTratamientos"
-                              checked={
-                                selectedCheckbox === "estadosTratamientos"
-                              }
-                              onChange={handleCheckboxChange}
-                            />
-                            Filtrar Por Estado Tratamiento
-                          </label>
-                        </div>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button
-                          variant="primary"
-                          onClick={() => {
-                            setSelectedCheckbox(selectedCheckbox);
-                            handleTituloModal(selectedCheckbox);
-                            setModalShowFiltros2(true);
-                            setModalShowFiltros(false);
-                          }}
-                        >
-                          Seleccionar y Continuar
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
-
-                    <Modal
-                      show={modalShowFiltros2}
-                      onHide={() => {
-                        setModalShowFiltros2(false);
-                        setSelectedCheckbox2("");
+                      <Modal.Title>
+                        <h3 style={{ fontWeight: "bold" }}>
+                          Filtro Seleccionado :{" "}
+                        </h3>
+                        <h6>{tituloParametroModal}</h6>
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      <Modal.Header
-                        closeButton
+                      <div>
+                        {tratamientos
+                          .map((tratamiento) => tratamiento[parametroModal])
+                          .filter(
+                            (valor, index, self) =>
+                              self.indexOf(valor) === index &&
+                              valor !== "" &&
+                              valor !== undefined &&
+                              valor !== null
+                          )
+                          .map((parametroModal, index) => (
+                            <label className="checkbox-label" key={index}>
+                              <input
+                                type="checkbox"
+                                name={parametroModal}
+                                checked={
+                                  selectedCheckbox2 === parametroModal
+                                }
+                                onChange={handleCheckboxChange2}
+                              />
+                              {parametroModal}
+                            </label>
+                          ))}
+                      </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="primary"
                         onClick={() => {
+                          handleTituloModal("");
+                          searcher("");
+                          setModalShowFiltros2(false);
+                          setSelectedCheckbox2("");
+                          setParametroModal("");
+                        }}
+                      >
+                        Salir
+                      </Button>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          searcher(selectedCheckbox2);
                           setModalShowFiltros2(false);
                           setParametroModal("");
-                          setSelectedCheckbox("");
+                          setTituloParametroModal("");
                           setSelectedCheckbox2("");
                         }}
                       >
-                        <Modal.Title>
-                          <h3 style={{ fontWeight: "bold" }}>
-                            Filtro Seleccionado :{" "}
-                          </h3>
-                          <h6>{tituloParametroModal}</h6>
-                        </Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div>
-                          {tratamientos
-                            .map((tratamiento) => tratamiento[parametroModal])
-                            .filter(
-                              (valor, index, self) =>
-                                self.indexOf(valor) === index &&
-                                valor !== "" &&
-                                valor !== undefined &&
-                                valor !== null
-                            )
-                            .map((parametroModal, index) => (
-                              <label className="checkbox-label" key={index}>
-                                <input
-                                  type="checkbox"
-                                  name={parametroModal}
-                                  checked={
-                                    selectedCheckbox2 === parametroModal
-                                  }
-                                  onChange={handleCheckboxChange2}
-                                />
-                                {parametroModal}
-                              </label>
-                            ))}
-                        </div>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button
-                          variant="primary"
-                          onClick={() => {
-                            setModalShowFiltros(true);
-                            handleTituloModal("");
-                            setModalShowFiltros2(false);
-                            setSelectedCheckbox("");
-                            setSelectedCheckbox2("");
-                            setParametroModal("");
-                          }}
-                        >
-                          Volver
-                        </Button>
-                        <Button
-                          variant="primary"
-                          onClick={() => {
-                            searcher(selectedCheckbox2);
-                            setModalShowFiltros2(false);
-                            setParametroModal("");
-                            setTituloParametroModal("");
-                            setSelectedCheckbox("");
-                            setSelectedCheckbox2("");
-                          }}
-                        >
-                          Aplicar Filtro
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
-                  </div>
+                        Aplicar Filtro
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
 
                   <div className="table__container">
                     <table className="table__body">
@@ -1537,12 +1397,12 @@ function Tratamientos() {
                     <div className="col mb-6">
                       <label className="form-label">Fecha Cobro</label>
                       <input
-                        value={hoy}
+                        value={fechaCobro}
                         onChange={(e) => setFechaCobro(e.target.value)}
                         type="date"
                         className="form-control"
                         autoComplete="off"
-                        disabled
+                        max={hoy}
                       />
                     </div>
                   </div>

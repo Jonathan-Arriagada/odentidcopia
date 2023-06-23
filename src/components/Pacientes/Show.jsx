@@ -109,7 +109,7 @@ const Show = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 50;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
