@@ -15,7 +15,7 @@ import { AuthContext } from "../../context/AuthContext";
 import iconoDinero from "../../img/icono-dinero.png";
 
 const Ingresos = () => {
-  const [tratamientos, setTratamientos] = useState([]);
+  const [cobros, setCobros] = useState([]);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState("ASC");
   const [isLoading, setIsLoading] = useState(true);
@@ -55,22 +55,45 @@ const Ingresos = () => {
     });
   };
 
-  const getTratamientos = useCallback((snapshot) => {
-    const tratamientosArray = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    }));
-    setTratamientos(tratamientosArray);
+  const getCobros = useCallback((snapshot) => {
+    const cobrosArray = snapshot.docs.map((doc) => {
+      const tratamiento = doc.data();
+      const cobrosManuales = tratamiento.cobrosManuales;
+
+      const resultadosCobros = cobrosManuales.fechaCobro.map((_, index) => {
+        const fechaCobro = cobrosManuales.fechaCobro[index] || "";
+        const codigoTratamiento = cobrosManuales.codigoTratamiento[index] || "";
+        const nroComprobanteCobro = cobrosManuales.nroComprobanteCobro[index] || "";
+        const importeAbonado = cobrosManuales.importeAbonado[index] || "";
+        const pacienteCobro = cobrosManuales.pacienteCobro[index] || "";
+        const timestampCobro = cobrosManuales.timestampCobro[index] || "";
+        const tratamientoCobro = cobrosManuales.tratamientoCobro[index] || "";
+
+        return {
+          fechaCobro,
+          nroComprobanteCobro,
+          importeAbonado,
+          codigoTratamiento,
+          pacienteCobro,
+          timestampCobro,
+          tratamientoCobro,
+        };
+      });
+
+      return resultadosCobros;
+    });
+    const sortedCobrosArray = cobrosArray.flat().sort((a, b) => a.timestampCobro - b.timestampCobro);
+    setCobros(sortedCobrosArray);
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       tratamientosCollection.current,
-      getTratamientos
+      getCobros
     );
     return unsubscribe;
-  }, [getTratamientos]);
+  }, [getCobros]);
 
   const searcher = (e) => {
     if (typeof e === "string") {
@@ -94,46 +117,12 @@ const Ingresos = () => {
 
   var results;
   if (!search || search === "") {
-    results = tratamientos;
+    results = cobros;
   } else {
     if (typeof search === "object") {
-      results = tratamientos.map((tratamiento) => {
-        const {
-          fechaCobro,
-          importeAbonado,
-          codigoTratamiento,
-          pacienteCobro,
-          tratamientoCobro,
-        } = tratamiento.cobrosManuales;
-
-        const filteredFechaCobro = [];
-        const filteredImporteAbonado = [];
-        const filteredCodigoTratamiento = [];
-        const filteredPacienteCobro = [];
-        const filteredTratamientoCobro = [];
-
-        for (let i = 0; i < fechaCobro.length; i++) {
-          const fecha = fechaCobro[i];
-          const fechaz = moment(fecha).format("YYYY-MM-DD");
-          if (fechaz >= search.fechaInicio && fechaz <= search.fechaFin) {
-            filteredFechaCobro.push(fecha);
-            filteredImporteAbonado.push(importeAbonado[i]);
-            filteredCodigoTratamiento.push(codigoTratamiento[i]);
-            filteredPacienteCobro.push(pacienteCobro[i]);
-            filteredTratamientoCobro.push(tratamientoCobro[i]);
-          }
-        }
-
-        return {
-          ...tratamiento,
-          cobrosManuales: {
-            fechaCobro: filteredFechaCobro,
-            importeAbonado: filteredImporteAbonado,
-            codigoTratamiento: filteredCodigoTratamiento,
-            pacienteCobro: filteredPacienteCobro,
-            tratamientoCobro: filteredTratamientoCobro,
-          },
-        };
+      results = cobros.filter((dato) => {
+        const fecha = moment(dato.fechaCobro).format("YYYY-MM-DD");
+        return fecha >= search.fechaInicio && fecha <= search.fechaFin;
       });
     } else {
       if (
@@ -141,76 +130,31 @@ const Ingresos = () => {
         search.charAt(4) === "-" &&
         search.charAt(7) === "-"
       ) {
-        results = tratamientos.map((tratamiento) => {
-          const {
-            fechaCobro,
-            importeAbonado,
-            codigoTratamiento,
-            pacienteCobro,
-            tratamientoCobro,
-          } = tratamiento.cobrosManuales;
-
-          const filteredFechaCobro = [];
-          const filteredImporteAbonado = [];
-          const filteredCodigoTratamiento = [];
-          const filteredPacienteCobro = [];
-          const filteredTratamientoCobro = [];
-
-          for (let i = 0; i < fechaCobro.length; i++) {
-            const fecha = fechaCobro[i];
-            const fechaz = moment(fecha).format("YYYY-MM-DD");
-            if (fechaz === search) {
-              filteredFechaCobro.push(fecha);
-              filteredImporteAbonado.push(importeAbonado[i]);
-              filteredCodigoTratamiento.push(codigoTratamiento[i]);
-              filteredPacienteCobro.push(pacienteCobro[i]);
-              filteredTratamientoCobro.push(tratamientoCobro[i]);
-            }
-          }
-
-          return {
-            ...tratamiento,
-            cobrosManuales: {
-              fechaCobro: filteredFechaCobro,
-              importeAbonado: filteredImporteAbonado,
-              codigoTratamiento: filteredCodigoTratamiento,
-              pacienteCobro: filteredPacienteCobro,
-              tratamientoCobro: filteredTratamientoCobro,
-            },
-          };
-        });
+        results = cobros.filter(
+          (dato) => dato.fechaCobro === search.toString()
+        );
       } else {
-        results = tratamientos.filter(
+        results = cobros.filter(
           (dato) =>
-            dato.cobrosManuales.pacienteCobro
-              ?.toString()
-              .toLowerCase()
-              .includes(search.toLowerCase()) ||
-            dato.cobrosManuales.tratamientoCobro
-              ?.toString()
-              .toLowerCase()
-              .includes(search.toLowerCase())
+            dato.pacienteCobro.toLowerCase().includes(search.toLowerCase()) ||
+            dato.tratamientoCobro.toLowerCase().includes(search.toLowerCase())
         );
       }
     }
   }
-
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;
   var endIndex = startIndex + filasPorPagina;
   var resultsPaginados = results.slice(startIndex, endIndex);
 
+
   useEffect(() => {
     let total = 0;
     //let cantidad = 0;
 
-    resultsPaginados.forEach((tratamiento) => {
-      const importes = tratamiento.cobrosManuales.importeAbonado;
-
-      importes.forEach((importe, index) => {
-        total += Number(importe);
-        //cantidad++;
-      });
+    resultsPaginados.forEach((cobro) => {
+      total += Number(cobro.importeAbonado);
+      //cantidad++;
     });
 
     setTotalIngresos(total);
@@ -219,25 +163,25 @@ const Ingresos = () => {
 
   const sorting = (col) => {
     if (order === "ASC") {
-      const sorted = [...tratamientos].sort((a, b) => {
+      const sorted = [...cobros].sort((a, b) => {
         const valueA =
           typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
         const valueB =
           typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
         return valueA > valueB ? 1 : -1;
       });
-      setTratamientos(sorted);
+      setCobros(sorted);
       setOrder("DSC");
     }
     if (order === "DSC") {
-      const sorted = [...tratamientos].sort((a, b) => {
+      const sorted = [...cobros].sort((a, b) => {
         const valueA =
           typeof a[col] === "string" ? a[col].toLowerCase() : a[col];
         const valueB =
           typeof b[col] === "string" ? b[col].toLowerCase() : b[col];
         return valueA < valueB ? 1 : -1;
       });
-      setTratamientos(sorted);
+      setCobros(sorted);
       setOrder("ASC");
     }
   };
@@ -246,14 +190,14 @@ const Ingresos = () => {
     if (param === "Dia") {
       setSearch(moment().format("YYYY-MM-DD"));
     }
-    if (param === "Semana") {
+    if (param === "Ultimos 7") {
       const fechaInicio = moment().subtract(7, "days").format("YYYY-MM-DD");
       const fechaFin = moment().format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
     if (param === "Mes") {
-      const fechaInicio = moment().subtract(30, "days").format("YYYY-MM-DD");
-      const fechaFin = moment().format("YYYY-MM-DD");
+      const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
+      const fechaFin = moment().endOf('month').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
   };
@@ -280,7 +224,7 @@ const Ingresos = () => {
 
                   {taparFiltro && (
                     <input
-                      className="form-control m-2 w-25"
+                      className="form-control m-2 w-45"
                       value="<-FILTRO ENTRE FECHAS APLICADO->"
                       style={{
                         position: "absolute",
@@ -400,11 +344,11 @@ const Ingresos = () => {
                             <button
                               style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                               onClick={() => {
-                                filtroFecha("Semana");
+                                filtroFecha("Ultimos 7");
                                 setTaparFiltro(true);
                               }}
                             >
-                              Semana
+                              Ultimos 7
                             </button>
                             <button
                               style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
@@ -498,65 +442,38 @@ const Ingresos = () => {
                   <table className="table__body">
                     <thead>
                       <tr>
-                        <th onClick={() => sorting("fechaCobro")}>Fecha</th>
-                        <th onClick={() => sorting("pacienteCobro")} style={{ textAlign: "left" }}>
+                        <th onClick={() => sorting("timestampCobro")}>Fecha</th>
+                        <th style={{ textAlign: "left" }}>
                           Paciente
                         </th>
-                        <th onClick={() => sorting("tratamientoCobro")} style={{ textAlign: "left" }}>
+                        <th style={{ textAlign: "left" }}>
                           Tratamiento
                         </th>
-                        <th onClick={() => sorting("nroComprobanteCobro")}>
+                        <th>
                           Nro Comprobante
                         </th>
-                        <th onClick={() => sorting("importeAbonado")}>
+                        <th>
                           Importe
                         </th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      {resultsPaginados.map((tratamiento) => {
-                        return tratamiento.cobrosManuales.fechaCobro.map(
-                          (_, index) => {
-                            const fecha =
-                              tratamiento.cobrosManuales.fechaCobro[index] ||
-                              "";
-                            const paciente =
-                              tratamiento.cobrosManuales.pacienteCobro[index] ||
-                              "";
-                            const tratamientoz =
-                              tratamiento.cobrosManuales.tratamientoCobro[
-                              index
-                              ] || "";
-                            const nroComprobante =
-                              tratamiento.cobrosManuales.nroComprobanteCobro[
-                              index
-                              ] || "";
-                            const importe =
-                              tratamiento.cobrosManuales.importeAbonado[
-                              index
-                              ] || "";
-
-                            return (
-                              <tr key={index}>
-                                <td id="colIzquierda">
-                                  {moment(fecha.toString()).format(
-                                    "DD/MM/YY"
-                                  )}
-                                </td>
-                                <td style={{ textAlign: "left" }}>{paciente.toString()}</td>
-                                <td style={{ textAlign: "left" }}>{tratamientoz.toString()}</td>
-                                <td>{nroComprobante.toString()}</td>
-                                <td className="colDerecha">{importe.toString()}</td>
-                              </tr>
-                            );
-
-                          }
-                        );
-                      })}
+                      {resultsPaginados.map((cobro, index) => (
+                        <tr key={cobro+index}>
+                          <td id="colIzquierda">
+                            {moment(cobro.fechaCobro).format("DD/MM/YY")}
+                          </td>
+                          <td style={{ textAlign: "left" }}> {cobro.pacienteCobro} </td>
+                          <td style={{ textAlign: "left" }}> {cobro.tratamientoCobro} </td>
+                          <td> {cobro.nroComprobanteCobro} </td>
+                          <td className="colDerecha"> {cobro.importeAbonado} </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
+
                 <div className="table__footer">
                   <div className="table__footer-left">
                     Mostrando {startIndex + 1} - {endIndex} de {results.length}

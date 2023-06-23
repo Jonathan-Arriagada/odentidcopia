@@ -315,8 +315,8 @@ function TratamientosEspecif(props) {
       case "estadoPago":
         setTituloParametroModal("Por Estado Pago");
         break;
-      case "fecha":
-        setTituloParametroModal("Por Fecha");
+      case "mes":
+        setTituloParametroModal("Por Mes");
         break;
       case "estadosTratamientos":
         setTituloParametroModal("Por Estado Tratamiento");
@@ -331,14 +331,14 @@ function TratamientosEspecif(props) {
     if (param === "Dia") {
       setSearch(moment().format("YYYY-MM-DD"));
     }
-    if (param === "Semana") {
+    if (param === "Ultimos 7") {
       const fechaInicio = moment().subtract(7, "days").format("YYYY-MM-DD");
       const fechaFin = moment().format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
     if (param === "Mes") {
-      const fechaInicio = moment().subtract(30, "days").format("YYYY-MM-DD");
-      const fechaFin = moment().format("YYYY-MM-DD");
+      const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
+      const fechaFin = moment().endOf('month').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
   };
@@ -374,6 +374,8 @@ function TratamientosEspecif(props) {
         tratamientoData.cobrosManuales.tratamientoCobro || [];
       const pacienteCobroArray =
         tratamientoData.cobrosManuales.pacienteCobro || [];
+      const timestampArray =
+        tratamientoData.cobrosManuales.timestampCobro || [];
 
       fechaCobroArray.push(fechaCobro);
       nroComprobanteArray.push(nroComprobanteCobro);
@@ -381,6 +383,7 @@ function TratamientosEspecif(props) {
       importeAbonadoArray.push(importeCobro);
       tratamientoCobroArray.push(trataCobro);
       pacienteCobroArray.push(pacienteCobro);
+      timestampArray.push(Date.now());
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -390,6 +393,7 @@ function TratamientosEspecif(props) {
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
           "cobrosManuales.pacienteCobro": pacienteCobroArray,
+          "cobrosManuales.timestampCobro": timestampArray,
         });
       }
       let resto = (restoCobro - importeCobro);
@@ -434,7 +438,6 @@ function TratamientosEspecif(props) {
       tratamientoCobroArray[indexParaEditcobro] = trataCobro;
       codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
       pacienteCobroArray[indexParaEditcobro] = pacienteCobro;
-
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -492,6 +495,7 @@ function TratamientosEspecif(props) {
       const codigoTratamientoArray =
         tratamientoData.cobrosManuales.codigoTratamiento;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
+      const timestampArray = tratamientoData.cobrosManuales.timestampCobro;
 
       const nuevaFechaCobroArray = eliminarPosicionArray(
         fechaCobroArray,
@@ -517,6 +521,10 @@ function TratamientosEspecif(props) {
         pacienteCobroArray,
         index
       );
+      const nuevoTimestampArray = eliminarPosicionArray(
+        timestampArray,
+        index
+      );
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -526,6 +534,7 @@ function TratamientosEspecif(props) {
           "cobrosManuales.tratamientoCobro": nuevoTratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": nuevoCodigoTratamientoArray,
           "cobrosManuales.pacienteCobro": nuevoPacienteCobroArray,
+          "cobrosManuales.timestampCobro": nuevoTimestampArray,
         });
       }
       let resto = (tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0));
@@ -668,11 +677,11 @@ function TratamientosEspecif(props) {
                               <button
                                 style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
                                 onClick={() => {
-                                  filtroFecha("Semana");
+                                  filtroFecha("Ultimos 7");
                                   setTaparFiltro(true);
                                 }}
                               >
-                                Semana
+                                Ultimos 7
                               </button>
                               <button
                                 style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
@@ -838,11 +847,11 @@ function TratamientosEspecif(props) {
                               <label className="checkbox-label">
                                 <input
                                   type="checkbox"
-                                  name="fecha"
-                                  checked={selectedCheckbox === "fecha"}
+                                  name="mes"
+                                  checked={selectedCheckbox === "mes"}
                                   onChange={handleCheckboxChange}
                                 />
-                                Filtrar Por Fecha
+                                Filtrar Por Mes
                               </label>
                               <br />
                               <label className="checkbox-label">
@@ -1051,12 +1060,8 @@ function TratamientosEspecif(props) {
                                               ocultarTabla(tratamiento.codigo);
                                               setIdParaCobro(tratamiento.id);
                                               setCodigoCobro(tratamiento.cta);
-                                              setTrataCobro(
-                                                tratamiento.tarifasTratamientos
-                                              );
-                                              setPacienteCobro(
-                                                tratamiento.apellidoConNombre
-                                              );
+                                              setTrataCobro(tratamiento.tarifasTratamientos);
+                                              setPacienteCobro(tratamiento.apellidoConNombre);
                                               let resto = (
                                                 tratamiento.precio -
                                                 tratamiento.cobrosManuales.importeAbonado.reduce(

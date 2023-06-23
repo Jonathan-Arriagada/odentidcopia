@@ -52,7 +52,6 @@ function Citas() {
   const [parametroModal, setParametroModal] = useState("");
   const [filtroBusqueda, setFiltroBusqueda] = useState("");
 
-
   const { currentUser } = useContext(AuthContext);
 
   const estadosCollectiona = collection(db, "estados");
@@ -227,8 +226,8 @@ function Citas() {
       case "estado":
         setTituloParametroModal("Por Estado");
         break;
-      case "fecha":
-        setTituloParametroModal("Por Fecha");
+      case "mes":
+        setTituloParametroModal("Por Mes");
         break;
       default:
         setTituloParametroModal("");
@@ -264,10 +263,14 @@ function Citas() {
     }
   };
 
-  let results = doctor
-    ? citas.filter((dato) => JSON.parse(dato.doctor).uid === JSON.parse(doctor).uid)
-    : citas;
-  console.log(search)
+  let results = []
+
+  if (doctor) {
+    results = citas.filter((dato) => JSON.parse(dato.doctor).uid === JSON.parse(doctor).uid);
+  } else {
+    results = citas;
+  }
+
   results = !search
     ? results
     : typeof search === "object"
@@ -296,7 +299,7 @@ function Citas() {
           ))
           : results.filter(
             (dato) =>
-              dato.apellidoConNombre.toLowerCase().includes(search) ||
+              dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
               dato.idc.toString().includes(search.toString())
           );
 
@@ -564,9 +567,7 @@ function Citas() {
                               <input
                                 type="checkbox"
                                 name="doctor"
-                                checked={
-                                  selectedCheckbox === "doctor"
-                                }
+                                checked={selectedCheckbox === "doctor"}
                                 onChange={handleCheckboxChange}
                               />
                               Filtrar Por Doctor
@@ -585,11 +586,11 @@ function Citas() {
                             <label className="checkbox-label">
                               <input
                                 type="checkbox"
-                                name="fecha"
-                                checked={selectedCheckbox === "fecha"}
+                                name="mes"
+                                checked={selectedCheckbox === "mes"}
                                 onChange={handleCheckboxChange}
                               />
-                              Filtrar Por Fecha
+                              Filtrar Por Mes
                             </label>
                             <br />
                           </div>

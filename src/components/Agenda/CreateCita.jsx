@@ -164,6 +164,7 @@ function CreateCita(props) {
 
   const store = async (e) => {
     e.preventDefault();
+    var mesVariable = moment(fecha).locale("es").format("MMMM");
 
     await addDoc(citasCollection, {
       apellidoConNombre: apellidoConNombre,
@@ -174,6 +175,7 @@ function CreateCita(props) {
       selectedCode: selectedCode,
       numero: numero,
       fecha: fecha,
+      mes: mesVariable,
       comentario: comentario,
       horaInicio: horaInicio,
       horaFin: horaFin,
