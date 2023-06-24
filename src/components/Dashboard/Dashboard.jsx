@@ -10,6 +10,8 @@ import {Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip
 import { Bar } from 'react-chartjs-2';
 import { Dropdown } from 'react-bootstrap';
 import Count from './Count';
+import Ausencia from './Ausencia';
+
 ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
 
 function Dashboard() {
@@ -195,7 +197,7 @@ const [isLoading, setIsLoading] = useState(true);
               <h2 className="fw-bold fs-6 mt-3">Satisfacción del paciente</h2>
               <h3 className="fs-1 numbers">4.2</h3>
               <h2 className="fw-bold fs-6">Cancelación / ausencia de citas</h2>
-              <h3 className="fs-1 numbers">34%</h3>
+              <h3 className="fs-1 numbers"><Ausencia/></h3>
             </div>
             <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
