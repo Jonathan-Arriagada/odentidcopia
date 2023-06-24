@@ -12,6 +12,7 @@ import { Dropdown } from 'react-bootstrap';
 import Count from './Count';
 import Ausencia from './Ausencia';
 import PacientesAtendidos from './PacientesAtendidos';
+import CasosOrtodoncia from './CasosOrtodoncia';
 
 ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
 
@@ -181,10 +182,10 @@ const [isLoading, setIsLoading] = useState(true);
             <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario">
               <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
               <h3 className="fs-1 ms-2 numbers"><Count/></h3>
-              <h2 className="fw-bold fs-5 mt-3 ms-2">Pacientes atendidos</h2>
+              <h2 className="fw-bold fs-5 mt-2 ms-2">Pacientes atendidos</h2>
               <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos/></h3>
-              <h2 className="fw-bold fs-5 mt-3 ms-2">Nuevos casos de ortodoncia</h2>
-              <h3 className="fs-1 ms-2 numbers">3</h3>
+              <h2 className="fw-bold fs-5 mt-2 ms-2">Nuevos casos de ortodoncia</h2>
+              <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia/></h3>
             </div>
           </div>
           <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
