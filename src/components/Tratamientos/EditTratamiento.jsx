@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { getDoc, updateDoc, doc, query, collection, orderBy, onSnapshot, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
+import moment from "moment";
 
 const EditTratamiento = (props) => {
   const [codigo, setCodigo] = useState(props.tratamiento.codigo);
@@ -71,6 +72,8 @@ const EditTratamiento = (props) => {
     const tratamientoRef = doc(db, "tratamientos", props.id);
     const tratamientoDoc = await getDoc(tratamientoRef);
     const tratamientoData = tratamientoDoc.data();
+    moment.locale('es')
+    var mesVariable = moment(fecha || tratamientoData.fecha).format("MMMM");
 
     const newData = {
       codigo: codigo || tratamientoData.codigo,
@@ -82,10 +85,11 @@ const EditTratamiento = (props) => {
       cta: cta || tratamientoData.cta,
       precio: precio || tratamientoData.precio,
       restoCobro: precio || tratamientoData.precio,
-      pieza: pieza ,
+      pieza: pieza || tratamientoData.pieza,
       formaPago: formaPago || tratamientoData.formaPago,
       estadosTratamientos: estadosTratamientos || tratamientoData.estadosTratamientos,
       fecha: fecha || tratamientoData.fecha,
+      mes: mesVariable,
       fechaVencimiento: fechaVencimiento || tratamientoData.fechaVencimiento,
       notas: notas || tratamientoData.notas,
     };

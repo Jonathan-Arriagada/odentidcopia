@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect, useContext } from "react";
-import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, onSnapshot, where, getDocs, limit, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthContext";
+import 'moment/locale/es';
 import moment from "moment";
 
 function CreateTratamiento(props) {
@@ -55,7 +56,7 @@ function CreateTratamiento(props) {
 
   const updateOptionsTarifasTratamientos = useCallback(snapshot => {
     const options2 = snapshot.docs.map(doc => (
-      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tratamiento}</option>
+      <option key={`tarifasTratamientos-${doc.id}`} value={doc.data().tratamiento}>{doc.data().tratamiento}</option>
     ));
     setOptionsTarifasTratamientos(options2);
   }, []);
@@ -133,6 +134,9 @@ function CreateTratamiento(props) {
 
   const store = async (e) => {
     e.preventDefault();
+    moment.locale('es')
+    var mesVariable = moment(fecha).format("MMMM");
+
     await addDoc(tratamientosCollection, {
       codigo: codigo,
       apellidoConNombre: apellidoConNombre,
@@ -147,15 +151,17 @@ function CreateTratamiento(props) {
       pieza: pieza,
       estadosTratamientos: estadosTratamientos,
       fecha: fecha,
+      mes: mesVariable,
       fechaVencimiento: fechaVencimiento,
       notas: notas,
+      timestamp: serverTimestamp(),
       cobrosManuales: {
         fechaCobro: [],
         importeAbonado: [],
         tratamientoCobro: [],
         codigoTratamiento: [],
-        estadoCobro: [],
         pacienteCobro: [],
+        timestampCobro: [],
       },
     });
     await addDoc(controlesCollection, {

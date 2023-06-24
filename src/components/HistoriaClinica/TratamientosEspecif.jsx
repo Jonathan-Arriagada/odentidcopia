@@ -25,7 +25,6 @@ function TratamientosEspecif(props) {
   const [idParam, setIdParam] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [noHayPacientes, setNoHayPacientes] = useState(false);
-  const [ocultarCalendario, setOcultarCalendario] = useState(false);
 
   const [estadoTratamiento, setEstadoTratamiento] = useState([]);
   const [estadoPago, setEstadoPago] = useState([]);
@@ -38,18 +37,14 @@ function TratamientosEspecif(props) {
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [mostrarVer, setMostrarVer] = useState(true);
 
-  const [modalShowFiltros, setModalShowFiltros] = useState(false);
-  const [selectedCheckbox, setSelectedCheckbox] = useState("");
   const [modalShowFiltros2, setModalShowFiltros2] = useState(false);
   const [selectedCheckbox2, setSelectedCheckbox2] = useState("");
   const [parametroModal, setParametroModal] = useState("");
   const [tituloParametroModal, setTituloParametroModal] = useState("");
   const [filtroBusqueda, setFiltroBusqueda] = useState("");
-  const [quitarFiltro, setQuitarFiltro] = useState(false);
 
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [mostrarBotonesFechas, setMostrarBotonesFechas] = useState(false);
   const [, setTaparFiltro] = useState(false);
 
   const [mostrarModalEditarCobro, setMostrarModalEditarCobro] = useState(false);
@@ -67,9 +62,16 @@ function TratamientosEspecif(props) {
   const [importeCobro, setImporteCobro] = useState("");
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
-  const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
   const [modalShowCrearControl, setModalShowCrearControl] = useState(false);
+
+  const [ocultrarFiltrosGenerales, setOcultrarFiltrosGenerales] = useState(false);
+  const [estadoTratamientoFiltro, setEstadoTratamientoFiltro] = useState("");
+  const [estadosTratamientosOptions, setEstadosTratamientosOptions] = useState([]);
+  const [estadoPagoFiltro, setEstadoPagoFiltro] = useState("");
+  const [estadoPagoOptions, setEstadoPagoOptions] = useState([]);
+  const [tratamientosFiltro, setTratamientosFiltro] = useState("");
+  const [tratamientosOptions, setTratamientosOptions] = useState([]);
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
   const estadosTratamientoCollection = useRef(query(estadosTratamientoCollectiona));
@@ -82,10 +84,16 @@ function TratamientosEspecif(props) {
       setMostrarTabla(false);
       setSearch("");
       setMostrarVer(true);
+      setOcultrarFiltrosGenerales(false)
+      setTaparFiltro(false);
+      setTratamientosFiltro("")
+      setEstadoTratamientoFiltro("")
+      setEstadoPagoFiltro("")
     } else {
       setSearch(codigo);
       setMostrarTabla(true);
       setMostrarVer(false);
+      setOcultrarFiltrosGenerales(true)
     }
   };
 
@@ -135,26 +143,45 @@ function TratamientosEspecif(props) {
     setEstadoPago(estadoPagoArray);
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      tratamientosCollection.current,
-      getTratamientos
-    );
-    const unsubscribeEstados = onSnapshot(
-      estadosTratamientoCollection.current,
-      getEstadoTratamientos
-    );
-    const unsubscribeEstadosPago = onSnapshot(
-      estadosPagoCollection.current,
-      getEstadoPago
-    );
+  const getOptionsDesdeCollection = useCallback((snapshot, valueField, textField) => {
+    const uniqueValues = Array.from(snapshot.docs.reduce((set, doc) => {
+      const value = doc.data()[valueField];
+      set.add(value);
+      return set;
+    }, new Set()));
 
-    return () => {
-      unsubscribe();
-      unsubscribeEstados();
-      unsubscribeEstadosPago();
-    };
-  }, [getTratamientos, getEstadoTratamientos, getEstadoPago]);
+    const options = uniqueValues.map((value, index) => (
+      <option key={`option-${index}`} value={value}>
+        {value}
+      </option>
+    ));
+
+    return options;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeTratamientos = onSnapshot(tratamientosCollection.current, getTratamientos);
+    const unsubscribeEstadoTratamientos = onSnapshot(estadosTratamientoCollection.current, getEstadoTratamientos);
+    const unsubscribeEstadoPago = onSnapshot(estadosPagoCollection.current, getEstadoPago);
+    const unsubscribeEstadosTrataOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
+      const options = getOptionsDesdeCollection(snapshot, 'estadosTratamientos', 'estadosTratamientos');
+      setEstadosTratamientosOptions(options);
+    });
+
+    const unsubscribeEstadosPagoOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
+      const options = getOptionsDesdeCollection(snapshot, 'estadoPago', 'estadoPago');
+      setEstadoPagoOptions(options);
+    });
+
+
+    const unsubscribeTratamientosOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
+      const options = getOptionsDesdeCollection(snapshot, 'tarifasTratamientos', 'tarifasTratamientos');
+      setTratamientosOptions(options);
+    });
+
+    return () => { unsubscribeTratamientos(); unsubscribeEstadoTratamientos(); unsubscribeEstadoPago(); unsubscribeEstadosTrataOptions(); unsubscribeEstadosPagoOptions(); unsubscribeTratamientosOptions(); };
+  }, [getTratamientos, getEstadoTratamientos, getEstadoPago, getOptionsDesdeCollection]);
+
 
   useEffect(() => {
     const hoy = new Date();
@@ -195,6 +222,29 @@ function TratamientosEspecif(props) {
     );
   };
 
+  const confirmeDelete = (id) => {
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "No podra revertir la accion",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#00C5C1',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deletetratamiento(id)
+        Swal.fire({
+          title: '¡Borrado!',
+          text: 'El tratamiento ha sido borrado.',
+          icon: 'success',
+          confirmButtonColor: '#00C5C1'
+        });
+      }
+    })
+  }
+
   const searcher = (e) => {
     if (typeof e === "string") {
       setSearch(e);
@@ -229,78 +279,60 @@ function TratamientosEspecif(props) {
   };
 
   const [paginaActual, setPaginaActual] = useState(1);
-  const filasPorPagina = 20;
+  const filasPorPagina = 50;
 
   const handleCambioPagina = (pagina) => {
     setPaginaActual(pagina);
     if (pagina > 1) {
-      setOcultarCalendario(true);
+      setOcultrarFiltrosGenerales(true);
     } else {
-      setOcultarCalendario(false);
+      setOcultrarFiltrosGenerales(false);
     }
   };
 
 
-  var results;
-  if (!search) {
-    results = tratamientos;
-  } else {
-    if (typeof search === "object") {
-      results = tratamientos.filter((dato) => {
-        const fecha = moment(dato.fecha).format("YYYY-MM-DD");
-        return fecha >= search.fechaInicio && fecha <= search.fechaFin;
-      });
-    } else {
-      if (
-        search.toString().length === 10 &&
-        search.charAt(4) === "-" &&
-        search.charAt(7) === "-"
-      ) {
-        results = tratamientos.filter(
-          (dato) => dato.fecha === search.toString()
-        );
-      } else {
-        if (search.toString().length === 1 && !isNaN(search)) {
-          results = tratamientos.filter((dato) => dato.codigo === search);
-        } else {
-          if (
-            filtroBusqueda &&
-            tratamientos.some(
-              (tratamiento) =>
-                tratamiento[filtroBusqueda]?.includes(search) &&
-                tratamiento[filtroBusqueda] !== "" &&
-                tratamiento[filtroBusqueda] !== undefined &&
-                tratamiento[filtroBusqueda] !== null
-            )
-          ) {
-            results = tratamientos.filter(
-              (dato) =>
-                dato[filtroBusqueda]?.includes(search) &&
-                dato[filtroBusqueda] !== "" &&
-                dato[filtroBusqueda] !== undefined &&
-                dato[filtroBusqueda] !== null
-            );
-          } else {
-            results = tratamientos.filter(
-              (dato) =>
-                dato.apellidoConNombre.toLowerCase().includes(search) ||
-                dato.idc.toString().includes(search.toString())
-            );
-          }
-        }
-      }
+  var results = tratamientos.filter((dato) => {
+    if (estadoTratamientoFiltro && dato.estadosTratamientos.toLowerCase() !== estadoTratamientoFiltro.toLowerCase()) {
+      return false;
     }
-  }
+
+    if (estadoPagoFiltro && dato.estadoPago.toLowerCase() !== estadoPagoFiltro.toLowerCase()) {
+      return false;
+    }
+
+    if (tratamientosFiltro && dato.tarifasTratamientos.toLowerCase() !== tratamientosFiltro.toLowerCase()) {
+      return false;
+    }
+
+    if (!search) {
+      return true;
+    }
+
+    if (typeof search === "object") {
+      const fecha = moment(dato.fecha).format("YYYY-MM-DD");
+      return fecha >= search.fechaInicio && fecha <= search.fechaFin;
+    }
+
+    if (search.toString().length === 10 && search.charAt(4) === "-" && search.charAt(7) === "-") {
+      return dato.fecha === search.toString();
+    }
+
+    if (!isNaN(search)) {
+      return dato.codigo === search;
+    }
+
+    if (filtroBusqueda && dato[filtroBusqueda]?.includes(search)) {
+      return dato[filtroBusqueda] !== "" && dato[filtroBusqueda] !== undefined && dato[filtroBusqueda] !== null;
+    }
+
+    return dato.apellidoConNombre.toLowerCase().includes(search);
+  });
+
 
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;
   var endIndex = startIndex + filasPorPagina;
   var resultsPaginados = results.slice(startIndex, endIndex);
-
-  const handleCheckboxChange = (event) => {
-    setSelectedCheckbox(event.target.name);
-    setParametroModal(event.target.name);
-  };
 
   const handleCheckboxChange2 = (event) => {
     setSelectedCheckbox2(event.target.name);
@@ -309,17 +341,8 @@ function TratamientosEspecif(props) {
   function handleTituloModal(parametroModal) {
     setFiltroBusqueda(parametroModal);
     switch (parametroModal) {
-      case "tarifasTratamientos":
-        setTituloParametroModal("Por Tratamiento");
-        break;
-      case "estadoPago":
-        setTituloParametroModal("Por Estado Pago");
-        break;
-      case "fecha":
-        setTituloParametroModal("Por Fecha");
-        break;
-      case "estadosTratamientos":
-        setTituloParametroModal("Por Estado Tratamiento");
+      case "mes":
+        setTituloParametroModal("Por Mes");
         break;
       default:
         setTituloParametroModal("");
@@ -328,17 +351,17 @@ function TratamientosEspecif(props) {
   }
 
   const filtroFecha = (param) => {
-    if (param === "Dia") {
+    if (param === "Hoy") {
       setSearch(moment().format("YYYY-MM-DD"));
     }
-    if (param === "Semana") {
-      const fechaInicio = moment().subtract(7, "days").format("YYYY-MM-DD");
-      const fechaFin = moment().format("YYYY-MM-DD");
+    if (param === "Esta Semana") {
+      const fechaInicio = moment().startOf('isoWeek').format("YYYY-MM-DD");
+      const fechaFin = moment().endOf('isoWeek').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
-    if (param === "Mes") {
-      const fechaInicio = moment().subtract(30, "days").format("YYYY-MM-DD");
-      const fechaFin = moment().format("YYYY-MM-DD");
+    if (param === "Este Mes") {
+      const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
+      const fechaFin = moment().endOf('month').format("YYYY-MM-DD");
       setSearch({ fechaInicio, fechaFin });
     }
   };
@@ -374,6 +397,8 @@ function TratamientosEspecif(props) {
         tratamientoData.cobrosManuales.tratamientoCobro || [];
       const pacienteCobroArray =
         tratamientoData.cobrosManuales.pacienteCobro || [];
+      const timestampArray =
+        tratamientoData.cobrosManuales.timestampCobro || [];
 
       fechaCobroArray.push(fechaCobro);
       nroComprobanteArray.push(nroComprobanteCobro);
@@ -381,6 +406,7 @@ function TratamientosEspecif(props) {
       importeAbonadoArray.push(importeCobro);
       tratamientoCobroArray.push(trataCobro);
       pacienteCobroArray.push(pacienteCobro);
+      timestampArray.push(Date.now());
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -390,6 +416,7 @@ function TratamientosEspecif(props) {
           "cobrosManuales.tratamientoCobro": tratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": codigoTratamientoArray,
           "cobrosManuales.pacienteCobro": pacienteCobroArray,
+          "cobrosManuales.timestampCobro": timestampArray,
         });
       }
       let resto = (restoCobro - importeCobro);
@@ -405,14 +432,6 @@ function TratamientosEspecif(props) {
       })
     }
   };
-
-  useEffect(() => {
-    if (restoCobro === 0) {
-      setPagoFinalizado(true);
-    } else {
-      setPagoFinalizado(false);
-    }
-  }, [restoCobro]);
 
   const editarCobro = async (e) => {
     e.preventDefault();
@@ -434,7 +453,6 @@ function TratamientosEspecif(props) {
       tratamientoCobroArray[indexParaEditcobro] = trataCobro;
       codigoTratamientoArray[indexParaEditcobro] = codigoCobro;
       pacienteCobroArray[indexParaEditcobro] = pacienteCobro;
-
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -492,6 +510,7 @@ function TratamientosEspecif(props) {
       const codigoTratamientoArray =
         tratamientoData.cobrosManuales.codigoTratamiento;
       const pacienteCobroArray = tratamientoData.cobrosManuales.pacienteCobro;
+      const timestampArray = tratamientoData.cobrosManuales.timestampCobro;
 
       const nuevaFechaCobroArray = eliminarPosicionArray(
         fechaCobroArray,
@@ -517,6 +536,10 @@ function TratamientosEspecif(props) {
         pacienteCobroArray,
         index
       );
+      const nuevoTimestampArray = eliminarPosicionArray(
+        timestampArray,
+        index
+      );
 
       if (tratamientoDoc.exists()) {
         await updateDoc(tratamientoRef, {
@@ -526,6 +549,7 @@ function TratamientosEspecif(props) {
           "cobrosManuales.tratamientoCobro": nuevoTratamientoCobroArray,
           "cobrosManuales.codigoTratamiento": nuevoCodigoTratamientoArray,
           "cobrosManuales.pacienteCobro": nuevoPacienteCobroArray,
+          "cobrosManuales.timestampCobro": nuevoTimestampArray,
         });
       }
       let resto = (tratamientoData.precio - nuevoImporteAbonadoArray.reduce((total, importe) => total + Number(importe), 0));
@@ -626,348 +650,207 @@ function TratamientosEspecif(props) {
                           style={{ maxHeight: "34px" }}
                         >
                           <h3>Tratamientos Realizados por este Paciente</h3>
-                          {!ocultarCalendario && (<button
-                            variant="primary"
-                            className="btn greenWater without mx-1 btn-md"
-                            style={{
-                              borderRadius: "12px",
-                              justifyContent: "center",
-                              verticalAlign: "center",
-                              alignSelf: "center",
-                              height: "45px",
-                            }}
-                            onClick={() => {
-                              setMostrarBotonesFechas(!mostrarBotonesFechas);
-                              setSearch("");
-                              setTaparFiltro(false);
-                            }}
-                          >
-                            <i
-                              className="fa-regular fa-calendar-check"
-                              style={{ transform: "scale(1.4)" }}
-                            ></i>
-                          </button>)}
-                          {mostrarBotonesFechas && (
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                verticalAlign: "center",
-                                alignItems: "center",
-                              }}
-                            >
-                              <button
-                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                                onClick={() => {
-                                  filtroFecha("Dia");
-                                  setTaparFiltro(false);
-                                }}
-                              >
-                                Dia
-                              </button>
-                              <button
-                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                                onClick={() => {
-                                  filtroFecha("Semana");
-                                  setTaparFiltro(true);
-                                }}
-                              >
-                                Semana
-                              </button>
-                              <button
-                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                                onClick={() => {
-                                  filtroFecha("Mes");
-                                  setTaparFiltro(true);
-                                }}
-                              >
-                                Mes
-                              </button>
-                              <button
-                                style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                                onClick={() => {
-                                  setModalSeleccionFechaShow(true);
-                                }}
-                              >
-                                Seleccionar
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                        <div className="col d-flex justify-content-end">
-                          <input
-                            value={search}
-                            onChange={searcher}
-                            type="text"
-                            className="form-control m-2 w-25"
-                            style={{ display: "none" }}
-                          />
-                        </div>
-                        <button
-                          variant="primary"
-                          className="btn-blue m-2"
-                          onClick={() => {
-                            setModalShowFiltros(true);
-                            setQuitarFiltro(true);
-                          }}
-                        >
-                          Filtros
-                        </button>
-                        {quitarFiltro && (
                           <button
                             variant="primary"
                             className="btn-blue m-2"
-                            onClick={() => {
-                              setSearch("");
-                              setQuitarFiltro(false);
-                            }}
+                            onClick={() => setModalShowCrearTratamiento(true)}
                           >
-                            Limpiar Filtros
+                            Nuevo
                           </button>
-                        )}
-                        <button
-                          variant="primary"
-                          className="btn-blue m-2"
-                          onClick={() => setModalShowCrearTratamiento(true)}
-                        >
-                          Nuevo
-                        </button>
+                        </div>
                       </div>
-                      <div className="d-flex justify-content-between">
-                        <Modal
-                          show={modalSeleccionFechaShow}
-                          onHide={() => {
-                            setModalSeleccionFechaShow(false);
-                            setSelectedDate("");
-                            setTaparFiltro(false);
-                            setSearch("");
-                            setMostrarBotonesFechas(false);
-                          }}
-                        >
-                          <Modal.Header
-                            closeButton
-                            onClick={() => {
-                              setModalSeleccionFechaShow(false);
-                              setSelectedDate("");
-                              setTaparFiltro(false);
-                              setSearch("");
-                              setMostrarBotonesFechas(false);
-                            }}
-                          >
-                            <Modal.Title>
-                              Seleccione una fecha para filtrar:
-                            </Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Calendar
-                              defaultValue={moment().format("YYYY-MM-DD")}
-                              onChange={(date) => {
-                                const formattedDate =
-                                  moment(date).format("YYYY-MM-DD");
-                                setSelectedDate(formattedDate);
-                              }}
-                              value={selectedDate}
-                            />
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button
-                              variant="primary"
-                              onClick={() => {
-                                setSearch(selectedDate);
-                                setTaparFiltro(false);
-                                setModalSeleccionFechaShow(false);
-                                setMostrarBotonesFechas(false);
+
+                      {!ocultrarFiltrosGenerales && (<div className="row" style={{ marginTop: "20px" }}>
+                        <div className="col d-flex justify-content-start align-items-center">
+                          <div className="mb-3 m-1">
+                            <select
+                              className="form-control-doctor"
+                              multiple={false}
+                              onChange={(e) => {
+                                const selectedOption = e.target.value;
+                                if (selectedOption === "") {
+                                  setSearch("")
+                                  setTaparFiltro(false);
+                                } else if (selectedOption === "Hoy") {
+                                  filtroFecha("Hoy");
+                                  setTaparFiltro(false);
+                                } else if (selectedOption === "Esta Semana") {
+                                  filtroFecha("Esta Semana");
+                                  setTaparFiltro(true);
+                                } else if (selectedOption === "Este Mes") {
+                                  filtroFecha("Este Mes");
+                                  setTaparFiltro(true);
+                                } else if (selectedOption === "Seleccionar") {
+                                  setModalSeleccionFechaShow(true);
+                                }
+                                else if (selectedOption === "Meses") {
+                                  handleTituloModal("mes");
+                                  setParametroModal("mes");
+                                  setModalShowFiltros2(true);
+                                }
                               }}
                             >
-                              Buscar Fecha
-                            </Button>
-                          </Modal.Footer>
-                        </Modal>
+                              <option value="">Todas las Fechas</option>
+                              <option value="Hoy">Hoy</option>
+                              <option value="Esta Semana">Esta Semana</option>
+                              <option value="Este Mes">Este Mes</option>
+                              <option value="Seleccionar">Seleccionar Fecha</option>
+                              <option value="Meses">Agrupar por Mes</option>
+                            </select>
+                          </div>
 
+                          <div className="mb-3 m-1">
+                            <select
+                              value={tratamientosFiltro}
+                              onChange={(e) => setTratamientosFiltro(e.target.value)}
+                              className="form-control-doctor"
+                              multiple={false}
+                            >
+                              <option value="">Todos los Tratamientos</option>
+                              {tratamientosOptions}
+                            </select>
+                          </div>
 
-                        <Modal
-                          show={modalShowFiltros}
-                          onHide={() => {
-                            setSelectedCheckbox("");
+                          <div className="mb-3 m-1">
+                            <select
+                              value={estadoTratamientoFiltro}
+                              onChange={(e) => setEstadoTratamientoFiltro(e.target.value)}
+                              className="form-control-doctor"
+                              multiple={false}
+                            >
+                              <option value="">Todos los Estados Tratamientos</option>
+                              {estadosTratamientosOptions}
+                            </select>
+                          </div>
+
+                          <div className="mb-3 m-1">
+                            <select
+                              value={estadoPagoFiltro}
+                              onChange={(e) => setEstadoPagoFiltro(e.target.value)}
+                              className="form-control-doctor"
+                              multiple={false}
+                            >
+                              <option value="">Todos los Estados Pago</option>
+                              {estadoPagoOptions}
+                            </select>
+                          </div>
+                        </div>
+                      </div>)}
+
+                      <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); }}>
+                        <Modal.Header closeButton onClick={() => {
+                          setModalSeleccionFechaShow(false);
+                          setSelectedDate("");
+                          setTaparFiltro(false);
+                          setSearch("");
+                        }}>
+                          <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Calendar
+                            defaultValue={moment().format("YYYY-MM-DD")}
+                            onChange={(date) => {
+                              const formattedDate =
+                                moment(date).format("YYYY-MM-DD");
+                              setSelectedDate(formattedDate);
+                            }}
+                            value={selectedDate}
+                          />
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); }}>
+                            Buscar Fecha
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+
+                      <Modal
+                        show={modalShowFiltros2}
+                        onHide={() => {
+                          setModalShowFiltros2(false);
+                          setSelectedCheckbox2("");
+                        }}
+                      >
+                        <Modal.Header
+                          closeButton
+                          onClick={() => {
+                            setModalShowFiltros2(false);
                             setParametroModal("");
                             setSelectedCheckbox2("");
                           }}
                         >
-                          <Modal.Header
-                            closeButton
-                            onClick={() => {
-                              setModalShowFiltros(false);
-                              setSelectedCheckbox("");
-                              setSelectedCheckbox2("");
-                              setParametroModal("");
-                              setQuitarFiltro(false);
-                            }}
-                          >
-                            <Modal.Title>
-                              <h1 style={{ fontWeight: "bold" }}>
-                                Filtros Generales
-                              </h1>
-                            </Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <div>
-                              <label className="checkbox-label">
-                                <input
-                                  type="checkbox"
-                                  name="tarifasTratamientos"
-                                  checked={
-                                    selectedCheckbox === "tarifasTratamientos"
-                                  }
-                                  onChange={handleCheckboxChange}
-                                />
-                                Filtrar Por Tratamiento
-                              </label>
-                              <br />
-                              <label className="checkbox-label">
-                                <input
-                                  type="checkbox"
-                                  name="fecha"
-                                  checked={selectedCheckbox === "fecha"}
-                                  onChange={handleCheckboxChange}
-                                />
-                                Filtrar Por Fecha
-                              </label>
-                              <br />
-                              <label className="checkbox-label">
-                                <input
-                                  type="checkbox"
-                                  name="estadoPago"
-                                  checked={selectedCheckbox === "estadoPago"}
-                                  onChange={handleCheckboxChange}
-                                />
-                                Filtrar Por Estado Pago
-                              </label>
-                              <br />
-                              <label className="checkbox-label">
-                                <input
-                                  type="checkbox"
-                                  name="estadosTratamientos"
-                                  checked={
-                                    selectedCheckbox === "estadosTratamientos"
-                                  }
-                                  onChange={handleCheckboxChange}
-                                />
-                                Filtrar Por Estado Tratamiento
-                              </label>
-                            </div>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button
-                              variant="primary"
-                              onClick={() => {
-                                setSelectedCheckbox(selectedCheckbox);
-                                handleTituloModal(selectedCheckbox);
-                                setModalShowFiltros2(true);
-                                setModalShowFiltros(false);
-                              }}
-                            >
-                              Seleccionar y Continuar
-                            </Button>
-                          </Modal.Footer>
-                        </Modal>
-
-                        <Modal
-                          show={modalShowFiltros2}
-                          onHide={() => {
-                            setModalShowFiltros2(false);
-                            setSelectedCheckbox2("");
+                          <Modal.Title>
+                            <h3 style={{ fontWeight: "bold" }}>
+                              Filtro Seleccionado :{" "}
+                            </h3>
+                            <h6>{tituloParametroModal}</h6>
+                          </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
                           }}
                         >
-                          <Modal.Header
-                            closeButton
+                          <div>
+                            {tratamientos
+                              .map((tratamiento) => tratamiento[parametroModal])
+                              .filter(
+                                (valor, index, self) =>
+                                  self.indexOf(valor) === index &&
+                                  valor !== "" &&
+                                  valor !== undefined &&
+                                  valor !== null
+                              )
+                              .map((parametroModal, index) => (
+                                <label className="checkbox-label" key={index}>
+                                  <input
+                                    type="checkbox"
+                                    name={parametroModal}
+                                    checked={
+                                      selectedCheckbox2 === parametroModal
+                                    }
+                                    onChange={handleCheckboxChange2}
+                                  />
+                                  {parametroModal}
+                                </label>
+                              ))}
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            variant="primary"
                             onClick={() => {
+                              handleTituloModal("");
+                              searcher("");
+                              setModalShowFiltros2(false);
+                              setSelectedCheckbox2("");
+                              setParametroModal("");
+                            }}
+                          >
+                            Salir
+                          </Button>
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              searcher(selectedCheckbox2);
                               setModalShowFiltros2(false);
                               setParametroModal("");
-                              setSelectedCheckbox("");
+                              setTituloParametroModal("");
                               setSelectedCheckbox2("");
                             }}
                           >
-                            <Modal.Title>
-                              <h3 style={{ fontWeight: "bold" }}>
-                                Filtro Seleccionado :{" "}
-                              </h3>
-                              <h6>{tituloParametroModal}</h6>
-                            </Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <div>
-                              {tratamientos
-                                .map((tratamiento) => tratamiento[parametroModal])
-                                .filter(
-                                  (valor, index, self) =>
-                                    self.indexOf(valor) === index &&
-                                    valor !== "" &&
-                                    valor !== undefined &&
-                                    valor !== null
-                                )
-                                .map((parametroModal, index) => (
-                                  <label className="checkbox-label" key={index}>
-                                    <input
-                                      type="checkbox"
-                                      name={parametroModal}
-                                      checked={
-                                        selectedCheckbox2 === parametroModal
-                                      }
-                                      onChange={handleCheckboxChange2}
-                                    />
-                                    {parametroModal}
-                                  </label>
-                                ))}
-                            </div>
-                          </Modal.Body>
-                          <Modal.Footer>
-                            <Button
-                              variant="primary"
-                              onClick={() => {
-                                setModalShowFiltros(true);
-                                handleTituloModal("");
-                                setModalShowFiltros2(false);
-                                setSelectedCheckbox("");
-                                setSelectedCheckbox2("");
-                                setParametroModal("");
-                              }}
-                            >
-                              Volver
-                            </Button>
-                            <Button
-                              variant="primary"
-                              onClick={() => {
-                                searcher(selectedCheckbox2);
-                                setModalShowFiltros2(false);
-                                setParametroModal("");
-                                setTituloParametroModal("");
-                                setSelectedCheckbox("");
-                                setSelectedCheckbox2("");
-                              }}
-                            >
-                              Aplicar Filtro
-                            </Button>
-                          </Modal.Footer>
-                        </Modal>
-                      </div>
+                            Aplicar Filtro
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
 
                       <div className="table__container">
                         <table className="table__body">
@@ -1051,12 +934,8 @@ function TratamientosEspecif(props) {
                                               ocultarTabla(tratamiento.codigo);
                                               setIdParaCobro(tratamiento.id);
                                               setCodigoCobro(tratamiento.cta);
-                                              setTrataCobro(
-                                                tratamiento.tarifasTratamientos
-                                              );
-                                              setPacienteCobro(
-                                                tratamiento.apellidoConNombre
-                                              );
+                                              setTrataCobro(tratamiento.tarifasTratamientos);
+                                              setPacienteCobro(tratamiento.apellidoConNombre);
                                               let resto = (
                                                 tratamiento.precio -
                                                 tratamiento.cobrosManuales.importeAbonado.reduce(
@@ -1112,7 +991,7 @@ function TratamientosEspecif(props) {
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                           onClick={() =>
-                                            deletetratamiento(tratamiento.id)
+                                            confirmeDelete(tratamiento.id)
                                           }
                                         >
                                           <i className="fa-solid fa-trash-can"></i>{" "}
@@ -1232,7 +1111,6 @@ function TratamientosEspecif(props) {
                                   <th>Importe abonado</th>
                                   <th>Accion</th>
                                   <th>
-                                    {!pagoFinalizado && (
                                       <button
                                         className="btn btn-secondary mx-1 btn-md"
                                         onClick={() => {
@@ -1244,7 +1122,6 @@ function TratamientosEspecif(props) {
                                       >
                                         <i className="fa-solid fa-circle-plus"></i>
                                       </button>
-                                    )}
                                   </th>
                                 </tr>
                               </thead>
@@ -1354,7 +1231,7 @@ function TratamientosEspecif(props) {
                           type="date"
                           className="form-control"
                           autoComplete="off"
-                          disabled
+                          max={hoy}
                         />
                       </div>
                     </div>

@@ -109,7 +109,7 @@ const Show = () => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 50;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -302,7 +302,7 @@ const Show = () => {
                                     <Dropdown.Item>
                                       <Link to={`/historias/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                         <i className="fa-solid fa-file-medical"></i>
-                                        Historias
+                                        Historia
                                       </Link>
                                     </Dropdown.Item>
 

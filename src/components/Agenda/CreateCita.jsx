@@ -3,6 +3,7 @@ import { collection, addDoc, onSnapshot, query, orderBy, getDocs, where, doc, ge
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import peruFlag from "../../img/peru.png"
+import 'moment/locale/es';
 import moment from "moment";
 
 function CreateCita(props) {
@@ -164,6 +165,8 @@ function CreateCita(props) {
 
   const store = async (e) => {
     e.preventDefault();
+    moment.locale('es')
+    var mesVariable = moment(fecha).format("MMMM");
 
     await addDoc(citasCollection, {
       apellidoConNombre: apellidoConNombre,
@@ -174,6 +177,7 @@ function CreateCita(props) {
       selectedCode: selectedCode,
       numero: numero,
       fecha: fecha,
+      mes: mesVariable,
       comentario: comentario,
       horaInicio: horaInicio,
       horaFin: horaFin,
