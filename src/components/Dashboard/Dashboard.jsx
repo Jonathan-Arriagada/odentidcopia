@@ -1,37 +1,22 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Navigation from '../Navigation'
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSignOutAlt, FaBell, FaBold } from "react-icons/fa";
+import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import profile from "../../img/profile.png";
 import "../../style/Main.css";
 import { AuthContext } from '../../context/AuthContext';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
+import {Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend} from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { Dropdown } from 'react-bootstrap';
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-
+import Count from './Count';
+ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
 
 function Dashboard() {
-   
+  
 const [search, setSearch] = useState("");
 const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate()
   const { currentUser, } = useContext(AuthContext);
 
@@ -110,6 +95,8 @@ const [isLoading, setIsLoading] = useState(true);
       },
     },
   };
+
+
 
   return (
     <div className="mainpage">
@@ -190,7 +177,7 @@ const [isLoading, setIsLoading] = useState(true);
             </div>
             <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario">
               <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
-              <h3 className="fs-1 ms-2 numbers">4</h3>
+              <h3 className="fs-1 ms-2 numbers"><Count/></h3>
               <h2 className="fw-bold fs-5 mt-3 ms-2">Pacientes atendidos</h2>
               <h3 className="fs-1 ms-2 numbers">21</h3>
               <h2 className="fw-bold fs-5 mt-3 ms-2">Nuevos casos de ortodoncia</h2>
