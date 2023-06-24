@@ -11,6 +11,7 @@ import { Bar } from 'react-chartjs-2';
 import { Dropdown } from 'react-bootstrap';
 import Count from './Count';
 import Ausencia from './Ausencia';
+import PacientesAtendidos from './PacientesAtendidos';
 
 ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
 
@@ -181,7 +182,7 @@ const [isLoading, setIsLoading] = useState(true);
               <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
               <h3 className="fs-1 ms-2 numbers"><Count/></h3>
               <h2 className="fw-bold fs-5 mt-3 ms-2">Pacientes atendidos</h2>
-              <h3 className="fs-1 ms-2 numbers">21</h3>
+              <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos/></h3>
               <h2 className="fw-bold fs-5 mt-3 ms-2">Nuevos casos de ortodoncia</h2>
               <h3 className="fs-1 ms-2 numbers">3</h3>
             </div>
