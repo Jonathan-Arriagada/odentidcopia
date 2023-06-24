@@ -46,7 +46,9 @@ function Tratamientos() {
   const [estadoTratamientoFiltro, setEstadoTratamientoFiltro] = useState("");
   const [estadosTratamientosOptions, setEstadosTratamientosOptions] = useState([]);
   const [estadoPagoFiltro, setEstadoPagoFiltro] = useState("");
-  const [estadoPagoOption, setEstadoPagoOption] = useState([]);
+  const [estadoPagoOptions, setEstadoPagoOptions] = useState([]);
+  const [tratamientosFiltro, setTratamientosFiltro] = useState("");
+  const [tratamientosOptions, setTratamientosOptions] = useState([]);
 
   const [modalShowFiltros2, setModalShowFiltros2] = useState(false);
   const [selectedCheckbox2, setSelectedCheckbox2] = useState("");
@@ -74,7 +76,6 @@ function Tratamientos() {
   const [importeCobro, setImporteCobro] = useState("");
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
-  const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
   const { currentUser, } = useContext(AuthContext);
   const navigate = useNavigate()
@@ -111,10 +112,16 @@ function Tratamientos() {
       setMostrarTabla(false);
       setSearch("");
       setMostrarVer(true);
+      setOcultrarFiltrosGenerales(false)
+      setTaparFiltro(false);
+      setTratamientosFiltro("")
+      setEstadoTratamientoFiltro("")
+      setEstadoPagoFiltro("")
     } else {
       setSearch(codigo);
       setMostrarTabla(true);
       setMostrarVer(false);
+      setOcultrarFiltrosGenerales(true)
     }
   };
 
@@ -158,11 +165,18 @@ function Tratamientos() {
   }, []);
 
   const getOptionsDesdeCollection = useCallback((snapshot, valueField, textField) => {
-    const options = snapshot.docs.map((doc, index) => (
-      <option key={`option-${index}`} value={doc.data()[valueField]}>
-        {doc.data()[textField]}
+    const uniqueValues = Array.from(snapshot.docs.reduce((set, doc) => {
+      const value = doc.data()[valueField];
+      set.add(value);
+      return set;
+    }, new Set()));
+
+    const options = uniqueValues.map((value, index) => (
+      <option key={`option-${index}`} value={value}>
+        {value}
       </option>
     ));
+
     return options;
   }, []);
 
@@ -181,10 +195,16 @@ function Tratamientos() {
 
     const unsubscribeEstadosPagoOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
       const options = getOptionsDesdeCollection(snapshot, 'estadoPago', 'estadoPago');
-      setEstadoPagoOption(options);
+      setEstadoPagoOptions(options);
     });
 
-    return () => { unsubscribeTratamientos(); unsubscribeEstadoTratamientos(); unsubscribeEstadoPago(); unsubscribeEstadosTrataOptions(); unsubscribeEstadosPagoOptions(); };
+
+    const unsubscribeTratamientosOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
+      const options = getOptionsDesdeCollection(snapshot, 'tarifasTratamientos', 'tarifasTratamientos');
+      setTratamientosOptions(options);
+    });
+
+    return () => { unsubscribeTratamientos(); unsubscribeEstadoTratamientos(); unsubscribeEstadoPago(); unsubscribeEstadosTrataOptions(); unsubscribeEstadosPagoOptions(); unsubscribeTratamientosOptions(); };
   }, [getTratamientos, getEstadoTratamientos, getEstadoPago, getOptionsDesdeCollection]);
 
 
@@ -296,70 +316,42 @@ function Tratamientos() {
     }
   };
 
-  var results;
-
-  if (estadoTratamientoFiltro && estadoPagoFiltro) {
-    results = tratamientos.filter((dato) => {
-      const estadoTrataMinusc = estadoTratamientoFiltro.toLowerCase()
-      const estadoPagoMinusc = estadoPagoFiltro.toLowerCase();
-      return dato.estadosTratamientos.toLowerCase() === estadoTrataMinusc && dato.estadoPago.toLowerCase() === estadoPagoMinusc;
-    });
-  } else if (estadoTratamientoFiltro && !estadoPagoFiltro) {
-    results = tratamientos.filter((dato) => dato.estadosTratamientos.toLowerCase() === estadoTratamientoFiltro.toLowerCase());
-  } else if (!estadoTratamientoFiltro && estadoPagoFiltro) {
-    results = tratamientos.filter((dato) => dato.estadoPago.toLowerCase() === estadoPagoFiltro.toLowerCase());
-  } else {
-    results = tratamientos;
-  }
-
-  if (!search) {
-    results = tratamientos;
-  } else {
-    if (typeof search === "object") {
-      results = tratamientos.filter((dato) => {
-        const fecha = moment(dato.fecha).format("YYYY-MM-DD");
-        return fecha >= search.fechaInicio && fecha <= search.fechaFin;
-      });
-    } else {
-      if (
-        search.toString().length === 10 &&
-        search.charAt(4) === "-" &&
-        search.charAt(7) === "-"
-      ) {
-        results = tratamientos.filter(
-          (dato) => dato.fecha === search.toString()
-        );
-      } else {
-        if (!isNaN(search)) {
-          results = tratamientos.filter((dato) => dato.codigo === search);
-        } else {
-          if (
-            filtroBusqueda &&
-            tratamientos.some(
-              (tratamiento) =>
-                tratamiento[filtroBusqueda]?.includes(search) &&
-                tratamiento[filtroBusqueda] !== "" &&
-                tratamiento[filtroBusqueda] !== undefined &&
-                tratamiento[filtroBusqueda] !== null
-            )
-          ) {
-            results = tratamientos.filter(
-              (dato) =>
-                dato[filtroBusqueda]?.includes(search) &&
-                dato[filtroBusqueda] !== "" &&
-                dato[filtroBusqueda] !== undefined &&
-                dato[filtroBusqueda] !== null
-            );
-          } else {
-            results = tratamientos.filter(
-              (dato) =>
-                dato.apellidoConNombre.toLowerCase().includes(search)
-            );
-          }
-        }
-      }
+  var results = tratamientos.filter((dato) => {
+    if (estadoTratamientoFiltro && dato.estadosTratamientos.toLowerCase() !== estadoTratamientoFiltro.toLowerCase()) {
+      return false;
     }
-  }
+
+    if (estadoPagoFiltro && dato.estadoPago.toLowerCase() !== estadoPagoFiltro.toLowerCase()) {
+      return false;
+    }
+
+    if (tratamientosFiltro && dato.tarifasTratamientos.toLowerCase() !== tratamientosFiltro.toLowerCase()) {
+      return false;
+    }
+
+    if (!search) {
+      return true;
+    }
+
+    if (typeof search === "object") {
+      const fecha = moment(dato.fecha).format("YYYY-MM-DD");
+      return fecha >= search.fechaInicio && fecha <= search.fechaFin;
+    }
+
+    if (search.toString().length === 10 && search.charAt(4) === "-" && search.charAt(7) === "-") {
+      return dato.fecha === search.toString();
+    }
+
+    if (!isNaN(search)) {
+      return dato.codigo === search;
+    }
+
+    if (filtroBusqueda && dato[filtroBusqueda]?.includes(search)) {
+      return dato[filtroBusqueda] !== "" && dato[filtroBusqueda] !== undefined && dato[filtroBusqueda] !== null;
+    }
+
+    return dato.apellidoConNombre.toLowerCase().includes(search);
+  });
 
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;
@@ -377,12 +369,12 @@ function Tratamientos() {
   /*function renderDateDiff(date1) {
     SOLO EN TABLA
     <td> {renderDateDiff(tratamiento.fecha)} </td>
-
+  
     const diff = moment().diff(moment(date1), "years months days");
     const years = moment.duration(diff).years();
     const months = moment.duration(diff).months();
     const days = moment.duration(diff).days();
-
+  
     return `${years}    .    ${months}    .    ${days} `;
   }*/
 
@@ -485,15 +477,6 @@ function Tratamientos() {
       })
     }
   };
-
-  useEffect(() => {
-    if (restoCobro === 0 || restoCobro < 0) {
-      setPagoFinalizado(true);
-    } else {
-      setPagoFinalizado(false);
-    }
-  }, [restoCobro]);
-
 
   const editarCobro = async (e) => {
     e.preventDefault();
@@ -692,7 +675,7 @@ function Tratamientos() {
                   <i className="fa-solid fa-magnifying-glass"></i>
                   {taparFiltro && (
                     <input
-                      className="form-control m-2 w-25"
+                      className="form-control m-2 w-45"
                       value="<-FILTRO ENTRE FECHAS APLICADO->"
                       style={{
                         position: "absolute",
@@ -810,8 +793,10 @@ function Tratamientos() {
                         </div>
                       )}
                     </div>
+                  </div>
 
-                    {!ocultrarFiltrosGenerales && (<div className="col d-flex justify-content-end align-items-center">
+                  {!ocultrarFiltrosGenerales && (<div className="row" style={{ marginTop: "20px" }}>
+                    <div className="col d-flex justify-content-start align-items-center">
                       <div className="mb-3 m-1">
                         <select
                           className="form-control-doctor"
@@ -851,12 +836,24 @@ function Tratamientos() {
 
                       <div className="mb-3 m-1">
                         <select
+                          value={tratamientosFiltro}
+                          onChange={(e) => setTratamientosFiltro(e.target.value)}
+                          className="form-control-doctor"
+                          multiple={false}
+                        >
+                          <option value="">Todos los Tratamientos</option>
+                          {tratamientosOptions}
+                        </select>
+                      </div>
+
+                      <div className="mb-3 m-1">
+                        <select
                           value={estadoTratamientoFiltro}
                           onChange={(e) => setEstadoTratamientoFiltro(e.target.value)}
                           className="form-control-doctor"
                           multiple={false}
                         >
-                          <option value="">Todos los Estados</option>
+                          <option value="">Todos los Estados Tratamientos</option>
                           {estadosTratamientosOptions}
                         </select>
                       </div>
@@ -869,11 +866,11 @@ function Tratamientos() {
                           multiple={false}
                         >
                           <option value="">Todos los Estados Pago</option>
-                          {estadoPagoOption}
+                          {estadoPagoOptions}
                         </select>
                       </div>
-                    </div>)}
-                  </div>
+                    </div>
+                  </div>)}
 
                   <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); }}>
                     <Modal.Header closeButton onClick={() => {
@@ -990,21 +987,19 @@ function Tratamientos() {
                     </Modal.Footer>
                   </Modal>
 
-
                   <div className="table__container">
                     <table className="table__body">
                       <thead>
                         <tr>
                           <th>N°</th>
-                          <th onClick={() => sorting("apellidoConNombre")} style={{ textAlign: "left" }}>
-                            Apellido y Nombres
-                          </th>
-                          <th onClick={() => sorting("idc")}>IDC</th>
                           <th onClick={() => sorting("tarifasTratamientos")}>
                             Tratamiento
                           </th>
                           <th onClick={() => sorting("pieza")}>Pieza</th>
+                          <th onClick={() => sorting("precio")}>Precio</th>
+                          <th onClick={() => sorting("formaPago")}>Forma Pago</th>
                           <th onClick={() => sorting("fecha")}>Fecha</th>
+                          <th onClick={() => sorting("fechaVencimiento")}>Fecha Vto</th>
                           <th onClick={() => sorting("estadoPago")}>Estado Pago</th>
                           <th onClick={() => sorting("estadosTratamientos")}>
                             Estado Tratamiento
@@ -1017,12 +1012,16 @@ function Tratamientos() {
                         {resultsPaginados.map((tratamiento, index) => (
                           <tr key={tratamiento.id}>
                             <td id="colIzquierda">{resultsPaginados.length - index}</td>
-                            <td style={{ textAlign: "left" }}> {tratamiento.apellidoConNombre} </td>
-                            <td> {tratamiento.idc} </td>
                             <td> {tratamiento.tarifasTratamientos} </td>
                             <td> {tratamiento.pieza} </td>
+                            <td> {tratamiento.precio} </td>
+                            <td> {tratamiento.formaPago} </td>
                             <td>{moment(tratamiento.fecha).format("DD/MM/YY")}</td>
-                            <td>
+                            <td>{tratamiento.fechaVencimiento !== '' && (
+                              moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
+                            )}
+                            </td>
+                            <td className="colDerecha">
                               <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                 {tratamiento.estadoPago || ""}
                                 {tratamiento.estadoPago && (
@@ -1030,11 +1029,12 @@ function Tratamientos() {
                                     style={buscarEstilosPago(tratamiento.estadoPago)}
                                     className="color-preview justify-content-center align-items-center"
                                   ></p>
-                                )}
 
+                                )}
                               </div>
                             </td>
-                            <td style={{ display: "flex", paddingBottom: "auto" }}>
+
+                            <td>
                               <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                 {tratamiento.estadosTratamientos || ""}
                                 {tratamiento.estadosTratamientos && (
@@ -1050,7 +1050,7 @@ function Tratamientos() {
                               </div>
                             </td>
 
-                            <td id="columnaAccion" className="colDerecha">
+                            <td id="columnaAccion">
                               <Dropdown>
                                 <Dropdown.Toggle
                                   variant="primary"
@@ -1079,7 +1079,7 @@ function Tratamientos() {
                                               0
                                             )
                                           );
-                                          setRestoCobro(resto)
+                                          setRestoCobro(resto);
                                           actualizarDatosConRestoCobro(tratamiento.id, resto)
                                         }}
                                       >
@@ -1214,46 +1214,7 @@ function Tratamientos() {
                       </Modal.Body>
                     </Modal>
                   )}
-
-                  {mostrarTabla && (
-                    <div style={{ marginTop: "30px" }}>
-                      <h4 style={{ textAlign: "left" }}>Pagos - Gestión Auto</h4>
-                      <div className="table__container">
-                        <table className="table__body">
-                          <thead>
-                            <tr>
-                              <th>Cta</th>
-                              <th>Forma Pago</th>
-                              <th>Precio/Total</th>
-                              <th>Fecha Vto</th>
-                              <th>Estado Pago</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {resultsPaginados.map((tratamiento) => (
-                              <tr key={tratamiento.id}>
-                                <td> {tratamiento.cta} </td>
-                                <td> {tratamiento.formaPago} </td>
-                                <td>{tratamiento.precio}</td>
-                                <td>{tratamiento.fechaVencimiento !== '' && (
-                                  moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
-                                )}
-                                </td>
-                                <td style={{ display: "flex" }}>
-                                  <span style={{ marginRight: "5px" }}>
-                                    {tratamiento.estadoPago}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
+                  <br></br>
                   {mostrarTabla && (
                     <div style={{ marginTop: "30px" }}>
                       <div
@@ -1264,7 +1225,7 @@ function Tratamientos() {
                         }}
                       >
                         <h4 style={{ textAlign: "left", marginRight: "10px" }}>
-                          Cobros - Gestión Manual
+                          Pagos
                         </h4>
                         <h4>Saldo Restante: {restoCobro}</h4>
                       </div>
@@ -1279,19 +1240,17 @@ function Tratamientos() {
                               <th>Importe abonado</th>
                               <th>Accion</th>
                               <th>
-                                {!pagoFinalizado && (
-                                  <button
-                                    className="btn btn-secondary mx-1 btn-md"
-                                    onClick={() => {
-                                      setMostrarModalAgregarCobro([
-                                        true,
-                                        idParaCobro,
-                                      ]);
-                                    }}
-                                  >
-                                    <i className="fa-solid fa-circle-plus"></i>
-                                  </button>
-                                )}
+                                <button
+                                  className="btn btn-secondary mx-1 btn-md"
+                                  onClick={() => {
+                                    setMostrarModalAgregarCobro([
+                                      true,
+                                      idParaCobro,
+                                    ]);
+                                  }}
+                                >
+                                  <i className="fa-solid fa-circle-plus"></i>
+                                </button>
                               </th>
                             </tr>
                           </thead>
@@ -1300,8 +1259,8 @@ function Tratamientos() {
                             {resultsPaginados.map((tratamiento) => (
                               tratamiento.cobrosManuales.fechaCobro.map((_, index) => {
                                 const fecha = tratamiento.cobrosManuales.fechaCobro[index] || "";
-                                const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
                                 const importe = tratamiento.cobrosManuales.importeAbonado[index] || "";
+                                const nroComprobante = tratamiento.cobrosManuales.nroComprobanteCobro[index] || "";
 
                                 return (
                                   <tr key={index}>

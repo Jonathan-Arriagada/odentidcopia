@@ -302,7 +302,7 @@ const Show = () => {
                                     <Dropdown.Item>
                                       <Link to={`/historias/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                         <i className="fa-solid fa-file-medical"></i>
-                                        Historias
+                                        Historia
                                       </Link>
                                     </Dropdown.Item>
 

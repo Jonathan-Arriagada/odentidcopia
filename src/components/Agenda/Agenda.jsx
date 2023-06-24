@@ -733,7 +733,7 @@ function Citas() {
                                     <Dropdown.Item>
                                       <Link to={`/historias/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
                                         <i className="fa-solid fa-file-medical"></i>
-                                        Historias
+                                        Historia
                                       </Link>
                                     </Dropdown.Item>
 

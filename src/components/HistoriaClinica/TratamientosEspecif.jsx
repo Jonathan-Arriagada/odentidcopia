@@ -62,7 +62,6 @@ function TratamientosEspecif(props) {
   const [importeCobro, setImporteCobro] = useState("");
   const [idParaCobro, setIdParaCobro] = useState("");
   const [restoCobro, setRestoCobro] = useState("");
-  const [pagoFinalizado, setPagoFinalizado] = useState(false);
   const [mostrarModalAgregarCobro, setMostrarModalAgregarCobro] = useState(false);
   const [modalShowCrearControl, setModalShowCrearControl] = useState(false);
 
@@ -70,7 +69,9 @@ function TratamientosEspecif(props) {
   const [estadoTratamientoFiltro, setEstadoTratamientoFiltro] = useState("");
   const [estadosTratamientosOptions, setEstadosTratamientosOptions] = useState([]);
   const [estadoPagoFiltro, setEstadoPagoFiltro] = useState("");
-  const [estadoPagoOption, setEstadoPagoOption] = useState([]);
+  const [estadoPagoOptions, setEstadoPagoOptions] = useState([]);
+  const [tratamientosFiltro, setTratamientosFiltro] = useState("");
+  const [tratamientosOptions, setTratamientosOptions] = useState([]);
 
   const estadosTratamientoCollectiona = collection(db, "estadosTratamientos");
   const estadosTratamientoCollection = useRef(query(estadosTratamientoCollectiona));
@@ -83,10 +84,16 @@ function TratamientosEspecif(props) {
       setMostrarTabla(false);
       setSearch("");
       setMostrarVer(true);
+      setOcultrarFiltrosGenerales(false)
+      setTaparFiltro(false);
+      setTratamientosFiltro("")
+      setEstadoTratamientoFiltro("")
+      setEstadoPagoFiltro("")
     } else {
       setSearch(codigo);
       setMostrarTabla(true);
       setMostrarVer(false);
+      setOcultrarFiltrosGenerales(true)
     }
   };
 
@@ -137,11 +144,18 @@ function TratamientosEspecif(props) {
   }, []);
 
   const getOptionsDesdeCollection = useCallback((snapshot, valueField, textField) => {
-    const options = snapshot.docs.map((doc, index) => (
-      <option key={`option-${index}`} value={doc.data()[valueField]}>
-        {doc.data()[textField]}
+    const uniqueValues = Array.from(snapshot.docs.reduce((set, doc) => {
+      const value = doc.data()[valueField];
+      set.add(value);
+      return set;
+    }, new Set()));
+
+    const options = uniqueValues.map((value, index) => (
+      <option key={`option-${index}`} value={value}>
+        {value}
       </option>
     ));
+
     return options;
   }, []);
 
@@ -156,10 +170,16 @@ function TratamientosEspecif(props) {
 
     const unsubscribeEstadosPagoOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
       const options = getOptionsDesdeCollection(snapshot, 'estadoPago', 'estadoPago');
-      setEstadoPagoOption(options);
+      setEstadoPagoOptions(options);
     });
 
-    return () => { unsubscribeTratamientos(); unsubscribeEstadoTratamientos(); unsubscribeEstadoPago(); unsubscribeEstadosTrataOptions(); unsubscribeEstadosPagoOptions(); };
+
+    const unsubscribeTratamientosOptions = onSnapshot(tratamientosCollection.current, (snapshot) => {
+      const options = getOptionsDesdeCollection(snapshot, 'tarifasTratamientos', 'tarifasTratamientos');
+      setTratamientosOptions(options);
+    });
+
+    return () => { unsubscribeTratamientos(); unsubscribeEstadoTratamientos(); unsubscribeEstadoPago(); unsubscribeEstadosTrataOptions(); unsubscribeEstadosPagoOptions(); unsubscribeTratamientosOptions(); };
   }, [getTratamientos, getEstadoTratamientos, getEstadoPago, getOptionsDesdeCollection]);
 
 
@@ -201,6 +221,29 @@ function TratamientosEspecif(props) {
       prevTratamientos.filter((tratamiento) => tratamiento.id !== id)
     );
   };
+
+  const confirmeDelete = (id) => {
+    Swal.fire({
+      title: '¿Esta seguro?',
+      text: "No podra revertir la accion",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#00C5C1',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deletetratamiento(id)
+        Swal.fire({
+          title: '¡Borrado!',
+          text: 'El tratamiento ha sido borrado.',
+          icon: 'success',
+          confirmButtonColor: '#00C5C1'
+        });
+      }
+    })
+  }
 
   const searcher = (e) => {
     if (typeof e === "string") {
@@ -248,70 +291,43 @@ function TratamientosEspecif(props) {
   };
 
 
-  var results;
-
-  if (estadoTratamientoFiltro && estadoPagoFiltro) {
-    results = tratamientos.filter((dato) => {
-      const estadoTrataMinusc = estadoTratamientoFiltro.toLowerCase()
-      const estadoPagoMinusc = estadoPagoFiltro.toLowerCase();
-      return dato.estadosTratamientos.toLowerCase() === estadoTrataMinusc && dato.estadoPago.toLowerCase() === estadoPagoMinusc;
-    });
-  } else if (estadoTratamientoFiltro && !estadoPagoFiltro) {
-    results = tratamientos.filter((dato) => dato.estadosTratamientos.toLowerCase() === estadoTratamientoFiltro.toLowerCase());
-  } else if (!estadoTratamientoFiltro && estadoPagoFiltro) {
-    results = tratamientos.filter((dato) => dato.estadoPago.toLowerCase() === estadoPagoFiltro.toLowerCase());
-  } else {
-    results = tratamientos;
-  }
-
-  if (!search) {
-    results = tratamientos;
-  } else {
-    if (typeof search === "object") {
-      results = tratamientos.filter((dato) => {
-        const fecha = moment(dato.fecha).format("YYYY-MM-DD");
-        return fecha >= search.fechaInicio && fecha <= search.fechaFin;
-      });
-    } else {
-      if (
-        search.toString().length === 10 &&
-        search.charAt(4) === "-" &&
-        search.charAt(7) === "-"
-      ) {
-        results = tratamientos.filter(
-          (dato) => dato.fecha === search.toString()
-        );
-      } else {
-        if (!isNaN(search)) {
-          results = tratamientos.filter((dato) => dato.codigo === search);
-        } else {
-          if (
-            filtroBusqueda &&
-            tratamientos.some(
-              (tratamiento) =>
-                tratamiento[filtroBusqueda]?.includes(search) &&
-                tratamiento[filtroBusqueda] !== "" &&
-                tratamiento[filtroBusqueda] !== undefined &&
-                tratamiento[filtroBusqueda] !== null
-            )
-          ) {
-            results = tratamientos.filter(
-              (dato) =>
-                dato[filtroBusqueda]?.includes(search) &&
-                dato[filtroBusqueda] !== "" &&
-                dato[filtroBusqueda] !== undefined &&
-                dato[filtroBusqueda] !== null
-            );
-          } else {
-            results = tratamientos.filter(
-              (dato) =>
-                dato.apellidoConNombre.toLowerCase().includes(search)
-            );
-          }
-        }
-      }
+  var results = tratamientos.filter((dato) => {
+    if (estadoTratamientoFiltro && dato.estadosTratamientos.toLowerCase() !== estadoTratamientoFiltro.toLowerCase()) {
+      return false;
     }
-  }
+
+    if (estadoPagoFiltro && dato.estadoPago.toLowerCase() !== estadoPagoFiltro.toLowerCase()) {
+      return false;
+    }
+
+    if (tratamientosFiltro && dato.tarifasTratamientos.toLowerCase() !== tratamientosFiltro.toLowerCase()) {
+      return false;
+    }
+
+    if (!search) {
+      return true;
+    }
+
+    if (typeof search === "object") {
+      const fecha = moment(dato.fecha).format("YYYY-MM-DD");
+      return fecha >= search.fechaInicio && fecha <= search.fechaFin;
+    }
+
+    if (search.toString().length === 10 && search.charAt(4) === "-" && search.charAt(7) === "-") {
+      return dato.fecha === search.toString();
+    }
+
+    if (!isNaN(search)) {
+      return dato.codigo === search;
+    }
+
+    if (filtroBusqueda && dato[filtroBusqueda]?.includes(search)) {
+      return dato[filtroBusqueda] !== "" && dato[filtroBusqueda] !== undefined && dato[filtroBusqueda] !== null;
+    }
+
+    return dato.apellidoConNombre.toLowerCase().includes(search);
+  });
+
 
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;
@@ -416,14 +432,6 @@ function TratamientosEspecif(props) {
       })
     }
   };
-
-  useEffect(() => {
-    if (restoCobro === 0) {
-      setPagoFinalizado(true);
-    } else {
-      setPagoFinalizado(false);
-    }
-  }, [restoCobro]);
 
   const editarCobro = async (e) => {
     e.preventDefault();
@@ -650,8 +658,10 @@ function TratamientosEspecif(props) {
                             Nuevo
                           </button>
                         </div>
+                      </div>
 
-                        {!ocultrarFiltrosGenerales && (<div className="col d-flex justify-content-end align-items-center">
+                      {!ocultrarFiltrosGenerales && (<div className="row" style={{ marginTop: "20px" }}>
+                        <div className="col d-flex justify-content-start align-items-center">
                           <div className="mb-3 m-1">
                             <select
                               className="form-control-doctor"
@@ -691,12 +701,24 @@ function TratamientosEspecif(props) {
 
                           <div className="mb-3 m-1">
                             <select
+                              value={tratamientosFiltro}
+                              onChange={(e) => setTratamientosFiltro(e.target.value)}
+                              className="form-control-doctor"
+                              multiple={false}
+                            >
+                              <option value="">Todos los Tratamientos</option>
+                              {tratamientosOptions}
+                            </select>
+                          </div>
+
+                          <div className="mb-3 m-1">
+                            <select
                               value={estadoTratamientoFiltro}
                               onChange={(e) => setEstadoTratamientoFiltro(e.target.value)}
                               className="form-control-doctor"
                               multiple={false}
                             >
-                              <option value="">Todos los Estados</option>
+                              <option value="">Todos los Estados Tratamientos</option>
                               {estadosTratamientosOptions}
                             </select>
                           </div>
@@ -709,11 +731,11 @@ function TratamientosEspecif(props) {
                               multiple={false}
                             >
                               <option value="">Todos los Estados Pago</option>
-                              {estadoPagoOption}
+                              {estadoPagoOptions}
                             </select>
                           </div>
-                        </div>)}
-                      </div>
+                        </div>
+                      </div>)}
 
                       <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); }}>
                         <Modal.Header closeButton onClick={() => {
@@ -969,7 +991,7 @@ function TratamientosEspecif(props) {
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                           onClick={() =>
-                                            deletetratamiento(tratamiento.id)
+                                            confirmeDelete(tratamiento.id)
                                           }
                                         >
                                           <i className="fa-solid fa-trash-can"></i>{" "}
@@ -1089,7 +1111,6 @@ function TratamientosEspecif(props) {
                                   <th>Importe abonado</th>
                                   <th>Accion</th>
                                   <th>
-                                    {!pagoFinalizado && (
                                       <button
                                         className="btn btn-secondary mx-1 btn-md"
                                         onClick={() => {
@@ -1101,7 +1122,6 @@ function TratamientosEspecif(props) {
                                       >
                                         <i className="fa-solid fa-circle-plus"></i>
                                       </button>
-                                    )}
                                   </th>
                                 </tr>
                               </thead>

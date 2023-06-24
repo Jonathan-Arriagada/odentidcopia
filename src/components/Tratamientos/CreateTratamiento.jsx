@@ -56,7 +56,7 @@ function CreateTratamiento(props) {
 
   const updateOptionsTarifasTratamientos = useCallback(snapshot => {
     const options2 = snapshot.docs.map(doc => (
-      <option key={`tarifasTratamientos-${doc.id}`} value={doc.tarifasTratamientos}>{doc.data().tratamiento}</option>
+      <option key={`tarifasTratamientos-${doc.id}`} value={doc.data().tratamiento}>{doc.data().tratamiento}</option>
     ));
     setOptionsTarifasTratamientos(options2);
   }, []);
