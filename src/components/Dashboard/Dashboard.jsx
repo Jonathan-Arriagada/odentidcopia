@@ -13,6 +13,7 @@ import Count from './Count';
 import Ausencia from './Ausencia';
 import PacientesAtendidos from './PacientesAtendidos';
 import CasosOrtodoncia from './CasosOrtodoncia';
+import TotalTratamientos from './TotalTratamientos';
 
 ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
 
@@ -205,7 +206,7 @@ const [isLoading, setIsLoading] = useState(true);
               <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
               <h3 className="fs-1 numbers">5</h3>
               <h2 className="fw-bold fs-6">Ingresos por tratamiento</h2>
-              <h3 className="fs-1 numbers">$900</h3>
+              <h3 className="fs-1 numbers"><TotalTratamientos/></h3>
             </div>
             <div className="col-3 ms-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
