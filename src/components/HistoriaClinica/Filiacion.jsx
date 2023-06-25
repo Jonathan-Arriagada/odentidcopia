@@ -309,7 +309,7 @@ function Filiacion(id) {
                       required
                     >
                       <option value="" disabled>
-                        Selecciona un genero
+                        Selecciona genero:
                       </option>
                       <option value="M">Masculino</option>
                       <option value="F">Femenino</option>
@@ -392,7 +392,7 @@ function Filiacion(id) {
                       }}
                       className="form-control-tipoIDC me-1 w-40"
                       type="text"
-                      style={{ width: "fit-content" }}
+                      style={{ width: "40%" }}
                       placeholder="Cod. Area"
                       required
                     />

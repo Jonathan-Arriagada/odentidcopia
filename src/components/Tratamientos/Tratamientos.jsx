@@ -848,6 +848,18 @@ function Tratamientos() {
 
                       <div className="mb-3 m-1">
                         <select
+                          value={estadoPagoFiltro}
+                          onChange={(e) => setEstadoPagoFiltro(e.target.value)}
+                          className="form-control-doctor"
+                          multiple={false}
+                        >
+                          <option value="">Todos los Estados Pago</option>
+                          {estadoPagoOptions}
+                        </select>
+                      </div>
+                      
+                      <div className="mb-3 m-1">
+                        <select
                           value={estadoTratamientoFiltro}
                           onChange={(e) => setEstadoTratamientoFiltro(e.target.value)}
                           className="form-control-doctor"
@@ -858,17 +870,6 @@ function Tratamientos() {
                         </select>
                       </div>
 
-                      <div className="mb-3 m-1">
-                        <select
-                          value={estadoPagoFiltro}
-                          onChange={(e) => setEstadoPagoFiltro(e.target.value)}
-                          className="form-control-doctor"
-                          multiple={false}
-                        >
-                          <option value="">Todos los Estados Pago</option>
-                          {estadoPagoOptions}
-                        </select>
-                      </div>
                     </div>
                   </div>)}
 
