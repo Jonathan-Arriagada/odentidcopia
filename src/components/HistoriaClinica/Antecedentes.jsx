@@ -137,498 +137,497 @@ function Antecedentes(id) {
                         ) : (
                             <div className="w-100">
                                 <div className="container mw-100 mt-2">
-                                    <div className="row">
-                                        <div className="col">
-                                            <div className="d-flex m-2">
-                                                <div className="col-mb-3">
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            1. ¿Está siendo atendido por un médico?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta1[1]}
-                                                                onChange={() => setPregunta1((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta1[1]}
-                                                                onChange={() => setPregunta1((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                    <div className="col">
+                                        <div className="d-flex m-2">
+                                            <div className="col-mb-3">
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        1. ¿Está siendo atendido por un médico?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta1[1]}
+                                                            onChange={() => setPregunta1((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
-                                                    <input
-                                                        value={pregunta1[0]}
-                                                        onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
-                                                        type="text"
-                                                        className="form-control-check w-50 m-1"
-                                                        placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
-                                                        disabled={!pregunta1[1]}
-                                                    />
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta1[1]}
+                                                            onChange={() => setPregunta1((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
+                                                <input
+                                                    value={pregunta1[0]}
+                                                    onChange={(e) => setPregunta1((prevState) => [e.target.value, prevState[1]])}
+                                                    type="text"
+                                                    className="form-control-check w-50 m-1"
+                                                    placeholder={pregunta1[1] ? "¿Qué especialidad?" : ""}
+                                                    disabled={!pregunta1[1]}
+                                                />
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta2[1]}
-                                                                onChange={() => setPregunta2((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta2[1]}
-                                                                onChange={() => setPregunta2((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        2. ¿Esta siendo atendido por un médico psiquiatra o psicologo?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta2[1]}
+                                                            onChange={() => setPregunta2((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
-                                                    <input
-                                                        value={pregunta2[0]}
-                                                        onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
-                                                        type="text"
-                                                        className="form-control-check m-1 w-50"
-                                                        placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
-                                                        disabled={!pregunta2[1]}
-                                                    />
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta2[1]}
+                                                            onChange={() => setPregunta2((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
+                                                <input
+                                                    value={pregunta2[0]}
+                                                    onChange={(e) => setPregunta2((prevState) => [e.target.value, prevState[1]])}
+                                                    type="text"
+                                                    className="form-control-check m-1 w-50"
+                                                    placeholder={pregunta2[1] ? "¿Psiquiatra o Psicologo?" : ""}
+                                                    disabled={!pregunta2[1]}
+                                                />
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            3. ¿Está tomando algún medicamento?{" "}
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta3[1]}
-                                                                onChange={() => setPregunta3((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta3[1]}
-                                                                onChange={() => setPregunta3((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        3. ¿Está tomando algún medicamento?{" "}
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta3[1]}
+                                                            onChange={() => setPregunta3((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
-                                                    <input
-                                                        value={pregunta3[0]}
-                                                        onChange={(e) => setPregunta3((prevState) => [e.target.value, prevState[1]])}
-                                                        type="text"
-                                                        className="form-control-check m-1 w-50"
-                                                        placeholder={pregunta3[1] ? "¿Qué medicamento?" : ""}
-                                                        disabled={!pregunta3[1]}
-                                                    />
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta3[1]}
+                                                            onChange={() => setPregunta3((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
+                                                <input
+                                                    value={pregunta3[0]}
+                                                    onChange={(e) => setPregunta3((prevState) => [e.target.value, prevState[1]])}
+                                                    type="text"
+                                                    className="form-control-check m-1 w-50"
+                                                    placeholder={pregunta3[1] ? "¿Qué medicamento?" : ""}
+                                                    disabled={!pregunta3[1]}
+                                                />
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            4. ¿Es alérgico a algún medicamento?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta4[1]}
-                                                                onChange={() => setPregunta4((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta4[1]}
-                                                                onChange={() => setPregunta4((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        4. ¿Es alérgico a algún medicamento?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta4[1]}
+                                                            onChange={() => setPregunta4((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
-                                                    <input
-                                                        value={pregunta4[0]}
-                                                        onChange={(e) => setPregunta4((prevState) => [e.target.value, prevState[1]])}
-                                                        type="text"
-                                                        className="form-control-check m-1 w-50"
-                                                        placeholder={pregunta4[1] ? "¿A cuál medicamento?" : ""}
-                                                        disabled={!pregunta4[1]}
-                                                    />
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta4[1]}
+                                                            onChange={() => setPregunta4((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
+                                                <input
+                                                    value={pregunta4[0]}
+                                                    onChange={(e) => setPregunta4((prevState) => [e.target.value, prevState[1]])}
+                                                    type="text"
+                                                    className="form-control-check m-1 w-50"
+                                                    placeholder={pregunta4[1] ? "¿A cuál medicamento?" : ""}
+                                                    disabled={!pregunta4[1]}
+                                                />
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            5. ¿Ha tenido alguna reacción a la anestesia local?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta5[1]}
-                                                                onChange={() => setPregunta5((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta5[1]}
-                                                                onChange={() => setPregunta5((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        5. ¿Ha tenido alguna reacción a la anestesia local?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta5[1]}
+                                                            onChange={() => setPregunta5((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta5[1]}
+                                                            onChange={() => setPregunta5((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            6. ¿Está embarazada?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta6[1]}
-                                                                onChange={() => setPregunta6((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta6[1]}
-                                                                onChange={() => setPregunta6((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        6. ¿Está embarazada?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta6[1]}
+                                                            onChange={() => setPregunta6((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta6[1]}
+                                                            onChange={() => setPregunta6((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            7. ¿Padece o padeció hepatitis?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta7[1]}
-                                                                onChange={() => setPregunta7((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta7[1]}
-                                                                onChange={() => setPregunta7((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        7. ¿Padece o padeció hepatitis?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta7[1]}
+                                                            onChange={() => setPregunta7((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta7[1]}
+                                                            onChange={() => setPregunta7((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            8. ¿Padece o padeció enfermedades renales?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta8[1]}
-                                                                onChange={() => setPregunta8((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta8[1]}
-                                                                onChange={() => setPregunta8((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        8. ¿Padece o padeció enfermedades renales?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta8[1]}
+                                                            onChange={() => setPregunta8((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta8[1]}
+                                                            onChange={() => setPregunta8((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            9. ¿Tiene problemas del corazón?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta9[1]}
-                                                                onChange={() => setPregunta9((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta9[1]}
-                                                                onChange={() => setPregunta9((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        9. ¿Tiene problemas del corazón?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta9[1]}
+                                                            onChange={() => setPregunta9((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta9[1]}
+                                                            onChange={() => setPregunta9((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            10. ¿Padece o ha padecido cáncer?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta10[1]}
-                                                                onChange={() => setPregunta10((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta10[1]}
-                                                                onChange={() => setPregunta10((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        10. ¿Padece o ha padecido cáncer?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta10[1]}
+                                                            onChange={() => setPregunta10((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta10[1]}
+                                                            onChange={() => setPregunta10((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            11. ¿Ha tenido alguna cirugía?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta11[1]}
-                                                                onChange={() => setPregunta11((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta11[1]}
-                                                                onChange={() => setPregunta11((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        11. ¿Ha tenido alguna cirugía?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta11[1]}
+                                                            onChange={() => setPregunta11((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta11[1]}
+                                                            onChange={() => setPregunta11((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            12. ¿Es diabético?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta12[1]}
-                                                                onChange={() => setPregunta12((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta12[1]}
-                                                                onChange={() => setPregunta12((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        12. ¿Es diabético?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta12[1]}
+                                                            onChange={() => setPregunta12((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta12[1]}
+                                                            onChange={() => setPregunta12((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            13. ¿Tiene trastornos de tipo convulsivo?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta13[1]}
-                                                                onChange={() => setPregunta13((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta13[1]}
-                                                                onChange={() => setPregunta13((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        13. ¿Tiene trastornos de tipo convulsivo?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta13[1]}
+                                                            onChange={() => setPregunta13((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta13[1]}
+                                                            onChange={() => setPregunta13((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            14. ¿Lo han hospitalizado?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta14[1]}
-                                                                onChange={() => setPregunta14((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta14[1]}
-                                                                onChange={() => setPregunta14((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        14. ¿Lo han hospitalizado?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta14[1]}
+                                                            onChange={() => setPregunta14((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta14[1]}
+                                                            onChange={() => setPregunta14((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            15. ¿Ha tenido algun sangrado excesivo?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta15[1]}
-                                                                onChange={() => setPregunta15((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta15[1]}
-                                                                onChange={() => setPregunta15((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        15. ¿Ha tenido algun sangrado excesivo?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta15[1]}
+                                                            onChange={() => setPregunta15((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta15[1]}
+                                                            onChange={() => setPregunta15((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            16. ¿Tiene algun problema digestivo (úlceras o gastritis)?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta16[1]}
-                                                                onChange={() => setPregunta16((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta16[1]}
-                                                                onChange={() => setPregunta16((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        16. ¿Tiene algun problema digestivo (úlceras o gastritis)?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta16[1]}
+                                                            onChange={() => setPregunta16((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta16[1]}
+                                                            onChange={() => setPregunta16((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            17. ¿Toma anticonceptivos orales?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta17[1]}
-                                                                onChange={() => setPregunta17((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta17[1]}
-                                                                onChange={() => setPregunta17((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        17. ¿Toma anticonceptivos orales?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta17[1]}
+                                                            onChange={() => setPregunta17((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta17[1]}
+                                                            onChange={() => setPregunta17((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
 
-                                                    <label className="form-label d-flex">
-                                                        <div className="me-auto">
-                                                            18. ¿Padece alguna otra enfermedad o transtorno que no se
-                                                            mencione en esta lista y que debamos saber?
-                                                        </div>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={pregunta18[1]}
-                                                                onChange={() => setPregunta18((prevState) => [prevState[0], true])}
-                                                            />
-                                                            Sí
-                                                        </label>
-                                                        <label className="m-1">
-                                                            <input
-                                                                type="radio"
-                                                                className="m-1"
-                                                                checked={!pregunta18[1]}
-                                                                onChange={() => setPregunta18((prevState) => [prevState[0], false])}
-                                                            />
-                                                            No
-                                                        </label>
+                                                <label className="form-label d-flex">
+                                                    <div className="me-auto">
+                                                        18. ¿Padece alguna otra enfermedad o transtorno que no se
+                                                        mencione en esta lista y que debamos saber?
+                                                    </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={pregunta18[1]}
+                                                            onChange={() => setPregunta18((prevState) => [prevState[0], true])}
+                                                        />
+                                                        Sí
                                                     </label>
-                                                    <input
-                                                        value={pregunta18[0]}
-                                                        onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
-                                                        type="text"
-                                                        className="form-control-check w-50 m-1"
-                                                        placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
-                                                        disabled={!pregunta18[1]}
-                                                    />
-                                                </div>
+                                                    <label className="m-1">
+                                                        <input
+                                                            type="radio"
+                                                            className="m-1"
+                                                            checked={!pregunta18[1]}
+                                                            onChange={() => setPregunta18((prevState) => [prevState[0], false])}
+                                                        />
+                                                        No
+                                                    </label>
+                                                </label>
+                                                <input
+                                                    value={pregunta18[0]}
+                                                    onChange={(e) => setPregunta18((prevState) => [e.target.value, prevState[1]])}
+                                                    type="text"
+                                                    className="form-control-check w-50 m-1"
+                                                    placeholder={pregunta18[1] ? "¿Qué enfermedad?" : ""}
+                                                    disabled={!pregunta18[1]}
+                                                />
+
+
+                                                {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                                    <div>
+                                                        <button
+                                                            type="submit"
+                                                            className="btn button-main mt-4"
+                                                            id="boton-main"
+                                                            style={{ margin: "3px" }}
+                                                            onClick={handleActualizarClick}
+                                                        >
+                                                            Actualizar
+                                                        </button>
+                                                    </div>
+                                                ) : null}
                                             </div>
-
-                                            {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                                                <div id="botones">
-                                                    <button
-                                                        type="submit"
-                                                        className="btn button-main"
-                                                        id="boton-main"
-                                                        style={{ margin: "3px" }}
-                                                        onClick={handleActualizarClick}
-                                                    >
-                                                        Actualizar
-                                                    </button>
-                                                </div>
-                                            ) : null}
                                         </div>
                                     </div>
                                 </div>

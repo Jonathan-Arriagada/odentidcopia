@@ -992,6 +992,7 @@ function Tratamientos() {
                       <thead>
                         <tr>
                           <th>N°</th>
+                          <th>Paciente</th>
                           <th onClick={() => sorting("tarifasTratamientos")}>
                             Tratamiento
                           </th>
@@ -1012,6 +1013,7 @@ function Tratamientos() {
                         {resultsPaginados.map((tratamiento, index) => (
                           <tr key={tratamiento.id}>
                             <td id="colIzquierda">{resultsPaginados.length - index}</td>
+                            <td> {tratamiento.apellidoConNombre} </td>
                             <td> {tratamiento.tarifasTratamientos} </td>
                             <td> {tratamiento.pieza} </td>
                             <td> {tratamiento.precio} </td>
@@ -1021,7 +1023,7 @@ function Tratamientos() {
                               moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
                             )}
                             </td>
-                            <td className="colDerecha">
+                            <td>
                               <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                 {tratamiento.estadoPago || ""}
                                 {tratamiento.estadoPago && (
@@ -1050,7 +1052,7 @@ function Tratamientos() {
                               </div>
                             </td>
 
-                            <td id="columnaAccion">
+                            <td id="columnaAccion" className="colDerecha">
                               <Dropdown>
                                 <Dropdown.Toggle
                                   variant="primary"

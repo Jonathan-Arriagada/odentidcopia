@@ -211,275 +211,272 @@ function Filiacion(id) {
         ) : (
           <div className="w-100">
             <div className="container mw-100 mt-2" id="contenedorFiliacion">
-              <div className="row">
-                <div className="col">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label className="form-label">Apellido y Nombres:</label>
-                      <input
-                        value={apellidoConNombre || ""}
-                        onChange={(e) => {
-                          setApellidoConNombre(e.target.value);
-                        }}
-                        type="text"
-                        className="form-control m-1"
-                        required
-                      />
-                    </div>
+              <div className="col">
 
-                    <div className="col-md-3">
-                      <label className="form-label">IDC:</label>
-                      <div style={{ display: "flex" }}>
-                        <select
-                          value={tipoIdc}
-                          onChange={(e) => {
-                            setTipoIdc(e.target.value);
-                            setIdc("");
-                          }}
-                          className="form-control-tipoIDC m-1"
-                          multiple={false}
-                          style={{ width: "fit-content" }}
-                          required
-                        >
-                          <option value="dni">DNI</option>
-                          <option value="ce">CE</option>
-                          <option value="ruc">RUC</option>
-                          <option value="pas">PAS</option>
-                        </select>
-                        <input
-                          value={idc || ""}
-                          onChange={(e) => {
-                            setIdc(e.target.value);
-                          }}
-                          type={
-                            tipoIdc === "dni" || tipoIdc === "ruc"
-                              ? "number"
-                              : "text"
-                          }
-                          minLength={tipoIdc === "dni" ? 8 : undefined}
-                          maxLength={
-                            tipoIdc === "dni"
-                              ? 8
-                              : tipoIdc === "ruc"
-                                ? 11
-                                : tipoIdc === "ce" || tipoIdc === "pas"
-                                  ? 12
-                                  : undefined
-                          }
-                          onKeyDown={(e) => {
-                            const maxLength = e.target.maxLength;
-                            const currentValue = e.target.value;
-                            const isTabKey = e.key === "Tab";
-                            const isDeleteKey =
-                              e.key === "Delete" ||
-                              e.key === "Supr" ||
-                              e.key === "Backspace";
-                            if (
-                              maxLength &&
-                              currentValue.length >= maxLength &&
-                              !isTabKey &&
-                              !isDeleteKey
-                            ) {
-                              e.preventDefault();
-                            }
-                          }}
-                          className="form-control m-1"
-                          required
-                        />
-                      </div>
-                    </div>
+                <div className="row">
+                  <div className="col-4 mb-2">
+                    <label className="form-label">Apellido y Nombres:</label>
+                    <input
+                      value={apellidoConNombre || ""}
+                      onChange={(e) => {
+                        setApellidoConNombre(e.target.value);
+                      }}
+                      type="text"
+                      className="form-control m-1"
+                      required
+                    />
+                  </div>
 
-                    <div className="col-md-2">
-                      <label className="form-label">Edad*</label>
-                      <input
-                        value={edad || ""}
-                        type="number"
-                        className="form-control m-1"
-                        readOnly
-                      />
-                    </div>
-
-                    <div className="col-md-3" style={{width: "274px"}}>
-                      <label className="form-label">Sexo:</label>
+                  <div className="col-4 mb-2">
+                    <label className="form-label">IDC:</label>
+                    <div style={{ display: "flex" }}>
                       <select
-                        value={sexo}
-                        onChange={(e) => setSexo(e.target.value)}
+                        value={tipoIdc}
+                        onChange={(e) => {
+                          setTipoIdc(e.target.value);
+                          setIdc("");
+                        }}
+                        className="form-control-tipoIDC m-1"
                         multiple={false}
-                        className="form-control m-1"
+                        style={{ width: "fit-content" }}
                         required
                       >
-                        <option value="" disabled>
-                          Selecciona un genero
-                        </option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Femenino</option>
+                        <option value="dni">DNI</option>
+                        <option value="ce">CE</option>
+                        <option value="ruc">RUC</option>
+                        <option value="pas">PAS</option>
                       </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col mb-6">
-                    <label className="form-label">Fecha de Nacimiento:</label>
-                    <input
-                      value={fechaNacimiento || ""}
-                      onChange={handleFechaNac}
-                      type="date"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="form-label">Lugar Nacimiento:</label>
-                    <input
-                      value={lugarNacimiento || ""}
-                      onChange={(e) => setLugarNacimiento(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="form-label">Procedencia:</label>
-                    <input
-                      value={procedencia || ""}
-                      onChange={(e) => setProcedencia(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col">
-                    <label className="form-label">Direccion:</label>
-                    <input
-                      value={direccion || ""}
-                      onChange={(e) => setDireccion(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                      required
-                    />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="form-label">Ocupacion:</label>
-                    <input
-                      value={ocupacion || ""}
-                      onChange={(e) => setOcupacion(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                    />
-                  </div>
-
-                </div>
-                <div className="row">
-                  <div className="mb-3">
-                    <label className="form-label">Teléfono*</label>
-                    <div style={{ display: "flex" }}>
-                      {selectedCode === "+51" && (
-                        <img
-                          src={peruFlag}
-                          alt="Bandera de Perú"
-                          style={{ width: "45px", marginRight: "4px" }}
-                        />
-                      )}
                       <input
-                        value={selectedCode || ""}
+                        value={idc || ""}
                         onChange={(e) => {
-                          setSelectedCode(e.target.value);
+                          setIdc(e.target.value);
                         }}
-                        className="form-control-tipoIDC me-1"
-                        type="text"
-                        style={{ width: "fit-content" }}
-                        placeholder="Cod. Area"
+                        type={
+                          tipoIdc === "dni" || tipoIdc === "ruc"
+                            ? "number"
+                            : "text"
+                        }
+                        minLength={tipoIdc === "dni" ? 8 : undefined}
+                        maxLength={
+                          tipoIdc === "dni"
+                            ? 8
+                            : tipoIdc === "ruc"
+                              ? 11
+                              : tipoIdc === "ce" || tipoIdc === "pas"
+                                ? 12
+                                : undefined
+                        }
+                        onKeyDown={(e) => {
+                          const maxLength = e.target.maxLength;
+                          const currentValue = e.target.value;
+                          const isTabKey = e.key === "Tab";
+                          const isDeleteKey =
+                            e.key === "Delete" ||
+                            e.key === "Supr" ||
+                            e.key === "Backspace";
+                          if (
+                            maxLength &&
+                            currentValue.length >= maxLength &&
+                            !isTabKey &&
+                            !isDeleteKey
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
+                        className="form-control m-1"
                         required
                       />
-                      <>
-                        <input
-                          value={numero || ""}
-                          onChange={(e) => setNumero(e.target.value)}
-                          type="number"
-                          className="form-control"
-                          required
-                        />
-                      </>
                     </div>
                   </div>
-                </div>
-                <div className="row">
-                </div>
-                <br></br>
 
-                <hr />
-                <br></br>
-
-                <h4 style={{ textAlign: "left" }}> En caso de emergencia comunicarse con:</h4>
-
-                <div className="row">
-                  <div className="col-md-4">
-                    <label className="form-label">Parentesco:</label>
+                  <div className="col-2 mb-2">
+                    <label className="form-label">Edad*</label>
                     <input
-                      value={responsable || ""}
-                      onChange={(e) => setResponsable(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                    />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="form-label">Nombre:</label>
-                    <input
-                      value={nombreResponsable || ""}
-                      onChange={(e) => setNombreResponsable(e.target.value)}
-                      type="text"
-                      className="form-control m-1"
-                    />
-                  </div>
-
-                  <div className="col-md-4">
-                    <label className="form-label">Telefono:</label>
-                    <input
-                      value={telefonoResponsable || ""}
-                      onChange={(e) => setTelefonoResponsable(e.target.value)}
+                      value={edad || ""}
                       type="number"
                       className="form-control m-1"
+                      readOnly
                     />
                   </div>
-                </div>
-                {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                  <div>
-                    {!id.id ? (
-                      <div id="botones">
-                        <button
-                          type="submit"
-                          className="btn"
-                          id="boton-main"
-                          style={{ margin: "3px" }}
-                          onClick={validateFields}
-                        >
-                          Crear
-                        </button>
-                      </div>
-                    ) : (
-                      <div id="botones">
-                        <button
-                          type="submit"
-                          className="btn"
-                          id="boton-main"
-                          style={{ margin: "3px" }}
-                          onClick={handleActualizarClick}
-                        >
-                          Actualizar
-                        </button>
-                      </div>
-                    )}
+
+                  <div className="col-2 mb-2">
+                    <label className="form-label">Sexo:</label>
+                    <select
+                      value={sexo}
+                      onChange={(e) => setSexo(e.target.value)}
+                      multiple={false}
+                      className="form-control m-1"
+                      required
+                    >
+                      <option value="" disabled>
+                        Selecciona un genero
+                      </option>
+                      <option value="M">Masculino</option>
+                      <option value="F">Femenino</option>
+                    </select>
                   </div>
-                ) : null}
+                </div>
               </div>
+
+              <div className="row">
+                <div className="col-4 mb-2">
+                  <label className="form-label">Fecha de Nacimiento:</label>
+                  <input
+                    value={fechaNacimiento || ""}
+                    onChange={handleFechaNac}
+                    type="date"
+                    className="form-control m-1"
+                    required
+                  />
+                </div>
+
+                <div className="col-4 mb-2">
+                  <label className="form-label">Lugar Nacimiento:</label>
+                  <input
+                    value={lugarNacimiento || ""}
+                    onChange={(e) => setLugarNacimiento(e.target.value)}
+                    type="text"
+                    className="form-control m-1"
+                    required
+                  />
+                </div>
+
+                <div className="col-4 mb-2">
+                  <label className="form-label">Procedencia:</label>
+                  <input
+                    value={procedencia || ""}
+                    onChange={(e) => setProcedencia(e.target.value)}
+                    type="text"
+                    className="form-control m-1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-4 mb-2">
+                  <label className="form-label">Direccion:</label>
+                  <input
+                    value={direccion || ""}
+                    onChange={(e) => setDireccion(e.target.value)}
+                    type="text"
+                    className="form-control m-1"
+                    required
+                  />
+                </div>
+
+                <div className="col-4 mb-2">
+                  <label className="form-label">Ocupacion:</label>
+                  <input
+                    value={ocupacion || ""}
+                    onChange={(e) => setOcupacion(e.target.value)}
+                    type="text"
+                    className="form-control m-1"
+                  />
+                </div>
+
+                <div className="col-4 mb-2">
+                  <label className="form-label">Teléfono*</label>
+                  <div style={{ display: "flex" }}>
+                    {selectedCode === "+51" && (
+                      <img
+                        src={peruFlag}
+                        alt="Bandera de Perú"
+                        style={{ width: "45px", marginRight: "4px" }}
+                      />
+                    )}
+                    <input
+                      value={selectedCode || ""}
+                      onChange={(e) => {
+                        setSelectedCode(e.target.value);
+                      }}
+                      className="form-control-tipoIDC me-1 w-40"
+                      type="text"
+                      style={{ width: "fit-content" }}
+                      placeholder="Cod. Area"
+                      required
+                    />
+                    <>
+                      <input
+                        value={numero || ""}
+                        onChange={(e) => setNumero(e.target.value)}
+                        type="number"
+                        className="form-control"
+                        required
+                      />
+                    </>
+                  </div>
+                </div>
+
+              </div>
+              <div className="row">
+              </div>
+              <br></br>
+              <hr />
+              <br></br>
+
+              <h4 style={{ textAlign: "left" }}> En caso de emergencia comunicarse con:</h4>
+
+              <div className="row">
+                <div className="col-4 mb-2 mt-2">
+                  <label className="form-label">Parentesco:</label>
+                  <input
+                    value={responsable || ""}
+                    onChange={(e) => setResponsable(e.target.value)}
+                    type="text"
+                    className="form-control m-1"
+                  />
+                </div>
+
+                <div className="col-4 mb-2">
+                  <label className="form-label">Nombre:</label>
+                  <input
+                    value={nombreResponsable || ""}
+                    onChange={(e) => setNombreResponsable(e.target.value)}
+                    type="text"
+                    className="form-control m-1"
+                  />
+                </div>
+
+                <div className="col-4 mb-2">
+                  <label className="form-label">Telefono:</label>
+                  <input
+                    value={telefonoResponsable || ""}
+                    onChange={(e) => setTelefonoResponsable(e.target.value)}
+                    type="number"
+                    className="form-control m-1"
+                  />
+                </div>
+              </div>
+              {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                <div>
+                  {!id.id ? (
+                    <div id="botones">
+                      <button
+                        type="submit"
+                        className="btn"
+                        id="boton-main"
+                        style={{ margin: "3px" }}
+                        onClick={validateFields}
+                      >
+                        Crear
+                      </button>
+                    </div>
+                  ) : (
+                    <div id="botones">
+                      <button
+                        type="submit"
+                        className="btn"
+                        id="boton-main"
+                        style={{ margin: "3px" }}
+                        onClick={handleActualizarClick}
+                      >
+                        Actualizar
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : null}
             </div>
           </div>
         )}

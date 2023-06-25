@@ -886,7 +886,7 @@ function TratamientosEspecif(props) {
                                   moment(tratamiento.fechaVencimiento).format("DD/MM/YY")
                                 )}
                                 </td>
-                                <td className="colDerecha">
+                                <td>
                                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                                     {tratamiento.estadoPago || ""}
                                     {tratamiento.estadoPago && (
@@ -915,7 +915,7 @@ function TratamientosEspecif(props) {
                                   </div>
                                 </td>
 
-                                <td id="columnaAccion">
+                                <td id="columnaAccion" className="colDerecha">
                                   <Dropdown>
                                     <Dropdown.Toggle
                                       variant="primary"

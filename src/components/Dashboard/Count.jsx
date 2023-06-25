@@ -43,9 +43,9 @@ function Count() {
   ));
 
   return (
-  <div>
-    {Object.keys(contadorClientes).length > 0 ? mostrarContador : <span>0</span>}
-  </div>
+    <div>
+      {Object.keys(contadorClientes).length > 0 ? mostrarContador : <span>0</span>}
+    </div>
   );
 }
 

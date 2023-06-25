@@ -6,7 +6,7 @@ import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import profile from "../../img/profile.png";
 import "../../style/Main.css";
 import { AuthContext } from '../../context/AuthContext';
-import {Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { Dropdown } from 'react-bootstrap';
 import Count from './Count';
@@ -15,12 +15,12 @@ import PacientesAtendidos from './PacientesAtendidos';
 import CasosOrtodoncia from './CasosOrtodoncia';
 import TotalTratamientos from './TotalTratamientos';
 
-ChartJS.register(CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Dashboard() {
-  
-const [search, setSearch] = useState("");
-const [isLoading, setIsLoading] = useState(true);
+
+  const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate()
   const { currentUser, } = useContext(AuthContext);
@@ -120,7 +120,7 @@ const [isLoading, setIsLoading] = useState(true);
             </div>
             <div className="col d-flex justify-content-end align-items-center right-navbar">
               <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-              Hola, {currentUser.displayName}
+                Hola, {currentUser.displayName}
               </p>
               <div className="d-flex">
                 <div className="notificacion">
@@ -175,38 +175,38 @@ const [isLoading, setIsLoading] = useState(true);
             </div>
           </div>
         </nav>
-        <div className='container mt-2'>
+        <div className='container mt-2 ms-4'>
           <div className="row flex-nowrap dashboard-sup">
             <div className="col-7 pt-3 me-2 rounded-4 shadow fondo-color-primario">
               <Bar data={data} options={options}></Bar>
             </div>
             <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario">
               <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
-              <h3 className="fs-1 ms-2 numbers"><Count/></h3>
+              <h3 className="fs-1 ms-2 numbers"><Count /></h3>
               <h2 className="fw-bold fs-5 mt-2 ms-2">Pacientes atendidos</h2>
-              <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos/></h3>
+              <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos /></h3>
               <h2 className="fw-bold fs-5 mt-2 ms-2">Nuevos casos de ortodoncia</h2>
-              <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia/></h3>
+              <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia /></h3>
             </div>
           </div>
           <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
             <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
-            <h2 className="fw-bold fs-6 mt-3 ">Productividad de los dentistas</h2>
-                <h3 className="fs-1 numbers">78%</h3>
-                <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
-                <h3 className="fs-1 numbers">48%</h3>
+              <h2 className="fw-bold fs-6 mt-3 ">Productividad de los dentistas</h2>
+              <h3 className="fs-1 numbers">78%</h3>
+              <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
+              <h3 className="fs-1 numbers">48%</h3>
             </div>
             <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Satisfacción del paciente</h2>
               <h3 className="fs-1 numbers">4.2</h3>
               <h2 className="fw-bold fs-6">Cancelación / ausencia de citas</h2>
-              <h3 className="fs-1 numbers"><Ausencia/></h3>
+              <h3 className="fs-1 numbers"><Ausencia /></h3>
             </div>
             <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
               <h3 className="fs-1 numbers">5</h3>
               <h2 className="fw-bold fs-6">Ingresos por tratamiento</h2>
-              <h3 className="fs-1 numbers"><TotalTratamientos/></h3>
+              <h3 className="fs-1 numbers"><TotalTratamientos /></h3>
             </div>
             <div className="col-3 ms-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
@@ -214,9 +214,9 @@ const [isLoading, setIsLoading] = useState(true);
             </div>
           </div>
         </div>
-     </div>
-    
-</div>
+      </div>
+
+    </div>
   );
 };
 
