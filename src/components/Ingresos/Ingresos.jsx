@@ -443,7 +443,6 @@ const Ingresos = () => {
                     <thead>
                       <tr>
                         <th onClick={() => sorting("timestampCobro")}>Fecha</th>
-                        <th>TimeStamp</th>
                         <th style={{ textAlign: "left" }}>
                           Paciente
                         </th>
@@ -461,15 +460,12 @@ const Ingresos = () => {
 
                     <tbody>
                       {resultsPaginados.map((cobro, index) => (
-                        <tr key={cobro+index}>
+                        <tr key={cobro + index}>
                           <td id="colIzquierda">
                             {moment(cobro.fechaCobro).format("DD/MM/YY")}
                           </td>
-                          <td>{cobro.timestampCobro}</td>
-                          <td>{moment(cobro.timestampCobro).format()}</td>
-
                           <td style={{ textAlign: "left" }}> {cobro.pacienteCobro} </td>
-                          {/*<td style={{ textAlign: "left" }}> {cobro.tratamientoCobro} </td>*/}
+                          <td style={{ textAlign: "left" }}> {cobro.tratamientoCobro} </td>
                           <td> {cobro.nroComprobanteCobro} </td>
                           <td className="colDerecha"> {cobro.importeAbonado} </td>
                         </tr>
