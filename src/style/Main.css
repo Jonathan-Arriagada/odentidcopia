@@ -975,20 +975,6 @@ select {
   margin: 0 5px;
 }
 
-.sidebar-title .nav {
-  cursor: default !important;
-  pointer-events: none !important;
-}
-
-.sidebar-title .toggle-btn {
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.sidebar-item.open>.sidebar-title .toggle-btn {
-  transform: rotate(180deg);
-}
-
 .sidebar-content {
   padding-top: 0.25em;
   height: 0;

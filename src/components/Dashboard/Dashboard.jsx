@@ -14,6 +14,8 @@ import Ausencia from './Ausencia';
 import PacientesAtendidos from './PacientesAtendidos';
 import CasosOrtodoncia from './CasosOrtodoncia';
 import TotalTratamientos from './TotalTratamientos';
+import Reviews from './Reviews';
+import EficienciaFacturacion from './EficienciaFacturacion';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -46,15 +48,15 @@ function Dashboard() {
     });
   };
 
-  const searcher = (e) => {
-    setSearch(e.target.value);
+  const handleReviewsFetched = (fetchedReviews) => {
+    console.log(fetchedReviews);
   };
 
   const data = {
     labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     datasets: [{
-      data: [9, 14, 20, 12, 32, 15, 39, 27, 11, 18, 25, 22],
-      backgroundColor: '#47abff',
+      data: [31000, 24000, 26000, 47000, 32000, 23000, 39000, 27000, 38000, 42000, 29000, 51000],
+      backgroundColor: '#00c5c1',
     }]
   };
   const options = {
@@ -64,7 +66,7 @@ function Dashboard() {
       },
       title: {
         display: true,
-        text: 'Tratamientos por mes',
+        text: 'Ingresos por mes',
         padding: {
           top: 10,
           bottom: 30,
@@ -79,10 +81,10 @@ function Dashboard() {
     },
     scales: {
       y: {
-        min: 0,
-        max: 60,
+        min: 10000,
+        max: 60000,
         ticks: {
-          stepSize: 10,
+          stepSize: 5000,
           color: '#FFF',
         },
         grid: {
@@ -109,15 +111,6 @@ function Dashboard() {
       <div className="w-100">
         <nav className="navbar">
           <div className="d-flex justify-content-between px-2 w-100" >
-            <div className="search-bar">
-              <input
-                value={search}
-                onChange={searcher}
-                type="text"
-                placeholder="Buscar por Apellido y Nombres o IDC..."
-                className="form-control-upNav  m-2"
-              />
-            </div>
             <div className="col d-flex justify-content-end align-items-center right-navbar">
               <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
                 Hola, {currentUser.displayName}
@@ -194,11 +187,11 @@ function Dashboard() {
               <h2 className="fw-bold fs-6 mt-3 ">Productividad de los dentistas</h2>
               <h3 className="fs-1 numbers">78%</h3>
               <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
-              <h3 className="fs-1 numbers">48%</h3>
+              <h3 className="fs-1 numbers"><EficienciaFacturacion/></h3>
             </div>
             <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Satisfacción del paciente</h2>
-              <h3 className="fs-1 numbers">4.2</h3>
+              <h3 className="fs-1 numbers"><Reviews ReviewsFetched={handleReviewsFetched}/></h3>
               <h2 className="fw-bold fs-6">Cancelación / ausencia de citas</h2>
               <h3 className="fs-1 numbers"><Ausencia /></h3>
             </div>
