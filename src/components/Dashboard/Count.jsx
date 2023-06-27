@@ -24,7 +24,7 @@ function Count() {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [hoy]);
 
   const countClientesNuevosPorDia = (clientes) => {
     const contador = {};

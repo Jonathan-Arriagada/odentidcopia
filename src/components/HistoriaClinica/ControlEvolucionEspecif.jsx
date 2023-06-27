@@ -33,7 +33,7 @@ function ControlEvolucionEspecif(props) {
     const controlesArray = snapshot.docs.filter((doc) => {
       if (props.tratamiento) {
         setMostrarBuscadores(false);
-        return doc.data().codigoTratamiento === props.tratamiento.codigo;
+        return doc.data().tratamientoId === props.tratamiento.id;
       } else {
         return doc.data().idPaciente === props.id;
       }
@@ -334,7 +334,7 @@ function ControlEvolucionEspecif(props) {
                                   value={control.detalleTratamiento}
                                   disabled
                                   className="mt-2 bg-body-tertiary textarea-no-resize"
-                                  style={{ border: "0", width:"100%",wordWrap: "break-word" }}
+                                  style={{ border: "0", width: "100%", wordWrap: "break-word" }}
                                 />
                               </div>
 

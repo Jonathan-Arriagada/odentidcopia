@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import Navigation from '../Navigation'
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,13 +14,14 @@ import Ausencia from './Ausencia';
 import PacientesAtendidos from './PacientesAtendidos';
 import CasosOrtodoncia from './CasosOrtodoncia';
 import TotalTratamientos from './TotalTratamientos';
+import IngresosYRentabilidad from './IngresosYRentabilidad';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Dashboard() {
 
   const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate()
   const { currentUser, } = useContext(AuthContext);
@@ -193,6 +194,7 @@ function Dashboard() {
             <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3 ">Productividad de los dentistas</h2>
               <h3 className="fs-1 numbers">78%</h3>
+              {/*N° de Tratamientos realizados por periodos por doctor*/}
               <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
               <h3 className="fs-1 numbers">48%</h3>
             </div>
@@ -204,13 +206,15 @@ function Dashboard() {
             </div>
             <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
-              <h3 className="fs-1 numbers">5</h3>
+              <h3 className="fs-1 numbers"><IngresosYRentabilidad /></h3>
+
               <h2 className="fw-bold fs-6">Ingresos por tratamiento</h2>
               <h3 className="fs-1 numbers"><TotalTratamientos /></h3>
             </div>
             <div className="col-3 ms-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
               <h3 className="fs-1 numbers">76%</h3>
+              {/*Cantidad de pacientes existente que regresan los pacientes por periodo*/}
             </div>
           </div>
         </div>

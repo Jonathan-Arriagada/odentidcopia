@@ -857,7 +857,7 @@ function Tratamientos() {
                           {estadoPagoOptions}
                         </select>
                       </div>
-                      
+
                       <div className="mb-3 m-1">
                         <select
                           value={estadoTratamientoFiltro}
