@@ -515,7 +515,7 @@ select {
 }
 
 .dropdown-item i {
-margin-right: 6px;
+  margin-right: 6px;
 }
 
 /*ESTILOS LOGIN.CSS*/
@@ -750,11 +750,13 @@ margin-right: 6px;
   margin-left: -8px !important;
 }
 
-.search-bar input:hover {
+.search-bar input:hover,
+.search-bar select:hover {
   border: 1px solid var(--color-estilo-main);
 }
 
-.search-bar input:focus {
+.search-bar input:focus,
+.search-bar select:focus {
   outline: 1px solid var(--color-white) !important;
 }
 
@@ -1192,18 +1194,19 @@ margin-right: 6px;
 
 /* Propiedades GENERALES */
 
-.fondo-color-primario{
+.fondo-color-primario {
   background-color: var(--color-primario-normal);
-} 
+}
 
-.fuente{
+.fuente {
   font-family: 'Goldplay';
 }
-.fuente-color-primario{
+
+.fuente-color-primario {
   color: var(--color-primario-fuerte)
 }
 
-.border-hover:hover{
+.border-hover:hover {
   border: 1px solid var(--color-estilo-main);
 }
 
@@ -1213,13 +1216,13 @@ margin-right: 6px;
 
 /* DASHBOARD */
 
-.dashboard-sup{
+.dashboard-sup {
   width: 70vw;
   height: 45vh;
   animation: Entrance 1s ease 0s 1 normal forwards;
 }
 
-.dashboard-inf{
+.dashboard-inf {
   width: 70vw;
   height: 35vh;
   animation: Entrance 1s ease 0s 1 normal forwards;
@@ -1227,19 +1230,19 @@ margin-right: 6px;
 
 
 @media screen and (max-width: 1360px) and (max-height: 768px) {
-  .dashboard-sup{
+  .dashboard-sup {
     width: 75vw;
     height: 45vh;
     margin-left: 1.25rem;
   }
-  
-  .dashboard-inf{
+
+  .dashboard-inf {
     width: 75vw;
     height: 35vh;
     margin-left: 1.25rem;
   }
 }
 
-.numbers{
-  color:var(--color-light-text) !important;
+.numbers {
+  color: var(--color-light-text) !important;
 }

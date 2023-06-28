@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
 function TotalTratamientos() {
   const [totalAbonado, setTotalAbonado] = useState(0);
 
   useEffect(() => {
-    const calcularTotalAbonado = async () => {
-      
-        const tratamientosRef = collection(db, "tratamientos");
-        const tratamientosSnapshot = await getDocs(tratamientosRef);
+    const q = query(collection(db, "tratamientos"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      let total = 0;
+      snapshot.docs.forEach((doc) => {
+        const tratamiento = doc.data();
+        const cobrosManuales = tratamiento.cobrosManuales;
 
-        let total = 0;
+        if (cobrosManuales && cobrosManuales.fechaCobro) {
+          cobrosManuales.fechaCobro.forEach((_, index) => {
+            const importeAbonado = cobrosManuales.importeAbonado[index] || "";
+            const importe = Number(importeAbonado) || 0;
+            total += importe;
+          });
+        }
+      });
+      setTotalAbonado(total);
+    });
 
-        tratamientosSnapshot.forEach((doc) => {
-          const tratamiento = doc.data();
 
-          if (tratamiento.cobrosManuales && tratamiento.cobrosManuales.importeAbonado) {
-            const importeAbonado = Number(tratamiento.cobrosManuales.importeAbonado);
-            if (!isNaN(importeAbonado)) {
-              total += importeAbonado;
-            }
-          }
-        });
-        setTotalAbonado(total);        
+    return () => {
+      unsubscribe();
     };
-
-    calcularTotalAbonado();
   }, []);
 
   return (
