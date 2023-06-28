@@ -16,7 +16,7 @@ function CasosOrtodoncia() {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [hoy]);
 
   return (
     <div>

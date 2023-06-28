@@ -82,7 +82,7 @@ const Ingresos = () => {
 
       return resultadosCobros;
     });
-    const sortedCobrosArray = cobrosArray.flat().sort((a, b) => a.timestampCobro - b.timestampCobro);
+    const sortedCobrosArray = cobrosArray.flat().sort((a, b) => b.timestampCobro - a.timestampCobro);
     setCobros(sortedCobrosArray);
     setIsLoading(false);
   }, []);
@@ -460,7 +460,7 @@ const Ingresos = () => {
 
                     <tbody>
                       {resultsPaginados.map((cobro, index) => (
-                        <tr key={cobro+index}>
+                        <tr key={cobro + index}>
                           <td id="colIzquierda">
                             {moment(cobro.fechaCobro).format("DD/MM/YY")}
                           </td>

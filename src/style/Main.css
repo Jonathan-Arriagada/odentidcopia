@@ -514,6 +514,10 @@ select {
   display: block !important;
 }
 
+.dropdown-item i {
+margin-right: 6px;
+}
+
 /*ESTILOS LOGIN.CSS*/
 .login {
   display: flex;

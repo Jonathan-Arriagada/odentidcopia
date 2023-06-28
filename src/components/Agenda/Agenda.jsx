@@ -726,8 +726,8 @@ function Citas() {
                                         ]);
                                       }}
                                     >
-                                      <i className="fa-regular fa-comment"></i> Ver
-                                      Notas
+                                      <i className="fa-regular fa-comment"></i>
+                                      Ver Notas
                                     </Dropdown.Item>
 
                                     <Dropdown.Item>

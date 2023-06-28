@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useContext } from "react";
-import { collection, addDoc, getDocs, query, where, orderBy, onSnapshot, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, where, orderBy, onSnapshot, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
@@ -15,7 +15,7 @@ const CrearControlEvolucion = (props) => {
     const [fechaControlRealizado, setFechaControlRealizado] = useState('');
     const [detalleTratamiento, setDetalleTratamiento] = useState('');
     const [idPaciente, setIdPaciente] = useState('');
-    const [codigoTratamiento, setCodigoTratamiento] = useState(0);
+    const [tratamientoId, setTratamientoId] = useState(0);
     const [editable, setEditable] = useState(true);
     const [editable2, setEditable2] = useState(true);
     const [optionsPacientes, setOptionsPacientes] = useState([]);
@@ -98,11 +98,12 @@ const CrearControlEvolucion = (props) => {
 
     const store = async () => {
         await addDoc(controlesCollection, {
+            timestamp: serverTimestamp(),
             apellidoConNombre: apellidoConNombre,
             tipoIdc: tipoIdc,
             idc: idc,
             idPaciente: idPaciente,
-            codigoTratamiento: codigoTratamiento,
+            tratamientoId: tratamientoId,
             fechaControlRealizado: fechaControlRealizado,
             tratamientoControl: tratamientoControl,
             pieza: pieza,
@@ -135,7 +136,7 @@ const CrearControlEvolucion = (props) => {
                 setIdPaciente(props.tratamiento.idPaciente);
                 setTratamientoControl(props.tratamiento.tarifasTratamientos);
                 setPieza(props.tratamiento.pieza)
-                setCodigoTratamiento(props.tratamiento.codigo)
+                setTratamientoId(props.tratamiento.id)
                 setEditable(false);
                 setEditable2(false);
                 setOcultar(true);
@@ -271,7 +272,7 @@ const CrearControlEvolucion = (props) => {
 
                         {!ocultar && (<hr />)}
 
-                        <div className="row" style={{ marginTop: "-30px", justifyContent: 'center'}}>
+                        <div className="row" style={{ marginTop: "-30px", justifyContent: 'center' }}>
                             <div className="d-flex col-md-12">
                                 <label className="col-form-label me-6 w-25">Doctor:</label>
                                 <input

@@ -55,8 +55,8 @@ function IngresosEspecif(id) {
 
         return resultadosCobros;
       });
-      const sortedCobrosArray = cobrosArray.flat().sort((a, b) => a.timestampCobro - b.timestampCobro);
-      setCobros(sortedCobrosArray);
+    const sortedCobrosArray = cobrosArray.flat().sort((a, b) => a.timestampCobro - b.timestampCobro);
+    setCobros(sortedCobrosArray);
     if (cobrosArray.length === 0) {
       setNoHayIngresos(true)
     } else {

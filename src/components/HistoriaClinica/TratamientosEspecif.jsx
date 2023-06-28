@@ -713,18 +713,6 @@ function TratamientosEspecif(props) {
 
                           <div className="mb-3 m-1">
                             <select
-                              value={estadoTratamientoFiltro}
-                              onChange={(e) => setEstadoTratamientoFiltro(e.target.value)}
-                              className="form-control-doctor"
-                              multiple={false}
-                            >
-                              <option value="">Todos los Estados Tratamientos</option>
-                              {estadosTratamientosOptions}
-                            </select>
-                          </div>
-
-                          <div className="mb-3 m-1">
-                            <select
                               value={estadoPagoFiltro}
                               onChange={(e) => setEstadoPagoFiltro(e.target.value)}
                               className="form-control-doctor"
@@ -732,6 +720,18 @@ function TratamientosEspecif(props) {
                             >
                               <option value="">Todos los Estados Pago</option>
                               {estadoPagoOptions}
+                            </select>
+                          </div>
+
+                          <div className="mb-3 m-1">
+                            <select
+                              value={estadoTratamientoFiltro}
+                              onChange={(e) => setEstadoTratamientoFiltro(e.target.value)}
+                              className="form-control-doctor"
+                              multiple={false}
+                            >
+                              <option value="">Todos los Estados Tratamientos</option>
+                              {estadosTratamientosOptions}
                             </select>
                           </div>
                         </div>
@@ -1111,17 +1111,17 @@ function TratamientosEspecif(props) {
                                   <th>Importe abonado</th>
                                   <th>Accion</th>
                                   <th>
-                                      <button
-                                        className="btn btn-secondary mx-1 btn-md"
-                                        onClick={() => {
-                                          setMostrarModalAgregarCobro([
-                                            true,
-                                            idParaCobro,
-                                          ]);
-                                        }}
-                                      >
-                                        <i className="fa-solid fa-circle-plus"></i>
-                                      </button>
+                                    <button
+                                      className="btn btn-secondary mx-1 btn-md"
+                                      onClick={() => {
+                                        setMostrarModalAgregarCobro([
+                                          true,
+                                          idParaCobro,
+                                        ]);
+                                      }}
+                                    >
+                                      <i className="fa-solid fa-circle-plus"></i>
+                                    </button>
                                   </th>
                                 </tr>
                               </thead>
