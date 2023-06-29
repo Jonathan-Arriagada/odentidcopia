@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useState } from 'react'
-import Navigation from '../Navigation'
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaBell } from "react-icons/fa";
@@ -17,11 +16,15 @@ import TotalTratamientos from './TotalTratamientos';
 import Reviews from './Reviews';
 import EficienciaFacturacion from './EficienciaFacturacion';
 import IngresosYRentabilidad from './IngresosYRentabilidad';
+import moment from "moment";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Dashboard() {
-
+  //valores-fechas-Predeterminados
+  const fechaInicio = moment().startOf('day').format("YYYY-MM-DD");
+  const fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+  const [periodoFechasElegido, setPeriodoFechasElegido] = useState({ fechaInicio, fechaFin });
   //const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate()
   const { currentUser, } = useContext(AuthContext);
@@ -47,7 +50,7 @@ function Dashboard() {
   };
 
   const handleReviewsFetched = (fetchedReviews) => {
-    console.log(fetchedReviews);
+    //console.log(fetchedReviews);
   };
 
   const data = {
@@ -101,13 +104,57 @@ function Dashboard() {
     },
   };
 
+  const filtrosFechas = (param) => {
+    let fechaInicio, fechaFin;
 
+    switch (param) {
+      case "hoy":
+        fechaInicio = moment().startOf('day').format("YYYY-MM-DD");
+        fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        break;
+      case "ayer":
+        fechaInicio = moment().subtract(1, 'day').startOf('day').format("YYYY-MM-DD");
+        fechaFin = moment().subtract(1, 'day').endOf('day').format("YYYY-MM-DD");
+        break;
+      case "ultimos7":
+        fechaInicio = moment().subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        break;
+      case "ultimos28":
+        fechaInicio = moment().subtract(28, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        break;
+      case "ultimos90":
+        fechaInicio = moment().subtract(90, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        break;
+      default:
+        fechaInicio = "";
+        fechaFin = "";
+        break;
+    }
+
+    setPeriodoFechasElegido({ fechaInicio, fechaFin });
+  };
 
   return (
     
       <div className="w-100">
         <nav className="navbar">
           <div className="d-flex justify-content-between px-2 w-100" >
+            <div className="search-bar col-2 m-1">
+              <select
+                className="form-control-doctor"
+                multiple={false}
+                onChange={(e) => filtrosFechas(e.target.value)}
+              >
+                <option value="hoy">Hoy</option>
+                <option value="ayer">Ayer</option>
+                <option value="ultimos7">Ultimos 7 días</option>
+                <option value="ultimos28">Ultimos 28 días</option>
+                <option value="ultimos90">Ultimos 90 días</option>
+              </select>
+            </div>
             <div className="col d-flex justify-content-end align-items-center right-navbar">
               <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
                 Hola, {currentUser.displayName}
@@ -185,11 +232,11 @@ function Dashboard() {
               <h3 className="fs-1 numbers">78%</h3>
               {/*N° de Tratamientos realizados por periodos por doctor*/}
               <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
-              <h3 className="fs-1 numbers"><EficienciaFacturacion/></h3>
+              <h3 className="fs-1 numbers"><EficienciaFacturacion /></h3>
             </div>
             <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               <h2 className="fw-bold fs-6 mt-3">Satisfacción del paciente</h2>
-              <h3 className="fs-1 numbers"><Reviews ReviewsFetched={handleReviewsFetched}/></h3>
+              <h3 className="fs-1 numbers"><Reviews ReviewsFetched={handleReviewsFetched} /></h3>
               <h2 className="fw-bold fs-6">Cancelación / ausencia de citas</h2>
               <h3 className="fs-1 numbers"><Ausencia /></h3>
             </div>

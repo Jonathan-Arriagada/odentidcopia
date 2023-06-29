@@ -136,8 +136,9 @@ function CreateTratamiento(props) {
     e.preventDefault();
     moment.locale('es')
     var mesVariable = moment(fecha).format("MMMM");
+    var tiempoAlta = serverTimestamp();
 
-    await addDoc(tratamientosCollection, {
+    const tratamientoDocRef = await addDoc(tratamientosCollection, {
       codigo: codigo,
       apellidoConNombre: apellidoConNombre,
       idPaciente: idPaciente,
@@ -154,7 +155,7 @@ function CreateTratamiento(props) {
       mes: mesVariable,
       fechaVencimiento: fechaVencimiento,
       notas: notas,
-      timestamp: serverTimestamp(),
+      timestamp: tiempoAlta,
       cobrosManuales: {
         fechaCobro: [],
         importeAbonado: [],
@@ -166,6 +167,7 @@ function CreateTratamiento(props) {
     });
     await addDoc(controlesCollection, {
       codigoTratamiento: codigo,
+      timestamp: tiempoAlta,
       apellidoConNombre: apellidoConNombre,
       idPaciente: idPaciente,
       tipoIdc: tipoIdc,
@@ -175,6 +177,7 @@ function CreateTratamiento(props) {
       fechaControlRealizado: fecha,
       detalleTratamiento: "1° Tratamiento Iniciado: " + notas,
       doctor: currentUser.displayName,
+      tratamientoId: tratamientoDocRef.id,
     });
     clearFields();
     props.onHide();
