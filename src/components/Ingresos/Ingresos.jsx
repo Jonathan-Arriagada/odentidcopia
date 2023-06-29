@@ -1,16 +1,10 @@
-import React from "react";
-import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import moment from "moment";
 import Calendar from "react-calendar";
-import { Dropdown, Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaBell } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 import "../../style/Main.css";
-import Swal from "sweetalert2";
-import profile from "../../img/profile.png";
-import { AuthContext } from "../../context/AuthContext";
 import iconoDinero from "../../img/icono-dinero.png";
 
 const Ingresos = () => {
@@ -29,30 +23,6 @@ const Ingresos = () => {
 
   const tratamientosCollectionRef = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectionRef));
-  const navigate = useNavigate();
-  const { currentUser, } = useContext(AuthContext);
-
-
-  const logout = useCallback(() => {
-    localStorage.setItem("user", JSON.stringify(null));
-    navigate("/");
-    window.location.reload();
-  }, [navigate]);
-
-  const confirmLogout = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: '¿Desea cerrar sesión?',
-      showDenyButton: true,
-      confirmButtonText: 'Cerrar sesión',
-      confirmButtonColor: '#00C5C1',
-      denyButtonText: `Cancelar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout();
-      }
-    });
-  };
 
   const getCobros = useCallback((snapshot) => {
     const cobrosArray = snapshot.docs.map((doc) => {
@@ -203,184 +173,136 @@ const Ingresos = () => {
 
   return (
     <>
-        {isLoading ? (
-          <span className="loader position-absolute start-50 top-50 mt-3"></span>
-        ) : (
-          <div className="w-100">
-            <nav className="navbar">
-              <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-50" style={{ position: "relative" }}>
-                  <input
-                    value={search}
-                    onChange={searcher}
-                    type="text"
-                    placeholder="Buscar..."
-                    className="form-control-upNav  m-2"
-                  />
-                  <i className="fa-solid fa-magnifying-glass"></i>
+      {isLoading ? (
+        <span className="loader position-absolute start-50 top-50 mt-3"></span>
+      ) : (
+        <div className="w-100">
+          <div className="search-bar d-flex col-2 m-2 ms-3 w-50">
+            <input
+              value={search}
+              onChange={searcher}
+              type="text"
+              placeholder="Buscar..."
+              className="form-control-upNav  m-2"
+            />
+            <i className="fa-solid fa-magnifying-glass"></i>
 
-                  {taparFiltro && (
-                    <input
-                      className="form-control m-2 w-45"
-                      value="<-FILTRO ENTRE FECHAS APLICADO->"
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        zIndex: 1,
-                        textAlign: "center",
-                      }}
-                      disabled
-                    ></input>
-                  )}
-                </div>
-                <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                    Hola, {currentUser.displayName}
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
-                    </div>
-                  </div>
+            {taparFiltro && (
+              <input
+                className="form-control m-2 w-45"
+                value="<-FILTRO ENTRE FECHAS APLICADO->"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  textAlign: "center",
+                }}
+                disabled
+              ></input>
+            )}
+          </div>
 
-                  <div className="notificacion">
-                    <Dropdown>
-                      <Dropdown.Toggle
+          <div className="container mw-100">
+            <div className="col">
+              <br></br>
+              <div className="row">
+                <div className="d-grid gap-2">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="col d-flex justify-content-start align-items-center">
+                      <h1 id="tituloVentas">Ventas</h1>
+                      {!ocultarCalendario && (<button
                         variant="primary"
-                        className="btn btn-secondary mx-1 btn-md"
-                        id="dropdown-actions"
-                        style={{ background: "none", border: "none" }}
+                        className="btn greenWater without mx-1 btn-md"
+                        style={{
+                          borderRadius: "12px",
+                          justifyContent: "center",
+                          verticalAlign: "center",
+                          alignSelf: "center",
+                          height: "45px",
+                        }}
+                        onClick={() => {
+                          setMostrarBotonesFechas(!mostrarBotonesFechas);
+                          setSearch("");
+                          setTaparFiltro(false);
+                        }}
                       >
-                        <img
-                          src={currentUser.photoURL || profile}
-                          alt="profile"
-                          className="profile-picture"
-                        />
-                      </Dropdown.Toggle>
-                      <div className="dropdown__container">
-                        <Dropdown.Menu>
-                          <Dropdown.Item>
-                            <Link
-                              to="/miPerfil"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                            >
-                              <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
-                              Mi Perfil
-                            </Link>
-                          </Dropdown.Item>
-
-                          <Dropdown.Item>
-
-                            <Link
-                              to="/"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                              onClick={confirmLogout}
-                            >
-                              <FaSignOutAlt className="icono" />
-                              Cerrar Sesión
-                            </Link>
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
+                        <i
+                          className="fa-regular fa-calendar-check"
+                          style={{ transform: "scale(1.4)" }}
+                        ></i>
+                      </button>)}
+                      {mostrarBotonesFechas && (
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            verticalAlign: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <button
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            onClick={() => {
+                              filtroFecha("Dia");
+                              setTaparFiltro(false);
+                            }}
+                          >
+                            Dia
+                          </button>
+                          <button
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            onClick={() => {
+                              filtroFecha("Ultimos 7");
+                              setTaparFiltro(true);
+                            }}
+                          >
+                            Ultimos 7
+                          </button>
+                          <button
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            onClick={() => {
+                              filtroFecha("Mes");
+                              setTaparFiltro(true);
+                            }}
+                          >
+                            Mes
+                          </button>
+                          <button
+                            style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
+                            onClick={() => {
+                              setModalSeleccionFechaShow(true);
+                            }}
+                          >
+                            Seleccionar
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    <div className="col d-flex justify-content-end align-items-center">
+                      <div className="d-flex form-control-dash">
+                        <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
+                        <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalIngresos}</span></h5>
                       </div>
-                    </Dropdown>
+                    </div>
+
                   </div>
                 </div>
               </div>
-            </nav>
-            <div className="container mt-2 mw-100">
-              <div className="col">
-                <br></br>
-                <div className="row">
-                  <div className="d-grid gap-2">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="col d-flex justify-content-start align-items-center">
-                        <h1 id="tituloVentas">Ventas</h1>
-                        {!ocultarCalendario && (<button
-                          variant="primary"
-                          className="btn greenWater without mx-1 btn-md"
-                          style={{
-                            borderRadius: "12px",
-                            justifyContent: "center",
-                            verticalAlign: "center",
-                            alignSelf: "center",
-                            height: "45px",
-                          }}
-                          onClick={() => {
-                            setMostrarBotonesFechas(!mostrarBotonesFechas);
-                            setSearch("");
-                            setTaparFiltro(false);
-                          }}
-                        >
-                          <i
-                            className="fa-regular fa-calendar-check"
-                            style={{ transform: "scale(1.4)" }}
-                          ></i>
-                        </button>)}
-                        {mostrarBotonesFechas && (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              verticalAlign: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <button
-                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                              onClick={() => {
-                                filtroFecha("Dia");
-                                setTaparFiltro(false);
-                              }}
-                            >
-                              Dia
-                            </button>
-                            <button
-                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                              onClick={() => {
-                                filtroFecha("Ultimos 7");
-                                setTaparFiltro(true);
-                              }}
-                            >
-                              Ultimos 7
-                            </button>
-                            <button
-                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                              onClick={() => {
-                                filtroFecha("Mes");
-                                setTaparFiltro(true);
-                              }}
-                            >
-                              Mes
-                            </button>
-                            <button
-                              style={{ borderRadius: "7px", margin: "10px", height: "38px", }} className="without grey"
-                              onClick={() => {
-                                setModalSeleccionFechaShow(true);
-                              }}
-                            >
-                              Seleccionar
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                      <div className="col d-flex justify-content-end align-items-center">
-                        <div className="d-flex form-control-dash">
-                          <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
-                          <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalIngresos}</span></h5>
-                        </div>
-                      </div>
 
-                    </div>
-                  </div>
-                </div>
-
-                <Modal
-                  show={modalSeleccionFechaShow}
-                  onHide={() => {
+              <Modal
+                show={modalSeleccionFechaShow}
+                onHide={() => {
+                  setModalSeleccionFechaShow(false);
+                  setSelectedDate("");
+                  setTaparFiltro(false);
+                  setSearch("");
+                  setMostrarBotonesFechas(false);
+                }}
+              >
+                <Modal.Header
+                  closeButton
+                  onClick={() => {
                     setModalSeleccionFechaShow(false);
                     setSelectedDate("");
                     setTaparFiltro(false);
@@ -388,142 +310,132 @@ const Ingresos = () => {
                     setMostrarBotonesFechas(false);
                   }}
                 >
-                  <Modal.Header
-                    closeButton
+                  <Modal.Title>
+                    Seleccione una fecha para filtrar:
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Calendar
+                    defaultValue={moment().format("YYYY-MM-DD")}
+                    onChange={(date) => {
+                      const formattedDate =
+                        moment(date).format("YYYY-MM-DD");
+                      setSelectedDate(formattedDate);
+                    }}
+                    value={selectedDate}
+                  />
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="primary"
                     onClick={() => {
-                      setModalSeleccionFechaShow(false);
-                      setSelectedDate("");
+                      setSearch(selectedDate);
                       setTaparFiltro(false);
-                      setSearch("");
+                      setModalSeleccionFechaShow(false);
                       setMostrarBotonesFechas(false);
                     }}
                   >
-                    <Modal.Title>
-                      Seleccione una fecha para filtrar:
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Calendar
-                      defaultValue={moment().format("YYYY-MM-DD")}
-                      onChange={(date) => {
-                        const formattedDate =
-                          moment(date).format("YYYY-MM-DD");
-                        setSelectedDate(formattedDate);
-                      }}
-                      value={selectedDate}
-                    />
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        setSearch(selectedDate);
-                        setTaparFiltro(false);
-                        setModalSeleccionFechaShow(false);
-                        setMostrarBotonesFechas(false);
-                      }}
-                    >
-                      Buscar Fecha
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                    Buscar Fecha
+                  </Button>
+                </Modal.Footer>
+              </Modal>
 
 
-                <div className="table__container">
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th onClick={() => sorting("timestampCobro")}>Fecha</th>
-                        <th style={{ textAlign: "left" }}>
-                          Paciente
-                        </th>
-                        <th style={{ textAlign: "left" }}>
-                          Tratamiento
-                        </th>
-                        <th>
-                          Nro Comprobante
-                        </th>
-                        <th>
-                          Importe
-                        </th>
+              <div className="table__container">
+                <table className="table__body">
+                  <thead>
+                    <tr>
+                      <th onClick={() => sorting("timestampCobro")}>Fecha</th>
+                      <th style={{ textAlign: "left" }}>
+                        Paciente
+                      </th>
+                      <th style={{ textAlign: "left" }}>
+                        Tratamiento
+                      </th>
+                      <th>
+                        Nro Comprobante
+                      </th>
+                      <th>
+                        Importe
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {resultsPaginados.map((cobro, index) => (
+                      <tr key={cobro + index}>
+                        <td id="colIzquierda">
+                          {moment(cobro.fechaCobro).format("DD/MM/YY")}
+                        </td>
+                        <td style={{ textAlign: "left" }}> {cobro.pacienteCobro} </td>
+                        <td style={{ textAlign: "left" }}> {cobro.tratamientoCobro} </td>
+                        <td> {cobro.nroComprobanteCobro} </td>
+                        <td className="colDerecha"> {cobro.importeAbonado} </td>
                       </tr>
-                    </thead>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-                    <tbody>
-                      {resultsPaginados.map((cobro, index) => (
-                        <tr key={cobro + index}>
-                          <td id="colIzquierda">
-                            {moment(cobro.fechaCobro).format("DD/MM/YY")}
-                          </td>
-                          <td style={{ textAlign: "left" }}> {cobro.pacienteCobro} </td>
-                          <td style={{ textAlign: "left" }}> {cobro.tratamientoCobro} </td>
-                          <td> {cobro.nroComprobanteCobro} </td>
-                          <td className="colDerecha"> {cobro.importeAbonado} </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <div className="table__footer">
+                <div className="table__footer-left">
+                  Mostrando {startIndex + 1} - {endIndex} de {results.length}
                 </div>
 
-                <div className="table__footer">
-                  <div className="table__footer-left">
-                    Mostrando {startIndex + 1} - {endIndex} de {results.length}
-                  </div>
+                <div className="table__footer-right">
+                  <span>
+                    <button
+                      onClick={() => handleCambioPagina(paginaActual - 1)}
+                      disabled={paginaActual === 1}
+                      style={{ border: "0", background: "none" }}
+                    >
+                      &lt; Previo
+                    </button>
+                  </span>
 
-                  <div className="table__footer-right">
-                    <span>
-                      <button
-                        onClick={() => handleCambioPagina(paginaActual - 1)}
-                        disabled={paginaActual === 1}
-                        style={{ border: "0", background: "none" }}
-                      >
-                        &lt; Previo
-                      </button>
-                    </span>
-
-                    {[...Array(paginasTotales)].map((_, index) => {
-                      const pagina = index + 1;
-                      return (
-                        <span key={pagina}>
-                          <span
-                            onClick={() => handleCambioPagina(pagina)}
-                            className={pagina === paginaActual ? "active" : ""}
-                            style={{
-                              margin: "2px",
-                              backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
-                              color: pagina === paginaActual ? "#FFFFFF" : "#000000",
-                              padding: "4px 8px",
-                              borderRadius: "4px",
-                              cursor: "pointer"
-                            }}
-                          >
-                            {pagina}
-                          </span>
+                  {[...Array(paginasTotales)].map((_, index) => {
+                    const pagina = index + 1;
+                    return (
+                      <span key={pagina}>
+                        <span
+                          onClick={() => handleCambioPagina(pagina)}
+                          className={pagina === paginaActual ? "active" : ""}
+                          style={{
+                            margin: "2px",
+                            backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
+                            color: pagina === paginaActual ? "#FFFFFF" : "#000000",
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            cursor: "pointer"
+                          }}
+                        >
+                          {pagina}
                         </span>
-                      );
-                    })}
+                      </span>
+                    );
+                  })}
 
-                    <span>
-                      <button
-                        onClick={() => handleCambioPagina(paginaActual + 1)}
-                        disabled={paginaActual === paginasTotales}
-                        style={{ border: "0", background: "none" }}
-                      >
-                        Siguiente &gt;
-                      </button>
-                    </span>
-                  </div>
+                  <span>
+                    <button
+                      onClick={() => handleCambioPagina(paginaActual + 1)}
+                      disabled={paginaActual === paginasTotales}
+                      style={{ border: "0", background: "none" }}
+                    >
+                      Siguiente &gt;
+                    </button>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
     </>
   );
 };

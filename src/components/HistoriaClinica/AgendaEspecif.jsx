@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { collection, deleteDoc, doc, query, orderBy, updateDoc } from "firebase/firestore";
-import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
 import ListaSeleccionEstadoCita from "../Agenda/ListaSeleccionEstadoCita";

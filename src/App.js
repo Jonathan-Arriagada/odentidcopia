@@ -20,6 +20,7 @@ import Proveedores from "./components/Gastos/Parametros/Proveedores";
 import ControlEvolucion from "./components/ControlEvolucion/ControlEvolucion";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Navigation from "./components/Navigation"
+import UpNav from "./components/UpNav"
 
 function App() {
   const { currentUser } = useContext(AuthContext)
@@ -41,6 +42,8 @@ function App() {
     <div className="App mainpage">
       <BrowserRouter>
       <Navigation />
+      <UpNav />
+
         <Routes>
           <Route path="/" element={<Login />} />
           <Route index path="/admin" element={<RequireAuth><RequireAdmin><PanelAdmin /></RequireAdmin></RequireAuth>} />

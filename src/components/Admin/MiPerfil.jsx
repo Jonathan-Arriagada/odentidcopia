@@ -1,17 +1,12 @@
-import React, { useState, useEffect, useCallback, useContext, } from "react";
+import React, { useState, useEffect } from "react";
 import { doc, updateDoc, where, collection, getDocs, query, } from "firebase/firestore";
 import { auth, db, deslogear, } from "../../firebaseConfig/firebase";
 import { updateProfile, updateEmail, onAuthStateChanged } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
 import EditClave from "./EditClave";
-import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
 import "../../style/Main.css"
-import { AuthContext } from "../../context/AuthContext";
-import profile from "../../img/profile.png";
-import { Dropdown } from "react-bootstrap";
 
 
 const MiPerfil = () => {
@@ -31,30 +26,8 @@ const MiPerfil = () => {
   const [modalShowEditClave, setModalShowEditClave] = useState(false);
   const [, setMostrarNotificaciones] = useState(false);
   const [mostrarBotonFoto, setMostrarBotonFoto] = useState(false);
-  const { currentUser, } = useContext(AuthContext);
   const storage = getStorage();
   const navigate = useNavigate()
-
-  const logout = useCallback(() => {
-    localStorage.setItem("user", JSON.stringify(null));
-    navigate("/");
-    window.location.reload();
-  }, [navigate]);
-
-  const confirmLogout = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: '¿Desea cerrar sesión?',
-      showDenyButton: true,
-      confirmButtonText: 'Cerrar sesión',
-      confirmButtonColor: '#00C5C1',
-      denyButtonText: `Cancelar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout();
-      }
-    });
-  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, fetchUserData);
@@ -182,155 +155,93 @@ const MiPerfil = () => {
 
   return (
     <>
-        {isLoading ? (
-          <div className="w-100">
-            <span className="loader position-absolute start-50 top-50 mt-3"></span>
-          </div>
-        ) : (
-          <div className="w-100">
-            <nav className="navbar">
-              <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar w-50">
+      {isLoading ? (
+        <div className="w-100">
+          <span className="loader position-absolute start-50 top-50 mt-3"></span>
+        </div>
+      ) : (
+        <div className="w-100">
+          <div className="container mw-100">
+            <div className="d-flex">
+              <h1>Mi Perfil</h1>
+            </div>
 
-                </div>
-                <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                    Hola, {currentUser.displayName}
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
-                    </div>
-                  </div>
-
-                  <div className="notificacion">
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="primary"
-                        className="btn btn-secondary mx-1 btn-md"
-                        id="dropdown-actions"
-                        style={{ background: "none", border: "none" }}
-                      >
-                        <img
-                          src={currentUser.photoURL || profile}
-                          alt="profile"
-                          className="profile-picture"
-                        />
-                      </Dropdown.Toggle>
-                      <div className="dropdown__container">
-                        <Dropdown.Menu>
-                          <Dropdown.Item>
-                            <Link
-                              to="/miPerfil"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                            >
-                              <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
-                              Mi Perfil
-                            </Link>
-                          </Dropdown.Item>
-
-                          <Dropdown.Item>
-
-                            <Link
-                              to="/"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                              onClick={confirmLogout}
-                            >
-                              <FaSignOutAlt className="icono" />
-                              Cerrar Sesión
-                            </Link>
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </div>
-                    </Dropdown>
-                  </div>
-                </div>
-              </div>
+            <nav className="nav nav-borders">
+              <div className="nav-link active ms-0" onClick={() => { setMostrarPerfil(true); setModalShowEditClave(false); setMostrarNotificaciones(false); }} >Perfil</div>
+              <div className="nav-link" onClick={() => { setMostrarPerfil(false); setModalShowEditClave(true); setMostrarNotificaciones(false); }} >Seguridad</div>
+              <div className="nav-link" onClick={() => { setMostrarPerfil(false); setModalShowEditClave(false); notificaciones() }} >Notificaciones</div>
             </nav>
-            <div className="container-xl px-4 mt-4">
-              <div className="d-flex">
-                <h1>Mi Perfil</h1>
-              </div>
-
-              <nav className="nav nav-borders">
-                <div className="nav-link active ms-0" onClick={() => { setMostrarPerfil(true); setModalShowEditClave(false); setMostrarNotificaciones(false); }} >Perfil</div>
-                <div className="nav-link" onClick={() => { setMostrarPerfil(false); setModalShowEditClave(true); setMostrarNotificaciones(false); }} >Seguridad</div>
-                <div className="nav-link" onClick={() => { setMostrarPerfil(false); setModalShowEditClave(false); notificaciones() }} >Notificaciones</div>
-              </nav>
-              <hr className="mt-0 mb-4" />
-              <div className="row">
-                <div className="col-xl-4">
-                  <div className="card mb-4 mb-xl-0">
-                    <div className="card-header">Imagen de Perfil</div>
-                    <div className="card-body text-center">
-                      <img className="img-account-profile rounded-circle mb-2" src={foto || "http://bootdey.com/img/Content/avatar/avatar1.png"} alt="Ejemplo Imagen de Perfil" />
-                      <div className="small font-italic text-muted mb-4">JPG or PNG no mayor a 5 MB</div>
-                      <button className="btn button-main" id="custom-file-upload" onChange={handleUploadImage} type="button" style={{ margin: "1px" }}>
-                        <label>Subir archivo
-                          <input type="file" accept="image/jpeg, image/png, image/jpg" style={{ display: "none" }} /></label>
-                      </button>
-                      {mostrarBotonFoto && (<button className="btn button-main" id="custom-file-upload" onClick={subirFoto} type="button" style={{ margin: "1px" }}>
-                        Guardar foto</button>)}
-                    </div>
+            <hr className="mt-0 mb-4" />
+            <div className="row">
+              <div className="col-xl-4">
+                <div className="card mb-4 mb-xl-0">
+                  <div className="card-header">Imagen de Perfil</div>
+                  <div className="card-body text-center">
+                    <img className="img-account-profile rounded-circle mb-2" src={foto || "http://bootdey.com/img/Content/avatar/avatar1.png"} alt="Ejemplo Imagen de Perfil" />
+                    <div className="small font-italic text-muted mb-4">JPG or PNG no mayor a 5 MB</div>
+                    <button className="btn button-main" id="custom-file-upload" onChange={handleUploadImage} type="button" style={{ margin: "1px" }}>
+                      <label>Subir archivo
+                        <input type="file" accept="image/jpeg, image/png, image/jpg" style={{ display: "none" }} /></label>
+                    </button>
+                    {mostrarBotonFoto && (<button className="btn button-main" id="custom-file-upload" onClick={subirFoto} type="button" style={{ margin: "1px" }}>
+                      Guardar foto</button>)}
                   </div>
                 </div>
-                <div className="col-xl-8">
-                  <div className="card mb-4">
-                    <div className="card-header">Detalles de la Cuenta</div>
-                    <div className="card-body">
-                      <form>
-                        <div className="row gx-3 mb-3">
-                          <div className="col-md-6">
-                            <label className="small mb-1">Nombres</label>
-                            <input className="form-control" id="inputNombres" type="text" placeholder="Ingresa tus Nombres" value={nombres || ""}
-                              onChange={(e) => setNombres(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="small mb-1">Apellido</label>
-                            <input className="form-control" id="inputApellido" type="text" placeholder="Ingresa tu Apellido" value={apellido || ""}
-                              onChange={(e) => setApellido(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
-                          </div>
+              </div>
+              <div className="col-xl-8">
+                <div className="card mb-4">
+                  <div className="card-header">Detalles de la Cuenta</div>
+                  <div className="card-body">
+                    <form>
+                      <div className="row gx-3 mb-3">
+                        <div className="col-md-6">
+                          <label className="small mb-1">Nombres</label>
+                          <input className="form-control" id="inputNombres" type="text" placeholder="Ingresa tus Nombres" value={nombres || ""}
+                            onChange={(e) => setNombres(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
                         </div>
-                        <div className="row gx-3 mb-3">
-                          <div className="col-md-6">
-                            <label className="small mb-1">Correo Electronico</label>
-                            <input className="form-control" id="inputEmailAddress" type="email" placeholder="Ingresa tu Correo Electronico" value={correo}
-                              onChange={(e) => setCorreo(e.target.value.toLowerCase())} disabled={!editable} style={{ textAlign: "center" }} autoComplete="off" />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="small mb-1">Telefono</label>
-                            <input className="form-control" id="inputPhone" type="tel" placeholder="Ingresa tu Telefono" value={telefono || ""}
-                              onChange={(e) => setTelefono(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
-                          </div>
+                        <div className="col-md-6">
+                          <label className="small mb-1">Apellido</label>
+                          <input className="form-control" id="inputApellido" type="text" placeholder="Ingresa tu Apellido" value={apellido || ""}
+                            onChange={(e) => setApellido(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
                         </div>
+                      </div>
+                      <div className="row gx-3 mb-3">
+                        <div className="col-md-6">
+                          <label className="small mb-1">Correo Electronico</label>
+                          <input className="form-control" id="inputEmailAddress" type="email" placeholder="Ingresa tu Correo Electronico" value={correo}
+                            onChange={(e) => setCorreo(e.target.value.toLowerCase())} disabled={!editable} style={{ textAlign: "center" }} autoComplete="off" />
+                        </div>
+                        <div className="col-md-6">
+                          <label className="small mb-1">Telefono</label>
+                          <input className="form-control" id="inputPhone" type="tel" placeholder="Ingresa tu Telefono" value={telefono || ""}
+                            onChange={(e) => setTelefono(e.target.value)} disabled={!editable} style={{ textAlign: "center" }} />
+                        </div>
+                      </div>
 
-                        <div className="row gx-3 mb-3">
-                          <div className="col-md-6">
-                            <label className="small mb-1">Rol</label>
-                            <input className="form-control" id="inputLocation" type="text" value={rol} disabled style={{ textAlign: "center" }} />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="small mb-1">Fecha de Alta</label>
-                            <input className="form-control" id="inputBirthday" type="text" name="birthday" value={fechaAlta} disabled style={{ textAlign: "center" }} />
-                          </div>
+                      <div className="row gx-3 mb-3">
+                        <div className="col-md-6">
+                          <label className="small mb-1">Rol</label>
+                          <input className="form-control" id="inputLocation" type="text" value={rol} disabled style={{ textAlign: "center" }} />
                         </div>
-                        <button className="btn button-main" type="submit" onClick={editable ? handleSave : handleEdit} style={{ margin: "1px" }}>
-                          {editable ? "Guardar Cambios" : "Editar Informacion"}
-                        </button>
-                        {mostrarCancelar && (<button className="btn button-main" type="submit" onClick={handleCancelar} style={{ margin: "1px" }}>
-                          Cancelar
-                        </button>)}
-                      </form>
-                    </div>
+                        <div className="col-md-6">
+                          <label className="small mb-1">Fecha de Alta</label>
+                          <input className="form-control" id="inputBirthday" type="text" name="birthday" value={fechaAlta} disabled style={{ textAlign: "center" }} />
+                        </div>
+                      </div>
+                      <button className="btn button-main" type="submit" onClick={editable ? handleSave : handleEdit} style={{ margin: "1px" }}>
+                        {editable ? "Guardar Cambios" : "Editar Informacion"}
+                      </button>
+                      {mostrarCancelar && (<button className="btn button-main" type="submit" onClick={handleCancelar} style={{ margin: "1px" }}>
+                        Cancelar
+                      </button>)}
+                    </form>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
       <EditClave
         usuario={user}
         show={modalShowEditClave}

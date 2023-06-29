@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import moment from "moment";

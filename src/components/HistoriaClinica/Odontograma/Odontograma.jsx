@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy, } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
 import EditControlEvolucion from "../../ControlEvolucion/EditControlEvolucion";

@@ -1,13 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
-import { Dropdown, Modal } from "react-bootstrap";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Modal } from "react-bootstrap";
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
-import { FaBell, FaSignOutAlt } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { AuthContext } from "../../../context/AuthContext.js";
-import profile from "../../../img/icono.png";
 
 const Proveedores = () => {
   const [ruc, setRuc] = useState("");
@@ -20,33 +15,10 @@ const Proveedores = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [modalShowGestionProveedores, setModalShowGestionProveedores] = useState(false);
   const [search, setSearch] = useState("");
-  const { currentUser, } = useContext(AuthContext);
 
   const proveedoresCollection = collection(db, "proveedores");
   const proveedoresCollectionOrdenados = useRef(query(proveedoresCollection, orderBy("name")));
-  const navigate = useNavigate()
 
-
-  const logout = useCallback(() => {
-    localStorage.setItem("user", JSON.stringify(null));
-    navigate("/");
-    window.location.reload();
-  }, [navigate]);
-
-  const confirmLogout = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: '¿Desea cerrar sesión?',
-      showDenyButton: true,
-      confirmButtonText: 'Cerrar sesión',
-      confirmButtonColor: '#00C5C1',
-      denyButtonText: `Cancelar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout();
-      }
-    });
-  };
 
   const updateProveedoresFromSnapshot = useCallback((snapshot) => {
     const proveedoresArray = snapshot.docs.map((doc) => ({
@@ -168,199 +140,141 @@ const Proveedores = () => {
 
   return (
     <>
-        {isLoading ? (
-          <span className="loader position-absolute start-50 top-50 mt-3"></span>
-        ) : (
-          <div className="w-100">
-            <nav className="navbar">
-              <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar">
-                  <input
-                    value={search}
-                    onChange={searcher}
-                    type="text"
-                    placeholder="Buscar..."
-                    className="form-control-upNav  m-2"
-                  />
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </div>
-                <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                    Hola, {currentUser.displayName}
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
-                    </div>
-                  </div>
+      {isLoading ? (
+        <span className="loader position-absolute start-50 top-50 mt-3"></span>
+      ) : (
+        <div className="w-100">
+          <div className="search-bar d-flex col-2 m-2 ms-3 w-50">
+            <input
+              value={search}
+              onChange={searcher}
+              type="text"
+              placeholder="Buscar..."
+              className="form-control-upNav  m-2"
+            />
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </div>
 
-                  <div className="notificacion">
-                    <Dropdown>
-                      <Dropdown.Toggle
+          <div className="container mw-100">
+            <div className="row">
+              <div className="col">
+                <br></br>
+                <div className="d-grid gap-2">
+                  <div className="d-flex justify-content-between">
+                    <div
+                      className="d-flex justify-content-center align-items-center"
+                      style={{ maxHeight: "40px", marginLeft: "10px" }}
+                    >
+                      <h1 className="me-2">Proveedores</h1>
+                    </div>
+                    <div className="col d-flex justify-content-star">
+                      <button
                         variant="primary"
-                        className="btn btn-secondary mx-1 btn-md"
-                        id="dropdown-actions"
-                        style={{ background: "none", border: "none" }}
+                        className="btn-blue m-2"
+                        onClick={() => {
+                          setEditIndex(null);
+                          setModalShowGestionProveedores(true);
+                        }}
                       >
-                        <img
-                          src={currentUser.photoURL || profile}
-                          alt="profile"
-                          className="profile-picture"
-                        />
-                      </Dropdown.Toggle>
-                      <div className="dropdown__container">
-                        <Dropdown.Menu>
-                          <Dropdown.Item>
-                            <Link
-                              to="/miPerfil"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                            >
-                              <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
-                              Mi Perfil
-                            </Link>
-                          </Dropdown.Item>
-
-                          <Dropdown.Item>
-
-                            <Link
-                              to="/"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                              onClick={confirmLogout}
-                            >
-                              <FaSignOutAlt className="icono" />
-                              Cerrar Sesión
-                            </Link>
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </div>
-                    </Dropdown>
+                        Nuevo
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </nav>
-            <div className="container mt-2 mw-100">
-              <div className="row">
-                <div className="col">
-                  <br></br>
-                  <div className="d-grid gap-2">
-                    <div className="d-flex justify-content-between">
-                      <div
-                        className="d-flex justify-content-center align-items-center"
-                        style={{ maxHeight: "40px", marginLeft: "10px" }}
-                      >
-                        <h1 className="me-2">Proveedores</h1>
-                      </div>
-                      <div className="col d-flex justify-content-star">
-                        <button
-                          variant="primary"
-                          className="btn-blue m-2"
-                          onClick={() => {
-                            setEditIndex(null);
-                            setModalShowGestionProveedores(true);
-                          }}
-                        >
-                          Nuevo
-                        </button>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="table__container">
-                    <table className="table__body">
-                      <thead>
-                        <tr>
-                          <th>RUC</th>
-                          <th style={{ textAlign: "left" }}>Denominacion o Nombre Proveedor</th>
-                          <th>Accion</th>
-                        </tr>
-                      </thead>
+                <div className="table__container">
+                  <table className="table__body">
+                    <thead>
+                      <tr>
+                        <th>RUC</th>
+                        <th style={{ textAlign: "left" }}>Denominacion o Nombre Proveedor</th>
+                        <th>Accion</th>
+                      </tr>
+                    </thead>
 
-                      <tbody>
-                        {currentResults.map((proveedor, index) => (
-                          <tr key={proveedor.id}>
-                            <td id="colIzquierda">{proveedor.ruc}</td>
-                            <td style={{ textAlign: "left" }}>{proveedor.name}</td>
-                            <td className="colDerecha">
-                              <button
-                                className="btn btn-success mx-1 btn-sm"
-                                onClick={() => {
-                                  setModalShowGestionProveedores(true);
-                                  handleEdit(index);
-                                }}
-                              >
-                                <i className="fa-solid fa-edit"></i>
-                              </button>
-                              <button
-                                className="btn btn-danger btn-sm"
-                                onClick={() => {
-                                  handleDelete(index);
-                                }}
-                              >
-                                <i className="fa-solid fa-trash-can"></i>
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="table__footer">
-                    <div className="table__footer-left">
-                      Mostrando {startIndex + 1} - {Math.min(endIndex, proveedores.length)} de {proveedores.length}
-                    </div>
-
-                    <div className="table__footer-right">
-                      <span>
-                        <button
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                          style={{ border: "0", background: "none" }}
-                        >
-                          &lt; Previo
-                        </button>
-                      </span>
-
-                      {[...Array(totalPages)].map((_, index) => {
-                        const page = index + 1;
-                        return (
-                          <span key={page}>
-                            <span
-                              onClick={() => handlePageChange(page)}
-                              className={page === currentPage ? "active" : ""}
-                              style={{
-                                margin: "2px",
-                                backgroundColor: page === currentPage ? "#003057" : "transparent",
-                                color: page === currentPage ? "#FFFFFF" : "#000000",
-                                padding: "4px 8px",
-                                borderRadius: "4px",
-                                cursor: "pointer"
+                    <tbody>
+                      {currentResults.map((proveedor, index) => (
+                        <tr key={proveedor.id}>
+                          <td id="colIzquierda">{proveedor.ruc}</td>
+                          <td style={{ textAlign: "left" }}>{proveedor.name}</td>
+                          <td className="colDerecha">
+                            <button
+                              className="btn btn-success mx-1 btn-sm"
+                              onClick={() => {
+                                setModalShowGestionProveedores(true);
+                                handleEdit(index);
                               }}
                             >
-                              {page}
-                            </span>
-                          </span>
-                        );
-                      })}
+                              <i className="fa-solid fa-edit"></i>
+                            </button>
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() => {
+                                handleDelete(index);
+                              }}
+                            >
+                              <i className="fa-solid fa-trash-can"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="table__footer">
+                  <div className="table__footer-left">
+                    Mostrando {startIndex + 1} - {Math.min(endIndex, proveedores.length)} de {proveedores.length}
+                  </div>
 
-                      <span>
-                        <button
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                          style={{ border: "0", background: "none" }}
-                        >
-                          Siguiente &gt;
-                        </button>
-                      </span>
-                    </div>
+                  <div className="table__footer-right">
+                    <span>
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        style={{ border: "0", background: "none" }}
+                      >
+                        &lt; Previo
+                      </button>
+                    </span>
+
+                    {[...Array(totalPages)].map((_, index) => {
+                      const page = index + 1;
+                      return (
+                        <span key={page}>
+                          <span
+                            onClick={() => handlePageChange(page)}
+                            className={page === currentPage ? "active" : ""}
+                            style={{
+                              margin: "2px",
+                              backgroundColor: page === currentPage ? "#003057" : "transparent",
+                              color: page === currentPage ? "#FFFFFF" : "#000000",
+                              padding: "4px 8px",
+                              borderRadius: "4px",
+                              cursor: "pointer"
+                            }}
+                          >
+                            {page}
+                          </span>
+                        </span>
+                      );
+                    })}
+
+                    <span>
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        style={{ border: "0", background: "none" }}
+                      >
+                        Siguiente &gt;
+                      </button>
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
       {modalShowGestionProveedores && (
         <Modal

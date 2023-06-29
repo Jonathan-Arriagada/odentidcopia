@@ -722,9 +722,9 @@ select {
   }
 }
 
-
 /*ESTILOS UPNAV.CSS*/
 .navbar {
+  position: absolute;
   background-color: var(--color-background-green);
   color: var(--color-light-text) !important;
   font-weight: 700 !important;
@@ -732,8 +732,13 @@ select {
 }
 
 .search-bar {
-  display: flex;
+  position: absolute;
   align-items: center;
+  z-index: 1;
+}
+
+.container{
+  margin-top: 5%;
 }
 
 
@@ -786,19 +791,6 @@ select {
 
 .right-navbar {
   width: 28%;
-}
-
-.form-control-upNav {
-  display: block;
-  width: 100%;
-  padding: 0.875rem 1.125rem;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1;
-  color: var(--color-light-text);
-  background-color: var(--color-disabled);
-  background-clip: padding-box;
-  border-radius: 0.35rem;
 }
 
 .form-control-dash {
@@ -883,6 +875,7 @@ select {
   color: var(--color-letras-menu);
   background-color: var(--color-menu);
   padding: 5px 5px;
+  z-index: 2;
 }
 
 
