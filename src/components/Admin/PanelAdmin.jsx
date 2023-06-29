@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import Navigation from "../Navigation";
 import { collection, orderBy, query, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { db, } from "../../firebaseConfig/firebase";
 import CrearUsuario from "./CrearUsuario";
@@ -117,10 +116,10 @@ function PanelAdmin() {
 
   return (
     <>
-      <div className="mainpage">
-        <Navigation />
         {isLoading ? (
-          <span className="loader position-absolute start-50 top-50 mt-3"></span>
+          <div className="w-100">
+            <span className="loader position-absolute start-50 top-50 mt-3"></span>
+          </div>
         ) : (
           <div className="w-100">
             <nav className="navbar">
@@ -332,7 +331,6 @@ function PanelAdmin() {
             </div>
           </div>
         )}
-      </div>
       <CrearUsuario show={modalShow} onHide={() => setModalShow(false)} />
     </>
   );

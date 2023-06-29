@@ -59,13 +59,18 @@ function Citas() {
   const userCollectiona = collection(db, "user");
   const userCollection = useRef(query(userCollectiona));
 
+  const [isActive, setIsActive] = useState(false);
+  const handleIsActiveChange = (newIsActive) => {
+    setIsActive(newIsActive);
+  };
+
   const navigate = useNavigate()
 
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
     navigate("/");
     window.location.reload();
-  }, [navigate]);
+  }, [navigate])
 
   const confirmLogout = (e) => {
     e.preventDefault();
@@ -343,10 +348,10 @@ function Citas() {
 
   return (
     <>
-      <div className="mainpage">
-        <Navigation />
         {isLoading ? (
-          <span className="loader position-absolute start-50 top-50 mt-3"></span>
+          <div className="w-100">
+            <span className="loader position-absolute start-50 top-50 mt-3"></span>
+          </div>
         ) : (
           <div className="w-100">
             <nav className="navbar">
@@ -854,7 +859,6 @@ function Citas() {
             </div>
           </div>
         )}
-      </div >
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
       <EditCita
         id={idParam}

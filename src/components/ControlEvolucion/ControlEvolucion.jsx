@@ -138,8 +138,6 @@ const ControlEvolucion = () => {
 
     return (
         <>
-            <div className="mainpage">
-                <Navigation />
                 {isLoading ? (
                     <span className="loader position-absolute start-50 top-50 mt-3"></span>
                 ) : (
@@ -325,7 +323,6 @@ const ControlEvolucion = () => {
                         </div>
                     </div>
                 )}
-            </div >
 
             <EditControlEvolucion
                 id={idParam}

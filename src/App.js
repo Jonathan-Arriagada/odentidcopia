@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Pacientes/Create";
 import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
-import { useContext, } from "react";
+import { useContext} from "react";
 import { AuthContext } from "./context/AuthContext";
 import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
@@ -19,6 +19,7 @@ import Materiales from "./components/Gastos/Parametros/Materiales";
 import Proveedores from "./components/Gastos/Parametros/Proveedores";
 import ControlEvolucion from "./components/ControlEvolucion/ControlEvolucion";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Navigation from "./components/Navigation"
 
 function App() {
   const { currentUser } = useContext(AuthContext)
@@ -37,8 +38,9 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App mainpage">
       <BrowserRouter>
+      <Navigation />
         <Routes>
           <Route path="/" element={<Login />} />
           <Route index path="/admin" element={<RequireAuth><RequireAdmin><PanelAdmin /></RequireAdmin></RequireAuth>} />

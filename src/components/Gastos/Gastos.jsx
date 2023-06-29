@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
-import Navigation from "../Navigation";
 import EditGasto from "./EditGasto";
 import CrearGasto from "./CrearGasto";
 import TipoGasto from "./Parametros/TipoGasto";
@@ -141,8 +140,6 @@ const Gastos = () => {
 
     return (
         <>
-            <div className="mainpage">
-                <Navigation />
                 {isLoading ? (
                     <span className="loader position-absolute start-50 top-50 mt-3"></span>
                 ) : (
@@ -396,7 +393,6 @@ const Gastos = () => {
                         </div>
                     </div>
                 )}
-            </div>
 
             <CrearGasto show={modalShow} onHide={() => setModalShow(false)} />
             <EditGasto

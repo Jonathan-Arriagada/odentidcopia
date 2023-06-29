@@ -4,7 +4,6 @@ import { auth, db, deslogear, } from "../../firebaseConfig/firebase";
 import { updateProfile, updateEmail, onAuthStateChanged } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
-import Navigation from "../Navigation";
 import EditClave from "./EditClave";
 import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -183,10 +182,10 @@ const MiPerfil = () => {
 
   return (
     <>
-      <div className="mainpage">
-        <Navigation />
         {isLoading ? (
-          <span className="loader position-absolute start-50 top-50 mt-3"></span>
+          <div className="w-100">
+            <span className="loader position-absolute start-50 top-50 mt-3"></span>
+          </div>
         ) : (
           <div className="w-100">
             <nav className="navbar">
@@ -332,7 +331,6 @@ const MiPerfil = () => {
             </div>
           </div>
         )}
-      </div>
       <EditClave
         usuario={user}
         show={modalShowEditClave}

@@ -137,8 +137,7 @@ export default function History() {
 
 
   return (
-    <div className="mainpage">
-      <Navigation />
+    <>
       {isLoading ? (
         <span className="loader position-absolute start-50 top-50 mt-3"></span>
       ) : (
@@ -306,6 +305,6 @@ export default function History() {
           </Box >
         </div>
       )};
-    </div >
+    </>
   );
 }

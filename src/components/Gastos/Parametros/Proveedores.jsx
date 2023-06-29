@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { Dropdown, Modal } from "react-bootstrap";
-import Navigation from "../../Navigation.jsx";
 import { addDoc, collection, doc, setDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase.js";
 import { onSnapshot } from "firebase/firestore";
@@ -169,8 +168,6 @@ const Proveedores = () => {
 
   return (
     <>
-      <div className="mainpage">
-        <Navigation />
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
@@ -364,7 +361,6 @@ const Proveedores = () => {
             </div>
           </div>
         )}
-      </div>
 
       {modalShowGestionProveedores && (
         <Modal

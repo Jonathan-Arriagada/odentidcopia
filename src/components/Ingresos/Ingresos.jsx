@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
-import Navigation from "../Navigation";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown, Modal, Button } from "react-bootstrap";
@@ -204,8 +203,6 @@ const Ingresos = () => {
 
   return (
     <>
-      <div className="mainpage">
-        <Navigation />
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
@@ -527,7 +524,6 @@ const Ingresos = () => {
             </div>
           </div>
         )}
-      </div>
     </>
   );
 };

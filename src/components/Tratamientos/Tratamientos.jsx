@@ -656,8 +656,6 @@ function Tratamientos() {
 
   return (
     <>
-      <div className="mainpage">
-        <Navigation />
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (
@@ -1316,7 +1314,6 @@ function Tratamientos() {
             </div>
           </div>
         )}
-      </div>
       <EstadosTratamientos
         show={modalShowEstadosTratamientos}
         onHide={() => setModalShowEstadosTratamientos(false)}

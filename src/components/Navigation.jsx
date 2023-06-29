@@ -1,6 +1,6 @@
 import Nav from "./zNavIcons/Nav";
 import { FaUsers, FaMoon, FaCalendarAlt, FaFileInvoiceDollar, FaMoneyCheckAlt, FaNotesMedical, FaPoll, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax, FaChartBar, FaFileAlt, FaBox, FaArchive, FaDonate, FaBalanceScale, FaChartLine } from 'react-icons/fa';
-import { useState, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -8,9 +8,11 @@ import logo from "../img/logo-odentid2.png"
 import icono from "../img/icono.png"
 import "../style/Main.css";
 import Swal from "sweetalert2";
+import { AuthContext } from "../context/AuthContext";
 
 
 const Navigation = () => {
+    
     const [isActive, setIsActive] = useState(false);
     const [userType, setUserType] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -23,13 +25,14 @@ const Navigation = () => {
     const [open7, setOpen7] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    const {currentUser} = useContext(AuthContext);
 
     const logout = useCallback(() => {
         localStorage.setItem("user", JSON.stringify(null));
         navigate("/");
         window.location.reload();
     }, [navigate]);
-
+    
     const confirmLogout = (e) => {
         e.preventDefault();
         Swal.fire({
@@ -126,7 +129,6 @@ const Navigation = () => {
             }
         }
     }, [location.pathname]);
-
 
     function toggleDarkMode() {
         const html = document.querySelector('html');
@@ -232,4 +234,13 @@ const Navigation = () => {
     );
 };
 
-export default Navigation;
+const NavigationWrapper = () => {
+    const { currentUser } = useContext(AuthContext);
+
+    if (currentUser) {
+     return <Navigation />; 
+    }
+    
+  };
+
+export default NavigationWrapper;

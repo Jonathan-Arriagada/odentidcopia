@@ -22,12 +22,9 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 function Dashboard() {
 
-  const [search, setSearch] = useState("");
   //const [isLoading, setIsLoading] = useState(true);
-
   const navigate = useNavigate()
   const { currentUser, } = useContext(AuthContext);
-
   const logout = useCallback(() => {
     localStorage.setItem("user", JSON.stringify(null));
     navigate("/");
@@ -107,8 +104,7 @@ function Dashboard() {
 
 
   return (
-    <div className="mainpage">
-      <Navigation />
+    
       <div className="w-100">
         <nav className="navbar">
           <div className="d-flex justify-content-between px-2 w-100" >
@@ -213,7 +209,6 @@ function Dashboard() {
         </div>
       </div>
 
-    </div>
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import Navigation from "../Navigation";
 import { collection, updateDoc, doc, orderBy, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import CreateTarifa from "./CreateTarifa";
@@ -124,8 +123,7 @@ function Tarifario() {
 
   return (
     <>
-      <div className="mainpage">
-        <Navigation />
+      
         {isLoading ? (
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         ) : (<div className="w-100">
@@ -357,7 +355,6 @@ function Tarifario() {
           </div>
         </div>
         )}
-      </div >
       <CreateTarifa show={modalShow} onHide={() => setModalShow(false)} />
       <EditTarifa
         id={idParam}
