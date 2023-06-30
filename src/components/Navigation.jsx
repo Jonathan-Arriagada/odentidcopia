@@ -25,7 +25,6 @@ const Navigation = () => {
     const [open7, setOpen7] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const {currentUser} = useContext(AuthContext);
 
     const logout = useCallback(() => {
         localStorage.setItem("user", JSON.stringify(null));
@@ -47,6 +46,7 @@ const Navigation = () => {
             }
         });
     };
+    
 
     const handleClick = (stateSetter, currentState) => {
         setOpen(false);
@@ -233,14 +233,14 @@ const Navigation = () => {
         </div>
     );
 };
-
 const NavigationWrapper = () => {
     const { currentUser } = useContext(AuthContext);
+    const location = useLocation()
 
-    if (currentUser) {
-     return <Navigation />; 
+    if (currentUser && location.pathname !== "/") {
+        return <Navigation />; 
     }
-    
   };
+
 
 export default NavigationWrapper;

@@ -17,6 +17,7 @@ import Reviews from './Reviews';
 import EficienciaFacturacion from './EficienciaFacturacion';
 import IngresosYRentabilidad from './IngresosYRentabilidad';
 import moment from "moment";
+import ProductividadDentistas from './ProductividadDentistas';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -138,7 +139,7 @@ function Dashboard() {
   };
 
   return (
-    
+     
       <div className="w-100">
         <nav className="navbar">
           <div className="d-flex justify-content-between px-2 w-100" >
@@ -228,8 +229,9 @@ function Dashboard() {
           </div>
           <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
             <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
-              <h2 className="fw-bold fs-6 mt-3 ">Productividad de los dentistas</h2>
-              <h3 className="fs-1 numbers">78%</h3>
+              
+              <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
+              <h3 className="fs-1 numbers">76%</h3>
               {/*N° de Tratamientos realizados por periodos por doctor*/}
               <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
               <h3 className="fs-1 numbers"><EficienciaFacturacion /></h3>
@@ -248,8 +250,8 @@ function Dashboard() {
               <h3 className="fs-1 numbers"><TotalTratamientos /></h3>
             </div>
             <div className="col-3 ms-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
-              <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
-              <h3 className="fs-1 numbers">76%</h3>
+              <h2 className="fw-bold fs-6 mt-3 ">Productividad de los dentistas</h2>
+                <ProductividadDentistas/>
               {/*Cantidad de pacientes existente que regresan los pacientes por periodo*/}
             </div>
           </div>

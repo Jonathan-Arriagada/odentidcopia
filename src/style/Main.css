@@ -148,7 +148,6 @@ table.table__body_history td:not(#thHistory) {
   justify-content: center;
 }
 
-
 #tablaTratamientos {
   @media (min-width: 1400px) {
     max-width: 1600px;
@@ -632,7 +631,7 @@ select {
 }
 
 .background-container {
-  position: relative;
+  position: static;
   width: 100%;
   height: 100%;
 }
