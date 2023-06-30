@@ -70,16 +70,27 @@ const ControlEvolucion = () => {
         setSearch(e.target.value);
     };
 
+    function quitarAcentos(texto) {
+        return texto
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+    }
+
     let results = [];
 
     if (!search) {
         results = controles;
     } else {
-        results = controles.filter(
-            (dato) =>
-                dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
-                dato.idc.toString().includes(search.toString())
-        );
+        results = controles.filter((dato) => {
+            const apellidoConNombreSinAcentos = quitarAcentos(dato.apellidoConNombre);
+            const searchSinAcentos = quitarAcentos(search);
+            return (
+                apellidoConNombreSinAcentos.includes(searchSinAcentos) ||
+                dato.idc.toString().includes(searchSinAcentos)
+            );
+        });
     }
 
     const sorting = (col) => {

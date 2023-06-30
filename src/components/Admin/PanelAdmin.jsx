@@ -51,15 +51,26 @@ function PanelAdmin() {
     setCurrentPage(page);
   };
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   let filteredResults = [];
   if (!search) {
     filteredResults = usuarios;
   } else {
-    filteredResults = usuarios.filter(
-      (dato) =>
-        dato.apellido.toLowerCase().includes(search.toLowerCase()) ||
-        dato.codigo.toString().includes(search.toString())
-    );
+    filteredResults = usuarios.filter((dato) => {
+      const apellidoConNombreSinAcentos = quitarAcentos(dato.apellidoConNombre);
+      const searchSinAcentos = quitarAcentos(search);
+      return (
+        apellidoConNombreSinAcentos.includes(searchSinAcentos) ||
+        dato.codigo.toString().includes(searchSinAcentos)
+      );
+    });
   }
 
   const totalPages = Math.ceil(filteredResults.length / itemsPerPage);

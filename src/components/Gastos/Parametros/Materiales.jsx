@@ -129,16 +129,27 @@ const Materiales = () => {
         setCurrentPage(page);
     };
 
+    function quitarAcentos(texto) {
+        return texto
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+    }
+
     let filteredResults = [];
 
     if (!search) {
         filteredResults = materiales;
     } else {
-        filteredResults = materiales.filter(
-            (dato) =>
-                dato.name.toLowerCase().includes(search.toLowerCase()) ||
-                dato.cuenta.toString().includes(search.toString())
-        );
+        filteredResults = materiales.filter((dato) => {
+            const nameSinAcentos = quitarAcentos(dato.name);
+            const searchSinAcentos = quitarAcentos(search);
+            return (
+                nameSinAcentos.includes(searchSinAcentos) ||
+                dato.cuenta.toString().includes(searchSinAcentos)
+            );
+        });
     }
 
     const totalPages = Math.ceil(filteredResults.length / itemsPerPage);

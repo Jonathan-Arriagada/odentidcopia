@@ -64,16 +64,27 @@ const Gastos = () => {
         setCurrentPage(page);
     };
 
+    function quitarAcentos(texto) {
+        return texto
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+    }
+
     let filteredResults = [];
 
     if (!search) {
         filteredResults = gastos;
     } else {
-        filteredResults = gastos.filter(
-            (dato) =>
-                dato.proveedor.toLowerCase().includes(search.toLowerCase()) ||
-                dato.ruc.toString().includes(search.toString())
-        );
+        filteredResults = gastos.filter((dato) => {
+            const proveedorSinAcentos = quitarAcentos(dato.proveedor);
+            const searchSinAcentos = quitarAcentos(search);
+            return (
+                proveedorSinAcentos.includes(searchSinAcentos) ||
+                dato.ruc.toString().includes(searchSinAcentos)
+            );
+        });
     }
 
     const totalPages = Math.ceil(filteredResults.length / itemsPerPage);

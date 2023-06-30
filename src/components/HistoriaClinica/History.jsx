@@ -46,6 +46,14 @@ export default function History() {
 
   const navigate = useNavigate();
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   const openControlYEvolucion = (nro, tratamiento) => {
     setValue(nro);
     setTratamiento(tratamiento)
@@ -53,7 +61,7 @@ export default function History() {
 
   const updateOpcionesPacientes = useCallback(snapshot => {
     const pacientesOptions = snapshot.docs.map((doc,) => ({
-      valorBusqueda: doc.data().valorBusqueda,
+      valorBusqueda: quitarAcentos(doc.data().valorBusqueda),
       id: doc.id
     }));
     setOpcionesDePacientes(pacientesOptions);

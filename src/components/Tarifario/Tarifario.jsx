@@ -59,16 +59,27 @@ function Tarifario() {
     setCurrentPage(page);
   };
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   let filteredResults = [];
   if (!search) {
     filteredResults = tarifas;
   } else {
-    filteredResults = tarifas.filter(
-      (dato) =>
-        dato.tratamiento.toLowerCase().includes(search.toLowerCase()) ||
-        dato.codigo.toString().includes(search.toString())
-    );
-  }
+    filteredResults = tarifas.filter((dato) => {
+      const tratamientoSinAcentos = quitarAcentos(dato.tratamiento);
+      const searchSinAcentos = quitarAcentos(search);
+      return (
+        tratamientoSinAcentos.includes(searchSinAcentos) ||
+          dato.codigo.toString().includes(searchSinAcentos)
+      );
+  });
+}
 
   const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

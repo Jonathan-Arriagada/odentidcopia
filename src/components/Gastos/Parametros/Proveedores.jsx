@@ -113,16 +113,27 @@ const Proveedores = () => {
     setCurrentPage(page);
   };
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   let filteredResults = [];
 
   if (!search) {
     filteredResults = proveedores;
   } else {
-    filteredResults = proveedores.filter(
-      (dato) =>
-        dato.name.toLowerCase().includes(search.toLowerCase()) ||
-        dato.ruc.toString().includes(search.toString())
-    );
+    filteredResults = proveedores.filter((dato) => {
+      const apellidoConNombreSinAcentos = quitarAcentos(dato.name);
+      const searchSinAcentos = quitarAcentos(search);
+      return (
+        apellidoConNombreSinAcentos.includes(searchSinAcentos) ||
+        dato.ruc.toString().includes(searchSinAcentos)
+      );
+    });
   }
 
   const totalPages = Math.ceil(filteredResults.length / itemsPerPage);

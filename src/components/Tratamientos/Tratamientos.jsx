@@ -289,6 +289,14 @@ function Tratamientos() {
     }
   };
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   var results = tratamientos.filter((dato) => {
     if (estadoTratamientoFiltro && dato.estadosTratamientos.toLowerCase() !== estadoTratamientoFiltro.toLowerCase()) {
       return false;
@@ -323,7 +331,7 @@ function Tratamientos() {
       return dato[filtroBusqueda] !== "" && dato[filtroBusqueda] !== undefined && dato[filtroBusqueda] !== null;
     }
 
-    return dato.apellidoConNombre.toLowerCase().includes(search);
+    return quitarAcentos(dato.apellidoConNombre).includes(quitarAcentos(search));
   });
 
   var paginasTotales = Math.ceil(results.length / filasPorPagina);

@@ -84,6 +84,14 @@ const Ingresos = () => {
     }
   };
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   var results;
   if (!search || search === "") {
     results = cobros;
@@ -103,11 +111,15 @@ const Ingresos = () => {
           (dato) => dato.fechaCobro === search.toString()
         );
       } else {
-        results = cobros.filter(
-          (dato) =>
-            dato.pacienteCobro.toLowerCase().includes(search.toLowerCase()) ||
-            dato.tratamientoCobro.toLowerCase().includes(search.toLowerCase())
-        );
+        results = cobros.filter((dato) => {
+          const pacienteCobroSinAcentos = quitarAcentos(dato.pacienteCobro);
+          const tratamientoCobroSinAcentos = quitarAcentos(dato.tratamientoCobro);
+          const searchSinAcentos = quitarAcentos(search);
+          return (
+            pacienteCobroSinAcentos.includes(searchSinAcentos) ||
+            tratamientoCobroSinAcentos.includes(searchSinAcentos)
+          );
+        });
       }
     }
   }

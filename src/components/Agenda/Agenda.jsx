@@ -251,6 +251,13 @@ function Citas() {
     results = citas;
   }
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
 
   results = !search
     ? results
@@ -278,11 +285,15 @@ function Citas() {
               dato[filtroBusqueda] !== undefined &&
               dato[filtroBusqueda] !== null
           ))
-          : results.filter(
-            (dato) =>
-              dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
-              dato.idc.toString().includes(search.toString())
-          );
+          : results.filter((dato) => {
+            const apellidoConNombreSinAcentos = quitarAcentos(dato.apellidoConNombre);
+            const searchSinAcentos = quitarAcentos(search);
+
+            return (
+              apellidoConNombreSinAcentos.includes(searchSinAcentos) ||
+              dato.idc.toString().includes(searchSinAcentos)
+            );
+          });
 
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;

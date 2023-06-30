@@ -41,8 +41,8 @@ function App() {
   return (
     <div className="App mainpage">
       <BrowserRouter>
-      <Navigation />
-      <UpNav />
+      <RequireAuth><Navigation /></RequireAuth>
+      <RequireAuth><UpNav /></RequireAuth>
 
         <Routes>
           <Route path="/" element={<Login />} />

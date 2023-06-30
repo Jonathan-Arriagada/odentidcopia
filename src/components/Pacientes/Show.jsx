@@ -86,16 +86,27 @@ const Show = () => {
     setCurrentPage(page);
   };
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   let filteredResults = [];
 
   if (!search) {
     filteredResults = clients;
   } else {
-    filteredResults = clients.filter(
-      (dato) =>
-        dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
-        dato.idc.toString().includes(search.toString())
-    );
+    filteredResults = clients.filter((dato) => {
+      const apellidoConNombreSinAcentos = quitarAcentos(dato.apellidoConNombre);
+      const searchSinAcentos = quitarAcentos(search);
+      return (
+        apellidoConNombreSinAcentos.includes(searchSinAcentos) ||
+        dato.idc.toString().includes(searchSinAcentos)
+      );
+    });
   }
 
   const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
