@@ -111,8 +111,7 @@ function Dashboard() {
   };
 
   return (
-     <>
-      
+
     <div className="w-100">
       <div className="search-bar d-flex col-2 m-2 ms-3">
         <select
@@ -141,6 +140,7 @@ function Dashboard() {
             <h2 className="fw-bold fs-5 mt-2 ms-2">Nuevos casos de ortodoncia</h2>
             <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia /></h3>
           </div>
+        </div>
           <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
             <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
               
@@ -171,8 +171,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
-</>
+
   );
 };
 
