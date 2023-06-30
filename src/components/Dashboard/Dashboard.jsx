@@ -1,14 +1,8 @@
-import React, { useCallback, useContext, useState } from 'react'
-import Swal from 'sweetalert2';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaSignOutAlt, FaBell } from "react-icons/fa";
-import profile from "../../img/profile.png";
+import React, { useState } from 'react'
 import "../../style/Main.css";
-import { AuthContext } from '../../context/AuthContext';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { Dropdown } from 'react-bootstrap';
-import Count from './Count';
+import PacientesNuevos from './PacientesNuevos';
 import Ausencia from './Ausencia';
 import PacientesAtendidos from './PacientesAtendidos';
 import CasosOrtodoncia from './CasosOrtodoncia';
@@ -27,28 +21,6 @@ function Dashboard() {
   const fechaFin = moment().endOf('day').format("YYYY-MM-DD");
   const [periodoFechasElegido, setPeriodoFechasElegido] = useState({ fechaInicio, fechaFin });
   //const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate()
-  const { currentUser, } = useContext(AuthContext);
-  const logout = useCallback(() => {
-    localStorage.setItem("user", JSON.stringify(null));
-    navigate("/");
-    window.location.reload();
-  }, [navigate]);
-
-  const confirmLogout = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: '¿Desea cerrar sesión?',
-      showDenyButton: true,
-      confirmButtonText: 'Cerrar sesión',
-      confirmButtonColor: '#00C5C1',
-      denyButtonText: `Cancelar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout();
-      }
-    });
-  };
 
   const handleReviewsFetched = (fetchedReviews) => {
     //console.log(fetchedReviews);
@@ -139,93 +111,35 @@ function Dashboard() {
   };
 
   return (
-     
-      <div className="w-100">
-        <nav className="navbar">
-          <div className="d-flex justify-content-between px-2 w-100" >
-            <div className="search-bar col-2 m-1">
-              <select
-                className="form-control-doctor"
-                multiple={false}
-                onChange={(e) => filtrosFechas(e.target.value)}
-              >
-                <option value="hoy">Hoy</option>
-                <option value="ayer">Ayer</option>
-                <option value="ultimos7">Ultimos 7 días</option>
-                <option value="ultimos28">Ultimos 28 días</option>
-                <option value="ultimos90">Ultimos 90 días</option>
-              </select>
-            </div>
-            <div className="col d-flex justify-content-end align-items-center right-navbar">
-              <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                Hola, {currentUser.displayName}
-              </p>
-              <div className="d-flex">
-                <div className="notificacion">
-                  <FaBell className="icono" />
-                  <span className="badge rounded-pill bg-danger">5</span>
-                </div>
-              </div>
+     <>
+      
+    <div className="w-100">
+      <div className="search-bar d-flex col-2 m-2 ms-3">
+        <select
+          className="form-control-doctor"
+          multiple={false}
+          onChange={(e) => filtrosFechas(e.target.value)}
+        >
+          <option value="hoy">Hoy</option>
+          <option value="ayer">Ayer</option>
+          <option value="ultimos7">Ultimos 7 días</option>
+          <option value="ultimos28">Ultimos 28 días</option>
+          <option value="ultimos90">Ultimos 90 días</option>
+        </select>
+      </div>
 
-              <div className="notificacion">
-                <Dropdown>
-                  <Dropdown.Toggle
-                    variant="primary"
-                    className="btn btn-secondary mx-1 btn-md"
-                    id="dropdown-actions"
-                    style={{ background: "none", border: "none" }}
-                  >
-                    <img
-                      src={currentUser.photoURL || profile}
-                      alt="profile"
-                      className="profile-picture"
-                    />
-                  </Dropdown.Toggle>
-                  <div className="dropdown__container">
-                    <Dropdown.Menu>
-                      <Dropdown.Item>
-                        <Link
-                          to="/miPerfil"
-                          className="text-decoration-none"
-                          style={{ color: "#8D93AB" }}
-                        >
-                          <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
-                          Mi Perfil
-                        </Link>
-                      </Dropdown.Item>
-
-                      <Dropdown.Item>
-
-                        <Link
-                          to="/"
-                          className="text-decoration-none"
-                          style={{ color: "#8D93AB" }}
-                          onClick={confirmLogout}
-                        >
-                          <FaSignOutAlt className="icono" />
-                          Cerrar Sesión
-                        </Link>
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </div>
-                </Dropdown>
-              </div>
-            </div>
+      <div className="container mw-100 ms-4">
+        <div className="row flex-nowrap dashboard-sup">
+          <div className="col-7 pt-3 me-2 rounded-4 shadow fondo-color-primario">
+            <Bar data={data} options={options}></Bar>
           </div>
-        </nav>
-        <div className='container mt-2 ms-4'>
-          <div className="row flex-nowrap dashboard-sup">
-            <div className="col-7 pt-3 me-2 rounded-4 shadow fondo-color-primario">
-              <Bar data={data} options={options}></Bar>
-            </div>
-            <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario">
-              <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
-              <h3 className="fs-1 ms-2 numbers"><Count /></h3>
-              <h2 className="fw-bold fs-5 mt-2 ms-2">Pacientes atendidos</h2>
-              <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos /></h3>
-              <h2 className="fw-bold fs-5 mt-2 ms-2">Nuevos casos de ortodoncia</h2>
-              <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia /></h3>
-            </div>
+          <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario">
+            <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
+            <h3 className="fs-1 ms-2 numbers"><PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h2 className="fw-bold fs-5 mt-2 ms-2">Pacientes atendidos</h2>
+            <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos /></h3>
+            <h2 className="fw-bold fs-5 mt-2 ms-2">Nuevos casos de ortodoncia</h2>
+            <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia /></h3>
           </div>
           <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
             <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
@@ -257,7 +171,8 @@ function Dashboard() {
           </div>
         </div>
       </div>
-
+    </div>
+</>
   );
 };
 

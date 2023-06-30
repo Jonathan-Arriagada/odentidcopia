@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { collection, doc, query, getDocs, where, getDoc, updateDoc, addDoc, } from "firebase/firestore";
-import { useState, useEffect } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import moment from "moment";
 import Swal from "sweetalert2";

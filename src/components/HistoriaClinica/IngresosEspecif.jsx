@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import moment from "moment";
@@ -93,6 +92,14 @@ function IngresosEspecif(id) {
     }
   };
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
+
   var results;
   if (!search || search === "") {
     results = cobros;
@@ -112,14 +119,19 @@ function IngresosEspecif(id) {
           (dato) => dato.fechaCobro === search.toString()
         );
       } else {
-        results = cobros.filter(
-          (dato) =>
-            dato.pacienteCobro.toLowerCase().includes(search.toLowerCase()) ||
-            dato.tratamientoCobro.toLowerCase().includes(search.toLowerCase())
-        );
+        results = cobros.filter((dato) => {
+          const pacienteCobroSinAcentos = quitarAcentos(dato.pacienteCobro);
+          const tratamientoCobroSinAcentos = quitarAcentos(dato.tratamientoCobro);
+          const searchSinAcentos = quitarAcentos(search);
+          return (
+            pacienteCobroSinAcentos.includes(searchSinAcentos) ||
+            tratamientoCobroSinAcentos.includes(searchSinAcentos)
+          );
+        });
       }
     }
   }
+
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;
   var endIndex = startIndex + filasPorPagina;

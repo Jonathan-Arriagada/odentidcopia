@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+//import React, { useEffect, useState } from 'react';
+//import axios from 'axios';
 
 const Reviews = ({ ReviewsFetched }) => {
-  const [reviews, setReviews] = useState([]);
+  /*const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     const getGoogleReviews = async () => {
@@ -31,7 +31,7 @@ const Reviews = ({ ReviewsFetched }) => {
     };
 
     getGoogleReviews();
-  }, [ReviewsFetched]);
+  }, [ReviewsFetched]);*/
 };
 
 export default Reviews;

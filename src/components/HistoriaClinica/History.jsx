@@ -1,14 +1,10 @@
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { query, collection, onSnapshot, orderBy, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import Navigation from "../Navigation";
-import { FaSignOutAlt, FaBell } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
 import Filiacion from "./Filiacion";
 import Antecedentes from "./Antecedentes";
 import Odontograma from "./Odontograma/Odontograma";
@@ -16,10 +12,7 @@ import TratamientosEspecif from "./TratamientosEspecif";
 import AgendaEspecif from "./AgendaEspecif";
 import IngresosEspecif from "./IngresosEspecif";
 import ControlEvolucionEspecif from "./ControlEvolucionEspecif";
-import profile from "../../img/profile.png";
-import { AuthContext } from "../../context/AuthContext";
 import "../../style/Main.css";
-import { Dropdown } from "react-bootstrap";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,11 +41,18 @@ export default function History() {
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const [search, setSearch] = useState("");
-  const { currentUser, } = useContext(AuthContext);
 
   const [opcionesDePacientes, setOpcionesDePacientes] = useState([]);
 
   const navigate = useNavigate();
+
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
 
   const openControlYEvolucion = (nro, tratamiento) => {
     setValue(nro);
@@ -61,7 +61,7 @@ export default function History() {
 
   const updateOpcionesPacientes = useCallback(snapshot => {
     const pacientesOptions = snapshot.docs.map((doc,) => ({
-      valorBusqueda: doc.data().valorBusqueda,
+      valorBusqueda: quitarAcentos(doc.data().valorBusqueda),
       id: doc.id
     }));
     setOpcionesDePacientes(pacientesOptions);
@@ -73,27 +73,6 @@ export default function History() {
     return unsubscribe;
   }, [updateOpcionesPacientes]);
 
-
-  const logout = useCallback(() => {
-    localStorage.setItem("user", JSON.stringify(null));
-    navigate("/");
-    window.location.reload();
-  }, [navigate]);
-
-  const confirmLogout = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: '¿Desea cerrar sesión?',
-      showDenyButton: true,
-      confirmButtonText: 'Cerrar sesión',
-      confirmButtonColor: '#00C5C1',
-      denyButtonText: `Cancelar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout();
-      }
-    });
-  };
 
   const getClientById = async (id) => {
     if (id) {
@@ -142,126 +121,66 @@ export default function History() {
         <span className="loader position-absolute start-50 top-50 mt-3"></span>
       ) : (
         <div className="w-100">
-          <nav className="navbar">
-            <div className="d-flex justify-content-between w-100 px-2">
-              <>
-                {!id ? (
-                  <div className="search-bar w-25">
-                    <input
-                      value={search}
-                      onChange={searcher}
-                      type="text"
-                      placeholder="Buscar..."
-                      className="form-control-upNav  m-2"
-                      list="pacientes-list"
-                    />
-                    <datalist id="pacientes-list">
-                      {opcionesDePacientes.map((opcion, index) => (
-                        <option key={`pacientes-${index}`} value={opcion.valorBusqueda} />
-                      ))}
-                    </datalist>
-                    <button
-                      onClick={handleSearch}
-                      className="btn"
-                      id="boton-main"
-                      style={{ margin: "3px" }}
-                    >
-                      <i className="fa-solid fa-magnifying-glass" id="historyi"></i>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="search-bar w-25">
-                    <input
-                      value={apellidoConNombre}
-                      onChange={searcher}
-                      type="text"
-                      placeholder="Buscador de Pacientes..."
-                      className="form-control m-2"
-                      list="pacientes-list"
-                    />
-                    <datalist id="pacientes-list">
-                      {opcionesDePacientes.map((opcion, index) => (
-                        <option key={`pacientes-${index}`} value={opcion.valorBusqueda} />
-                      ))}
-                    </datalist>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ margin: "3px" }}
-                      disabled
-                    >
-                      <i className="fa-solid fa-magnifying-glass" id="historyi"></i>
-                    </button>
-                    <button
-                      onClick={handleLimpiar}
-                      className="btn"
-                      id="boton-main"
-                      style={{ margin: "3px" }}
-                    >
-                      <i className="fa-regular fa-circle-xmark" id="historyi"></i>
-                    </button>
-                  </div>
-                )}
-              </>
-
-              <div className="col d-flex justify-content-end align-items-center right-navbar">
-                <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                Hola, {currentUser.displayName}
-                </p>
-                <div className="d-flex">
-                  <div className="notificacion">
-                    <FaBell className="icono" />
-                    <span className="badge rounded-pill bg-danger">5</span>
-                  </div>
-                </div>
-
-                <div className="notificacion">
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      variant="primary"
-                      className="btn btn-secondary mx-1 btn-md"
-                      id="dropdown-actions"
-                      style={{ background: "none", border: "none" }}
-                    >
-                      <img
-                        src={currentUser.photoURL || profile}
-                        alt="profile"
-                        className="profile-picture"
-                      />
-                    </Dropdown.Toggle>
-                    <div className="dropdown__container">
-                      <Dropdown.Menu>
-                        <Dropdown.Item>
-                          <Link
-                            to="/miPerfil"
-                            className="text-decoration-none"
-                            style={{ color: "#8D93AB" }}
-                          >
-                            <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
-                            Mi Perfil
-                          </Link>
-                        </Dropdown.Item>
-
-                        <Dropdown.Item>
-
-                          <Link
-                            to="/"
-                            className="text-decoration-none"
-                            style={{ color: "#8D93AB" }}
-                            onClick={confirmLogout}
-                          >
-                            <FaSignOutAlt className="icono" />
-                            Cerrar Sesión
-                          </Link>
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </div>
-                  </Dropdown>
-                </div>
+          <>
+            {!id ? (
+              <div className="search-bar d-flex col-2 m-2 ms-3 w-50">
+                <input
+                  value={search}
+                  onChange={searcher}
+                  type="text"
+                  placeholder="Buscar..."
+                  className="form-control-upNav  m-2"
+                  list="pacientes-list"
+                />
+                <datalist id="pacientes-list">
+                  {opcionesDePacientes.map((opcion, index) => (
+                    <option key={`pacientes-${index}`} value={opcion.valorBusqueda} />
+                  ))}
+                </datalist>
+                <button
+                  onClick={handleSearch}
+                  className="btn"
+                  id="boton-main"
+                  style={{ margin: "3px" }}
+                >
+                  <i className="fa-solid fa-magnifying-glass" id="historyi"></i>
+                </button>
               </div>
-            </div>
-          </nav>
+            ) : (
+              <div className="search-bar d-flex col-2 m-2 ms-3 w-50">
+                <input
+                  value={apellidoConNombre}
+                  onChange={searcher}
+                  type="text"
+                  placeholder="Buscador de Pacientes..."
+                  className="form-control m-2"
+                  list="pacientes-list"
+                />
+                <datalist id="pacientes-list">
+                  {opcionesDePacientes.map((opcion, index) => (
+                    <option key={`pacientes-${index}`} value={opcion.valorBusqueda} />
+                  ))}
+                </datalist>
+                <button
+                  className="btn btn-secondary"
+                  style={{ margin: "3px" }}
+                  disabled
+                >
+                  <i className="fa-solid fa-magnifying-glass" id="historyi"></i>
+                </button>
+                <button
+                  onClick={handleLimpiar}
+                  className="btn"
+                  id="boton-main"
+                  style={{ margin: "3px" }}
+                >
+                  <i className="fa-regular fa-circle-xmark" id="historyi"></i>
+                </button>
+              </div>
+            )}
+          </>
 
-          <Box sx={{ width: "100%" }} >
+          <Box className="container mw-100" sx={{ width: "100%" }} >
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs value={value} onChange={handleChange} >
                 <Tab label="Filiacion" />

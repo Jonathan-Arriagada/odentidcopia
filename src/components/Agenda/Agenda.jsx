@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
 import CreateCita from "./CreateCita";
-import Navigation from "../Navigation";
 import EditCita from "./EditCita";
 import Estados from "./Estados";
 import HorariosAtencionCitas from "./HorariosAtencionCitas";
@@ -12,12 +11,10 @@ import ListaSeleccionEstadoCita from "./ListaSeleccionEstadoCita";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { Dropdown, Modal, Button } from "react-bootstrap";
-import { FaSignOutAlt, FaBell } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../../style/Main.css"
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthContext";
-import profile from "../../img/profile.png";
 
 function Citas() {
   const hoy = moment(new Date()).format("YYYY-MM-DD");
@@ -58,34 +55,6 @@ function Citas() {
   const estadosCollection = useRef(query(estadosCollectiona));
   const userCollectiona = collection(db, "user");
   const userCollection = useRef(query(userCollectiona));
-
-  const [isActive, setIsActive] = useState(false);
-  const handleIsActiveChange = (newIsActive) => {
-    setIsActive(newIsActive);
-  };
-
-  const navigate = useNavigate()
-
-  const logout = useCallback(() => {
-    localStorage.setItem("user", JSON.stringify(null));
-    navigate("/");
-    window.location.reload();
-  }, [navigate])
-
-  const confirmLogout = (e) => {
-    e.preventDefault();
-    Swal.fire({
-      title: '¿Desea cerrar sesión?',
-      showDenyButton: true,
-      confirmButtonText: 'Cerrar sesión',
-      confirmButtonColor: '#00C5C1',
-      denyButtonText: `Cancelar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        logout();
-      }
-    });
-  };
 
   const citasCollection = collection(db, "citas");
   const citasCollectionOrdenados = useRef(
@@ -282,6 +251,13 @@ function Citas() {
     results = citas;
   }
 
+  function quitarAcentos(texto) {
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
+  }
 
   results = !search
     ? results
@@ -309,11 +285,15 @@ function Citas() {
               dato[filtroBusqueda] !== undefined &&
               dato[filtroBusqueda] !== null
           ))
-          : results.filter(
-            (dato) =>
-              dato.apellidoConNombre.toLowerCase().includes(search.toLowerCase()) ||
-              dato.idc.toString().includes(search.toString())
-          );
+          : results.filter((dato) => {
+            const apellidoConNombreSinAcentos = quitarAcentos(dato.apellidoConNombre);
+            const searchSinAcentos = quitarAcentos(search);
+
+            return (
+              apellidoConNombreSinAcentos.includes(searchSinAcentos) ||
+              dato.idc.toString().includes(searchSinAcentos)
+            );
+          });
 
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;
@@ -348,517 +328,460 @@ function Citas() {
 
   return (
     <>
-        {isLoading ? (
-          <div className="w-100">
-            <span className="loader position-absolute start-50 top-50 mt-3"></span>
+      {isLoading ? (
+        <div className="w-100">
+          <span className="loader position-absolute start-50 top-50 mt-3"></span>
+        </div>
+      ) : (
+        <div className="w-100">
+          <div className="search-bar d-flex col-2 m-2 ms-3 w-50">
+            <input
+              value={search}
+              onChange={searcher}
+              type="text"
+              placeholder="Buscar..."
+              className="form-control-upNav m-2"
+            />
+            <i className="fa-solid fa-magnifying-glass"></i>
+            {taparFiltro && (
+              <input
+                className="form-control m-2 w-90"
+                value="<-FILTRO ENTRE FECHAS APLICADO->"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  textAlign: "center",
+                }}
+                disabled
+              ></input>
+            )}
           </div>
-        ) : (
-          <div className="w-100">
-            <nav className="navbar">
-              <div className="d-flex justify-content-between w-100 px-2">
-                <div className="search-bar" style={{ position: "relative" }}>
-                  <input
-                    value={search}
-                    onChange={searcher}
-                    type="text"
-                    placeholder="Buscar..."
-                    className="form-control-upNav  m-2"
-                  />
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                  {taparFiltro && (
-                    <input
-                      className="form-control m-2 w-90"
-                      value="<-FILTRO ENTRE FECHAS APLICADO->"
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        zIndex: 1,
-                        textAlign: "center",
-                      }}
-                      disabled
-                    ></input>
-                  )}
-                </div>
-                <div className="col d-flex justify-content-end align-items-center right-navbar">
-                  <p className="fw-normal mb-0" style={{ marginRight: "20px" }}>
-                    Hola, {currentUser.displayName}
-                  </p>
-                  <div className="d-flex">
-                    <div className="notificacion">
-                      <FaBell className="icono" />
-                      <span className="badge rounded-pill bg-danger">5</span>
-                    </div>
-                  </div>
-                  <div className="notificacion">
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant="primary"
-                        className="btn btn-secondary mx-1 btn-md"
-                        id="dropdown-actions"
-                        style={{ background: "none", border: "none" }}
-                      >
-                        <img
-                          src={currentUser.photoURL || profile}
-                          alt="profile"
-                          className="profile-picture"
-                        />
-                      </Dropdown.Toggle>
-                      <div className="dropdown__container">
-                        <Dropdown.Menu>
-                          <Dropdown.Item>
-                            <Link
-                              to="/miPerfil"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                            >
-                              <i className="icono fa-solid fa-user" style={{ marginRight: "12px" }}></i>
-                              Mi Perfil
-                            </Link>
-                          </Dropdown.Item>
 
-                          <Dropdown.Item>
-
-                            <Link
-                              to="/"
-                              className="text-decoration-none"
-                              style={{ color: "#8D93AB" }}
-                              onClick={confirmLogout}
-                            >
-                              <FaSignOutAlt className="icono" />
-                              Cerrar Sesión
-                            </Link>
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </div>
-                    </Dropdown>
-                  </div>
-                </div>
-              </div>
-            </nav>
-            <div className="container mw-100 mt-2">
-              <div className="row">
-                <div className="col">
-                  <br></br>
-                  <div className="d-flex justify-content-between">
-                    <div
-                      className="d-flex justify-content-center align-items-center"
-                      style={{ maxHeight: "40px", marginLeft: "10px" }}
-                    >
-                      <h1>Agenda</h1>
-                      {userType === process.env.REACT_APP_rolAdCon ? (
-                        <button
-                          className="btn grey mx-2 btn-sm"
-                          style={{ borderRadius: "5px" }}
-                          onClick={() => {
-                            funcMostrarAjustes(true);
-                          }}
-                        >
-                          <i className="fa-solid fa-gear"></i>
-                        </button>
-                      ) : null}
-                      {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                        <button
-                          variant="primary"
-                          className="btn-blue m-1"
-                          onClick={() => setModalShowCita(true)}
-                        >
-                          Agregar Cita
-                        </button>
-                      ) : null}
-                      {mostrarAjustes && (
-                        <div>
-                          <button
-                            variant="secondary"
-                            className="btn-blue m-1"
-                            onClick={() => setModalShowEstados(true)}
-                          >
-                            Estados
-                          </button>
-                          <button
-                            variant="tertiary"
-                            className="btn-blue m-1"
-                            onClick={() => setModalShowHorarios(true)}
-                          >
-                            Horarios
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    {!ocultrarFiltrosGenerales && (<div className="col d-flex justify-content-end align-items-center">
-                      <div className="mb-3 m-1">
-                        <select
-                          className="form-control-doctor"
-                          multiple={false}
-                          onChange={(e) => {
-                            const selectedOption = e.target.value;
-                            if (selectedOption === "") {
-                              setSearch("")
-                              setTaparFiltro(false);
-                            } else if (selectedOption === "Hoy") {
-                              filtroFecha("Hoy");
-                              setTaparFiltro(false);
-                            } else if (selectedOption === "Esta Semana") {
-                              filtroFecha("Esta Semana");
-                              setTaparFiltro(true);
-                            } else if (selectedOption === "Este Mes") {
-                              filtroFecha("Este Mes");
-                              setTaparFiltro(true);
-                            } else if (selectedOption === "Seleccionar") {
-                              setModalSeleccionFechaShow(true);
-                            }
-                            else if (selectedOption === "Meses") {
-                              handleTituloModal("mes");
-                              setParametroModal("mes");
-                              setModalShowFiltros2(true);
-                            }
-                          }}
-                        >
-                          <option value="">Todas las Fechas</option>
-                          <option value="Hoy">Hoy</option>
-                          <option value="Esta Semana">Esta Semana</option>
-                          <option value="Este Mes">Este Mes</option>
-                          <option value="Seleccionar">Seleccionar Fecha</option>
-                          <option value="Meses">Agrupar por Mes</option>
-                        </select>
-                      </div>
-
-                      {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                        <div className="mb-3 m-1">
-                          <select
-                            value={doctor}
-                            onChange={(e) => setDoctor(e.target.value)}
-                            className="form-control-doctor"
-                            multiple={false}
-                          >
-                            <option value="">Todos los Doctores</option>
-                            {doctoresOption}
-                          </select>
-                        </div>
-                      ) : null}
-
-                      <div className="mb-3 m-1">
-                        <select
-                          value={estadoFiltro}
-                          onChange={(e) => setEstadoFiltro(e.target.value)}
-                          className="form-control-doctor"
-                          multiple={false}
-                        >
-                          <option value="">Todos los Estados</option>
-                          {estadoOptions}
-                        </select>
-                      </div>
-                    </div>)}
-                  </div>
-
-                  <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); }}>
-                    <Modal.Header closeButton onClick={() => {
-                      setModalSeleccionFechaShow(false);
-                      setSelectedDate("");
-                      setTaparFiltro(false);
-                      setSearch("");
-                    }}>
-                      <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Calendar
-                        defaultValue={moment().format("YYYY-MM-DD")}
-                        onChange={(date) => {
-                          const formattedDate =
-                            moment(date).format("YYYY-MM-DD");
-                          setSelectedDate(formattedDate);
+          <div className="container mw-100">
+            <div className="row">
+              <div className="col">
+                <br></br>
+                <div className="d-flex justify-content-between">
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ maxHeight: "40px", marginLeft: "10px" }}
+                  >
+                    <h1>Agenda</h1>
+                    {userType === process.env.REACT_APP_rolAdCon ? (
+                      <button
+                        className="btn grey mx-2 btn-sm"
+                        style={{ borderRadius: "5px" }}
+                        onClick={() => {
+                          funcMostrarAjustes(true);
                         }}
-                        value={selectedDate}
-                      />
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); }}>
-                        Buscar Fecha
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+                      >
+                        <i className="fa-solid fa-gear"></i>
+                      </button>
+                    ) : null}
+                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                      <button
+                        variant="primary"
+                        className="btn-blue m-1"
+                        onClick={() => setModalShowCita(true)}
+                      >
+                        Agregar Cita
+                      </button>
+                    ) : null}
+                    {mostrarAjustes && (
+                      <div>
+                        <button
+                          variant="secondary"
+                          className="btn-blue m-1"
+                          onClick={() => setModalShowEstados(true)}
+                        >
+                          Estados
+                        </button>
+                        <button
+                          variant="tertiary"
+                          className="btn-blue m-1"
+                          onClick={() => setModalShowHorarios(true)}
+                        >
+                          Horarios
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
-                  <Modal
-                    show={modalShowFiltros2}
-                    onHide={() => {
+                  {!ocultrarFiltrosGenerales && (<div className="col d-flex justify-content-end align-items-center">
+                    <div className="mb-3 m-1">
+                      <select
+                        className="form-control-doctor"
+                        multiple={false}
+                        onChange={(e) => {
+                          const selectedOption = e.target.value;
+                          if (selectedOption === "") {
+                            setSearch("")
+                            setTaparFiltro(false);
+                          } else if (selectedOption === "Hoy") {
+                            filtroFecha("Hoy");
+                            setTaparFiltro(false);
+                          } else if (selectedOption === "Esta Semana") {
+                            filtroFecha("Esta Semana");
+                            setTaparFiltro(true);
+                          } else if (selectedOption === "Este Mes") {
+                            filtroFecha("Este Mes");
+                            setTaparFiltro(true);
+                          } else if (selectedOption === "Seleccionar") {
+                            setModalSeleccionFechaShow(true);
+                          }
+                          else if (selectedOption === "Meses") {
+                            handleTituloModal("mes");
+                            setParametroModal("mes");
+                            setModalShowFiltros2(true);
+                          }
+                        }}
+                      >
+                        <option value="">Todas las Fechas</option>
+                        <option value="Hoy">Hoy</option>
+                        <option value="Esta Semana">Esta Semana</option>
+                        <option value="Este Mes">Este Mes</option>
+                        <option value="Seleccionar">Seleccionar Fecha</option>
+                        <option value="Meses">Agrupar por Mes</option>
+                      </select>
+                    </div>
+
+                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                      <div className="mb-3 m-1">
+                        <select
+                          value={doctor}
+                          onChange={(e) => setDoctor(e.target.value)}
+                          className="form-control-doctor"
+                          multiple={false}
+                        >
+                          <option value="">Todos los Doctores</option>
+                          {doctoresOption}
+                        </select>
+                      </div>
+                    ) : null}
+
+                    <div className="mb-3 m-1">
+                      <select
+                        value={estadoFiltro}
+                        onChange={(e) => setEstadoFiltro(e.target.value)}
+                        className="form-control-doctor"
+                        multiple={false}
+                      >
+                        <option value="">Todos los Estados</option>
+                        {estadoOptions}
+                      </select>
+                    </div>
+                  </div>)}
+                </div>
+
+                <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); }}>
+                  <Modal.Header closeButton onClick={() => {
+                    setModalSeleccionFechaShow(false);
+                    setSelectedDate("");
+                    setTaparFiltro(false);
+                    setSearch("");
+                  }}>
+                    <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Calendar
+                      defaultValue={moment().format("YYYY-MM-DD")}
+                      onChange={(date) => {
+                        const formattedDate =
+                          moment(date).format("YYYY-MM-DD");
+                        setSelectedDate(formattedDate);
+                      }}
+                      value={selectedDate}
+                    />
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); }}>
+                      Buscar Fecha
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
+                <Modal
+                  show={modalShowFiltros2}
+                  onHide={() => {
+                    setModalShowFiltros2(false);
+                    setSelectedCheckbox2("");
+                  }}
+                >
+                  <Modal.Header
+                    closeButton
+                    onClick={() => {
                       setModalShowFiltros2(false);
+                      setParametroModal("");
                       setSelectedCheckbox2("");
                     }}
                   >
-                    <Modal.Header
-                      closeButton
+                    <Modal.Title>
+                      <h3 style={{ fontWeight: "bold" }}>
+                        Filtro Seleccionado :{" "}
+                      </h3>
+                      <h6>{tituloParametroModal}</h6>
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>
+                      {citas
+                        .map((cita) => cita[parametroModal])
+                        .filter(
+                          (valor, index, self) =>
+                            self.indexOf(valor) === index &&
+                            valor !== "" &&
+                            valor !== undefined &&
+                            valor !== null
+                        )
+                        .map((parametroModal, index) => (
+                          <label className="checkbox-label" key={index}>
+                            <input
+                              type="checkbox"
+                              name={parametroModal}
+                              checked={
+                                selectedCheckbox2 === parametroModal
+                              }
+                              onChange={handleCheckboxChange2}
+                            />
+                            {parametroModal}
+                          </label>
+                        ))}
+                    </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      variant="primary"
                       onClick={() => {
+                        handleTituloModal("");
+                        searcher("");
+                        setModalShowFiltros2(false);
+                        setSelectedCheckbox2("");
+                        setParametroModal("");
+                      }}
+                    >
+                      Salir
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        searcher(selectedCheckbox2);
                         setModalShowFiltros2(false);
                         setParametroModal("");
+                        setTituloParametroModal("");
                         setSelectedCheckbox2("");
                       }}
                     >
-                      <Modal.Title>
-                        <h3 style={{ fontWeight: "bold" }}>
-                          Filtro Seleccionado :{" "}
-                        </h3>
-                        <h6>{tituloParametroModal}</h6>
-                      </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div>
-                        {citas
-                          .map((cita) => cita[parametroModal])
-                          .filter(
-                            (valor, index, self) =>
-                              self.indexOf(valor) === index &&
-                              valor !== "" &&
-                              valor !== undefined &&
-                              valor !== null
-                          )
-                          .map((parametroModal, index) => (
-                            <label className="checkbox-label" key={index}>
-                              <input
-                                type="checkbox"
-                                name={parametroModal}
-                                checked={
-                                  selectedCheckbox2 === parametroModal
-                                }
-                                onChange={handleCheckboxChange2}
+                      Aplicar Filtro
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
+                <div className="table__container">
+                  <table className="table__body">
+                    <thead>
+                      <tr>
+                        <th onClick={() => sorting("fecha")}>Fecha</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th style={{ textAlign: "left" }}>
+                          Apellido y Nombres
+                        </th>
+                        <th>IDC</th>
+                        <th>Telefono</th>
+                        <th onClick={() => sorting("doctor")}>Doctor</th>
+                        <th onClick={() => sorting("estado")}>Estado</th>
+                        <th id="columnaAccion"></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {resultsPaginados.map((cita, index) => (
+                        <tr key={cita.id}>
+                          <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
+                          <td> {cita.horaInicio} </td>
+                          <td> {cita.horaFin} </td>
+                          <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
+                          <td> {cita.idc} </td>
+                          <td> {cita.selectedCode}{cita.numero} </td>
+                          <td>{JSON.parse(cita.doctor).nombreApellido}</td>
+                          <td style={{ paddingBottom: "0", display: "flex" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {cita.estado || ""}
+                              {cita.estado && (
+                                <p
+                                  style={buscarEstilos(cita.estado)}
+                                  className="color-preview justify-content-center align-items-center"
+                                ></p>
+
+                              )}
+                              <ListaSeleccionEstadoCita
+                                citaId={cita.id}
                               />
-                              {parametroModal}
-                            </label>
-                          ))}
+                            </div>
+                          </td>
+                          <td id="columnaAccion" className="colDerecha">
+                            <Dropdown>
+                              <Dropdown.Toggle
+                                variant="primary"
+                                className="btn btn-secondary mx-1 btn-md"
+                                id="dropdown-actions"
+                                style={{ background: "none", border: "none" }}
+                              >
+                                <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
+                              </Dropdown.Toggle>
+
+                              <div className="dropdown__container">
+                                <Dropdown.Menu>
+                                  <Dropdown.Item
+                                    onClick={() => {
+                                      setModalShowVerNotas([
+                                        true,
+                                        cita.comentario
+                                      ]);
+                                    }}
+                                  >
+                                    <i className="fa-regular fa-comment"></i>
+                                    Ver Notas
+                                  </Dropdown.Item>
+
+                                  <Dropdown.Item>
+                                    <Link to={`/historias/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
+                                      <i className="fa-solid fa-file-medical"></i>
+                                      Historia
+                                    </Link>
+                                  </Dropdown.Item>
+
+                                  {userType !== process.env.REACT_APP_rolDoctorCon ? (
+                                    <div>
+                                      <Dropdown.Item
+                                        onClick={() => {
+                                          setModalShowEditCita(true);
+                                          setCita(cita);
+                                          setIdParam(cita.id);
+                                        }}
+                                      >
+                                        <i className="fa-regular fa-pen-to-square"></i>
+                                        Editar
+                                      </Dropdown.Item>
+                                      <Dropdown.Item
+                                        onClick={() =>
+                                          confirmeDelete(cita.id)
+                                        }
+                                      >
+                                        <i className="fa-solid fa-trash-can"></i>
+                                        Eliminar
+                                      </Dropdown.Item>
+                                    </div>
+                                  ) : null}
+
+                                </Dropdown.Menu>
+                              </div>
+                            </Dropdown>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="table__footer">
+                  <div className="table__footer-left">
+                    Mostrando {startIndex + 1} - {endIndex} de {results.length}
+                  </div>
+
+                  <div className="table__footer-right">
+                    <span>
+                      <button
+                        onClick={() => handleCambioPagina(paginaActual - 1)}
+                        disabled={paginaActual === 1}
+                        style={{ border: "0", background: "none" }}
+                      >
+                        &lt; Previo
+                      </button>
+                    </span>
+
+                    {[...Array(paginasTotales)].map((_, index) => {
+                      const pagina = index + 1;
+                      return (
+                        <span key={pagina}>
+                          <span
+                            onClick={() => handleCambioPagina(pagina)}
+                            className={pagina === paginaActual ? "active" : ""}
+                            style={{
+                              margin: "2px",
+                              backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
+                              color: pagina === paginaActual ? "#FFFFFF" : "#000000",
+                              padding: "4px 8px",
+                              borderRadius: "4px",
+                              cursor: "pointer"
+                            }}
+                          >
+                            {pagina}
+                          </span>
+                        </span>
+                      );
+                    })}
+
+                    <span>
+                      <button
+                        onClick={() => handleCambioPagina(paginaActual + 1)}
+                        disabled={paginaActual === paginasTotales}
+                        style={{ border: "0", background: "none" }}
+                      >
+                        Siguiente &gt;
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                {modalShowVerNotas[0] && (
+                  <Modal
+                    show={modalShowVerNotas[0]}
+                    size="md"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    onHide={() => setModalShowVerNotas([false, ""])}
+                  >
+                    <Modal.Header
+                      closeButton
+                      onClick={() => setModalShowVerNotas([false, ""])}
+                    >
+                      <Modal.Title>Comentarios</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <div className="container">
+                        <div className="col">
+                          <form>
+                            <div className="row">
+                              <div className="col mb-6">
+                                <p>{modalShowVerNotas[1]}</p>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
                       </div>
                     </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="primary"
-                        onClick={() => {
-                          handleTituloModal("");
-                          searcher("");
-                          setModalShowFiltros2(false);
-                          setSelectedCheckbox2("");
-                          setParametroModal("");
-                        }}
-                      >
-                        Salir
-                      </Button>
-                      <Button
-                        variant="primary"
-                        onClick={() => {
-                          searcher(selectedCheckbox2);
-                          setModalShowFiltros2(false);
-                          setParametroModal("");
-                          setTituloParametroModal("");
-                          setSelectedCheckbox2("");
-                        }}
-                      >
-                        Aplicar Filtro
-                      </Button>
-                    </Modal.Footer>
                   </Modal>
-
-                  <div className="table__container">
-                    <table className="table__body">
-                      <thead>
-                        <tr>
-                          <th onClick={() => sorting("fecha")}>Fecha</th>
-                          <th>Hora Inicio</th>
-                          <th>Hora Fin</th>
-                          <th style={{ textAlign: "left" }}>
-                            Apellido y Nombres
-                          </th>
-                          <th>IDC</th>
-                          <th>Telefono</th>
-                          <th onClick={() => sorting("doctor")}>Doctor</th>
-                          <th onClick={() => sorting("estado")}>Estado</th>
-                          <th id="columnaAccion"></th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        {resultsPaginados.map((cita, index) => (
-                          <tr key={cita.id}>
-                            <td id="colIzquierda">{moment(cita.fecha).format("DD/MM/YY")}</td>
-                            <td> {cita.horaInicio} </td>
-                            <td> {cita.horaFin} </td>
-                            <td style={{ textAlign: "left" }}> {cita.apellidoConNombre} </td>
-                            <td> {cita.idc} </td>
-                            <td> {cita.selectedCode}{cita.numero} </td>
-                            <td>{JSON.parse(cita.doctor).nombreApellido}</td>
-                            <td style={{ paddingBottom: "0", display: "flex" }}>
-                              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                {cita.estado || ""}
-                                {cita.estado && (
-                                  <p
-                                    style={buscarEstilos(cita.estado)}
-                                    className="color-preview justify-content-center align-items-center"
-                                  ></p>
-
-                                )}
-                                <ListaSeleccionEstadoCita
-                                  citaId={cita.id}
-                                />
-                              </div>
-                            </td>
-                            <td id="columnaAccion" className="colDerecha">
-                              <Dropdown>
-                                <Dropdown.Toggle
-                                  variant="primary"
-                                  className="btn btn-secondary mx-1 btn-md"
-                                  id="dropdown-actions"
-                                  style={{ background: "none", border: "none" }}
-                                >
-                                  <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
-                                </Dropdown.Toggle>
-
-                                <div className="dropdown__container">
-                                  <Dropdown.Menu>
-                                    <Dropdown.Item
-                                      onClick={() => {
-                                        setModalShowVerNotas([
-                                          true,
-                                          cita.comentario
-                                        ]);
-                                      }}
-                                    >
-                                      <i className="fa-regular fa-comment"></i>
-                                      Ver Notas
-                                    </Dropdown.Item>
-
-                                    <Dropdown.Item>
-                                      <Link to={`/historias/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
-                                        <i className="fa-solid fa-file-medical"></i>
-                                        Historia
-                                      </Link>
-                                    </Dropdown.Item>
-
-                                    {userType !== process.env.REACT_APP_rolDoctorCon ? (
-                                      <div>
-                                        <Dropdown.Item
-                                          onClick={() => {
-                                            setModalShowEditCita(true);
-                                            setCita(cita);
-                                            setIdParam(cita.id);
-                                          }}
-                                        >
-                                          <i className="fa-regular fa-pen-to-square"></i>
-                                          Editar
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                          onClick={() =>
-                                            confirmeDelete(cita.id)
-                                          }
-                                        >
-                                          <i className="fa-solid fa-trash-can"></i>
-                                          Eliminar
-                                        </Dropdown.Item>
-                                      </div>
-                                    ) : null}
-
-                                  </Dropdown.Menu>
-                                </div>
-                              </Dropdown>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <div className="table__footer">
-                    <div className="table__footer-left">
-                      Mostrando {startIndex + 1} - {endIndex} de {results.length}
-                    </div>
-
-                    <div className="table__footer-right">
-                      <span>
-                        <button
-                          onClick={() => handleCambioPagina(paginaActual - 1)}
-                          disabled={paginaActual === 1}
-                          style={{ border: "0", background: "none" }}
-                        >
-                          &lt; Previo
-                        </button>
-                      </span>
-
-                      {[...Array(paginasTotales)].map((_, index) => {
-                        const pagina = index + 1;
-                        return (
-                          <span key={pagina}>
-                            <span
-                              onClick={() => handleCambioPagina(pagina)}
-                              className={pagina === paginaActual ? "active" : ""}
-                              style={{
-                                margin: "2px",
-                                backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
-                                color: pagina === paginaActual ? "#FFFFFF" : "#000000",
-                                padding: "4px 8px",
-                                borderRadius: "4px",
-                                cursor: "pointer"
-                              }}
-                            >
-                              {pagina}
-                            </span>
-                          </span>
-                        );
-                      })}
-
-                      <span>
-                        <button
-                          onClick={() => handleCambioPagina(paginaActual + 1)}
-                          disabled={paginaActual === paginasTotales}
-                          style={{ border: "0", background: "none" }}
-                        >
-                          Siguiente &gt;
-                        </button>
-                      </span>
-                    </div>
-                  </div>
-
-                  {modalShowVerNotas[0] && (
-                    <Modal
-                      show={modalShowVerNotas[0]}
-                      size="md"
-                      aria-labelledby="contained-modal-title-vcenter"
-                      centered
-                      onHide={() => setModalShowVerNotas([false, ""])}
-                    >
-                      <Modal.Header
-                        closeButton
-                        onClick={() => setModalShowVerNotas([false, ""])}
-                      >
-                        <Modal.Title>Comentarios</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                        <div className="container">
-                          <div className="col">
-                            <form>
-                              <div className="row">
-                                <div className="col mb-6">
-                                  <p>{modalShowVerNotas[1]}</p>
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                      </Modal.Body>
-                    </Modal>
-                  )}
-                </div>
+                )}
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
       <CreateCita show={modalShowCita} onHide={() => setModalShowCita(false)} />
       <EditCita
         id={idParam}

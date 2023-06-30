@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { collection, deleteDoc, doc, query, orderBy, updateDoc } from "firebase/firestore";
-import { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { db } from "../../firebaseConfig/firebase";
 import { onSnapshot } from "firebase/firestore";
 import ListaSeleccionEstadoCita from "../Agenda/ListaSeleccionEstadoCita";
@@ -211,6 +210,14 @@ function AgendaEspecif(id) {
     }
   };
 
+  function quitarAcentos(texto) {
+    return texto
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
   let results = []
 
   if (doctor && estadoFiltro) {
@@ -253,11 +260,14 @@ function AgendaEspecif(id) {
               dato[filtroBusqueda] !== undefined &&
               dato[filtroBusqueda] !== null
           ))
-          : results.filter(
-            (dato) =>
-              dato.apellidoConNombre.toLowerCase().includes(search) ||
-              dato.idc.toString().includes(search.toString())
-          );
+          : results.filter((dato) => {
+            const apellidoConNombreSinAcentos = quitarAcentos(dato.apellidoConNombre);
+            const searchSinAcentos = quitarAcentos(search);
+            return (
+                apellidoConNombreSinAcentos.includes(searchSinAcentos) ||
+                dato.idc.toString().includes(searchSinAcentos)
+            );
+        });
 
   var paginasTotales = Math.ceil(results.length / filasPorPagina);
   var startIndex = (paginaActual - 1) * filasPorPagina;
