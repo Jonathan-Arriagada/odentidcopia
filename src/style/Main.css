@@ -1238,3 +1238,13 @@ select {
 .numbers {
   color: var(--color-light-text) !important;
 }
+
+.icon-container {
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #003057dc;
+  border-radius: 50%;
+  color: #fff;
+  padding: 0.5rem;
+}
+

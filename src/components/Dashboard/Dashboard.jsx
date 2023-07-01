@@ -12,6 +12,7 @@ import EficienciaFacturacion from './EficienciaFacturacion';
 import IngresosYRentabilidad from './IngresosYRentabilidad';
 import moment from "moment";
 import ProductividadDentistas from './ProductividadDentistas';
+import { FaUser, FaCoins} from 'react-icons/fa';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -132,8 +133,8 @@ function Dashboard() {
           <div className="col-7 pt-3 me-2 rounded-4 shadow fondo-color-primario">
             <Bar data={data} options={options}></Bar>
           </div>
-          <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario">
-            <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
+          <div className="col-5 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario position-relative">
+            <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos <span className="icon-container position-absolute top-0 end-0 m-2"><FaUser/></span></h2>
             <h3 className="fs-1 ms-2 numbers"><PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
             <h2 className="fw-bold fs-5 mt-2 ms-2">Pacientes atendidos</h2>
             <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos /></h3>
@@ -142,10 +143,10 @@ function Dashboard() {
           </div>
         </div>
           <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
-            <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
-              
+            <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover position-relative">
               <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
               <h3 className="fs-1 numbers">76%</h3>
+              
               {/*N° de Tratamientos realizados por periodos por doctor*/}
               <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
               <h3 className="fs-1 numbers"><EficienciaFacturacion /></h3>

@@ -21,6 +21,7 @@ import ControlEvolucion from "./components/ControlEvolucion/ControlEvolucion";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Navigation from "./components/Navigation"
 import UpNav from "./components/UpNav"
+import InformeIngresos from "./components/Gastos/Informes/InformeIngresos";
 
 function App() {
   const { currentUser } = useContext(AuthContext)
@@ -63,6 +64,7 @@ function App() {
           <Route path="/materiales" element={<RequireAuth><Materiales /></RequireAuth>} />
           <Route path="/proveedores" element={<RequireAuth><Proveedores /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+          <Route path="/informe-ingresos" element={<RequireAuth><InformeIngresos/></RequireAuth>} />
         </Routes>
       </BrowserRouter>
     </div>
