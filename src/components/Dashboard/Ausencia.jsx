@@ -1,44 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
-function Ausencia() {
-  const [, setTotalCitas] = useState(0);
-  const [, setCitasCanceladas] = useState(0);
+function Ausencia(props) {
   const [porcentajeCanceladas, setPorcentajeCanceladas] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, "citas"));
+    const q = query(
+      collection(db, "citas"),
+      where("fecha", ">=", props.fechaInicio),
+      where("fecha", "<=", props.fechaFin)
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      let total = 0;
-      let canceladas = 0;
+      let total = snapshot.size || 0;
+      let canceladas = snapshot.docs.filter((doc) => doc.data().estado === "Cancelada").length;
 
-      snapshot.forEach((doc) => {
-        const cita = doc.data();
-        total++;
-
-        if (cita.estado === "Cancelada") {
-          canceladas++;
-        }
-      });
-
-      setTotalCitas(total);
-      setCitasCanceladas(canceladas);
       calcularPorcentaje(canceladas, total);
     });
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [props]);
 
   const calcularPorcentaje = (canceladas, total) => {
-    if (total > 0) {
-      const porcentaje = (canceladas / total) * 100;
-      setPorcentajeCanceladas(porcentaje.toFixed(2));
-    } else {
-      setPorcentajeCanceladas(0);
-    }
+    const porcentaje = total > 0 ? (canceladas / total) * 100 : 0;
+    setPorcentajeCanceladas(porcentaje.toFixed(2));
   };
 
   return (

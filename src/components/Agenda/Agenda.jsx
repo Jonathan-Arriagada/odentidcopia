@@ -658,12 +658,12 @@ function Citas() {
                                     Ver Notas
                                   </Dropdown.Item>
 
-                                  <Dropdown.Item>
+                                  <div className="dropdown-item">
                                     <Link to={`/historias/${cita.idPacienteCita}`} style={{ textDecoration: "none", color: "#212529" }}>
                                       <i className="fa-solid fa-file-medical"></i>
                                       Historia
                                     </Link>
-                                  </Dropdown.Item>
+                                  </div>
 
                                   {userType !== process.env.REACT_APP_rolDoctorCon ? (
                                     <div>

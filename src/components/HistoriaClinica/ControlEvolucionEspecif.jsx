@@ -263,7 +263,6 @@ function ControlEvolucionEspecif(props) {
                         <div className="container">
                           {results.map((control,) => (
                             <div className="row w-75 border mt-2 rounded justify-content-center" key={control.id}>
-
                               <div className="col-3 col-sm-3 border-end p-3 bg-body-secondary">
                                 <input
                                   type="text"
@@ -333,7 +332,7 @@ function ControlEvolucionEspecif(props) {
                                   value={control.detalleTratamiento}
                                   disabled
                                   className="mt-2 bg-body-tertiary textarea-no-resize"
-                                  style={{ border: "0", width: "100%", wordWrap: "break-word" }}
+                                  style={{height: `calc(${control.tratamientoControl.length}ch - 150px)` }}
                                 />
                               </div>
 

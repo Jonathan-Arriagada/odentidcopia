@@ -222,12 +222,12 @@ const Show = () => {
 
                               <div className="dropdown__container">
                                 <Dropdown.Menu>
-                                  <Dropdown.Item>
+                                  <div className="dropdown-item">
                                     <Link to={`/historias/${client.id}`} style={{ textDecoration: "none", color: "#212529" }}>
                                       <i className="fa-solid fa-file-medical"></i>
                                       Historia
                                     </Link>
-                                  </Dropdown.Item>
+                                  </div>
 
 
                                   {userType !== process.env.REACT_APP_rolDoctorCon ? (
