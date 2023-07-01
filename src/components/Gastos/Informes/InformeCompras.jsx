@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../../style/Main.css";
 
-const InformeIngresos = () => {
+const InformeCompras = () => {
  
   const [isLoading, setIsLoading] = useState(true);
   const [mostrarAjustes, setMostrarAjustes] = useState(false);
@@ -34,7 +34,7 @@ const InformeIngresos = () => {
                     className="d-flex justify-content-center align-items-center"
                     style={{ maxHeight: "40px", marginLeft: "10px" }}
                   >
-                    <h1>Informe ingresos</h1>
+                    <h1>Informe Compras</h1>
                     {userType === process.env.REACT_APP_rolAdCon ? (
                       <button
                         className="btn grey mx-2 btn-sm"
@@ -88,4 +88,4 @@ const InformeIngresos = () => {
   );
 };
 
-export default InformeIngresos;
+export default InformeCompras;
