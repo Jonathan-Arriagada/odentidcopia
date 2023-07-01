@@ -26,7 +26,7 @@ function PacientesAtendidos() {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [hoy]);
 
   return (
     <div>

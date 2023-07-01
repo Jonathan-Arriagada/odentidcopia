@@ -263,7 +263,6 @@ function ControlEvolucionEspecif(props) {
                         <div className="container">
                           {results.map((control,) => (
                             <div className="row w-75 border mt-2 rounded justify-content-center" key={control.id}>
-
                               <div className="col-3 col-sm-3 border-end p-3 bg-body-secondary">
                                 <input
                                   type="text"
@@ -316,7 +315,7 @@ function ControlEvolucionEspecif(props) {
                                     type="text"
                                     value={control.tratamientoControl}
                                     disabled
-                                    className="bg-body-tertiary"
+                                    className="bg-body-tertiary p-0"
                                     style={{ border: "0", fontWeight: "bold", width: `calc(${control.tratamientoControl.length}ch - 1%)` }} />
                                   <span className="mx-2">|</span>
                                   <input
@@ -332,8 +331,10 @@ function ControlEvolucionEspecif(props) {
                                 <textarea
                                   value={control.detalleTratamiento}
                                   disabled
-                                  className="mt-2 bg-body-tertiary textarea-no-resize"
-                                  style={{ border: "0", width: "100%", wordWrap: "break-word" }}
+                                  className="mt-2 bg-body-tertiary textarea-no-resize p-0"
+                                  style={{
+                                    height: 'calc(1.2em * ' + Math.ceil(control.detalleTratamiento.length / 85) + ')'
+                                  }}
                                 />
                               </div>
 

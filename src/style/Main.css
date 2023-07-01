@@ -209,7 +209,6 @@ thead th {
   position: sticky;
   top: 0;
   left: 0;
-  background-color: var(--color-fondo);
   cursor: pointer;
   text-transform: capitalize;
   color: var(--color-texto-oscuro);
@@ -736,7 +735,7 @@ select {
   z-index: 1;
 }
 
-.container{
+.container {
   margin-top: 5%;
 }
 
@@ -1204,6 +1203,10 @@ select {
 
 .textarea-no-resize {
   resize: none;
+  overflow: hidden;
+  border: 0;
+  width: 100%;
+  word-wrap: break-word;
 }
 
 /* DASHBOARD */
@@ -1218,6 +1221,23 @@ select {
   width: 70vw;
   height: 35vh;
   animation: Entrance 1s ease 0s 1 normal forwards;
+}
+
+.dashEspecial {
+  height: 45vh;
+  animation: Entrance 1s ease 0s 1 normal forwards;
+}
+
+.table__body-dash {
+  background-color: inherit;
+}
+
+.fila-dash {
+  padding: 0.3rem;
+}
+
+.head-dash {
+  padding: 0.4rem;
 }
 
 

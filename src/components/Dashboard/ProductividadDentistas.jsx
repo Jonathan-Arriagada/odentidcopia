@@ -1,32 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebaseConfig/firebase";
 
-const ProductividadDentistas = () => {
-  const datos = [
-    { doctor: "Dr. Ivan Vazquez", pacientes: 10 },
-    { doctor: "Dra. María López", pacientes: 8 },
-    { doctor: "Dr. Jonathan Arriagada", pacientes: 12 },
-    // Agrega más datos de doctores y pacientes aquí según sea necesario
-  ];
+const ProductividadDentistas = (props) => {
+  const [datos, setDatos] = useState([]);
+  
+  useEffect(() => {
+    const q = query(
+      collection(db, "controlEvoluciones"),
+      where("fechaControlRealizado", ">=", props.fechaInicio),
+      where("fechaControlRealizado", "<=", props.fechaFin)
+    );
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const doctores = {};
+
+      querySnapshot.forEach((doc) => {
+        const doctor = doc.data().doctor;
+        if (doctores[doctor]) {
+          doctores[doctor] += 1;
+        } else {
+          doctores[doctor] = 1;
+        }
+      });
+
+      const datosDoctores = Object.entries(doctores).map(([doctor, pacientes]) => ({ doctor, pacientes }));
+      setDatos(datosDoctores);
+    });
+
+    return unsubscribe;
+  }, [props]);
+
+
   return (
-    <div className="table__container">
-      <table className="table__body">
-        <thead>
-          <tr>
-            <th className="text-start">Doctor</th>
-            <th>Pacientes</th>
-          </tr>
-        </thead>
+    <table className="table__body-dash">
+      <thead>
+        <tr>
+          <th className="head-dash text-start">Doctor</th>
+          <th className="head-dash text-end">N°</th>
+        </tr>
+      </thead>
 
-        <tbody>
-          {datos.map((dato, index) => (
-            <tr key={index}>
-              <td className="text-start">{dato.doctor}</td>
-              <td>{dato.pacientes}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+      <tbody>
+        {datos.map((dato, index) => (
+          <tr key={index}>
+            <td className="fila-dash text-start">{dato.doctor}</td>
+            <td className="fila-dash text-end">{dato.pacientes}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
 

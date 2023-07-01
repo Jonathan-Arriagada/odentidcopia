@@ -27,6 +27,7 @@
     "react-dom": "^18.2.0",
     "react-google-recaptcha": "^2.1.0",
     "react-icons": "^4.8.0",
+    "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "sweetalert2": "^11.7.10",

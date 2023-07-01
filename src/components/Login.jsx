@@ -56,6 +56,9 @@ const Login = () => {
                 if (doc.data().rol === process.env.REACT_APP_rolBloq) {
                   // Rol bloqueado, no permitir el inicio de sesión
                   signOut(auth);
+                } else if (doc.data().rol === process.env.REACT_APP_rolAd) {
+                  // Rol bloqueado, no permitir el inicio de sesión
+                  navigate("/dashboard");
                 } else {
                   // Rol no bloqueado, redirigir al usuario a la página correspondiente
                   navigate("/pacientes");
