@@ -39,13 +39,13 @@ function Top3Tratamientos(props) {
   }, [props]);
 
   return (
-    <div className="text-start">
+    <p className="text-start">
       <span>1. {top1}</span>
       <br></br>
       <span>2. {top2}</span>
       <br></br>
       <span>3. {top3}</span>
-    </div>
+    </p>
   );
 }
 

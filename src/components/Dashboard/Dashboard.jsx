@@ -118,6 +118,7 @@ function Dashboard() {
           className="form-control-doctor"
           multiple={false}
           onChange={(e) => filtrosFechas(e.target.value)}
+          defaultValue="ultimos7"
         >
           <option value="hoy">Hoy</option>
           <option value="ayer">Ayer</option>
@@ -133,15 +134,15 @@ function Dashboard() {
             <Bar data={data} options={options}></Bar>
           </div>
           <div className="col-3 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario dashContenedor">
-            <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
+            <h2 className="fw-bold fs-5 mt-2 ms-2 ">Pacientes nuevos</h2>
             <h3 className="fs-1 ms-2 numbers"><PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
-            <h2 className="fw-bold fs-5 mt-2 ms-2">Pacientes atendidos</h2>
+            <h2 className="fw-bold fs-5 mt-1 ms-2">Pacientes atendidos</h2>
             <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
-            <h2 className="fw-bold fs-5 mt-2 ms-2">Casos Ortodoncia</h2>
+            <h2 className="fw-bold fs-5 mt-1 ms-2">Casos Ortodoncia</h2>
             <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="dashEspecial col-3 ms-2 rounded-4 d-flex align-items-start flex-column shadow border-hover fuente-color-primario dashContenedor">
-            <h2 className="fw-bold fs-5 mt-3 ">Productividad Dentistas</h2>
+            <h2 className="fw-bold fs-5 mt-3 ">Productividad Doctores</h2>
             <ProductividadDentistas fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
           </div>
         </div>
@@ -172,23 +173,23 @@ function Dashboard() {
           </GoogleReviews>
           <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
             <h2 className="fw-bold fs-6 mt-3">Top Tratamientos</h2>
-            <p className="fs-6 numbers"><Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></p>
+            <div className="numbers" style={{ fontSize: "0.9rem" }}><Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></div>
             {/*N° de Tratamientos realizados por periodos por doctor*/}
-            <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
+            <h2 className="fw-bold fs-6" style={{ marginTop: "-10px" }}>Eficiencia de facturación</h2>
             <h3 className="fs-1 numbers"><EficienciaFacturacion fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
             <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
             <h3 className="fs-1 numbers"><IngresosYRentabilidad fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
 
-            <h2 className="fw-bold fs-6">Ingresos por tratamiento</h2>
+            <h2 className="fw-bold fs-6 mt-3">Ingresos por tratamiento</h2>
             <h3 className="fs-1 numbers"><TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
             <h2 className="fw-bold fs-6 mt-3">Citas Por Confirmar</h2>
             <h3 className="fs-1 numbers"><CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
 
-            <h2 className="fw-bold fs-6">Cancelación / Ausencia citas</h2>
+            <h2 className="fw-bold fs-6 mt-3">Cancelación/Ausencia citas</h2>
             <h3 className="fs-1 numbers"><Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
         </div>
