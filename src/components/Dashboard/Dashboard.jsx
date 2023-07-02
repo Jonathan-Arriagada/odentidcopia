@@ -16,12 +16,11 @@ import Top3Tratamientos from './Top3Tratamientos';
 import CitasPorConfirmar from './CitasPorConfirmar';
 import Rating from 'react-rating-stars-component';
 
-
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Dashboard() {
   //valores-fechas-Predeterminados
-  const fechaInicio = moment().startOf('day').format("YYYY-MM-DD");
+  const fechaInicio = moment().subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
   const fechaFin = moment().endOf('day').format("YYYY-MM-DD");
   const [periodoFechasElegido, setPeriodoFechasElegido] = useState({ fechaInicio, fechaFin });
   //const [isLoading, setIsLoading] = useState(true);
