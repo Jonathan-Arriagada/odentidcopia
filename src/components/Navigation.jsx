@@ -184,7 +184,7 @@ const Navigation = () => {
                                     <Nav title="Informes contables" Icon={FaFileAlt} isActive={isActive} />
                                 </div>
                                 <div className="sidebar-content sub-content">
-                                    <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe ingresos" Icon={FaDonate} isActive={isActive} /> </Link>
+                                    <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe Ingresos" Icon={FaDonate} isActive={isActive} /> </Link>
                                     <Link to="/informe-ingresos-tratamiento" className="text-decoration-none link-light"><Nav title="Informe Tratamientos" Icon={FaNotesMedical} isActive={isActive} /></Link>
                                     <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe Compras" Icon={FaMoneyCheckAlt} isActive={isActive} /> </Link>
                                     <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparaciones" Icon={FaBalanceScale} isActive={isActive} /> </Link>

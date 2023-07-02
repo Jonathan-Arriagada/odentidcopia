@@ -24,7 +24,7 @@ function Ausencia(props) {
   }, [props]);
 
   const calcularPorcentaje = (canceladas, total) => {
-    const porcentaje = total > 0 ? (canceladas / total) * 100 : 0;
+    const porcentaje = total > 0 ? Math.round((canceladas / total) * 100) : 0;
     setPorcentajeCanceladas(porcentaje);
   };
 

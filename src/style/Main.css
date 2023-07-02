@@ -1211,6 +1211,10 @@ select {
 
 /* DASHBOARD */
 
+.dashContenedor {
+  background-color: var(--color-background);
+}
+
 .dashboard-sup {
   width: 70vw;
   height: 45vh;

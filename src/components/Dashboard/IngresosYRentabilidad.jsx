@@ -51,7 +51,7 @@ function IngresosYRentabilidad(props) {
         <div>
             <span>
                 {ingresosTotales !== null && gastosTotales !== null ? (
-                    (ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales)
+                    ((ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales).toFixed(2))
                 ) : (
                     "0"
                 )}

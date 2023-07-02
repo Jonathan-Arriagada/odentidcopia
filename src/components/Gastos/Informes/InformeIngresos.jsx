@@ -4,24 +4,12 @@ import "../../../style/Main.css";
 const InformeIngresos = () => {
 
   const [isLoading, setIsLoading] = useState(true);
-  const [mostrarAjustes, setMostrarAjustes] = useState(false);
-  const [userType, setUserType] = useState("");
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-
   useEffect(() => {
-    const type = localStorage.getItem("rol");
-    setUserType(type);
+
   });
 
-
-  function funcMostrarAjustes() {
-    if (mostrarAjustes) {
-      setMostrarAjustes(false);
-    } else {
-      setMostrarAjustes(true);
-    }
-  }
 
   return (
     <>
@@ -35,17 +23,6 @@ const InformeIngresos = () => {
                 style={{ maxHeight: "40px", marginLeft: "10px" }}
               >
                 <h1>Informe Ingresos</h1>
-                {userType === process.env.REACT_APP_rolAdCon ? (
-                  <button
-                    className="btn grey mx-2 btn-sm"
-                    style={{ borderRadius: "5px" }}
-                    onClick={() => {
-                      funcMostrarAjustes(true);
-                    }}
-                  >
-                    <i className="fa-solid fa-gear"></i>
-                  </button>
-                ) : null}
               </div>
             </div>
 

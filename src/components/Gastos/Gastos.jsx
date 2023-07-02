@@ -124,7 +124,9 @@ const Gastos = () => {
     return (
         <>
             {isLoading ? (
-                <span className="loader position-absolute start-50 top-50 mt-3"></span>
+                <div className="w-100">
+                    <span className="loader position-absolute start-50 top-50 mt-3"></span>
+                </div>
             ) : (
                 <div className="w-100">
                     <div className="search-bar d-flex col-2 m-2 ms-3 w-50">
