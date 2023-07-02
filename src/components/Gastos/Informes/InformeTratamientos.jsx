@@ -49,7 +49,7 @@ const InformeTratamientos = () => {
                   </div>
                 </div>
 
-                <div className="table__container">
+                <div className="table__container w-50">
                   <table className="table__body">
                     <thead>
                       <tr>

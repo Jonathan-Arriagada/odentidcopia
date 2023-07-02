@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
-import moment from "moment";
 
-function CasosOrtodoncia() {
-    const hoy = moment(new Date()).format("YYYY-MM-DD");
+function CasosOrtodoncia(props) {
   const [casosEnCurso, setCasosEnCurso] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, "tratamientos"), where("tarifasTratamientos", "==", "Ortodoncia"), where("estadosTratamientos", "==", "EN CURSO"), where("fecha", "==", hoy));
+    const q = query(
+      collection(db, "tratamientos"),
+      where("tarifasTratamientos", "==", "Ortodoncia"),
+      where("estadosTratamientos", "==", "En Curso")
+    );
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setCasosEnCurso(snapshot.size);
+      const resultadosAFiltrar = snapshot.docs.filter((doc) => {
+        const fecha = doc.data().fecha;
+        return fecha >= props.fechaInicio && fecha <= props.fechaFin;
+      });
+
+      const cantidad = resultadosAFiltrar.length || 0;
+      setCasosEnCurso(cantidad);
     });
 
     return () => {
       unsubscribe();
     };
-  }, [hoy]);
+  }, [props]);
 
   return (
     <div>

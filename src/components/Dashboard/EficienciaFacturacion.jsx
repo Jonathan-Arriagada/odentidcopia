@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
-function EficienciaFacturacion() {
+function EficienciaFacturacion(props) {
   const [, setTotalPagos] = useState(0);
   const [, setPagados] = useState(0);
   const [porcentajePagados, setPorcentajePagados] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, "tratamientos"));
+    const q = query(collection(db, "tratamientos"),
+      where("fecha", ">=", props.fechaInicio),
+      where("fecha", "<=", props.fechaFin)
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       let total = 0;
       let pagados = 0;
@@ -30,7 +33,7 @@ function EficienciaFacturacion() {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [props]);
 
   const calcularPorcentaje = (pagados, total) => {
     if (total > 0) {

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
-function Ausencia(props) {
-  const [porcentajeCanceladas, setPorcentajeCanceladas] = useState(0);
+function CitasPorConfirmar(props) {
+  const [cantCitas, setCantCitas] = useState(0);
 
   useEffect(() => {
     const q = query(
@@ -12,10 +12,9 @@ function Ausencia(props) {
       where("fecha", "<=", props.fechaFin)
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      let total = snapshot.size || 0;
-      let canceladas = snapshot.docs.filter((doc) => doc.data().estado === "Cancelada").length;
+      let citas = snapshot.docs.filter((doc) => doc.data().estado === "Por Confirmar").length || 0;
 
-      calcularPorcentaje(canceladas, total);
+      setCantCitas(citas);
     });
 
     return () => {
@@ -23,16 +22,11 @@ function Ausencia(props) {
     };
   }, [props]);
 
-  const calcularPorcentaje = (canceladas, total) => {
-    const porcentaje = total > 0 ? (canceladas / total) * 100 : 0;
-    setPorcentajeCanceladas(porcentaje);
-  };
-
   return (
     <div>
-      <span>{porcentajeCanceladas}%</span>
+      <span>{cantCitas}</span>
     </div>
   );
 }
 
-export default Ausencia;
+export default CitasPorConfirmar;

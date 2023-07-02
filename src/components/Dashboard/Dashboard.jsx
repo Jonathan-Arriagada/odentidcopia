@@ -12,6 +12,8 @@ import EficienciaFacturacion from './EficienciaFacturacion';
 import IngresosYRentabilidad from './IngresosYRentabilidad';
 import moment from "moment";
 import ProductividadDentistas from './ProductividadDentistas';
+import Top3Tratamientos from './Top3Tratamientos';
+import CitasPorConfirmar from './CitasPorConfirmar';
 import Rating from 'react-rating-stars-component';
 
 
@@ -135,9 +137,9 @@ function Dashboard() {
             <h2 className="fw-bold fs-5 mt-3 ms-2 ">Pacientes nuevos</h2>
             <h3 className="fs-1 ms-2 numbers"><PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
             <h2 className="fw-bold fs-5 mt-2 ms-2">Pacientes atendidos</h2>
-            <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos /></h3>
+            <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
             <h2 className="fw-bold fs-5 mt-2 ms-2">Casos Ortodoncia</h2>
-            <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia /></h3>
+            <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="dashEspecial col-3 ms-1 rounded-4 d-flex align-items-start flex-column shadow border-hover fuente-color-primario">
             <h2 className="fw-bold fs-5 mt-3 ">Productividad Dentistas</h2>
@@ -146,7 +148,7 @@ function Dashboard() {
         </div>
         <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
           <GoogleReviews>
-          {({ cantOpinionesTotal, porcenOpinionesTotal, dataReady }) => (
+            {({ cantOpinionesTotal, porcenOpinionesTotal, dataReady }) => (
               <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
                 <h2 className="fw-bold fs-6 mt-3">Total Reseñas Realizadas</h2>
                 <h3 className="fs-1 numbers">{cantOpinionesTotal}</h3>
@@ -167,28 +169,28 @@ function Dashboard() {
                   ) : null}
                 </div>
               </div>
-  )}
+            )}
           </GoogleReviews>
           <div className="col-3 me-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
-            <h2 className="fw-bold fs-6 mt-3">Retención de pacientes</h2>
-            <h3 className="fs-1 numbers">76%</h3>
+            <h2 className="fw-bold fs-6 mt-3">Top Tratamientos</h2>
+            <p className="fs-6 numbers"><Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></p>
             {/*N° de Tratamientos realizados por periodos por doctor*/}
             <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
-            <h3 className="fs-1 numbers"><EficienciaFacturacion /></h3>
+            <h3 className="fs-1 numbers"><EficienciaFacturacion fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
             <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
-            <h3 className="fs-1 numbers"><IngresosYRentabilidad /></h3>
+            <h3 className="fs-1 numbers"><IngresosYRentabilidad fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
 
             <h2 className="fw-bold fs-6">Ingresos por tratamiento</h2>
-            <h3 className="fs-1 numbers"><TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}/></h3>
+            <h3 className="fs-1 numbers"><TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover">
-            <h2 className="fw-bold fs-6 mt-3">Total Citas</h2>
-            <h3 className="fs-1 numbers">225</h3>
+            <h2 className="fw-bold fs-6 mt-3">Citas Por Confirmar</h2>
+            <h3 className="fs-1 numbers"><CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
 
-            <h2 className="fw-bold fs-6">Cancelación / ausencia de citas</h2>
-            <h3 className="fs-1 numbers"><Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}/></h3>
+            <h2 className="fw-bold fs-6">Cancelación / Ausencia citas</h2>
+            <h3 className="fs-1 numbers"><Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
         </div>
       </div>

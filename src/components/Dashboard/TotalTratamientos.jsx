@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
-function TotalTratamientos(PROPS) {
+function TotalTratamientos(props) {
   const [totalAbonado, setTotalAbonado] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, "tratamientos"));
+    const q = query(collection(db, "tratamientos"),
+      where("fecha", ">=", props.fechaInicio),
+      where("fecha", "<=", props.fechaFin)
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       let total = 0;
       snapshot.docs.forEach((doc) => {
@@ -28,7 +31,7 @@ function TotalTratamientos(PROPS) {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [props]);
 
   return (
     <div>

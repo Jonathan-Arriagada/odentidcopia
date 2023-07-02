@@ -12,8 +12,8 @@ function PacientesNuevos(props) {
       where("fechaAlta", "<=", props.fechaFin)
     );
   
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const cantidad = querySnapshot.size || 0;
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const cantidad = snapshot.size || 0;
       setContadorClientes(cantidad);
     });
   

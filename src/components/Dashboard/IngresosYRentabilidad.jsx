@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
-function IngresosYRentabilidad() {
+function IngresosYRentabilidad(props) {
     const [ingresosTotales, setIngresosTotales] = useState(null);
     const [gastosTotales, setGastosTotales] = useState(null);
 
     useEffect(() => {
-        const q = query(collection(db, "gastos"));
+        const q = query(collection(db, "gastos"),
+            where("fechaGasto", ">=", props.fechaInicio),
+            where("fechaGasto", "<=", props.fechaFin)
+        );
         const unsubscribe = onSnapshot(q, (snapshot) => {
             let total1 = 0;
             snapshot.forEach((doc) => {
@@ -25,10 +28,12 @@ function IngresosYRentabilidad() {
                 const cobrosManuales = tratamiento.cobrosManuales;
 
                 if (cobrosManuales && cobrosManuales.fechaCobro) {
-                    cobrosManuales.fechaCobro.forEach((_, index) => {
-                        const importeAbonado = cobrosManuales.importeAbonado[index] || "";
-                        const importe = Number(importeAbonado) || 0;
-                        total2 += importe;
+                    cobrosManuales.fechaCobro.forEach((fecha, index) => {
+                        if (fecha >= props.fechaInicio && fecha <= props.fechaFin) {
+                            const importeAbonado = cobrosManuales.importeAbonado[index] || "";
+                            const importe = Number(importeAbonado) || 0;
+                            total2 += importe;
+                        }
                     });
                 }
             });
@@ -39,7 +44,7 @@ function IngresosYRentabilidad() {
         return () => {
             unsubscribe(); unsubscribeCobros();
         };
-    }, []);
+    }, [props]);
 
 
     return (

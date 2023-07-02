@@ -49,7 +49,7 @@ const InformeCompras = () => {
                   </div>
                 </div>
 
-                <div className="table__container">
+                <div className="table__container w-50">
                   <table className="table__body">
                     <thead>
                       <tr>
@@ -75,7 +75,7 @@ const InformeCompras = () => {
                             <td>-</td>
                         </tr>
                         ))}
-                        <tr>
+                        <tr >
                             <td>Total</td>
                         </tr>
                     </tbody>
