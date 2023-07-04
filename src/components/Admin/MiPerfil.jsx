@@ -69,9 +69,10 @@ const MiPerfil = () => {
     try {
       e.preventDefault();
       const user = auth.currentUser;
+      const nombreCompleto = nombres + " " + apellido;
 
       await updateProfile(user, {
-        displayName: nombres + " " + apellido,
+        displayName: nombreCompleto,
       });
       await updateEmail(user, correo);
 
@@ -79,6 +80,7 @@ const MiPerfil = () => {
       await updateDoc(userDocRef, {
         nombres,
         apellido,
+        nombreCompleto,
         correo,
         telefono,
       });

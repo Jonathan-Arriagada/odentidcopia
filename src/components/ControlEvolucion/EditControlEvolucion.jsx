@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { getDoc, updateDoc, doc } from "firebase/firestore";
+import { getDoc, updateDoc, doc, query, collection, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext"
@@ -21,6 +21,9 @@ const Edit = (props) => {
     const controlDoc = await getDoc(controlRef);
     const controlData = controlDoc.data();
 
+    const busqueda = query(collection(db, "user"), where("uidParaComparar", "==", currentUser.uid));
+    const querySnapshot = await getDocs(busqueda);
+
     const newData = {
       apellidoConNombre: apellidoConNombre || controlData.apellidoConNombre,
       tipoIdc: tipoIdc || controlData.tipoIdc,
@@ -28,6 +31,7 @@ const Edit = (props) => {
       tratamientoControl: tratamientoControl || controlData.tratamientoControl,
       pieza: pieza || controlData.pieza,
       doctor: currentUser.displayName,
+      doctorId: querySnapshot.docs[0].data()?.idUnica || "",
       fechaControlRealizado: fechaControlRealizado || controlData.fechaControlRealizado,
       detalleTratamiento: detalleTratamiento || controlData.detalleTratamiento,
     };
@@ -48,7 +52,7 @@ const Edit = (props) => {
       </Modal.Header>
       <Modal.Body>
         <div className="container">
-          <div className="row" style={{marginTop:"-40px"}}>
+          <div className="row" style={{ marginTop: "-40px" }}>
             <div className="col">
               <form onSubmit={update} style={{ transform: "scale(0.96)" }}>
                 <br></br>

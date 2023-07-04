@@ -1219,7 +1219,7 @@ select {
 }
 
 .dashContenedor {
-  background-color: var(--color-background);
+  background-color: var(--color-fondo);
 }
 
 .dashboard-sup {
