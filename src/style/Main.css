@@ -1210,6 +1210,14 @@ select {
 }
 
 /* DASHBOARD */
+.iconosDashGoogle {
+  height: 4vh;
+}
+
+.iconosDash {
+  height: 6vh;
+}
+
 .dashContenedor {
   background-color: var(--color-background);
 }
@@ -1270,4 +1278,3 @@ select {
   color: #fff;
   padding: 0.5rem;
 }
-

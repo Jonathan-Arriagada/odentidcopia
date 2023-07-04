@@ -325,7 +325,6 @@ function Citas() {
     }
   };
 
-
   return (
     <>
       {isLoading ? (
@@ -763,17 +762,11 @@ function Citas() {
                       <Modal.Title>Comentarios</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      <div className="container">
-                        <div className="col">
                           <form>
                             <div className="row">
-                              <div className="col mb-6">
                                 <p>{modalShowVerNotas[1]}</p>
-                              </div>
                             </div>
                           </form>
-                        </div>
-                      </div>
                     </Modal.Body>
                   </Modal>
                 )}

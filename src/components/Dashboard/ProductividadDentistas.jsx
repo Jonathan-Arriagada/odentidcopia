@@ -4,7 +4,7 @@ import { db } from "../../firebaseConfig/firebase";
 
 const ProductividadDentistas = (props) => {
   const [datos, setDatos] = useState([]);
-  
+
   useEffect(() => {
     const q = query(
       collection(db, "controlEvoluciones"),
@@ -36,8 +36,6 @@ const ProductividadDentistas = (props) => {
     <table className="table__body-dash">
       <thead>
         <tr>
-          <th className="head-dash text-start">Doctor</th>
-          <th className="head-dash text-end">N°</th>
         </tr>
       </thead>
 

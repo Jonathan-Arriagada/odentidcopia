@@ -109,8 +109,6 @@ function Dashboard() {
     setPeriodoFechasElegido({ fechaInicio, fechaFin });
   };
 
-
-
   return (
     <div className="w-100">
       <div className="search-bar d-flex col-2 m-2 ms-3">
@@ -133,13 +131,31 @@ function Dashboard() {
           <div className="col-6 pt-3 me-2 rounded-4 shadow fondo-color-primario">
             <Bar data={data} options={options}></Bar>
           </div>
-          <div className="col-3 ms-2 rounded-4 d-flex flex-column align-items-start shadow border-hover fuente-color-primario dashContenedor">
-            <h2 className="fw-bold fs-5 mt-2 ms-2 ">Pacientes nuevos</h2>
-            <h3 className="fs-1 ms-2 numbers"><PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
-            <h2 className="fw-bold fs-5 mt-1 ms-2">Pacientes atendidos</h2>
-            <h3 className="fs-1 ms-2 numbers"><PacientesAtendidos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
-            <h2 className="fw-bold fs-5 mt-1 ms-2">Casos Ortodoncia</h2>
-            <h3 className="fs-1 ms-2 numbers"><CasosOrtodoncia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+          <div className="col-3 ms-2 rounded-4 d-flex flex-column align-items-start justify-content-center shadow border-hover fuente-color-primario dashContenedor">
+            <div className='d-flex align-items-center'>
+              <img src="https://cdn-icons-png.flaticon.com/128/3738/3738840.png" alt="imgPacientesAtendidos" className="iconosDash" />
+              <div>
+                <h2 className="fw-bold fs-6 mt-1 ms-2">Pacientes atendidos</h2>
+                <h3 className="fs-2 ms-4 text-start"><PacientesAtendidos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+              </div>
+            </div>
+
+
+            <div className='d-flex align-items-center'>
+              <img src="https://cdn-icons-png.flaticon.com/128/3739/3739329.png" alt="imgPacientesNuevos" className="iconosDash" />
+              <div>
+                <h2 className="fw-bold fs-6 mt-2 ms-2 ">Pacientes nuevos</h2>
+                <h3 className="fs-2 ms-4 text-start"><PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+              </div>
+            </div>
+
+            <div className='d-flex align-items-center'>
+              <img src="https://cdn-icons-png.flaticon.com/128/3738/3738963.png" alt="imgOrtodoncia" className="iconosDash" />
+              <div>
+                <h2 className="fw-bold fs-6 mt-1 ms-2">Casos Ortodoncia</h2>
+                <h3 className="fs-2 ms-4 text-start"><CasosOrtodoncia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+              </div>
+            </div>
           </div>
           <div className="dashEspecial col-3 ms-2 rounded-4 d-flex align-items-start flex-column shadow border-hover fuente-color-primario dashContenedor">
             <h2 className="fw-bold fs-5 mt-3 ">Productividad Doctores</h2>
@@ -149,12 +165,14 @@ function Dashboard() {
         <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
           <GoogleReviews>
             {({ cantOpinionesTotal, porcenOpinionesTotal, dataReady }) => (
-              <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
-                <h2 className="fw-bold fs-6 mt-3">Total Reseñas Realizadas</h2>
-                <h3 className="fs-1 numbers">{cantOpinionesTotal}</h3>
-                <h2 className="fw-bold fs-6 mt-3">Total Satisfacción</h2>
-                <div className="d-flex align-items-center">
-                  <h3 className="fs-1 numbers me-2">{porcenOpinionesTotal}</h3>
+              <div className="col-3 rounded-4 mx-1 d-flex align-items-center justify-content-center flex-column shadow border-hover dashContenedor">
+                <h1 className="fw-bold" style={{ fontSize: "8vh" }}>{porcenOpinionesTotal.toFixed(1)}</h1>
+                <div className="d-flex align-items-center justify-content-center">
+                  <img
+                    className='iconosDashGoogle m-1'
+                    src='https://cdn-icons-png.flaticon.com/512/300/300221.png'
+                    alt="googleImg">
+                  </img>
                   {dataReady ? (
                     <Rating
                       count={5}
@@ -168,6 +186,8 @@ function Dashboard() {
                     />
                   ) : null}
                 </div>
+                <p className="fs-5 fw-bold">{cantOpinionesTotal} reseñas</p>
+
               </div>
             )}
           </GoogleReviews>
@@ -175,22 +195,22 @@ function Dashboard() {
             <h2 className="fw-bold fs-6 mt-3">Top Tratamientos</h2>
             <div className="numbers" style={{ fontSize: "0.9rem" }}><Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></div>
             {/*N° de Tratamientos realizados por periodos por doctor*/}
-            <h2 className="fw-bold fs-6" style={{ marginTop: "-10px" }}>Eficiencia de facturación</h2>
-            <h3 className="fs-1 numbers"><EficienciaFacturacion fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
+            <h3 className="fs-1"><EficienciaFacturacion fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
             <h2 className="fw-bold fs-6 mt-3">Ingresos y Rentabilidad</h2>
-            <h3 className="fs-1 numbers"><IngresosYRentabilidad fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h3 className="fs-1"><IngresosYRentabilidad fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
 
-            <h2 className="fw-bold fs-6 mt-3">Ingresos por tratamiento</h2>
-            <h3 className="fs-1 numbers"><TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h2 className="fw-bold fs-6 mt-4">Ingresos por tratamiento</h2>
+            <h3 className="fs-1"><TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
           <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
             <h2 className="fw-bold fs-6 mt-3">Citas Por Confirmar</h2>
-            <h3 className="fs-1 numbers"><CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h3 className="fs-1"><CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
 
-            <h2 className="fw-bold fs-6 mt-3">Cancelación/Ausencia citas</h2>
-            <h3 className="fs-1 numbers"><Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h2 className="fw-bold fs-6 mt-4">Cancelación/Ausencia citas</h2>
+            <h3 className="fs-1"><Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
           </div>
         </div>
       </div>
