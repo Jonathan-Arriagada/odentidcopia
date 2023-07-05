@@ -333,7 +333,7 @@ function ControlEvolucionEspecif(props) {
                                   disabled
                                   className="mt-2 bg-body-tertiary textarea-no-resize p-0"
                                   style={{
-                                    height: 'calc(1.2em * ' + Math.ceil(control.detalleTratamiento.length / 85) + ')'
+                                    height: 'calc(1.2em * ' + Math.ceil(control.detalleTratamiento.length / 65) + ')'
                                   }}
                                 />
                               </div>
