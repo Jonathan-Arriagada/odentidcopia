@@ -157,6 +157,7 @@ function Dashboard() {
               </div>
             </div>
           </div>
+          
           <div className="dashEspecial col-3 ms-2 rounded-4 d-flex align-items-start flex-column shadow border-hover fuente-color-primario dashContenedor">
             <h2 className="fw-bold fs-5 mt-3 ">Productividad Doctores</h2>
             <ProductividadDentistas fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
@@ -191,47 +192,61 @@ function Dashboard() {
               </div>
             )}
           </GoogleReviews>
-          <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
-            <div className='d-flex align-items-center mt-3'>
+
+          <div className="col-3 mx-1 rounded-4 d-flex flex-column shadow border-hover dashContenedor">
+            <div className='d-flex mt-3 align-items-center justify-content-between'>
               <h2 className="fw-bold fs-6">Top Tratamientos</h2>
               <i className="fa-solid fa-tooth mx-2 fs-4"></i>
             </div>
-            <div className="numbers" style={{ fontSize: "0.9rem" }}>
+            <div className="numbers align-items-center" style={{ fontSize: "0.9rem" }}>
               <Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
             </div>
-            <div className='d-flex align-items-center'>
-              <h2 className="fw-bold fs-6">Eficiencia de facturación</h2>
-              <i className="fa-solid fa-hand-holding-dollar mx-2 fs-4"></i>
+
+            <div className='d-flex align-items-center justify-content-between'>
+              <h2 className="fw-bold fs-6">Eficiencia Facturación</h2>
+              <i className="fa-solid fa-hand-holding-dollar mb-1 mx-2 fs-4"></i>
             </div>
-            <h3 className="fs-2"><EficienciaFacturacion fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h3 className="fs-2 text-start">
+              <EficienciaFacturacion fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+            </h3>
           </div>
 
-          <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
-            <div className='d-flex align-items-center mt-3'>
+
+          <div className="col-3 mx-1 rounded-4 d-flex flex-column shadow border-hover dashContenedor">
+            <div className='d-flex align-items-center justify-content-between mt-3'>
               <h2 className="fw-bold fs-6">Ingresos y Rentabilidad</h2>
               <i className="fa-solid fa-chart-line mx-2 fs-4"></i>
             </div>
-            <h3 className="fs-2"><IngresosYRentabilidad fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
-            <div className='d-flex align-items-center mt-4'>
-              <h2 className="fw-bold fs-6 mt-2">Ingresos por tratamiento</h2>
+            <h3 className="fs-2 text-start">
+              <IngresosYRentabilidad fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+            </h3>
+
+            <div className='d-flex align-items-center justify-content-between mt-4'>
+              <h2 className="fw-bold fs-6 mt-2">Ingresos Tratamientos</h2>
               <i className="fa-solid fa-file-invoice-dollar mx-2 fs-4"></i>
             </div>
-
-            <h3 className="fs-2"><TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h3 className="fs-2 text-start">
+              <TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+            </h3>
           </div>
-          <div className="col-3 mx-1 rounded-4 d-flex align-items-start flex-column shadow border-hover dashContenedor">
-            <div className='d-flex align-items-center mt-3'>
+
+
+          <div className="col-3 mx-1 rounded-4 d-flex flex-column shadow border-hover dashContenedor">
+            <div className='d-flex align-items-center justify-content-between mt-3'>
               <h2 className="fw-bold fs-6">Citas Por Confirmar</h2>
               <i className="fa-solid fa-calendar-days mx-2 fs-4"></i>
             </div>
+            <h3 className="fs-2 text-start">
+              <CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+            </h3>
 
-            <h3 className="fs-2"><CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
-            <div className='d-flex align-items-center mt-4'>
-              <h2 className="fw-bold fs-6 mt-2">Cancelación/Ausencia citas</h2>
+            <div className='d-flex align-items-center justify-content-between mt-4'>
+              <h2 className="fw-bold fs-7 mt-2">Cancelación/Ausencias</h2>
               <i className="fa-solid fa-calendar-xmark mx-2 fs-4"></i>
             </div>
-
-            <h3 className="fs-2"><Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+            <h3 className="fs-2 text-start">
+              <Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+            </h3>
           </div>
         </div>
       </div>
