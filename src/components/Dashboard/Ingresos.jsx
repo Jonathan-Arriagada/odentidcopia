@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
-function TotalTratamientos(props) {
+function Ingresos(props) {
   const [totalAbonado, setTotalAbonado] = useState(0);
 
   useEffect(() => {
@@ -40,4 +40,4 @@ function TotalTratamientos(props) {
   );
 }
 
-export default TotalTratamientos;
+export default Ingresos;

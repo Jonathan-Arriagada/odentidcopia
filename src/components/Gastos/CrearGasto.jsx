@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { collection, getDocs, query, where, onSnapshot, orderBy, doc, writeBatch, addDoc, limit,serverTimestamp } from "firebase/firestore";
+import { collection, getDocs, query, where, onSnapshot, orderBy, doc, writeBatch, addDoc, limit, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
@@ -134,6 +134,9 @@ const CrearGasto = (props) => {
     };
 
     const store = async () => {
+        moment.locale('es')
+    var mesVariable = moment(fechaGasto).format("MMMM");
+
         const querySnapshot = await getDocs(query(collection(db, "proveedores"), where("ruc", "==", ruc)));
         if (!querySnapshot.empty) {
             const batch = writeBatch(db);
@@ -144,6 +147,7 @@ const CrearGasto = (props) => {
                     proveedor: proveedor,
                     tipoGasto: tipoGasto,
                     timestamp: serverTimestamp(),
+                    mes: mesVariable,
                     comprobanteGasto: comprobanteGasto,
                     cantArticulo: producto.cantArticulo,
                     umArticulo: producto.umArticulo || umArticulo,
@@ -178,6 +182,7 @@ const CrearGasto = (props) => {
                     proveedor: proveedor,
                     tipoGasto: tipoGasto,
                     timestamp: serverTimestamp(),
+                    mes: mesVariable,
                     comprobanteGasto: comprobanteGasto,
                     cantArticulo: producto.cantArticulo,
                     umArticulo: producto.umArticulo || umArticulo,
@@ -316,7 +321,7 @@ const CrearGasto = (props) => {
                     <div className="container">
                         <div className="row">
                             <div className="col">
-                            <form style={{transform: "scale(0.98)"}}>
+                                <form style={{ transform: "scale(0.98)" }}>
                                     {error && (
                                         <div className="alert alert-danger" role="alert">
                                             {error}
@@ -386,7 +391,10 @@ const CrearGasto = (props) => {
                                             <label className="form-label">Comprobante Compra*</label>
                                             <input
                                                 value={comprobanteGasto}
-                                                onChange={(e) => setComprobanteGasto(e.target.value)}
+                                                onChange={(e) => {
+                                                    var inputValue = e.target.value.toUpperCase();
+                                                    setComprobanteGasto(inputValue)
+                                                }}
                                                 type="text"
                                                 className="form-control"
                                                 required
