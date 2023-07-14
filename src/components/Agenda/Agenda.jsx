@@ -364,7 +364,7 @@ function Citas() {
                 <br></br>
                 <div className="d-flex justify-content-between">
                   <div
-                    className="d-flex justify-content-center align-items-center"
+                    className="d-flex justify-content-start align-items-center"
                     style={{ maxHeight: "40px", marginLeft: "10px" }}
                   >
                     <h1>Agenda</h1>
@@ -762,11 +762,11 @@ function Citas() {
                       <Modal.Title>Comentarios</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                          <form>
-                            <div className="row">
-                                <p>{modalShowVerNotas[1]}</p>
-                            </div>
-                          </form>
+                      <form>
+                        <div className="row">
+                          <p>{modalShowVerNotas[1]}</p>
+                        </div>
+                      </form>
                     </Modal.Body>
                   </Modal>
                 )}

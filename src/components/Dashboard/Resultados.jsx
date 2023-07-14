@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 
-function IngresosYRentabilidad(props) {
+function Resultados(props) {
     const [ingresosTotales, setIngresosTotales] = useState(null);
     const [gastosTotales, setGastosTotales] = useState(null);
 
@@ -51,7 +51,7 @@ function IngresosYRentabilidad(props) {
         <div>
             <span>
                 {ingresosTotales !== null && gastosTotales !== null ? (
-                    ((ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales).toFixed(2))
+                    ((ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales).toFixed(0))
                 ) : (
                     "0"
                 )}
@@ -60,4 +60,4 @@ function IngresosYRentabilidad(props) {
     );
 }
 
-export default IngresosYRentabilidad;
+export default Resultados;

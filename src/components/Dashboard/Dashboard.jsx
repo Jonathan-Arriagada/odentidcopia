@@ -6,10 +6,10 @@ import PacientesNuevos from './PacientesNuevos';
 import Ausencia from './Ausencia';
 import PacientesAtendidos from './PacientesAtendidos';
 import CasosOrtodoncia from './CasosOrtodoncia';
-import TotalTratamientos from './TotalTratamientos';
+import Ingresos from './Ingresos';
 import GoogleReviews from './GoogleReviews';
-import EficienciaFacturacion from './EficienciaFacturacion';
-import IngresosYRentabilidad from './IngresosYRentabilidad';
+import Resultados from './Resultados';
+import Gastos from './Gastos';
 import moment from "moment";
 import ProductividadDentistas from './ProductividadDentistas';
 import Top3Tratamientos from './Top3Tratamientos';
@@ -22,7 +22,10 @@ function Dashboard() {
   //valores-fechas-Predeterminados
   const fechaInicio = moment().subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
   const fechaFin = moment().endOf('day').format("YYYY-MM-DD");
-  const [periodoFechasElegido, setPeriodoFechasElegido] = useState({ fechaInicio, fechaFin });
+  const fechaInicioBalance = moment(fechaInicio).subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
+  const fechaFinBalance = moment(fechaFin).subtract(7, 'days').endOf('day').format("YYYY-MM-DD");
+  const [periodoFechasElegido, setPeriodoFechasElegido] = useState({ fechaInicio, fechaFin, fechaInicioBalance, fechaFinBalance });
+
   //const [isLoading, setIsLoading] = useState(true);
 
   const data = {
@@ -77,28 +80,38 @@ function Dashboard() {
   };
 
   const filtrosFechas = (param) => {
-    let fechaInicio, fechaFin;
+    let fechaInicio, fechaFin, fechaInicioBalance, fechaFinBalance;
 
     switch (param) {
       case "hoy":
         fechaInicio = moment().startOf('day').format("YYYY-MM-DD");
         fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        fechaInicioBalance = moment(fechaInicio).subtract(1, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFinBalance = moment(fechaFin).subtract(1, 'days').endOf('day').format("YYYY-MM-DD");
         break;
       case "ayer":
         fechaInicio = moment().subtract(1, 'day').startOf('day').format("YYYY-MM-DD");
         fechaFin = moment().subtract(1, 'day').endOf('day').format("YYYY-MM-DD");
+        fechaInicioBalance = moment(fechaInicio).subtract(1, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFinBalance = moment(fechaFin).subtract(1, 'days').endOf('day').format("YYYY-MM-DD");
         break;
       case "ultimos7":
         fechaInicio = moment().subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
         fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        fechaInicioBalance = moment(fechaInicio).subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFinBalance = moment(fechaFin).subtract(7, 'days').endOf('day').format("YYYY-MM-DD");
         break;
       case "ultimos28":
         fechaInicio = moment().subtract(28, 'days').startOf('day').format("YYYY-MM-DD");
         fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        fechaInicioBalance = moment(fechaInicio).subtract(28, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFinBalance = moment(fechaFin).subtract(28, 'days').endOf('day').format("YYYY-MM-DD");
         break;
       case "ultimos90":
         fechaInicio = moment().subtract(90, 'days').startOf('day').format("YYYY-MM-DD");
         fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+        fechaInicioBalance = moment(fechaInicio).subtract(90, 'days').startOf('day').format("YYYY-MM-DD");
+        fechaFinBalance = moment(fechaFin).subtract(90, 'days').endOf('day').format("YYYY-MM-DD");
         break;
       default:
         fechaInicio = "";
@@ -106,7 +119,7 @@ function Dashboard() {
         break;
     }
 
-    setPeriodoFechasElegido({ fechaInicio, fechaFin });
+    setPeriodoFechasElegido({ fechaInicio, fechaFin, fechaInicioBalance, fechaFinBalance });
   };
 
   return (
@@ -136,7 +149,12 @@ function Dashboard() {
               <i className="fa-solid fa-users iconosDash"></i>
               <div>
                 <h2 className="fw-bold fs-6 mt-1 ms-2">Pacientes atendidos</h2>
-                <h3 className="fs-2 ms-4 text-start"><PacientesAtendidos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+                <h3 className="fs-2 ms-4 text-start">
+                  <PacientesAtendidos
+                    fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                    fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                  />
+                </h3>
               </div>
             </div>
 
@@ -145,22 +163,30 @@ function Dashboard() {
               <i className="fa-solid fa-user-plus iconosDash"></i>
               <div>
                 <h2 className="fw-bold fs-6 mt-2 ms-2 ">Pacientes nuevos</h2>
-                <h3 className="fs-2 ms-4 text-start"><PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+                <h3 className="fs-2 ms-4 text-start">
+                  <PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                    fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                  />
+                </h3>
               </div>
             </div>
 
             <div className='d-flex align-items-center'>
               <i className="fa-solid fa-hospital-user iconosDash"></i>
               <div>
-                <h2 className="fw-bold fs-6 mt-1 ms-2">Casos Ortodoncia</h2>
-                <h3 className="fs-2 ms-4 text-start"><CasosOrtodoncia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} /></h3>
+                <h2 className="fw-bold fs-6 mt-2 ms-2">Casos Ortodoncia</h2>
+                <h3 className="fs-2 ms-4 text-start">
+                  <CasosOrtodoncia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                    fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance} />
+                </h3>
               </div>
             </div>
           </div>
-          
+
           <div className="dashEspecial col-3 ms-2 rounded-4 d-flex align-items-start flex-column shadow border-hover fuente-color-primario dashContenedor">
             <h2 className="fw-bold fs-5 mt-3 ">Productividad Doctores</h2>
-            <ProductividadDentistas fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+            <ProductividadDentistas fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+              fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance} />
           </div>
         </div>
         <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
@@ -199,34 +225,42 @@ function Dashboard() {
               <i className="fa-solid fa-tooth mx-2 fs-4"></i>
             </div>
             <div className="numbers align-items-center" style={{ fontSize: "0.9rem" }}>
-              <Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+              <Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+              />
             </div>
 
             <div className='d-flex align-items-center justify-content-between'>
-              <h2 className="fw-bold fs-6">Eficiencia Facturación</h2>
+              <h2 className="fw-bold fs-6">Resultados</h2>
               <i className="fa-solid fa-hand-holding-dollar mb-1 mx-2 fs-4"></i>
             </div>
             <h3 className="fs-2 text-start">
-              <EficienciaFacturacion fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+              <Resultados fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+              />
             </h3>
           </div>
 
 
           <div className="col-3 mx-1 rounded-4 d-flex flex-column shadow border-hover dashContenedor">
             <div className='d-flex align-items-center justify-content-between mt-3'>
-              <h2 className="fw-bold fs-6">Ingresos y Rentabilidad</h2>
+              <h2 className="fw-bold fs-6">Ingresos</h2>
               <i className="fa-solid fa-chart-line mx-2 fs-4"></i>
             </div>
             <h3 className="fs-2 text-start">
-              <IngresosYRentabilidad fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+              <Ingresos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+              />
             </h3>
 
             <div className='d-flex align-items-center justify-content-between mt-4'>
-              <h2 className="fw-bold fs-6 mt-2">Ingresos Tratamientos</h2>
+              <h2 className="fw-bold fs-6 mt-2">Gastos</h2>
               <i className="fa-solid fa-file-invoice-dollar mx-2 fs-4"></i>
             </div>
             <h3 className="fs-2 text-start">
-              <TotalTratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+              <Gastos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+              />
             </h3>
           </div>
 
@@ -237,7 +271,9 @@ function Dashboard() {
               <i className="fa-solid fa-calendar-days mx-2 fs-4"></i>
             </div>
             <h3 className="fs-2 text-start">
-              <CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+              <CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+              />
             </h3>
 
             <div className='d-flex align-items-center justify-content-between mt-4'>
@@ -245,7 +281,9 @@ function Dashboard() {
               <i className="fa-solid fa-calendar-xmark mx-2 fs-4"></i>
             </div>
             <h3 className="fs-2 text-start">
-              <Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin} />
+              <Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
+                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+              />
             </h3>
           </div>
         </div>
