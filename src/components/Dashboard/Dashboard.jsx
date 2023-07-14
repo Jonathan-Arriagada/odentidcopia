@@ -162,7 +162,7 @@ function Dashboard() {
             <div className='d-flex align-items-center'>
               <i className="fa-solid fa-user-plus iconosDash"></i>
               <div>
-                <h2 className="fw-bold fs-6 mt-2 ms-2 ">Pacientes nuevos</h2>
+                <h2 className="fw-bold fs-6 mt-2 ms-2">Pacientes nuevos</h2>
                 <h3 className="fs-2 ms-4 text-start">
                   <PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
                     fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}

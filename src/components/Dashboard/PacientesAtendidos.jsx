@@ -49,17 +49,15 @@ function PacientesAtendidos(props) {
   }, [props]);
 
   return (
-    <div className="d-flex">
+    <div className="d-flex justify-content-between">
       {consultaEnProgreso ? (
         <span>...</span>
       ) : (
         <>
-          <div className="justify-content-between">
-            <span>{pacientesAtendidos}</span>
-            <span className={`fs-6 mx-4 mt-2 ${porcentajeComparadoPeriodoAnterior > 0 ? 'text-success' : porcentajeComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
-              {porcentajeComparadoPeriodoAnterior > 0 && "+"}{porcentajeComparadoPeriodoAnterior}%
-            </span>
-          </div>
+          <span>{pacientesAtendidos}</span>
+          <span className={`fs-6 me-3 mt-2 ${porcentajeComparadoPeriodoAnterior > 0 ? 'text-success' : porcentajeComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
+            {porcentajeComparadoPeriodoAnterior > 0 && "+"}{porcentajeComparadoPeriodoAnterior}%
+          </span>
         </>
       )}
     </div>

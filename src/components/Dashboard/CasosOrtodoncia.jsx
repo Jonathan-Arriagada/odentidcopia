@@ -34,17 +34,15 @@ function CasosOrtodoncia(props) {
   }, [props]);
 
   return (
-    <div className="d-flex">
+    <div className="d-flex justify-content-between">
       {consultaEnProgreso ? (
         <span>...</span>
       ) : (
         <>
-          <div className="justify-content-between">
-            <span>{casosEnCurso}</span>
-            <span className={`fs-6 mx-4 mt-2 ${casosEnCursoComparadoPeriodoAnterior > 0 ? 'text-success' : casosEnCursoComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
-              {casosEnCursoComparadoPeriodoAnterior > 0 && "+"}{casosEnCursoComparadoPeriodoAnterior}%
-            </span>
-          </div>
+          <span>{casosEnCurso}</span>
+          <span className={`fs-6 ms-4 mt-2 ${casosEnCursoComparadoPeriodoAnterior > 0 ? 'text-success' : casosEnCursoComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
+            {casosEnCursoComparadoPeriodoAnterior > 0 && "+"}{casosEnCursoComparadoPeriodoAnterior}%
+          </span>
         </>
       )}
     </div>

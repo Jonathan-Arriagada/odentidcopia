@@ -33,17 +33,15 @@ function PacientesNuevos(props) {
 
 
   return (
-    <div className="d-flex">
+    <div className="d-flex justify-content-between">
       {consultaEnProgreso ? (
         <span>...</span>
       ) : (
         <>
-          <div className="justify-content-between">
             <span>{contadorClientes}</span>
-            <span className={`fs-6 mx-4 mt-2 ${contadorClientesComparadoPeriodoAnterior > 0 ? 'text-success' : contadorClientesComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
+            <span className={`fs-6 ms-4 mt-2 ${contadorClientesComparadoPeriodoAnterior > 0 ? 'text-success' : contadorClientesComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
               {contadorClientesComparadoPeriodoAnterior > 0 && "+"}{contadorClientesComparadoPeriodoAnterior}%
             </span>
-          </div>
         </>
       )}
     </div>
