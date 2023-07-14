@@ -12,6 +12,7 @@ const InformeTratamientos = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
+  const [dataChart, setDataChart] = useState(null);
 
   const toggleView = () => {
     setShowChart(!showChart);
@@ -22,7 +23,7 @@ const InformeTratamientos = () => {
   const data = {
     labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     datasets: [{
-      data: [31000, 24000, 26000, 47000, 32000, 23000, 39000, 27000, 38000, 42000, 29000, 51000],
+      data: dataChart,
       backgroundColor: '#00c5c1',
     }]
   };
@@ -48,10 +49,10 @@ const InformeTratamientos = () => {
     },
     scales: {
       y: {
-        min: 10000,
-        max: 60000,
+        min: 0,
+        max: 100,
         ticks: {
-          stepSize: 5000,
+          stepSize: 5,
           color: '#FFF',
         },
         grid: {
@@ -88,6 +89,15 @@ const InformeTratamientos = () => {
           }
         });
         setTablaDatos(datos);
+        const datosChart = meses.map((mes, index) => {
+          const dataMes = tablaDatos.reduce((acumulador, data) => {
+            const tratamientos = data[index] || 0;
+            return acumulador + tratamientos;
+          }, 0);
+      
+          return dataMes;
+        });
+        setDataChart(datosChart);
         setIsLoading(false);
       });
 
@@ -97,7 +107,7 @@ const InformeTratamientos = () => {
     };
 
     obtenerDatos();
-  }, []);
+  }, [tablaDatos]);
 
   const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
   const totalPorAnio = añosInvertidos.map((año) => {

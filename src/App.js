@@ -24,6 +24,7 @@ import UpNav from "./components/UpNav"
 import InformeIngresos from "./components/Gastos/Informes/InformeIngresos";
 import InformeTratamientos from "./components/Gastos/Informes/InformeTratamientos";
 import InformeCompras from "./components/Gastos/Informes/InformeCompras";
+import Comparaciones from "./components/Gastos/Informes/Comparaciones";
 
 function App() {
   const { currentUser } = useContext(AuthContext)
@@ -69,6 +70,7 @@ function App() {
           <Route path="/informe-ingresos" element={<RequireAuth><InformeIngresos/></RequireAuth>} />
           <Route path="/informe-ingresos-tratamiento" element={<RequireAuth><InformeTratamientos/></RequireAuth>}/>
           <Route path="/informe-compras" element={<RequireAuth><InformeCompras/></RequireAuth>}/>
+          <Route path="/comparacion-gastos" element={<RequireAuth><Comparaciones/></RequireAuth>}/>
         </Routes>
       </BrowserRouter>
     </div>
