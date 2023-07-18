@@ -458,13 +458,13 @@ const Gastos = () => {
                                                 <tr key={gasto.id}>
                                                     <td id="colIzquierda">{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
                                                     <td> {gasto.ruc} </td>
-                                                    <td> {gasto.proveedor} </td>
+                                                    <td className="text-wrap" style={{ maxWidth: '18vh' }}> {gasto.proveedor} </td>
                                                     <td> {gasto.tipoGasto} </td>
                                                     <td> {gasto.comprobanteGasto} </td>
                                                     <td> {gasto.cantArticulo} </td>
                                                     <td> {gasto.umArticulo} </td>
                                                     <td> {gasto.cuentaArticulo} </td>
-                                                    <td> {gasto.descripArticulo} </td>
+                                                    <td className="text-wrap" style={{ maxWidth: '20vh' }}> {gasto.descripArticulo} </td>
                                                     <td> {gasto.precioUniArticulo} </td>
                                                     <td> {gasto.subTotalArticulo} </td>
                                                     <td id="columnaAccion" className="colDerecha">
