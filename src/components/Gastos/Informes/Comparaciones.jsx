@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
 import "../../../style/Main.css";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -9,37 +9,86 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const Comparaciones = () => {
   const [tablaDatos, setTablaDatos] = useState([]);
+  const [tablaDatos2, setTablaDatos2] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
+  const [año1, setAño1] = useState("");
+  const [año2, setAño2] = useState("");
+  const [optionsAño, setOptionsAño] = useState([]);
+  const [optionsAño2, setOptionsAño2] = useState([]);
+
+  const gastosCollectiona = collection(db, "gastos");
+  const gastosCollection = useRef(query(gastosCollectiona));
+
+  const getOptionsAño = useCallback((snapshot) => {
+    const valoresUnicos = new Set();
+
+    snapshot.docs.forEach((doc) => {
+      const fechaGasto = doc.data().fechaGasto;
+      const fecha = moment(fechaGasto, 'YYYY-MM-DD');
+      const año = fecha.year();
+      valoresUnicos.add(año);
+    });
+
+    const options = Array.from(valoresUnicos).map((año) => (
+      <option key={`año-${año}`} value={año}>{año}</option>
+    ));
+    setOptionsAño(options);
+    setOptionsAño2(options);
+
+  }, []);
+
+  useEffect(() => {
+    return onSnapshot(gastosCollection.current, getOptionsAño);
+  }, [getOptionsAño]);
 
   const toggleView = () => {
     setShowChart(!showChart);
     setButtonText(showChart ? "Visual" : "Textual");
   };
 
+
+  //TABLAS LOGIC
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
 
   useEffect(() => {
     const obtenerDatos = async () => {
       const gastosRef = collection(db, "gastos");
       const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
         let datos = [];
+        let datos2 = [];
         querySnapshot.forEach((doc) => {
           const fechaGastos = doc.data().fechaGasto;
           const fecha = moment(fechaGastos, 'YYYY-MM-DD');
-          const año = fecha.year();
           const mes = fecha.month();
+          const año = fecha.year();
           const subTotalArticulo = doc.data().subTotalArticulo;
-          const index = datos.findIndex((data) => data.año === año);
-          if (index === -1) {
-            datos.push({ año, [meses[mes]]: subTotalArticulo });
-          } else {
-            datos[index][meses[mes]] = (datos[index][meses[mes]] || 0) + subTotalArticulo;
+
+          //si se eligió el año1, hace esto
+          if (año === parseInt(año1)) {
+            const index = datos.findIndex((data) => data.año === año1);
+            if (index === -1) {
+              datos.push({ año: año1, [meses[mes]]: subTotalArticulo });
+            } else {
+              datos[index][meses[mes]] = (datos[index][meses[mes]] || 0) + subTotalArticulo;
+            }
+          }
+
+          //y si se eligió el año2, hace esto
+          if (año === parseInt(año2)) {
+            const index = datos2.findIndex((data) => data.año === año2);
+            if (index === -1) {
+              datos2.push({ año: año2, [meses[mes]]: subTotalArticulo });
+            } else {
+              datos2[index][meses[mes]] = (datos2[index][meses[mes]] || 0) + subTotalArticulo;
+            }
           }
         });
-        setTablaDatos(datos);
+
+        //acá verifico que sino se eligió año, no haga nada
+        setTablaDatos(año1 !== "" ? datos : [{ año: "", ...Object.fromEntries(meses.map((mes) => [mes, "-"])) }]);
+        setTablaDatos2(año2 !== "" ? datos2 : [{ año: "", ...Object.fromEntries(meses.map((mes) => [mes, "-"])) }]);
         setIsLoading(false);
       });
 
@@ -49,21 +98,31 @@ const Comparaciones = () => {
     };
 
     obtenerDatos();
-  }, []);
+  }, [año1, año2]);
 
-  const totalPorAnio = añosInvertidos.map((año) => {
-    return meses.reduce((acumulador, mes) => {
-      const data = tablaDatos.find((d) => d.año === año);
-      const subTotalArticulo = data ? data[mes] || 0 : 0;
+  const totalPorAnio = tablaDatos.map((data) => {
+    const subtotal = meses.reduce((acumulador, mes) => {
+      const subTotalArticulo = (data && data[mes]) || 0;
       return acumulador + subTotalArticulo;
     }, 0);
+    return año1 ? subtotal : "-";
   });
 
+  const totalPorAnio2 = tablaDatos2.map((data) => {
+    const subtotal2 = meses.reduce((acumulador, mes) => {
+      const subTotalArticulo2 = (data && data[mes]) || 0;
+      return acumulador + subTotalArticulo2;
+    }, 0);
+    return año1 ? subtotal2 : "-";
+  });
+
+
+  //GRAFICO LOGIC
   const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
 
   const data = {
     labels: meses,
-    datasets: añosInvertidos.map((año,index) => {
+    datasets: tablaDatos.map((año, index) => {
       return {
         label: año.toString(),
         data: meses.map((mes) => {
@@ -120,6 +179,7 @@ const Comparaciones = () => {
     },
   };
 
+
   return (
     <>
       {isLoading ? (
@@ -127,74 +187,148 @@ const Comparaciones = () => {
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         </div>
       ) : (
-        <div className="container mw-100">
-          <div className="row">
+        <>
+          <div className="container mw-100">
             <div className="col">
               <br></br>
               <div className="d-flex justify-content-between">
                 <div
-                  className="d-flex justify-content-center align-items-center"
                   style={{ maxHeight: "40px", marginLeft: "10px" }}
                 >
-                  <h1>Informe Gastos Realizados</h1>
+                  <h1>Comparaciones de Gastos Realizados</h1>
                 </div>
                 <div>
-                <button
-                   variant="primary"
-                  className="btn-blue m-1"
-                  onClick={toggleView}
-                >
-                  {buttonText}
-                </button>
+                  <button
+                    variant="primary"
+                    className="btn-blue m-1"
+                    onClick={toggleView}
+                  >
+                    {buttonText}
+                  </button>
+                </div>
               </div>
-            </div>
-            {showChart ? (
-            <div className="pt-3 rounded-4 shadow fondo-color-primario w-75 container">
-              <Bar data={data} options={options} />
-            </div>
-          ) : (
 
-              <div className="table__container w-50">
-                <table className="table__body w-50">
-                  <thead>
-                    <tr  className="cursor-none">
-                      <th className="text-start fs-4">Meses</th>
-                      {añosInvertidos.map((año) => (
-                        <th className="fs-4" key={año}>{año}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="w-50">
-                    {meses.map((mes, index) => (
-                      <tr key={index}>
-                        <td className="text-start" id="colIzquierda">{mes}</td>
-                        {añosInvertidos.map((año, colIndex) => {
-                          const data = tablaDatos.find((d) => d.año === año);
-                          const gastos = data ? data[mes] || "-" : "-";
-                          return (
-                            <td className={colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''} key={año}>
-                              {gastos}
+              {showChart ? (
+                <div className="pt-3 rounded-4 shadow fondo-color-primario w-75 container">
+                  <Bar data={data} options={options} />
+                </div>
+              ) : (
+                <>
+                  <div className="d-flex mt-2">
+                    <div className="align-items-center justify-content-center m-2 w-50">
+                      <table className="table__body rounded w-50">
+                        <thead>
+                          <tr>
+                            <th>
+                              <select
+                                className="form-control-comparaciones"
+                                multiple={false}
+                                onChange={(e) => setAño1(e.target.value)}
+                                value={año1}
+                              >
+                                <option value=""></option>
+                                {optionsAño}
+                              </select>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {meses.map((mes, index) => (
+                            <tr key={index}>
+                              <td className="text-start" id="colIzquierda">
+                                {mes}
+                              </td>
+                              {tablaDatos.map((data, colIndex) => {
+                                const gastos = data[mes] || "-";
+                                return (
+                                  <td
+                                    className={
+                                      colIndex === tablaDatos.length - 1
+                                        ? "colDerecha"
+                                        : ""
+                                    }
+                                    key={colIndex}
+                                  >
+                                    {gastos}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                          <tr>
+                            <td className="text-start" id="colIzquierda">
+                              Total
                             </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                    <tr>
-                      <td className="text-start" id="colIzquierda">Total</td>
-                      {añosInvertidos.map((año, index) => (
-                        <td key={index} className={index === añosInvertidos.length - 1 ? 'colDerecha' : ''}>
-                          {totalPorAnio[index]}
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-          )}
+                            {totalPorAnio.map((subtotal, index) => (
+                              <td
+                                key={index}
+                                className={index === totalPorAnio.length - 1? "colDerecha" : ""}>
+                                {subtotal}
+                              </td>
+                            ))}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="align-items-center justify-content-center m-2 w-50">
+                      <table className="table__body rounded w-50">
+                        <thead>
+                          <tr>
+                            <th>
+                              <select
+                                className="form-control-comparaciones"
+                                multiple={false}
+                                onChange={(e) => setAño2(e.target.value)}
+                                value={año2}
+                              >
+                                <option value=""></option>
+                                {optionsAño2}
+                              </select>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {meses.map((mes, index) => (
+                            <tr key={index}>
+                              <td className="text-start" id="colIzquierda">
+                                {mes}
+                              </td>
+                              {tablaDatos2.map((data, colIndex) => {
+                                const gastos = data[mes] || "-";
+                                return (
+                                  <td
+                                    key={colIndex}
+                                    className={colIndex === tablaDatos2.length - 1 ? "colDerecha" : ""}
+                                  >
+                                    {gastos}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                          <tr>
+                            <td className="text-start" id="colIzquierda">
+                              Total
+                            </td>
+                            {totalPorAnio2.map((subtotal, index) => (
+                              <td
+                                key={index}
+                                className={index === totalPorAnio2.length - 1 ? "colDerecha" : ""}>
+                                {subtotal}
+                              </td>
+                            ))}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
-        </div>
 
+        </>
       )}
     </>
   );
