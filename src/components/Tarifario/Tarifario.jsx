@@ -206,7 +206,6 @@ function Tarifario() {
                                   >
                                     <i className="fa-solid fa-trash"></i>
                                   </button>
-                                  {tarifa.eliminado}
                                   <button
                                     onClick={() => {
                                       activeTarifa(tarifa.id);

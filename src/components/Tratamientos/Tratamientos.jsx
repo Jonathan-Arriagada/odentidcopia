@@ -1126,17 +1126,11 @@ function Tratamientos() {
                       <Modal.Title>Comentarios</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      <div className="container">
-                        <div className="col">
-                          <form>
-                            <div className="row">
-                              <div className="col mb-6">
-                                <p>{modalShowVerNotas[1]}</p>
-                              </div>
-                            </div>
-                          </form>
+                      <form>
+                        <div className="row">
+                          <p>{modalShowVerNotas[1]}</p>
                         </div>
-                      </div>
+                      </form>
                     </Modal.Body>
                   </Modal>
                 )}

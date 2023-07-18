@@ -325,7 +325,6 @@ function Citas() {
     }
   };
 
-
   return (
     <>
       {isLoading ? (
@@ -365,7 +364,7 @@ function Citas() {
                 <br></br>
                 <div className="d-flex justify-content-between">
                   <div
-                    className="d-flex justify-content-center align-items-center"
+                    className="d-flex justify-content-start align-items-center"
                     style={{ maxHeight: "40px", marginLeft: "10px" }}
                   >
                     <h1>Agenda</h1>
@@ -763,17 +762,11 @@ function Citas() {
                       <Modal.Title>Comentarios</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      <div className="container">
-                        <div className="col">
-                          <form>
-                            <div className="row">
-                              <div className="col mb-6">
-                                <p>{modalShowVerNotas[1]}</p>
-                              </div>
-                            </div>
-                          </form>
+                      <form>
+                        <div className="row">
+                          <p>{modalShowVerNotas[1]}</p>
                         </div>
-                      </div>
+                      </form>
                     </Modal.Body>
                   </Modal>
                 )}

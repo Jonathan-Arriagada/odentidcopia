@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, addDoc, query, orderBy, limit, getDocs, where } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, limit, getDocs, where, updateDoc } from "firebase/firestore";
 import { db, auth, } from "../../firebaseConfig/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
 import { Modal } from "react-bootstrap";
@@ -42,9 +42,10 @@ const CrearUsuario = (props) => {
   const store = async (e) => {
     e.preventDefault();
     const { user } = await createUserWithEmailAndPassword(auth, correo, password);
+    const nombreCompleto = nombres + " " + apellido;
 
     await updateProfile(user, {
-      displayName: nombres + " " + apellido,
+      displayName: nombreCompleto,
     });
 
     await user.getIdTokenResult().then(() => {
@@ -53,17 +54,24 @@ const CrearUsuario = (props) => {
 
     const uid = (rol === process.env.REACT_APP_rolRecepcionis) ? "Recepcionista" : user.uid;
 
-    await addDoc(userCollection, {
+    const docRef = await addDoc(userCollection, {
       uid: uid,
+      uidParaComparar: user.uid,
       codigo: codigo,
       nombres: nombres,
       apellido: apellido,
+      nombreCompleto: nombreCompleto,
       correo: correo,
       telefono: telefono,
       rol: rol,
       foto: foto,
       fechaAlta: moment(new Date()).format('DD/MM/YY'),
     });
+
+    await updateDoc(docRef, {
+      idUnica: docRef.id,
+    });
+
     Swal.fire({
       title: '¡Éxito!',
       text: 'Usuario agregado!.',
@@ -193,7 +201,7 @@ const CrearUsuario = (props) => {
                       onChange={(e) => setRol(e.target.value)}
                       className="form-control"
                       multiple={false}
-                      style={{height:"48px"}}
+                      style={{ height: "48px" }}
                       required
                     >
                       <option value="">Selecciona un rol ....</option>

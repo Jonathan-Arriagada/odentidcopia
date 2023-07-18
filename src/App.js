@@ -26,7 +26,6 @@ import InformeTratamientos from "./components/Gastos/Informes/InformeTratamiento
 import InformeCompras from "./components/Gastos/Informes/InformeCompras";
 import Comparaciones from "./components/Gastos/Informes/Comparaciones";
 
-
 function App() {
   const { currentUser } = useContext(AuthContext)
   const RequireAuth = ({ children }) => {
@@ -71,7 +70,7 @@ function App() {
           <Route path="/informe-ingresos" element={<RequireAuth><InformeIngresos/></RequireAuth>} />
           <Route path="/informe-ingresos-tratamiento" element={<RequireAuth><InformeTratamientos/></RequireAuth>}/>
           <Route path="/informe-compras" element={<RequireAuth><InformeCompras/></RequireAuth>}/>
-          <Route path="/comparacion-compras" element={<RequireAuth><Comparaciones/></RequireAuth>}/>
+          <Route path="/comparacion-gastos" element={<RequireAuth><Comparaciones/></RequireAuth>}/>
         </Routes>
       </BrowserRouter>
     </div>

@@ -5,9 +5,11 @@ import { Dropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaBell } from "react-icons/fa";
 import profile from "../img/profile.png";
+import { useLocation } from "react-router-dom";
 
-const Upnav = () => {
-    const navigate = useNavigate()
+
+const UpNav = () => {
+    const navigate = useNavigate();
     const { currentUser, } = useContext(AuthContext);
     const logout = useCallback(() => {
         localStorage.setItem("user", JSON.stringify(null));
@@ -88,7 +90,16 @@ const Upnav = () => {
             </div>
         </nav>
     );
-};
+}; 
+
+const UpNavWrapper = () => {
+    const { currentUser } = useContext(AuthContext);
+    const location = useLocation()
+
+    if (currentUser && location.pathname !== "/") {
+        return <UpNav />; 
+    }
+  };
 
 
-export default Upnav;
+export default UpNavWrapper;

@@ -4,13 +4,11 @@ import { db } from "../../firebaseConfig/firebase";
 
 function CasosOrtodoncia(props) {
   const [casosEnCurso, setCasosEnCurso] = useState(0);
+  const [casosEnCursoComparadoPeriodoAnterior, setCasosEnCursoComparadoPeriodoAnterior] = useState(0);
+  const [consultaEnProgreso, setConsultaEnProgreso] = useState(true);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "tratamientos"),
-      where("tarifasTratamientos", "==", "Ortodoncia"),
-      where("estadosTratamientos", "==", "En Curso")
-    );
+    const q = query(collection(db, "tratamientos"), where("tarifasTratamientos", "==", "Ortodoncia"), where("estadosTratamientos", "==", "En Curso"));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const resultadosAFiltrar = snapshot.docs.filter((doc) => {
@@ -18,8 +16,16 @@ function CasosOrtodoncia(props) {
         return fecha >= props.fechaInicio && fecha <= props.fechaFin;
       });
 
+      const resultadosAFiltrar2 = snapshot.docs.filter((doc) => {
+        const fecha = doc.data().fecha;
+        return fecha >= props.fechaInicioBalance && fecha <= props.fechaFinBalance;
+      });
+
       const cantidad = resultadosAFiltrar.length || 0;
+      const cantidad2 = resultadosAFiltrar2.length || 0;
       setCasosEnCurso(cantidad);
+      setCasosEnCursoComparadoPeriodoAnterior(cantidad2 > 0 ? Math.round((cantidad / cantidad2) * 100) : 0);
+      setConsultaEnProgreso(false);
     });
 
     return () => {
@@ -28,8 +34,17 @@ function CasosOrtodoncia(props) {
   }, [props]);
 
   return (
-    <div>
-      <span>{casosEnCurso}</span>
+    <div className="d-flex justify-content-between">
+      {consultaEnProgreso ? (
+        <span>...</span>
+      ) : (
+        <>
+          <span>{casosEnCurso}</span>
+          <span className={`fs-6 ms-4 mt-2 ${casosEnCursoComparadoPeriodoAnterior > 0 ? 'text-success' : casosEnCursoComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
+            {casosEnCursoComparadoPeriodoAnterior > 0 && "+"}{casosEnCursoComparadoPeriodoAnterior}%
+          </span>
+        </>
+      )}
     </div>
   );
 }

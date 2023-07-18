@@ -137,6 +137,8 @@ function CreateTratamiento(props) {
     moment.locale('es')
     var mesVariable = moment(fecha).format("MMMM");
     var tiempoAlta = serverTimestamp();
+    const busqueda = query(collection(db, "user"), where("uidParaComparar", "==", currentUser.uid));
+    const querySnapshot = await getDocs(busqueda);
 
     const tratamientoDocRef = await addDoc(tratamientosCollection, {
       codigo: codigo,
@@ -177,6 +179,7 @@ function CreateTratamiento(props) {
       fechaControlRealizado: fecha,
       detalleTratamiento: "1° Tratamiento Iniciado: " + notas,
       doctor: currentUser.displayName,
+      doctorId: querySnapshot.docs[0].data()?.idUnica || "",
       tratamientoId: tratamientoDocRef.id,
     });
     clearFields();

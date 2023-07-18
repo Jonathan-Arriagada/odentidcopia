@@ -6,9 +6,9 @@ import CrearGasto from "./CrearGasto";
 import TipoGasto from "./Parametros/TipoGasto";
 import UnidadesMedidas from "./Parametros/UnidadesMedidas";
 import moment from "moment";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Modal, Button } from "react-bootstrap";
+import Calendar from "react-calendar";
 import "../../style/Main.css";
-
 
 const Gastos = () => {
     const [gastos, setGastos] = useState([]);
@@ -28,6 +28,15 @@ const Gastos = () => {
     const [modalShowUnidadesMedidas, setModalShowUnidadesMedidas] = useState(false);
     const [userType, setUserType] = useState("");
 
+    const [ocultrarFiltrosGenerales, setOcultrarFiltrosGenerales] = useState(false);
+    const [taparFiltro, setTaparFiltro] = useState(false);
+    const [modalShowFiltros2, setModalShowFiltros2] = useState(false);
+    const [selectedCheckbox2, setSelectedCheckbox2] = useState("");
+    const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [tituloParametroModal, setTituloParametroModal] = useState("");
+    const [parametroModal, setParametroModal] = useState("");
+    const [filtroBusqueda, setFiltroBusqueda] = useState("");
 
     const getGastos = useCallback((snapshot) => {
         const gastosArray = snapshot.docs.map((doc) => ({
@@ -54,14 +63,55 @@ const Gastos = () => {
     };
 
     const searcher = (e) => {
-        setSearch(e.target.value);
+        if (typeof e === "string") {
+            setSearch(e);
+        } else {
+            setSearch(e.target.value);
+        }
     };
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 50;
+    const handleCheckboxChange2 = (event) => {
+        setSelectedCheckbox2(event.target.name);
+    };
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
+    function handleTituloModal(parametroModal) {
+        setFiltroBusqueda(parametroModal);
+        switch (parametroModal) {
+            case "mes":
+                setTituloParametroModal("Por Mes");
+                break;
+            default:
+                setTituloParametroModal("");
+        }
+        return;
+    }
+
+    const filtroFecha = (param) => {
+        if (param === "Hoy") {
+            setSearch(moment().format("YYYY-MM-DD"));
+        }
+        if (param === "Esta Semana") {
+            const fechaInicio = moment().startOf('isoWeek').format("YYYY-MM-DD");
+            const fechaFin = moment().endOf('isoWeek').format("YYYY-MM-DD");
+            setSearch({ fechaInicio, fechaFin });
+        }
+        if (param === "Este Mes") {
+            const fechaInicio = moment().startOf('month').format("YYYY-MM-DD");
+            const fechaFin = moment().endOf('month').format("YYYY-MM-DD");
+            setSearch({ fechaInicio, fechaFin });
+        }
+    };
+
+    const [paginaActual, setPaginaActual] = useState(1);
+    const filasPorPagina = 50;
+
+    const handleCambioPagina = (pagina) => {
+        setPaginaActual(pagina);
+        if (pagina > 1) {
+            setOcultrarFiltrosGenerales(true);
+        } else {
+            setOcultrarFiltrosGenerales(false);
+        }
     };
 
     function quitarAcentos(texto) {
@@ -72,25 +122,50 @@ const Gastos = () => {
             .trim();
     }
 
-    let filteredResults = [];
+    let results = gastos;
 
-    if (!search) {
-        filteredResults = gastos;
-    } else {
-        filteredResults = gastos.filter((dato) => {
-            const proveedorSinAcentos = quitarAcentos(dato.proveedor);
-            const searchSinAcentos = quitarAcentos(search);
-            return (
-                proveedorSinAcentos.includes(searchSinAcentos) ||
-                dato.ruc.toString().includes(searchSinAcentos)
-            );
-        });
-    }
+    results = !search
+        ? results
+        : typeof search === "object"
+            ? results.filter((dato) => {
+                const fecha = moment(dato.fechaGasto).format("YYYY-MM-DD");
+                return fecha >= search.fechaInicio && fecha <= search.fechaFin;
+            })
+            : search.toString().length === 10 &&
+                search.charAt(4) === "-" &&
+                search.charAt(7) === "-"
+                ? results.filter((dato) => dato.fechaGasto === search.toString())
+                : filtroBusqueda &&
+                    results.some(
+                        (gasto) =>
+                            gasto[filtroBusqueda]?.includes(search) &&
+                            gasto[filtroBusqueda] !== "" &&
+                            gasto[filtroBusqueda] !== undefined &&
+                            gasto[filtroBusqueda] !== null
+                    ) ?
+                    (results = results.filter(
+                        (dato) =>
+                            dato[filtroBusqueda]?.includes(search) &&
+                            dato[filtroBusqueda] !== "" &&
+                            dato[filtroBusqueda] !== undefined &&
+                            dato[filtroBusqueda] !== null
+                    ))
+                    : results.filter((dato) => {
+                        const proveedorSinAcentos = quitarAcentos(dato.proveedor);
+                        const descripArticuloSinAcentos = quitarAcentos(dato.descripArticulo);
+                        const searchSinAcentos = quitarAcentos(search);
+                        return (
+                            proveedorSinAcentos.includes(searchSinAcentos) ||
+                            dato.ruc.toString().includes(searchSinAcentos) ||
+                            descripArticuloSinAcentos.includes(searchSinAcentos)
+                        );
+                    });
 
-    const totalPages = Math.ceil(filteredResults.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentResults = filteredResults.slice(startIndex, endIndex);
+
+    var paginasTotales = Math.ceil(results.length / filasPorPagina);
+    var startIndex = (paginaActual - 1) * filasPorPagina;
+    var endIndex = startIndex + filasPorPagina;
+    var resultsPaginados = results.slice(startIndex, endIndex);
 
     const sorting = (col) => {
         if (order === "ASC") {
@@ -138,6 +213,20 @@ const Gastos = () => {
                             className="form-control-upNav  m-2"
                         />
                         <i className="fa-solid fa-magnifying-glass"></i>
+                        {taparFiltro && (
+                            <input
+                                className="form-control m-2 w-90"
+                                value="<-FILTRO ENTRE FECHAS APLICADO->"
+                                style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    zIndex: 1,
+                                    textAlign: "center",
+                                }}
+                                disabled
+                            ></input>
+                        )}
                     </div>
 
                     <div className="container mw-100">
@@ -146,7 +235,7 @@ const Gastos = () => {
                                 <br></br>
                                 <div className="d-flex justify-content-between">
                                     <div
-                                        className="d-flex justify-content-center align-items-center"
+                                        className="d-flex justify-content-start align-items-center"
                                         style={{ maxHeight: "40px", marginLeft: "10px" }}
                                     >
                                         <h1>Compras</h1>
@@ -161,8 +250,7 @@ const Gastos = () => {
                                                 <i className="fa-solid fa-gear"></i>
                                             </button>
                                         ) : null}
-                                    </div>
-                                    <div className="col d-flex justify-content-start">
+
                                         <button
                                             variant="primary"
                                             className="btn button-main m-2"
@@ -189,7 +277,162 @@ const Gastos = () => {
                                             </div>
                                         )}
                                     </div>
+
+                                    {!ocultrarFiltrosGenerales && (<div className="col d-flex justify-content-end align-items-center">
+                                        <div className="mb-3 m-1">
+                                            <select
+                                                className="form-control-doctor"
+                                                multiple={false}
+                                                onChange={(e) => {
+                                                    const selectedOption = e.target.value;
+                                                    if (selectedOption === "") {
+                                                        setSearch("")
+                                                        setTaparFiltro(false);
+                                                    } else if (selectedOption === "Hoy") {
+                                                        filtroFecha("Hoy");
+                                                        setTaparFiltro(false);
+                                                    } else if (selectedOption === "Esta Semana") {
+                                                        filtroFecha("Esta Semana");
+                                                        setTaparFiltro(true);
+                                                    } else if (selectedOption === "Este Mes") {
+                                                        filtroFecha("Este Mes");
+                                                        setTaparFiltro(true);
+                                                    } else if (selectedOption === "Seleccionar") {
+                                                        setModalSeleccionFechaShow(true);
+                                                    }
+                                                    else if (selectedOption === "Meses") {
+                                                        handleTituloModal("mes");
+                                                        setParametroModal("mes");
+                                                        setModalShowFiltros2(true);
+                                                    }
+                                                }}
+                                            >
+                                                <option value="">Todas las Fechas</option>
+                                                <option value="Hoy">Hoy</option>
+                                                <option value="Esta Semana">Esta Semana</option>
+                                                <option value="Este Mes">Este Mes</option>
+                                                <option value="Seleccionar">Seleccionar Fecha</option>
+                                                <option value="Meses">Agrupar por Mes</option>
+                                            </select>
+                                        </div>
+
+                                    </div>)}
                                 </div>
+
+                                <Modal show={modalSeleccionFechaShow} onHide={() => { setModalSeleccionFechaShow(false); setSelectedDate(""); setTaparFiltro(false); setSearch(""); }}>
+                                    <Modal.Header closeButton onClick={() => {
+                                        setModalSeleccionFechaShow(false);
+                                        setSelectedDate("");
+                                        setTaparFiltro(false);
+                                        setSearch("");
+                                    }}>
+                                        <Modal.Title>Seleccione una fecha para filtrar:</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Calendar
+                                            defaultValue={moment().format("YYYY-MM-DD")}
+                                            onChange={(date) => {
+                                                const formattedDate =
+                                                    moment(date).format("YYYY-MM-DD");
+                                                setSelectedDate(formattedDate);
+                                            }}
+                                            value={selectedDate}
+                                        />
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="primary" onClick={() => { setSearch(selectedDate); setTaparFiltro(false); setModalSeleccionFechaShow(false); }}>
+                                            Buscar Fecha
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+
+                                <Modal
+                                    show={modalShowFiltros2}
+                                    onHide={() => {
+                                        setModalShowFiltros2(false);
+                                        setSelectedCheckbox2("");
+                                    }}
+                                >
+                                    <Modal.Header
+                                        closeButton
+                                        onClick={() => {
+                                            setModalShowFiltros2(false);
+                                            setParametroModal("");
+                                            setSelectedCheckbox2("");
+                                        }}
+                                    >
+                                        <Modal.Title>
+                                            <h3 style={{ fontWeight: "bold" }}>
+                                                Filtro Seleccionado :{" "}
+                                            </h3>
+                                            <h6>{tituloParametroModal}</h6>
+                                        </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <div>
+                                            {gastos
+                                                .map((gasto) => gasto[parametroModal])
+                                                .filter(
+                                                    (valor, index, self) =>
+                                                        self.indexOf(valor) === index &&
+                                                        valor !== "" &&
+                                                        valor !== undefined &&
+                                                        valor !== null
+                                                )
+                                                .map((parametroModal, index) => (
+                                                    <label className="checkbox-label" key={index}>
+                                                        <input
+                                                            type="checkbox"
+                                                            name={parametroModal}
+                                                            checked={
+                                                                selectedCheckbox2 === parametroModal
+                                                            }
+                                                            onChange={handleCheckboxChange2}
+                                                        />
+                                                        {parametroModal}
+                                                    </label>
+                                                ))}
+                                        </div>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => {
+                                                handleTituloModal("");
+                                                searcher("");
+                                                setModalShowFiltros2(false);
+                                                setSelectedCheckbox2("");
+                                                setParametroModal("");
+                                            }}
+                                        >
+                                            Salir
+                                        </Button>
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => {
+                                                searcher(selectedCheckbox2);
+                                                setModalShowFiltros2(false);
+                                                setParametroModal("");
+                                                setTituloParametroModal("");
+                                                setSelectedCheckbox2("");
+                                            }}
+                                        >
+                                            Aplicar Filtro
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
 
                                 <div className="table__container">
                                     <table className="table__body">
@@ -211,7 +454,7 @@ const Gastos = () => {
                                         </thead>
 
                                         <tbody>
-                                            {currentResults.map((gasto) => (
+                                            {resultsPaginados.map((gasto) => (
                                                 <tr key={gasto.id}>
                                                     <td id="colIzquierda">{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
                                                     <td> {gasto.ruc} </td>
@@ -268,37 +511,37 @@ const Gastos = () => {
                                 </div>
                                 <div className="table__footer">
                                     <div className="table__footer-left">
-                                        Mostrando {startIndex + 1} - {Math.min(endIndex, gastos.length)} de {gastos.length}
+                                        Mostrando {startIndex + 1} - {endIndex} de {results.length}
                                     </div>
 
                                     <div className="table__footer-right">
                                         <span>
                                             <button
-                                                onClick={() => handlePageChange(currentPage - 1)}
-                                                disabled={currentPage === 1}
+                                                onClick={() => handleCambioPagina(paginaActual - 1)}
+                                                disabled={paginaActual === 1}
                                                 style={{ border: "0", background: "none" }}
                                             >
                                                 &lt; Previo
                                             </button>
                                         </span>
 
-                                        {[...Array(totalPages)].map((_, index) => {
-                                            const page = index + 1;
+                                        {[...Array(paginasTotales)].map((_, index) => {
+                                            const pagina = index + 1;
                                             return (
-                                                <span key={page}>
+                                                <span key={pagina}>
                                                     <span
-                                                        onClick={() => handlePageChange(page)}
-                                                        className={page === currentPage ? "active" : ""}
+                                                        onClick={() => handleCambioPagina(pagina)}
+                                                        className={pagina === paginaActual ? "active" : ""}
                                                         style={{
                                                             margin: "2px",
-                                                            backgroundColor: page === currentPage ? "#003057" : "transparent",
-                                                            color: page === currentPage ? "#FFFFFF" : "#000000",
+                                                            backgroundColor: pagina === paginaActual ? "#003057" : "transparent",
+                                                            color: pagina === paginaActual ? "#FFFFFF" : "#000000",
                                                             padding: "4px 8px",
                                                             borderRadius: "4px",
                                                             cursor: "pointer"
                                                         }}
                                                     >
-                                                        {page}
+                                                        {pagina}
                                                     </span>
                                                 </span>
                                             );
@@ -306,8 +549,8 @@ const Gastos = () => {
 
                                         <span>
                                             <button
-                                                onClick={() => handlePageChange(currentPage + 1)}
-                                                disabled={currentPage === totalPages}
+                                                onClick={() => handleCambioPagina(paginaActual + 1)}
+                                                disabled={paginaActual === paginasTotales}
                                                 style={{ border: "0", background: "none" }}
                                             >
                                                 Siguiente &gt;

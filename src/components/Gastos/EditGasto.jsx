@@ -62,9 +62,12 @@ const EditGasto = (props) => {
     const gastoRef = doc(db, "gastos", props.id);
     const gastoDoc = await getDoc(gastoRef);
     const gastoData = gastoDoc.data();
+    moment.locale('es')
+    var mesVariable = moment(fechaGasto || gastoData.fechaGasto).format("MMMM");
 
     const newData = {
       fechaGasto: fechaGasto || gastoData.fechaGasto,
+      mes: mesVariable,
       ruc: ruc || gastoData.ruc,
       proveedor: proveedor || gastoData.proveedor,
       tipoGasto: tipoGasto || gastoData.tipoGasto,
@@ -149,7 +152,7 @@ const EditGasto = (props) => {
           <div className="container">
             <div className="row">
               <div className="col">
-                <form style={{transform: "scale(0.98)"}}>
+                <form style={{ transform: "scale(0.98)" }}>
                   <div className="row">
                     <div className="col-6 mb-2">
                       <label className="form-label">Fecha*</label>
@@ -213,10 +216,13 @@ const EditGasto = (props) => {
                       <label className="form-label">Comprobante Compra*</label>
                       <input
                         defaultValue={props.gasto.comprobanteGasto}
-                        onChange={(e) => setComprobanteGasto(e.target.value)}
+                        onChange={(e) => {
+                          var inputValue = e.target.value.toUpperCase();
+                          setComprobanteGasto(inputValue)
+                        }}
                         type="text"
                         className="form-control"
-                        style={{height: "43px"}}
+                        style={{ height: "43px" }}
                         required
                       />
                     </div>

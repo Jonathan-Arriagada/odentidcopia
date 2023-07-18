@@ -3,7 +3,7 @@ import { collection, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase
 import { db } from "../../firebaseConfig/firebase";
 import EditControlEvolucion from "./EditControlEvolucion";
 import moment from "moment";
-import { Modal } from "react-bootstrap";
+import { Dropdown, Modal } from "react-bootstrap";
 import "../../style/Main.css";
 import Swal from "sweetalert2";
 
@@ -175,40 +175,54 @@ const ControlEvolucion = () => {
                                                             "DD/MM/YY"
                                                         )}
                                                     </td>
+                                                    <td id="columnaAccion" className="colDerecha">
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle
+                                                                variant="primary"
+                                                                className="btn btn-secondary mx-1 btn-md"
+                                                                id="dropdown-actions"
+                                                                style={{ background: "none", border: "none" }}
+                                                            >
+                                                                <i className="fa-solid fa-ellipsis-vertical" id="tdConColor"></i>
+                                                            </Dropdown.Toggle>
 
-                                                    <td style={{ padding: "10px" }} className="colDerecha">
-                                                        <button
-                                                            variant="primary"
-                                                            className="btn btn-secondary mx-1"
-                                                            onClick={() => {
-                                                                setModalShowVerDetalle([
-                                                                    true,
-                                                                    control.detalleTratamiento,
-                                                                ]);
-                                                            }}>
-                                                            <i className="fa-regular fa-comment"></i> Ver
-                                                            Notas
-                                                        </button>
-                                                        <button
-                                                            variant="primary"
-                                                            className="btn btn-success mx-1"
-                                                            onClick={() => {
-                                                                setModalShowEditar(true);
-                                                                setControl(control);
-                                                                setIdParam(control.id);
-                                                            }}
-                                                        >
-                                                            <i className="fa-regular fa-pen-to-square"></i>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                confirmeDelete(control.id);
-                                                            }}
-                                                            variant="primary"
-                                                            className="btn btn-danger mx-1"
-                                                        >
-                                                            <i className="fa-solid fa-trash-can"></i>
-                                                        </button>
+                                                            <div className="dropdown__container">
+                                                                <Dropdown.Menu>
+                                                                    <Dropdown.Item
+                                                                        onClick={() => {
+                                                                            setModalShowVerDetalle([
+                                                                                true,
+                                                                                control.detalleTratamiento,
+                                                                            ]);
+                                                                        }}
+                                                                    >
+                                                                        <i className="fa-regular fa-comment"></i>
+                                                                        Ver Notas
+                                                                    </Dropdown.Item>
+
+                                                                    <div>
+                                                                        <Dropdown.Item
+                                                                            onClick={() => {
+                                                                                setModalShowEditar(true);
+                                                                                setControl(control);
+                                                                                setIdParam(control.id);
+                                                                            }}
+                                                                        >
+                                                                            <i className="fa-regular fa-pen-to-square"></i>
+                                                                            Editar
+                                                                        </Dropdown.Item>
+                                                                        <Dropdown.Item
+                                                                            onClick={() => {
+                                                                                confirmeDelete(control.id);
+                                                                            }}
+                                                                        >
+                                                                            <i className="fa-solid fa-trash-can"></i>
+                                                                            Eliminar
+                                                                        </Dropdown.Item>
+                                                                    </div>
+                                                                </Dropdown.Menu>
+                                                            </div>
+                                                        </Dropdown>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -230,17 +244,11 @@ const ControlEvolucion = () => {
                                             <Modal.Title>Detalle</Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            <div className="container">
-                                                <div className="col">
-                                                    <form>
-                                                        <div className="row">
-                                                            <div className="col mb-6">
-                                                                <p>{modalShowVerDetalle[1]}</p>
-                                                            </div>
-                                                        </div>
-                                                    </form>
+                                            <form>
+                                                <div className="row">
+                                                    <p>{modalShowVerDetalle[1]}</p>
                                                 </div>
-                                            </div>
+                                            </form>
                                         </Modal.Body>
                                     </Modal>
                                 )}

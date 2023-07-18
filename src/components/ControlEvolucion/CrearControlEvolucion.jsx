@@ -97,6 +97,8 @@ const CrearControlEvolucion = (props) => {
     };
 
     const store = async () => {
+        const busqueda = query(collection(db, "user"), where("uidParaComparar", "==", currentUser.uid));
+        const querySnapshot = await getDocs(busqueda);
         await addDoc(controlesCollection, {
             timestamp: serverTimestamp(),
             apellidoConNombre: apellidoConNombre,
@@ -108,6 +110,7 @@ const CrearControlEvolucion = (props) => {
             tratamientoControl: tratamientoControl,
             pieza: pieza,
             doctor: currentUser.displayName,
+            doctorId: querySnapshot.docs[0].data()?.idUnica || "",
             detalleTratamiento: detalleTratamiento,
         });
     };
