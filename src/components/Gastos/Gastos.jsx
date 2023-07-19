@@ -456,7 +456,7 @@ const Gastos = () => {
                                         <tbody>
                                             {resultsPaginados.map((gasto) => (
                                                 <tr key={gasto.id}>
-                                                    <td id="colIzquierda">{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
+                                                    <td id="colIzquierda" style={{ padding: '6px' }}>{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
                                                     <td> {gasto.ruc} </td>
                                                     <td className="text-wrap" style={{ maxWidth: '18vh' }}> {gasto.proveedor} </td>
                                                     <td> {gasto.tipoGasto} </td>

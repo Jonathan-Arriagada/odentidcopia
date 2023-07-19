@@ -53,7 +53,10 @@ const Comparaciones = () => {
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
   useEffect(() => {
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
     const obtenerDatos = async () => {
+
       const gastosRef = collection(db, "gastos");
       const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
         let datos = [];
@@ -113,7 +116,7 @@ const Comparaciones = () => {
       const subTotalArticulo2 = (data && data[mes]) || 0;
       return acumulador + subTotalArticulo2;
     }, 0);
-    return año1 ? subtotal2 : "-";
+    return año2 ? subtotal2 : "-";
   });
 
   const maxValues = [...tablaDatos, ...tablaDatos2].map(data => {
