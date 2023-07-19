@@ -116,23 +116,42 @@ const Comparaciones = () => {
     return año1 ? subtotal2 : "-";
   });
 
+  const maxValues = [...tablaDatos, ...tablaDatos2].map(data => {
+    const subtotal = meses.reduce((acumulador, mes) => {
+      const subTotalArticulo = (data && data[mes]) || 0;
+      return acumulador + subTotalArticulo;
+    }, 0);
+    return subtotal;
+  });
+  
+  const maxValue = Math.max(...maxValues);
+  const steps = parseFloat((maxValue / 10).toFixed(0))
 
   //GRAFICO LOGIC
   const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
 
   const data = {
     labels: meses,
-    datasets: tablaDatos.map((año, index) => {
-      return {
-        label: año.toString(),
+    datasets: [
+      {
+        label: año1.toString(),
         data: meses.map((mes) => {
-          const data = tablaDatos.find((d) => d.año === año);
+          const data = tablaDatos.find((d) => d.año === año1);
           return data ? data[mes] || 0 : 0;
         }),
-        backgroundColor: colores[index % colores.length],
-      };
-    }),
+        backgroundColor: colores[0 % colores.length],
+      },
+      {
+        label: año2.toString(),
+        data: meses.map((mes) => {
+          const data = tablaDatos2.find((d) => d.año === año2);
+          return data ? data[mes] || 0 : 0;
+        }),
+        backgroundColor: colores[1 % colores.length],
+      },
+    ],
   };
+  
 
   const options = {
     plugins: {
@@ -157,9 +176,9 @@ const Comparaciones = () => {
     scales: {
       y: {
         min: 0,
-        max: 20000,
+        max: maxValue,
         ticks: {
-          stepSize: 2000,
+          stepSize: steps,
           color: '#FFF',
         },
         grid: {
@@ -168,7 +187,6 @@ const Comparaciones = () => {
         }
       },
       x: {
-        stacked: true,
         ticks: {
           color: '#FFF',
         },
@@ -214,11 +232,12 @@ const Comparaciones = () => {
                 </div>
               ) : (
                 <>
-                  <div className="d-flex mt-2">
-                    <div className="align-items-center justify-content-center m-2 w-50">
-                      <table className="table__body rounded w-50">
+                  <div className="d-flex mt-3 align-items-center justify-content-evenly">
+                    <div className="m-2 w-25">
+                      <table className="table__body rounded">
                         <thead>
                           <tr>
+                            <th className="text-start">Mes</th>
                             <th>
                               <select
                                 className="form-control-comparaciones"
@@ -271,10 +290,11 @@ const Comparaciones = () => {
                       </table>
                     </div>
 
-                    <div className="align-items-center justify-content-center m-2 w-50">
-                      <table className="table__body rounded w-50">
+                    <div className="m-2 w-25">
+                      <table className="table__body rounded">
                         <thead>
                           <tr>
+                            <th className="text-start">Mes</th>
                             <th>
                               <select
                                 className="form-control-comparaciones"
