@@ -216,7 +216,7 @@ const Comparaciones = () => {
                 <div
                   style={{ maxHeight: "40px", marginLeft: "10px" }}
                 >
-                  <h1>Comparaciones de Gastos Realizados</h1>
+                  <h1>Comparaciones de Compras Realizadas</h1>
                 </div>
                 <div>
                   <button
@@ -243,7 +243,7 @@ const Comparaciones = () => {
                             <th className="text-start">Mes</th>
                             <th>
                               <select
-                                className="form-control-comparaciones"
+                                className="form-control-doctor"
                                 multiple={false}
                                 onChange={(e) => setAño1(e.target.value)}
                                 value={año1}
@@ -300,7 +300,7 @@ const Comparaciones = () => {
                             <th className="text-start">Mes</th>
                             <th>
                               <select
-                                className="form-control-comparaciones"
+                                className="form-control-doctor"
                                 multiple={false}
                                 onChange={(e) => setAño2(e.target.value)}
                                 value={año2}
