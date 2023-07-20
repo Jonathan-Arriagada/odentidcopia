@@ -394,7 +394,6 @@ function Tratamientos() {
   const clearFieldsEditarCobro = () => {
     setMostrarModalEditarCobro([false, "", "", ""]);
     setIndexParaEditcobro("");
-    setIdParaCobro("");
     setFechaEditCobro("");
     setNroComprobanteEditCobro("");
     setImporteEditCobro("");
@@ -450,6 +449,7 @@ function Tratamientos() {
       actualizarDatosConRestoCobro(id, resto)
       setMostrarModalAgregarCobro([false, ""]);
     } catch (e) {
+      console.log(e)
       Swal.fire({
         title: '¡Error!',
         text: 'Hubo inconvenientes al tratar de Agregar su cobro. Recargue la página y vuelva a intentar!.',
@@ -512,6 +512,7 @@ function Tratamientos() {
       actualizarDatosConRestoCobro(idParaEditcobro, resto);
       clearFieldsEditarCobro();
     } catch (e) {
+      console.log(e)
       Swal.fire({
         title: '¡Error!',
         text: 'Hubo inconvenientes al tratar de Editar su cobro. Recargue la página y vuelva a intentar!.',
@@ -599,6 +600,7 @@ function Tratamientos() {
       }
       actualizarDatosConRestoCobro(id, resto)
     } catch (e) {
+      console.log(e)
       Swal.fire({
         title: '¡Error!',
         text: 'Hubo inconvenientes al tratar de Eliminar su cobro. Recargue la página y vuelva a intentar!.',

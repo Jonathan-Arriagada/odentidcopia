@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from "react";
-import "../../../style/Main.css";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebaseConfig/firebase";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import moment from "moment";
 import { Bar } from 'react-chartjs-2';
+import moment from "moment";
+import "../../../style/Main.css";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 
 const InformeCompras = () => {
- 
+  const [tablaDatos, setTablaDatos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [mostrarAjustes, setMostrarAjustes] = useState(false);
-  const [userType, setUserType] = useState("");
-  
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
+  const [dataChart, setDataChart] = useState(null);
 
-const toggleView = () => {
-  setShowChart(!showChart);
-  setButtonText(showChart ? "Visual" : "Textual");
-};
-  const meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre", "Noviembre", "Diciembre"];
+  const toggleView = () => {
+    setShowChart(!showChart);
+    setButtonText(showChart ? "Visual" : "Textual");
+  };
+
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
   const data = {
     labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     datasets: [{
@@ -71,45 +72,67 @@ const toggleView = () => {
     },
   };
 
-  
+
   useEffect(() => {
-    const type = localStorage.getItem("rol");
-    setUserType(type);
+    const obtenerDatos = async () => {
+      const gastosRef = collection(db, "gastos");
+      const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
+        let datos = [];
+        querySnapshot.forEach((doc) => {
+          const fechaGasto = doc.data().fechaGasto;
+          const fecha = moment(fechaGasto, 'YYYY-MM-DD');
+          const año = fecha.year();
+          const mes = fecha.month();
+          const index = datos.findIndex((data) => data.año === año);
+          const gastoMonto = doc.data().subTotalArticulo || 0;
+
+
+          if (index === -1) {
+            datos.push({ año, [mes]: gastoMonto });
+          } else {
+            datos[index][mes] = (datos[index][mes] || 0) + gastoMonto;
+          }
+        });
+        setTablaDatos(datos);
+        setIsLoading(false);
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    };
+
+    obtenerDatos();
+  }, [tablaDatos]);
+
+  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
+  const totalPorAnio = añosInvertidos.map((año) => {
+    return meses.reduce((acumulador, mes, index) => {
+      const data = tablaDatos.find((d) => d.año === año);
+      const gastos = data ? data[index] || 0 : 0;
+      return acumulador + gastos;
+    }, 0);
   });
 
-
-  function funcMostrarAjustes() {
-    if (mostrarAjustes) {
-      setMostrarAjustes(false);
-    } else {
-      setMostrarAjustes(true);
-    }
-  }
-
   return (
-          <div className="container mw-100">
-            <div className="row">
-              <div className="col">
-                <br></br>
-                <div className="d-flex justify-content-between">
-                  <div
-                    className="d-flex justify-content-center align-items-center"
-                    style={{ maxHeight: "40px", marginLeft: "10px" }}
-                  >
-                    <h1>Informe Compras</h1>
-                    {userType === process.env.REACT_APP_rolAdCon ? (
-                      <button
-                        className="btn grey mx-2 btn-sm"
-                        style={{ borderRadius: "5px" }}
-                        onClick={() => {
-                          funcMostrarAjustes(true);
-                        }}
-                      >
-                        <i className="fa-solid fa-gear"></i>
-                      </button>
-                    ) : null}
-                  </div>
-                  <div>
+    <>
+      {isLoading ? (
+        <div className="w-100">
+          <span className="loader position-absolute start-50 top-50 mt-3"></span>
+        </div>
+      ) : (
+        <div className="container mw-100">
+          <div className="row">
+            <div className="col">
+              <br></br>
+              <div className="d-flex justify-content-between">
+                <div
+                  className="d-flex justify-content-center align-items-center"
+                  style={{ maxHeight: "40px", marginLeft: "10px" }}
+                >
+                  <h1>Informe Compras</h1>
+                </div>
+                <div>
                 <button
                    variant="primary"
                   className="btn-blue m-1"
@@ -125,43 +148,50 @@ const toggleView = () => {
             </div>
           ) : (
 
-                <div className="table__container w-50">
-                  <table className="table__body">
-                    <thead>
-                      <tr>
-                        <th>Mes</th>
-                        <th>2023</th>
-                        <th>2024</th>
-                        <th>2025</th>
-                        <th>2026</th>
-                        <th>2027</th>
-                        <th>2028</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
+              <div className="table__container w-50">
+                <table className="table__body w-50">
+                  <thead>
+                    <tr  className="cursor-none">
+                      <th className="text-start fs-4">Meses</th>
+                      {añosInvertidos.map((año) => (
+                        <th className="fs-4" key={año}>{año}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="w-50">
                     {meses.map((mes, index) => (
-                        <tr key={index}>
-                            <td>{mes}</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                        </tr>
-                        ))}
-                        <tr >
-                            <td>Total</td>
-                        </tr>
-                    </tbody>
-                  </table>
-                </div>
-                )}
+                      <tr key={index}>
+                        <td className="text-start" id="colIzquierda">{mes}</td>
+                        {añosInvertidos.map((año, colIndex) => {
+                          const data = tablaDatos.find((d) => d.año === año);
+                          const tratamientos = data?.[index] || "-";
+                          return (
+                            <td className={colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''} key={año}>
+                              {tratamientos}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                    <tr>
+                      <td className="text-start" id="colIzquierda">Total</td>
+                      {añosInvertidos.map((año, index) => (
+                        <td key={index} className={index === añosInvertidos.length - 1 ? 'colDerecha' : ''}>
+                          {totalPorAnio[index]}
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+          )}
             </div>
           </div>
+        </div>
+
+      )}
+    </>
   );
-};
+}
 
 export default InformeCompras;
