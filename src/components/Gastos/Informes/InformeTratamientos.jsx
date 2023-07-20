@@ -89,15 +89,6 @@ const InformeTratamientos = () => {
           }
         });
         setTablaDatos(datos);
-        const datosChart = meses.map((mes, index) => {
-          const dataMes = tablaDatos.reduce((acumulador, data) => {
-            const tratamientos = data[index] || 0;
-            return acumulador + tratamientos;
-          }, 0);
-      
-          return dataMes;
-        });
-        setDataChart(datosChart);
         setIsLoading(false);
       });
 
