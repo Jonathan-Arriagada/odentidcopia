@@ -18,14 +18,16 @@ const InformeTratamientos = () => {
     setShowChart(!showChart);
     setButtonText(showChart ? "Visual" : "Textual");
   };
+  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
 
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
   const data = {
-    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    datasets: [{
-      data: dataChart,
-      backgroundColor: '#00c5c1',
-    }]
+    labels: meses,
+    datasets: añosInvertidos.map((año) => ({
+      label: año.toString(),
+      data: meses.map((mes, index) => tablaDatos.find((data) => data.año === año)?.[index] || 0),
+      backgroundColor: 'rgba(0, 197, 193, 0.6)', // Personaliza el color de las barras
+    })),
   };
   const options = {
     plugins: {
@@ -70,6 +72,7 @@ const InformeTratamientos = () => {
       },
     },
   };
+  
 
   useEffect(() => {
     const obtenerDatos = async () => {
@@ -109,7 +112,7 @@ const InformeTratamientos = () => {
     obtenerDatos();
   }, [tablaDatos]);
 
-  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
+  
   const totalPorAnio = añosInvertidos.map((año) => {
     return meses.reduce((acumulador, mes, index) => {
       const data = tablaDatos.find((d) => d.año === año);
