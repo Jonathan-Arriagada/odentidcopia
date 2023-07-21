@@ -14,19 +14,77 @@ const InformeCompras = () => {
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
   const [dataChart, setDataChart] = useState(null);
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
   const toggleView = () => {
     setShowChart(!showChart);
     setButtonText(showChart ? "Visual" : "Textual");
   };
 
-  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      const gastosRef = collection(db, "gastos");
+      const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
+        let datos = [];
+        querySnapshot.forEach((doc) => {
+          const fechaGasto = doc.data().fechaGasto;
+          const fecha = moment(fechaGasto, 'YYYY-MM-DD');
+          const año = fecha.year();
+          const mes = fecha.month();
+          const index = datos.findIndex((data) => data.año === año);
+          const gastoMonto = doc.data().subTotalArticulo || 0;
+  
+          if (index === -1) {
+            datos.push({ año, [mes]: gastoMonto });
+          } else {
+            datos[index][mes] = (datos[index][mes] || 0) + gastoMonto;
+          }
+        });
+        setTablaDatos(datos);
+        setIsLoading(false);
+      });
+  
+      return () => {
+        unsubscribe();
+      };
+    };
+  
+    obtenerDatos();
+  }, [tablaDatos]);
+
+  const colores = [
+    'rgba(0, 197, 193, 0.5)',
+    'rgba(255, 99, 132, 0.5)',
+    'rgba(54, 162, 235, 0.5)',
+    'rgba(255, 206, 86, 0.5)',
+    'rgba(75, 192, 192, 0.5)',
+    'rgba(145, 61, 136, 0.5)', 
+    'rgba(255, 153, 51, 0.5)',  
+    'rgba(231, 76, 60, 0.5)',   
+    'rgba(46, 204, 113, 0.5)',  
+    'rgba(51, 110, 123, 0.5)'   
+  ];
+
+  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
+  const datasets = añosInvertidos.map((año, index) => ({
+    label: año.toString(),
+    data: meses.map((_, mesIndex) => tablaDatos.find(data => data.año === año)?.[mesIndex] || 0),
+    backgroundColor: colores[index % colores.length],
+  }));
+
+  const totalPorAnio = añosInvertidos.map((año) => {
+    return meses.reduce((acumulador, mes, index) => {
+      const data = tablaDatos.find((d) => d.año === año);
+      const gastos = data ? data[index] || 0 : 0;
+      return acumulador + gastos;
+    }, 0);
+  });
+
+  const maximoGasto = Math.max(...totalPorAnio);
+
   const data = {
-    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    datasets: [{
-      data: [31000, 24000, 26000, 47000, 32000, 23000, 39000, 27000, 38000, 42000, 29000, 51000],
-      backgroundColor: '#00c5c1',
-    }]
+    labels: meses,
+    datasets,
   };
   const options = {
     plugins: {
@@ -50,10 +108,10 @@ const InformeCompras = () => {
     },
     scales: {
       y: {
-        min: 10000,
-        max: 60000,
+        min: 0,
+        max: maximoGasto,
         ticks: {
-          stepSize: 5000,
+          stepSize: maximoGasto / 10,
           color: '#FFF',
         },
         grid: {
@@ -71,48 +129,6 @@ const InformeCompras = () => {
       },
     },
   };
-
-
-  useEffect(() => {
-    const obtenerDatos = async () => {
-      const gastosRef = collection(db, "gastos");
-      const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
-        let datos = [];
-        querySnapshot.forEach((doc) => {
-          const fechaGasto = doc.data().fechaGasto;
-          const fecha = moment(fechaGasto, 'YYYY-MM-DD');
-          const año = fecha.year();
-          const mes = fecha.month();
-          const index = datos.findIndex((data) => data.año === año);
-          const gastoMonto = doc.data().subTotalArticulo || 0;
-
-
-          if (index === -1) {
-            datos.push({ año, [mes]: gastoMonto });
-          } else {
-            datos[index][mes] = (datos[index][mes] || 0) + gastoMonto;
-          }
-        });
-        setTablaDatos(datos);
-        setIsLoading(false);
-      });
-
-      return () => {
-        unsubscribe();
-      };
-    };
-
-    obtenerDatos();
-  }, [tablaDatos]);
-
-  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
-  const totalPorAnio = añosInvertidos.map((año) => {
-    return meses.reduce((acumulador, mes, index) => {
-      const data = tablaDatos.find((d) => d.año === año);
-      const gastos = data ? data[index] || 0 : 0;
-      return acumulador + gastos;
-    }, 0);
-  });
 
   return (
     <>
