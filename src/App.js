@@ -22,6 +22,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Navigation from "./components/Navigation"
 import UpNav from "./components/UpNav"
 import InformeIngresos from "./components/Gastos/Informes/InformeIngresos";
+import InformeIngresosPorServicio from "./components/Gastos/Informes/InformeIngresosPorServicio";
 import InformeTratamientos from "./components/Gastos/Informes/InformeTratamientos";
 import InformeCompras from "./components/Gastos/Informes/InformeCompras";
 import Comparaciones from "./components/Gastos/Informes/Comparaciones";
@@ -68,7 +69,8 @@ function App() {
           <Route path="/proveedores" element={<RequireAuth><Proveedores /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
           <Route path="/informe-ingresos" element={<RequireAuth><InformeIngresos/></RequireAuth>} />
-          <Route path="/informe-ingresos-tratamiento" element={<RequireAuth><InformeTratamientos/></RequireAuth>}/>
+          <Route path="/informe-ingresos-por-servicio" element={<RequireAuth><InformeIngresosPorServicio/></RequireAuth>} />
+          <Route path="/informe-tratamientos" element={<RequireAuth><InformeTratamientos/></RequireAuth>}/>
           <Route path="/informe-compras" element={<RequireAuth><InformeCompras/></RequireAuth>}/>
           <Route path="/comparacion-gastos" element={<RequireAuth><Comparaciones/></RequireAuth>}/>
         </Routes>
