@@ -7,7 +7,7 @@ import moment from "moment";
 import { Bar } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const Comparaciones = () => {
+const ComparacionMensual = () => {
   const [tablaDatos, setTablaDatos] = useState([]);
   const [tablaDatos2, setTablaDatos2] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,6 +15,8 @@ const Comparaciones = () => {
   const [buttonText, setButtonText] = useState("Visual");
   const [año1, setAño1] = useState("");
   const [año2, setAño2] = useState("");
+  const [mesElegido1, setMesElegido1] = useState("");
+  const [mesElegido2, setMesElegido2] = useState("");
   const [optionsAño, setOptionsAño] = useState([]);
   const [optionsAño2, setOptionsAño2] = useState([]);
 
@@ -31,7 +33,9 @@ const Comparaciones = () => {
       valoresUnicos.add(año);
     });
 
-    const options = Array.from(valoresUnicos).map((año) => (
+    const optionsOrdenadas = Array.from(valoresUnicos).sort((a, b) => b - a);
+
+    const options = optionsOrdenadas.map((año) => (
       <option key={`año-${año}`} value={año}>{año}</option>
     ));
     setOptionsAño(options);
@@ -53,45 +57,45 @@ const Comparaciones = () => {
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
   useEffect(() => {
-    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
     const obtenerDatos = async () => {
 
       const gastosRef = collection(db, "gastos");
       const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
         let datos = [];
         let datos2 = [];
+
         querySnapshot.forEach((doc) => {
+          const cuenta = doc.data().cuentaArticulo;
+          const descripcion = doc.data().descripArticulo;
+          const cant = doc.data().cantArticulo;
+          const um = doc.data().umArticulo;
           const fechaGastos = doc.data().fechaGasto;
           const fecha = moment(fechaGastos, 'YYYY-MM-DD');
           const mes = fecha.month();
           const año = fecha.year();
           const subTotalArticulo = doc.data().subTotalArticulo;
 
-          //si se eligió el año1, hace esto
-          if (año === parseInt(año1)) {
-            const index = datos.findIndex((data) => data.año === año1);
+          if (año === año1 && mes === mesElegido1) {
+            const index = datos.findIndex((data) => data.descripcion === descripcion);
             if (index === -1) {
-              datos.push({ año: año1, [meses[mes]]: subTotalArticulo });
+              datos.push({ cuenta, descripcion, cant, um, importe: subTotalArticulo });
             } else {
-              datos[index][meses[mes]] = (datos[index][meses[mes]] || 0) + subTotalArticulo;
+              datos[index].importe = (datos[index].importe || 0) + subTotalArticulo;
             }
           }
 
-          //y si se eligió el año2, hace esto
-          if (año === parseInt(año2)) {
-            const index = datos2.findIndex((data) => data.año === año2);
+          if (año === año2 && mes === mesElegido2) {
+            const index = datos2.findIndex((data) => data.descripcion === descripcion);
             if (index === -1) {
-              datos2.push({ año: año2, [meses[mes]]: subTotalArticulo });
+              datos2.push({ cuenta, descripcion, cant, um, importe: subTotalArticulo });
             } else {
-              datos2[index][meses[mes]] = (datos2[index][meses[mes]] || 0) + subTotalArticulo;
+              datos2[index].importe = (datos2[index].importe || 0) + subTotalArticulo;
             }
           }
         });
 
-        //acá verifico que sino se eligió año, no haga nada
-        setTablaDatos(año1 !== "" ? datos : [{ año: "", ...Object.fromEntries(meses.map((mes) => [mes, "-"])) }]);
-        setTablaDatos2(año2 !== "" ? datos2 : [{ año: "", ...Object.fromEntries(meses.map((mes) => [mes, "-"])) }]);
+        setTablaDatos(datos);
+        setTablaDatos2(datos2);
         setIsLoading(false);
       });
 
@@ -101,24 +105,10 @@ const Comparaciones = () => {
     };
 
     obtenerDatos();
-  }, [año1, año2]);
+  }, [año1, mesElegido1, año2, mesElegido2]);
 
-  const totalPorAnio = tablaDatos.map((data) => {
-    const subtotal = meses.reduce((acumulador, mes) => {
-      const subTotalArticulo = (data && data[mes]) || 0;
-      return acumulador + subTotalArticulo;
-    }, 0);
-    return año1 ? subtotal : "-";
-  });
 
-  const totalPorAnio2 = tablaDatos2.map((data) => {
-    const subtotal2 = meses.reduce((acumulador, mes) => {
-      const subTotalArticulo2 = (data && data[mes]) || 0;
-      return acumulador + subTotalArticulo2;
-    }, 0);
-    return año2 ? subtotal2 : "-";
-  });
-
+  //GRAFICO LOGIC
   const maxValues = [...tablaDatos, ...tablaDatos2].map(data => {
     const subtotal = meses.reduce((acumulador, mes) => {
       const subTotalArticulo = (data && data[mes]) || 0;
@@ -126,11 +116,10 @@ const Comparaciones = () => {
     }, 0);
     return subtotal;
   });
-  
+
   const maxValue = Math.max(...maxValues);
   const steps = parseFloat((maxValue / 10).toFixed(0))
 
-  //GRAFICO LOGIC
   const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
 
   const data = {
@@ -154,7 +143,7 @@ const Comparaciones = () => {
       },
     ],
   };
-  
+
 
   const options = {
     plugins: {
@@ -216,7 +205,7 @@ const Comparaciones = () => {
                 <div
                   style={{ maxHeight: "40px", marginLeft: "10px" }}
                 >
-                  <h1>Comparaciones de Compras Realizadas</h1>
+                  <h1>Reporte Comparación Compras Mensual</h1>
                 </div>
                 <div>
                   <button
@@ -237,111 +226,97 @@ const Comparaciones = () => {
                 <>
                   <div className="d-flex mt-3 align-items-center justify-content-evenly">
                     <div className="m-2 w-25">
+                      <div className="d-flex">
+                        <select
+                          className="form-control-doctor"
+                          multiple={false}
+                          onChange={(e) => setMesElegido1(Number(e.target.value))}
+                          value={mesElegido1}
+                        >
+                          <option value=""></option>
+                          {meses.map((mes, index) => (
+                            <option key={index} value={index}>{mes}</option>
+                          ))}
+                        </select>
+                        <select
+                          className="form-control-doctor"
+                          multiple={false}
+                          onChange={(e) => setAño1(Number(e.target.value))}
+                          value={año1}
+                        >
+                          <option value=""></option>
+                          {optionsAño}
+                        </select>
+                      </div>
                       <table className="table__body rounded">
                         <thead>
-                          <tr>
-                            <th className="text-start">Mes</th>
-                            <th>
-                              <select
-                                className="form-control-doctor"
-                                multiple={false}
-                                onChange={(e) => setAño1(e.target.value)}
-                                value={año1}
-                              >
-                                <option value=""></option>
-                                {optionsAño}
-                              </select>
-                            </th>
+                          <tr className="cursor-none">
+                            <th>Cuenta</th>
+                            <th className="text-start">Descripcion</th>
+                            <th>Cant</th>
+                            <th>U.M.</th>
+                            <th>Importe</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {meses.map((mes, index) => (
+                          {tablaDatos.map((data, index) => (
                             <tr key={index}>
-                              <td className="text-start" id="colIzquierda">
-                                {mes}
-                              </td>
-                              {tablaDatos.map((data, colIndex) => {
-                                const gastos = data[mes] || "-";
-                                return (
-                                  <td
-                                    className={
-                                      colIndex === tablaDatos.length - 1
-                                        ? "colDerecha"
-                                        : ""
-                                    }
-                                    key={colIndex}
-                                  >
-                                    {gastos}
-                                  </td>
-                                );
-                              })}
+                              <td>{data.cuenta}</td>
+                              <td>{data.descripcion}</td>
+                              <td>{data.cant}</td>
+                              <td>{data.um}</td>
+                              <td>{data.importe}</td>
                             </tr>
                           ))}
-                          <tr>
-                            <td className="text-start" id="colIzquierda">
-                              Total
-                            </td>
-                            {totalPorAnio.map((subtotal, index) => (
-                              <td
-                                key={index}
-                                className={index === totalPorAnio.length - 1? "colDerecha" : ""}>
-                                {subtotal}
-                              </td>
-                            ))}
-                          </tr>
                         </tbody>
                       </table>
                     </div>
 
                     <div className="m-2 w-25">
+                      <div className="d-flex">
+                        <select
+                          className="form-control-doctor"
+                          multiple={false}
+                          onChange={(e) => setMesElegido2(Number(e.target.value))}
+                          value={mesElegido2}
+                        >
+                          <option value=""></option>
+                          {meses.map((mes, index) => (
+                            <option key={index} value={index}>{mes}</option>
+                          ))}
+                        </select>
+                        <select
+                          className="form-control-doctor"
+                          multiple={false}
+                          onChange={(e) => setAño2(Number(e.target.value))}
+                          value={año2}
+                        >
+                          <option value=""></option>
+                          {optionsAño2}
+                        </select>
+
+                      </div>
                       <table className="table__body rounded">
                         <thead>
-                          <tr>
-                            <th className="text-start">Mes</th>
-                            <th>
-                              <select
-                                className="form-control-doctor"
-                                multiple={false}
-                                onChange={(e) => setAño2(e.target.value)}
-                                value={año2}
-                              >
-                                <option value=""></option>
-                                {optionsAño2}
-                              </select>
-                            </th>
+                          <tr className="cursor-none">
+                            <th>Cuenta</th>
+                            <th className="text-start">Descripcion</th>
+                            <th>Cant</th>
+                            <th>U.M.</th>
+                            <th>Importe</th>
                           </tr>
                         </thead>
+
                         <tbody>
-                          {meses.map((mes, index) => (
+                          {tablaDatos2.map((data, index) => (
                             <tr key={index}>
-                              <td className="text-start" id="colIzquierda">
-                                {mes}
-                              </td>
-                              {tablaDatos2.map((data, colIndex) => {
-                                const gastos = data[mes] || "-";
-                                return (
-                                  <td
-                                    key={colIndex}
-                                    className={colIndex === tablaDatos2.length - 1 ? "colDerecha" : ""}
-                                  >
-                                    {gastos}
-                                  </td>
-                                );
-                              })}
+                              <td>{data.cuenta}</td>
+                              <td>{data.descripcion}</td>
+                              <td>{data.cant}</td>
+                              <td>{data.um}</td>
+                              <td>{data.importe}</td>
                             </tr>
                           ))}
-                          <tr>
-                            <td className="text-start" id="colIzquierda">
-                              Total
-                            </td>
-                            {totalPorAnio2.map((subtotal, index) => (
-                              <td
-                                key={index}
-                                className={index === totalPorAnio2.length - 1 ? "colDerecha" : ""}>
-                                {subtotal}
-                              </td>
-                            ))}
-                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -350,11 +325,10 @@ const Comparaciones = () => {
               )}
             </div>
           </div>
-
         </>
       )}
     </>
   );
 }
 
-export default Comparaciones;
+export default ComparacionMensual;
