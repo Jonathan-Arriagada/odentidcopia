@@ -34,7 +34,9 @@ const InformeIngresosPorServicio = () => {
       valoresUnicos.add(año);
     });
 
-    const options = Array.from(valoresUnicos).reverse().map((año) => (
+    const optionsOrdenadas = Array.from(valoresUnicos).sort((a, b) => b - a);
+
+    const options = optionsOrdenadas.map((año) => (
       <option key={`año-${año}`} value={año}>{año}</option>
     ));
     setOptionsAño(options);
@@ -125,7 +127,7 @@ const InformeIngresosPorServicio = () => {
               const importeAbonado = cobrosManuales.importeAbonado[index] || "";
               const importe = Number(importeAbonado) || 0;
 
-              if (año === parseInt(añoSeleccionado)) {
+              if (año === añoSeleccionado) {
                 dataTratamiento[meses[mes]] = (dataTratamiento[meses[mes]] || 0) + importe;
                 dataTratamiento.total += importe;
               }
@@ -167,7 +169,7 @@ const InformeIngresosPorServicio = () => {
                   <select
                     className="form-control-doctor"
                     multiple={false}
-                    onChange={(e) => setAñoSeleccionado(e.target.value)}
+                    onChange={(e) => setAñoSeleccionado(Number(e.target.value))}
                     value={añoSeleccionado}
                   >
                     {optionsAño}
@@ -203,12 +205,12 @@ const InformeIngresosPorServicio = () => {
                     <tbody>
                       {tablaDatos.map((data, index) => (
                         <tr key={index}>
-                          <td>{data.codigo}</td>
+                          <td id="colIzquierda">{data.codigo}</td>
                           <td>{data.servicio}</td>
                           {meses.map((mes, mesIndex) => (
                             <td key={mesIndex}>{data[mes] || "-"}</td>
                           ))}
-                          <td>{data.total}</td>
+                            <td className={data.total < 0 ? 'danger fw-bold colDerecha' : 'colDerecha fw-bold'}>{data.total}</td>
                         </tr>
                       ))}
                     </tbody>

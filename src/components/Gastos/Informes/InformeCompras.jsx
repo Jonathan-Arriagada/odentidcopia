@@ -190,9 +190,9 @@ const InformeCompras = () => {
                       </tr>
                     ))}
                     <tr>
-                      <td className="text-start" id="colIzquierda">Total</td>
+                      <td className="text-start fw-bold" id="colIzquierda">Total</td>
                       {añosInvertidos.map((año, index) => (
-                        <td key={index} className={index === añosInvertidos.length - 1 ? 'colDerecha' : ''}>
+                        <td key={index} className={index === añosInvertidos.length - 1 ? 'colDerecha fw-bold' : 'fw-bold'}>
                           {totalPorAnio[index]}
                         </td>
                       ))}

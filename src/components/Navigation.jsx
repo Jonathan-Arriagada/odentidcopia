@@ -46,7 +46,7 @@ const Navigation = () => {
             }
         });
     };
-    
+
 
     const handleClick = (stateSetter, currentState) => {
         setOpen(false);
@@ -102,7 +102,7 @@ const Navigation = () => {
                 setOpen5(false)
                 setOpen6(false)
             }
-            if (location.pathname === "/informe-ingresos" || location.pathname === "/informe-ingresos-por-servicio" || location.pathname === "/informe-tratamientos" || location.pathname === "/informe-compras" || location.pathname === "/comparacion-compras") {
+            if (location.pathname === "/informe-ingresos" || location.pathname === "/informe-ingresos-por-servicio" || location.pathname === "/informe-tratamientos" || location.pathname === "/informe-compras" || location.pathname === "/comparacion-compras" || location.pathname === "/comparacion-compras-mensual" || location.pathname === "/resultados") {
                 setOpen5(true);
                 setOpen(false)
                 setOpen2(true)
@@ -188,7 +188,8 @@ const Navigation = () => {
                                     <Link to="/informe-ingresos-por-servicio" className="text-decoration-none link-light"><Nav title="Ingresos Por Servicio" Icon={FaFunnelDollar} isActive={isActive} /> </Link>
                                     <Link to="/informe-tratamientos" className="text-decoration-none link-light"><Nav title="Informe Tratamientos" Icon={FaNotesMedical} isActive={isActive} /></Link>
                                     <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe Compras" Icon={FaMoneyCheckAlt} isActive={isActive} /> </Link>
-                                    <Link to="/comparacion-gastos" className="text-decoration-none link-light"><Nav title="Comparaciones" Icon={FaBalanceScale} isActive={isActive} /> </Link>
+                                    <Link to="/comparacion-compras-mensual" className="text-decoration-none link-light"><Nav title="Comparacion Mensual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
+                                    <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparaciones Anual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
                                 </div>
                             </div>
                             <div className={open7 ? "sidebar-item open" : "sidebar-item"}>
@@ -196,7 +197,7 @@ const Navigation = () => {
                                     <Nav title="Estados Financieros" Icon={FaChartLine} isActive={isActive} />
                                 </div>
                                 <div className="sidebar-content sub-content">
-                                    <Link to="/estado-resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaPoll} isActive={isActive} /> </Link>
+                                    <Link to="/resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaPoll} isActive={isActive} /> </Link>
                                 </div>
                             </div>
                         </div>
@@ -239,9 +240,9 @@ const NavigationWrapper = () => {
     const location = useLocation()
 
     if (currentUser && location.pathname !== "/") {
-        return <Navigation />; 
+        return <Navigation />;
     }
-  };
+};
 
 
 export default NavigationWrapper;

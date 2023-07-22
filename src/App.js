@@ -25,7 +25,9 @@ import InformeIngresos from "./components/Gastos/Informes/InformeIngresos";
 import InformeIngresosPorServicio from "./components/Gastos/Informes/InformeIngresosPorServicio";
 import InformeTratamientos from "./components/Gastos/Informes/InformeTratamientos";
 import InformeCompras from "./components/Gastos/Informes/InformeCompras";
-import Comparaciones from "./components/Gastos/Informes/Comparaciones";
+import ComparacionMensual from "./components/Gastos/Informes/ComparacionMensual";
+import ComparacionesAnual from "./components/Gastos/Informes/ComparacionesAnual";
+import Resultados from "./components/Gastos/Informes/Resultados";
 
 function App() {
   const { currentUser } = useContext(AuthContext)
@@ -72,7 +74,10 @@ function App() {
           <Route path="/informe-ingresos-por-servicio" element={<RequireAuth><InformeIngresosPorServicio/></RequireAuth>} />
           <Route path="/informe-tratamientos" element={<RequireAuth><InformeTratamientos/></RequireAuth>}/>
           <Route path="/informe-compras" element={<RequireAuth><InformeCompras/></RequireAuth>}/>
-          <Route path="/comparacion-gastos" element={<RequireAuth><Comparaciones/></RequireAuth>}/>
+          <Route path="/comparacion-compras" element={<RequireAuth><ComparacionesAnual/></RequireAuth>}/>
+          <Route path="/comparacion-compras-mensual" element={<RequireAuth><ComparacionMensual/></RequireAuth>}/>
+          <Route path="/resultados" element={<RequireAuth><Resultados/></RequireAuth>}/>
+
         </Routes>
       </BrowserRouter>
     </div>
