@@ -258,18 +258,14 @@ const ComparacionesAnual = () => {
                         <tbody>
                           {meses.map((mes, index) => (
                             <tr key={index}>
-                              <td className="text-start" id="colIzquierda">
+                              <td className="text-start p-2" id="colIzquierda">
                                 {mes}
                               </td>
                               {tablaDatos.map((data, colIndex) => {
                                 const gastos = data[mes] || "-";
                                 return (
                                   <td
-                                    className={
-                                      colIndex === tablaDatos.length - 1
-                                        ? "colDerecha"
-                                        : ""
-                                    }
+                                    className={`${colIndex === tablaDatos.length - 1 ? 'colDerecha' : ''}, p-0`}
                                     key={colIndex}
                                   >
                                     {gastos}
@@ -316,7 +312,7 @@ const ComparacionesAnual = () => {
                         <tbody>
                           {meses.map((mes, index) => (
                             <tr key={index}>
-                              <td className="text-start" id="colIzquierda">
+                              <td className="text-start p-2" id="colIzquierda">
                                 {mes}
                               </td>
                               {tablaDatos2.map((data, colIndex) => {
@@ -324,7 +320,7 @@ const ComparacionesAnual = () => {
                                 return (
                                   <td
                                     key={colIndex}
-                                    className={colIndex === tablaDatos2.length - 1 ? "colDerecha" : ""}
+                                    className={`${colIndex === tablaDatos.length - 1 ? 'colDerecha' : ''}, p-0`}
                                   >
                                     {gastos}
                                   </td>

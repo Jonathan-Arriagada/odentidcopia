@@ -12,7 +12,6 @@ const InformeIngresosPorServicio = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
-  const [dataChart, setDataChart] = useState(null);
   const [añoSeleccionado, setAñoSeleccionado] = useState("2023");
   const [optionsAño, setOptionsAño] = useState([]);
 
@@ -48,63 +47,8 @@ const InformeIngresosPorServicio = () => {
   }, [getOptionsAño]);
 
 
-  //GRAFICO LOGIC
-  const data = {
-    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    datasets: [{
-      data: [31000, 24000, 26000, 47000, 32000, 23000, 39000, 27000, 38000, 42000, 29000, 51000],
-      backgroundColor: '#00c5c1',
-    }]
-  };
-  const options = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: 'Ingresos por mes',
-        padding: {
-          top: 10,
-          bottom: 30,
-        },
-        font: {
-          weight: 'bold',
-          size: 24,
-          family: 'Goldplay'
-        },
-        color: '#FFF',
-      }
-    },
-    scales: {
-      y: {
-        min: 10000,
-        max: 60000,
-        ticks: {
-          stepSize: 5000,
-          color: '#FFF',
-        },
-        grid: {
-          borderDash: [8],
-          color: '#2e3e62',
-        }
-      },
-      x: {
-        ticks: {
-          color: '#FFF',
-        },
-        grid: {
-          color: 'transparent',
-        },
-      },
-    },
-  };
-
-  const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
   //TABLA LOGIC
   useEffect(() => {
-    const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
     const obtenerDatos = async () => {
       const tratamientosRef = collection(db, "tratamientos");
@@ -146,7 +90,72 @@ const InformeIngresosPorServicio = () => {
     };
     obtenerDatos();
   }, [añoSeleccionado]);
+  const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
+  const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
+
+  const datosGrafico = tablaDatos.reduce((data, item) => {
+    const servicio = item.servicio;
+    if (!data[servicio]) {
+      data[servicio] = Array(meses.length).fill(0);
+    }
+    meses.forEach((mes, index) => {
+      data[servicio][index] += item[mes];
+    });
+    return data;
+  }, {});
+  const datasets = Object.keys(datosGrafico).map((servicio, index) => ({
+    label: servicio,
+    data: datosGrafico[servicio],
+    backgroundColor: colores[0 % colores.length],
+  }));
+  const data = {
+    labels: meses,
+    datasets,
+    }
+  const options = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: 'Ingresos por mes',
+        padding: {
+          top: 10,
+          bottom: 30,
+        },
+        font: {
+          weight: 'bold',
+          size: 24,
+          family: 'Goldplay'
+        },
+        color: '#FFF',
+      }
+    },
+    scales: {
+      y: {
+        min: 0,
+        max: 5000,
+        ticks: {
+          stepSize: 500,
+          color: '#FFF',
+        },
+        grid: {
+          borderDash: [8],
+          color: '#2e3e62',
+        }
+      },
+      x: {
+        ticks: {
+          color: '#FFF',
+        },
+        grid: {
+          color: 'transparent',
+        },
+      },
+    },
+  };
   return (
     <>
       {isLoading ? (
@@ -206,7 +215,7 @@ const InformeIngresosPorServicio = () => {
                       {tablaDatos.map((data, index) => (
                         <tr key={index}>
                           <td id="colIzquierda">{data.codigo}</td>
-                          <td>{data.servicio}</td>
+                          <td className="text-start">{data.servicio}</td>
                           {meses.map((mes, mesIndex) => (
                             <td key={mesIndex}>{data[mes] || "-"}</td>
                           ))}

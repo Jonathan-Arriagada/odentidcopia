@@ -12,68 +12,11 @@ const InformeTratamientos = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
-  const [dataChart, setDataChart] = useState(null);
 
   const toggleView = () => {
     setShowChart(!showChart);
     setButtonText(showChart ? "Visual" : "Textual");
   };
-  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
-
-  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-  const data = {
-    labels: meses,
-    datasets: añosInvertidos.map((año) => ({
-      label: año.toString(),
-      data: meses.map((mes, index) => tablaDatos.find((data) => data.año === año)?.[index] || 0),
-      backgroundColor: 'rgba(0, 197, 193, 0.6)', // Personaliza el color de las barras
-    })),
-  };
-  const options = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: 'Tratamientos por mes',
-        padding: {
-          top: 10,
-          bottom: 30,
-        },
-        font: {
-          weight: 'bold',
-          size: 24,
-          family: 'Goldplay'
-        },
-        color: '#FFF',
-      }
-    },
-    scales: {
-      y: {
-        min: 0,
-        max: 100,
-        ticks: {
-          stepSize: 5,
-          color: '#FFF',
-        },
-        grid: {
-          borderDash: [8],
-          color: '#2e3e62',
-        }
-      },
-      x: {
-        ticks: {
-          color: '#FFF',
-        },
-        grid: {
-          color: 'transparent',
-        },
-      },
-    },
-  };
-  
-
   useEffect(() => {
     const obtenerDatos = async () => {
       const tratamientosRef = collection(db, "tratamientos");
@@ -103,7 +46,26 @@ const InformeTratamientos = () => {
     obtenerDatos();
   }, [tablaDatos]);
 
-  
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+  const colores = [
+    'rgba(0, 197, 193, 0.5)',
+    'rgba(255, 99, 132, 0.5)',
+    'rgba(54, 162, 235, 0.5)',
+    'rgba(255, 206, 86, 0.5)',
+    'rgba(75, 192, 192, 0.5)',
+    'rgba(145, 61, 136, 0.5)', 
+    'rgba(255, 153, 51, 0.5)',  
+    'rgba(231, 76, 60, 0.5)',   
+    'rgba(46, 204, 113, 0.5)',  
+    'rgba(51, 110, 123, 0.5)'   
+  ];
+  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
+  const datasets= añosInvertidos.map((año,index) => ({
+    label: año.toString(),
+    data: meses.map((mes, index) => tablaDatos.find((data) => data.año === año)?.[index] || 0),
+    backgroundColor: colores[index % colores.length],
+  }))
   const totalPorAnio = añosInvertidos.map((año) => {
     return meses.reduce((acumulador, mes, index) => {
       const data = tablaDatos.find((d) => d.año === año);
@@ -111,6 +73,55 @@ const InformeTratamientos = () => {
       return acumulador + tratamientos;
     }, 0);
   });
+  const maxValue = Math.max(...totalPorAnio);
+  
+  const data = {
+    labels: meses,
+    datasets,
+  };
+  const options = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: 'Tratamientos por mes',
+        padding: {
+          top: 10,
+          bottom: 30,
+        },
+        font: {
+          weight: 'bold',
+          size: 24,
+          family: 'Goldplay'
+        },
+        color: '#FFF',
+      }
+    },
+    scales: {
+      y: {
+        min: 0,
+        max: maxValue,
+        ticks: {
+          stepSize: maxValue/10,
+          color: '#FFF',
+        },
+        grid: {
+          borderDash: [8],
+          color: '#2e3e62',
+        }
+      },
+      x: {
+        ticks: {
+          color: '#FFF',
+        },
+        grid: {
+          color: 'transparent',
+        },
+      },
+    },
+  };
 
   return (
     <>
@@ -150,21 +161,21 @@ const InformeTratamientos = () => {
                 <table className="table__body w-50">
                   <thead>
                     <tr  className="cursor-none">
-                      <th className="text-start fs-4">Meses</th>
+                      <th className="text-start fs-5">Meses</th>
                       {añosInvertidos.map((año) => (
-                        <th className="fs-4" key={año}>{año}</th>
+                        <th className="fs-5" key={año}>{año}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody className="w-50">
                     {meses.map((mes, index) => (
                       <tr key={index}>
-                        <td className="text-start" id="colIzquierda">{mes}</td>
+                        <td className="text-start p-2" id="colIzquierda">{mes}</td>
                         {añosInvertidos.map((año, colIndex) => {
                           const data = tablaDatos.find((d) => d.año === año);
                           const tratamientos = data?.[index] || "-";
                           return (
-                            <td className={colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''} key={año}>
+                            <td className={`${colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''}, p-0`} key={año}>
                               {tratamientos}
                             </td>
                           );

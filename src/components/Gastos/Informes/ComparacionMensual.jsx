@@ -225,7 +225,7 @@ const ComparacionMensual = () => {
               ) : (
                 <>
                   <div className="d-flex mt-3 align-items-center justify-content-evenly">
-                    <div className="m-2 w-25">
+                    <div className="table__container m-2 w-50">
                       <div className="d-flex">
                         <select
                           className="form-control-doctor"
@@ -272,7 +272,7 @@ const ComparacionMensual = () => {
                       </table>
                     </div>
 
-                    <div className="m-2 w-25">
+                    <div className="table__container m-2 w-50">
                       <div className="d-flex">
                         <select
                           className="form-control-doctor"
@@ -296,6 +296,7 @@ const ComparacionMensual = () => {
                         </select>
 
                       </div>
+                      
                       <table className="table__body rounded">
                         <thead>
                           <tr className="cursor-none">

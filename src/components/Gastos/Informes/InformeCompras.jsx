@@ -168,21 +168,21 @@ const InformeCompras = () => {
                 <table className="table__body w-50">
                   <thead>
                     <tr  className="cursor-none">
-                      <th className="text-start fs-4">Meses</th>
+                      <th className="text-start fs-5">Meses</th>
                       {añosInvertidos.map((año) => (
-                        <th className="fs-4" key={año}>{año}</th>
+                        <th className="fs-5" key={año}>{año}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody className="w-50">
                     {meses.map((mes, index) => (
                       <tr key={index}>
-                        <td className="text-start" id="colIzquierda">{mes}</td>
+                        <td className="text-start p-2" id="colIzquierda">{mes}</td>
                         {añosInvertidos.map((año, colIndex) => {
                           const data = tablaDatos.find((d) => d.año === año);
                           const tratamientos = data?.[index] || "-";
                           return (
-                            <td className={colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''} key={año}>
+                            <td className={`${colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''}, p-0`} key={año}>
                               {tratamientos}
                             </td>
                           );

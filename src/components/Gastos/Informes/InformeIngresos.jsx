@@ -12,7 +12,6 @@ const InformeIngresos = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
-  const [dataChart, setDataChart] = useState(null);
 
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
@@ -22,57 +21,7 @@ const InformeIngresos = () => {
     setButtonText(showChart ? "Visual" : "Textual");
   };
 
-  const data = {
-    labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    datasets: [{
-      data: [31000, 24000, 26000, 47000, 32000, 23000, 39000, 27000, 38000, 42000, 29000, 51000],
-      backgroundColor: '#00c5c1',
-    }]
-  };
-  const options = {
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: 'Ingresos por mes',
-        padding: {
-          top: 10,
-          bottom: 30,
-        },
-        font: {
-          weight: 'bold',
-          size: 24,
-          family: 'Goldplay'
-        },
-        color: '#FFF',
-      }
-    },
-    scales: {
-      y: {
-        min: 10000,
-        max: 60000,
-        ticks: {
-          stepSize: 5000,
-          color: '#FFF',
-        },
-        grid: {
-          borderDash: [8],
-          color: '#2e3e62',
-        }
-      },
-      x: {
-        ticks: {
-          color: '#FFF',
-        },
-        grid: {
-          color: 'transparent',
-        },
-      },
-    },
-  };
-
+  
   useEffect(() => {
     const obtenerDatos = async () => {
       const tratamientosRef = collection(db, "tratamientos");
@@ -100,17 +49,7 @@ const InformeIngresos = () => {
             });
           }
         });
-        setTablaDatos(datos);
-
-      /* const datosChart = meses.map((mes, index) => {
-         const dataMes = tablaDatos.reduce((acumulador, data) => {
-           const tratamientos = data[index] || 0;
-           return acumulador + tratamientos;
-         }, 0);
-     
-         return dataMes;
-       });
-       setDataChart(datosChart);*/
+      setTablaDatos(datos);
       setIsLoading(false);
     });
 
@@ -120,9 +59,27 @@ const InformeIngresos = () => {
 };
 
 obtenerDatos();
-  }, [tablaDatos]);
+ }, [tablaDatos]);
+   const colores = [
+    'rgba(0, 197, 193, 0.5)',
+    'rgba(255, 99, 132, 0.5)',
+    'rgba(54, 162, 235, 0.5)',
+    'rgba(255, 206, 86, 0.5)',
+    'rgba(75, 192, 192, 0.5)',
+    'rgba(145, 61, 136, 0.5)', 
+    'rgba(255, 153, 51, 0.5)',  
+    'rgba(231, 76, 60, 0.5)',   
+    'rgba(46, 204, 113, 0.5)',  
+    'rgba(51, 110, 123, 0.5)'   
+  ];
+
 
 const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
+const datasets = añosInvertidos.map((año, index) => ({
+    label: año.toString(),
+    data: meses.map((_, mesIndex) => tablaDatos.find(data => data.año === año)?.[mesIndex] || 0),
+    backgroundColor: colores[index % colores.length],
+  }));
 const totalPorAnio = añosInvertidos.map((año) => {
   return meses.reduce((acumulador, mes, index) => {
     const data = tablaDatos.find((d) => d.año === año);
@@ -130,6 +87,60 @@ const totalPorAnio = añosInvertidos.map((año) => {
     return acumulador + tratamientos;
   }, 0);
 });
+
+
+const maxValue = Math.max(...totalPorAnio);
+const stepSize = parseFloat((maxValue / 10).toFixed(0));
+
+const data = {
+  labels: meses,
+  datasets,
+};
+
+const options = {
+  plugins: {
+    legend: {
+      display: false,
+    },
+    title: {
+      display: true,
+      text: 'Ingresos por mes',
+      padding: {
+        top: 10,
+        bottom: 30,
+      },
+      font: {
+        weight: 'bold',
+        size: 24,
+        family: 'Goldplay'
+      },
+      color: '#FFF',
+    }
+  },
+  scales: {
+    y: {
+      min: 0,
+      max: maxValue,
+      ticks: {
+        stepSize: stepSize,
+        color: '#FFF',
+      },
+      grid: {
+        borderDash: [8],
+        color: '#2e3e62',
+      }
+    },
+    x: {
+      ticks: {
+        color: '#FFF',
+      },
+      grid: {
+        color: 'transparent',
+      },
+    },
+  },
+};
+
 
 return (
   <>
@@ -169,21 +180,21 @@ return (
                 <table className="table__body w-50">
                   <thead>
                     <tr className="cursor-none">
-                      <th className="text-start fs-4">Meses</th>
+                      <th className="text-start fs-5">Meses</th>
                       {añosInvertidos.map((año) => (
-                        <th className="fs-4" key={año}>{año}</th>
+                        <th className="fs-5" key={año}>{año}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody className="w-50">
                     {meses.map((mes, index) => (
                       <tr key={index}>
-                        <td className="text-start" id="colIzquierda">{mes}</td>
+                        <td className="text-start p-2" id="colIzquierda">{mes}</td>
                         {añosInvertidos.map((año, colIndex) => {
                           const data = tablaDatos.find((d) => d.año === año);
                           const tratamientos = data?.[index] || "-";
                           return (
-                            <td className={colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''} key={año}>
+                            <td className={`${colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''}, p-0`} key={año}>
                               {tratamientos}
                             </td>
                           );
