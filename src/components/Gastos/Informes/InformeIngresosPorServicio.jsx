@@ -50,22 +50,20 @@ const InformeIngresosPorServicio = () => {
 
   //TABLA LOGIC
   useEffect(() => {
-    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
     const obtenerDatos = async () => {
       const tratamientosRef = collection(db, "tratamientos");
       const unsubscribe = await onSnapshot(tratamientosRef, (querySnapshot) => {
-        var datos = [];
+        const datosAcumulados = {};
 
         querySnapshot.forEach((doc) => {
           const tratamiento = doc.data();
-          const codigo = tratamiento.codigo;
+          const codigo = tratamiento.cta;
           const servicio = tratamiento.tarifasTratamientos;
           const cobrosManuales = tratamiento.cobrosManuales;
 
           if (cobrosManuales && cobrosManuales.fechaCobro) {
-            const dataTratamiento = { codigo, servicio, total: 0 };
-
             cobrosManuales.fechaCobro.forEach((fechaCobro, index) => {
               const fecha = moment(fechaCobro, 'YYYY-MM-DD');
               const año = fecha.year();
@@ -74,17 +72,27 @@ const InformeIngresosPorServicio = () => {
               const importe = Number(importeAbonado) || 0;
 
               if (año === añoSeleccionado) {
-                dataTratamiento[meses[mes]] = (dataTratamiento[meses[mes]] || 0) + importe;
-                dataTratamiento.total += importe;
+                if (!datosAcumulados[servicio]) {
+                  datosAcumulados[servicio] = {
+                    codigo,
+                    servicio,
+                    total: 0,
+                  };
+                  meses.forEach((mes) => {
+                    datosAcumulados[servicio][mes] = 0;
+                  });
+                }
+                datosAcumulados[servicio][meses[mes]] += importe;
+                datosAcumulados[servicio].total += importe;
               }
             });
-
-            datos.push(dataTratamiento);
           }
         });
-        datos.sort((a, b) => a.codigo - b.codigo);
 
-        setTablaDatos(datos);
+        const datosFinales = Object.values(datosAcumulados);
+        datosFinales.sort((a, b) => a.codigo - b.codigo);
+
+        setTablaDatos(datosFinales);
         setIsLoading(false);
       });
 
@@ -93,6 +101,8 @@ const InformeIngresosPorServicio = () => {
     obtenerDatos();
   }, [añoSeleccionado]);
 
+
+  //GRAFICO LOCIG
   const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
   const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
@@ -159,6 +169,8 @@ const InformeIngresosPorServicio = () => {
       },
     },
   };
+  console.log(tablaDatos)
+
   return (
     <>
       {isLoading ? (
@@ -220,8 +232,10 @@ const InformeIngresosPorServicio = () => {
                         <tr key={index}>
                           <td id="colIzquierda">{data.codigo}</td>
                           <td className="text-start">{data.servicio}</td>
-                          {meses.map((mes, mesIndex) => (
-                            <td key={mesIndex}>{data[mes]?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "-"}</td>
+                          {meses.map((mes) => (
+                            <td key={mes}>
+                            {data[mes] !== 0 ? data[mes]?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "-"}
+                          </td>
                           ))}
                           <td className={data.total < 0 ? 'danger fw-bold colDerecha' : 'colDerecha fw-bold'}>{data.total?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, addDoc, query, orderBy, limit, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, orderBy, limit, getDocs, where } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase";
 import { Modal } from "react-bootstrap";
 
@@ -8,6 +8,7 @@ const CreateTarifa = (props) => {
   const [tratamiento, setTratamiento] = useState("");
   const [tarifa, setTarifa] = useState("");
   const [editable] = useState(false);
+  const [error, setError] = useState("");
 
   const tarifasCollection = collection(db, "tarifas");
 
@@ -28,12 +29,27 @@ const CreateTarifa = (props) => {
 
   const store = async (e) => {
     e.preventDefault();
+    if (tratamiento === "" || tarifa.trim() === "") {
+      setError("El Tratamiento/Tarifa no puede estar vacío");
+      return;
+    }
+    if (tarifaExiste(tratamiento)) {
+      setError("El tratamiento ya existe");
+      return;
+    }
     await addDoc(tarifasCollection, {
       codigo: codigo,
       tratamiento: tratamiento,
       tarifa: tarifa,
       eliminado: false,
     });
+    props.onHide();
+  };
+
+  const tarifaExiste = async (name) => {
+    const q = query(tarifasCollection, where("tratamiento", "==", name));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
   };
 
   return (
@@ -47,6 +63,7 @@ const CreateTarifa = (props) => {
         props.onHide();
         setTratamiento("")
         setTarifa("")
+        setError("")
       }}>
         <Modal.Title id="contained-modal-title-vcenter">
           <h1>Crear Tarifa</h1>
@@ -56,7 +73,8 @@ const CreateTarifa = (props) => {
         <div className="container">
           <div className="row">
             <div className="col">
-              <form onSubmit={store}style={{ transform: "scale(0.98)" }}>
+              <form style={{ transform: "scale(0.98)" }}>
+              {error && <small className="text-danger">{error}</small>}
                 <div className="mb-2">
                   <label className="form-label">Codigo</label>
                   <input
@@ -73,6 +91,7 @@ const CreateTarifa = (props) => {
                     onChange={(e) => setTratamiento(e.target.value)}
                     type="text"
                     className="form-control"
+                    required
                   />
                 </div>
                 <div className="mb-2">
@@ -87,9 +106,7 @@ const CreateTarifa = (props) => {
                 </div>
                 <button
                   type="submit"
-                  onClick={() => {
-                    props.onHide();
-                  }}
+                  onClick={store}
                   className="btn button-main"
                 >
                   Agregar
