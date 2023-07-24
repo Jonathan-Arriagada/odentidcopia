@@ -465,8 +465,8 @@ const Gastos = () => {
                                                     <td> {gasto.umArticulo} </td>
                                                     <td> {gasto.cuentaArticulo} </td>
                                                     <td className="text-wrap" style={{ maxWidth: '20vh' }}> {gasto.descripArticulo} </td>
-                                                    <td> {gasto.precioUniArticulo} </td>
-                                                    <td> {gasto.subTotalArticulo} </td>
+                                                    <td> {gasto.precioUniArticulo.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </td>
+                                                    <td> {gasto.subTotalArticulo.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </td>
                                                     <td id="columnaAccion" className="colDerecha">
                                                         <Dropdown>
                                                             <Dropdown.Toggle

@@ -133,14 +133,14 @@ const Ingresos = () => {
     let total = 0;
     //let cantidad = 0;
 
-    resultsPaginados.forEach((cobro) => {
+    results.forEach((cobro) => {
       total += Number(cobro.importeAbonado);
       //cantidad++;
     });
 
     setTotalIngresos(total);
     //setCantIngresos(cantidad);
-  }, [resultsPaginados]);
+  }, [results]);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -296,7 +296,7 @@ const Ingresos = () => {
                     <div className="col d-flex justify-content-end align-items-center">
                       <div className="d-flex form-control-dash">
                         <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
-                        <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalIngresos}</span></h5>
+                        <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalIngresos?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></h5>
                       </div>
                     </div>
 
@@ -390,7 +390,7 @@ const Ingresos = () => {
                         <td style={{ textAlign: "left" }}> {cobro.pacienteCobro} </td>
                         <td style={{ textAlign: "left" }}> {cobro.tratamientoCobro} </td>
                         <td> {cobro.nroComprobanteCobro} </td>
-                        <td className="colDerecha"> {cobro.importeAbonado} </td>
+                        <td className="colDerecha"> {Number(cobro.importeAbonado)?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </td>
                       </tr>
                     ))}
                   </tbody>

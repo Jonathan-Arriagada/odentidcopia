@@ -265,7 +265,7 @@ const ComparacionMensual = () => {
                               <td>{data.descripcion}</td>
                               <td>{data.cant}</td>
                               <td>{data.um}</td>
-                              <td>{data.importe}</td>
+                              <td>{data.importe?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -315,7 +315,7 @@ const ComparacionMensual = () => {
                               <td>{data.descripcion}</td>
                               <td>{data.cant}</td>
                               <td>{data.um}</td>
-                              <td>{data.importe}</td>
+                              <td>{data.importe?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                             </tr>
                           ))}
                         </tbody>

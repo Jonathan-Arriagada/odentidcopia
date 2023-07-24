@@ -164,7 +164,7 @@ function Tarifario() {
                         >
                           <td id="colIzquierda"> {tarifa.codigo} </td>
                           <td style={{ textAlign: "left" }}> {tarifa.tratamiento}</td>
-                          <td> {tarifa.tarifa} </td>
+                          <td> {Number(tarifa.tarifa)?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </td>
                           {userType === process.env.REACT_APP_rolAdCon ? (
                             <td id="columnaAccion" className="colDerecha">
                               <Dropdown>

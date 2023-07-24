@@ -28,7 +28,7 @@ function Gastos(props) {
     return (
         <div>
             <span>
-                {(gastosTotales >= 0 ? "+" : "") + (gastosTotales).toFixed(0)}
+                {(gastosTotales >= 0 ? "+" : "") + gastosTotales?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
         </div>
     );
