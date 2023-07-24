@@ -35,7 +35,7 @@ function Ingresos(props) {
 
   return (
     <div>
-      <span>${totalAbonado}</span>
+      <span>${totalAbonado?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
     </div>
   );
 }

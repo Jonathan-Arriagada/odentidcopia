@@ -195,7 +195,7 @@ return (
                           const tratamientos = data?.[index] || "-";
                           return (
                             <td className={`${colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''}, p-0`} key={año}>
-                              {tratamientos}
+                              {tratamientos?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </td>
                           );
                         })}
@@ -205,7 +205,7 @@ return (
                       <td className="text-start fw-bold" id="colIzquierda">Total</td>
                       {añosInvertidos.map((año, index) => (
                         <td key={index} className={index === añosInvertidos.length - 1 ? 'colDerecha fw-bold' : 'fw-bold'}>
-                          {totalPorAnio[index]}
+                          {totalPorAnio[index]?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                       ))}
                     </tr>

@@ -57,6 +57,7 @@ const ComparacionesAnual = () => {
   useEffect(() => {
 
     const obtenerDatos = async () => {
+      const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
       const gastosRef = collection(db, "gastos");
       const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {

@@ -8,11 +8,12 @@ import "../../../style/Main.css";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const InformeIngresosPorServicio = () => {
+  const añoActual = moment().year();
   const [tablaDatos, setTablaDatos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
-  const [añoSeleccionado, setAñoSeleccionado] = useState("2023");
+  const [añoSeleccionado, setAñoSeleccionado] = useState(añoActual);
   const [optionsAño, setOptionsAño] = useState([]);
 
   const toggleView = () => {
@@ -49,6 +50,7 @@ const InformeIngresosPorServicio = () => {
 
   //TABLA LOGIC
   useEffect(() => {
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
     const obtenerDatos = async () => {
       const tratamientosRef = collection(db, "tratamientos");
@@ -86,10 +88,11 @@ const InformeIngresosPorServicio = () => {
         setIsLoading(false);
       });
 
-      return () => {unsubscribe()};
+      return () => { unsubscribe() };
     };
     obtenerDatos();
   }, [añoSeleccionado]);
+
   const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
   const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
@@ -112,7 +115,7 @@ const InformeIngresosPorServicio = () => {
   const data = {
     labels: meses,
     datasets,
-    }
+  }
   const options = {
     plugins: {
       legend: {
@@ -179,8 +182,9 @@ const InformeIngresosPorServicio = () => {
                     className="form-control-doctor"
                     multiple={false}
                     onChange={(e) => setAñoSeleccionado(Number(e.target.value))}
-                    value={añoSeleccionado}
+                    defaultValue={añoActual}
                   >
+                    <option value=""></option>
                     {optionsAño}
                   </select>
                   <button
@@ -203,9 +207,9 @@ const InformeIngresosPorServicio = () => {
                     <thead>
                       <tr className="cursor-none">
                         <th>Codigo</th>
-                        <th>Servicio</th>
+                        <th className="text-start">Servicio</th>
                         {meses.map((mes, index) => (
-                          <th className="text-start cursor-none" key={index}>{mes}</th>
+                          <th className="cursor-none" key={index}>{mes}</th>
                         ))}
                         <th>Total</th>
                       </tr>
@@ -217,9 +221,9 @@ const InformeIngresosPorServicio = () => {
                           <td id="colIzquierda">{data.codigo}</td>
                           <td className="text-start">{data.servicio}</td>
                           {meses.map((mes, mesIndex) => (
-                            <td key={mesIndex}>{data[mes] || "-"}</td>
+                            <td key={mesIndex}>{data[mes]?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "-"}</td>
                           ))}
-                            <td className={data.total < 0 ? 'danger fw-bold colDerecha' : 'colDerecha fw-bold'}>{data.total}</td>
+                          <td className={data.total < 0 ? 'danger fw-bold colDerecha' : 'colDerecha fw-bold'}>{data.total?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -229,7 +233,6 @@ const InformeIngresosPorServicio = () => {
             </div>
           </div>
         </div>
-
       )}
     </>
   );

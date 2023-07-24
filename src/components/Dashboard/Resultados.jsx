@@ -51,7 +51,7 @@ function Resultados(props) {
         <div>
             <span>
                 {ingresosTotales !== null && gastosTotales !== null ? (
-                    ((ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales).toFixed(0))
+                    ((ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales)?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
                 ) : (
                     "0"
                 )}
