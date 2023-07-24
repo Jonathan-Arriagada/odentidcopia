@@ -237,7 +237,7 @@ const ComparacionesAnual = () => {
                 </div>
               ) : (
                 <>
-                  <div className="d-flex mt-3 align-items-center justify-content-evenly">
+                  <div className="d-flex mt-3 justify-content-evenly">
                     <div className="table__container m-2 w-25">
                       <table className="table__body rounded">
                         <thead>
