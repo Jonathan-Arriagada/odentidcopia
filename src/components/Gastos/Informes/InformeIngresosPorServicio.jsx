@@ -94,6 +94,7 @@ const InformeIngresosPorServicio = () => {
 
         setTablaDatos(datosFinales);
         setIsLoading(false);
+        
       });
 
       return () => { unsubscribe() };
@@ -101,9 +102,21 @@ const InformeIngresosPorServicio = () => {
     obtenerDatos();
   }, [añoSeleccionado]);
 
-
+ 
   //GRAFICO LOCIG
   const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+  
+  const maxIngreso = tablaDatos.length > 0
+  ? Math.max(
+      ...tablaDatos.map((data) => {
+        const subtotal = meses.reduce((acumulador, mes) => {
+          const subTotalServicio = data[mes] || 0;
+          return acumulador + subTotalServicio;
+        }, 0);
+        return subtotal;
+      })
+    )
+  : 0;
 
   const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
 
@@ -121,6 +134,7 @@ const InformeIngresosPorServicio = () => {
     label: servicio,
     data: datosGrafico[servicio],
     backgroundColor: colores[0 % colores.length],
+    barThickness: 3,
   }));
   const data = {
     labels: meses,
@@ -133,7 +147,7 @@ const InformeIngresosPorServicio = () => {
       },
       title: {
         display: true,
-        text: 'Ingresos por mes',
+        text: 'Ingresos por servicio por mes',
         padding: {
           top: 10,
           bottom: 30,
@@ -149,9 +163,9 @@ const InformeIngresosPorServicio = () => {
     scales: {
       y: {
         min: 0,
-        max: 5000,
+        max: maxIngreso,
         ticks: {
-          stepSize: 500,
+          stepSize: maxIngreso/10,
           color: '#FFF',
         },
         grid: {
