@@ -226,7 +226,7 @@ const InformeIngresosPorServicio = () => {
                   <h1>Informe Ingresos Por Servicio</h1>
                 </div>
                 <div className="col d-flex justify-content-end">
-                <div className="d-flex form-control-informeVentas">
+                  <div className="d-flex form-control-informeVentas">
                     <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
                     <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalGeneral?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></h5>
                   </div>

@@ -9,7 +9,6 @@ const ComparacionMensual = () => {
   const [tablaDatos, setTablaDatos] = useState([]);
   const [tablaDatos2, setTablaDatos2] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [buttonText, setButtonText] = useState("Visual");
   const [año1, setAño1] = useState("");
   const [año2, setAño2] = useState("");
   const [mesElegido1, setMesElegido1] = useState("");

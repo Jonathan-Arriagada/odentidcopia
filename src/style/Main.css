@@ -800,7 +800,7 @@ select {
 }
 
 .profile-dinero {
-  height: 20px;
+  height: 1.3rem;
   margin-right: 10px;
 }
 
@@ -826,9 +826,7 @@ select {
 
 .form-control-informeVentas {
   display: block;
-  width: 40% !important;
   padding: 0.375rem 1.125rem;
-  font-size: 0.575rem;
   font-weight: 400;
   line-height: 1;
   color: var(--color-texto-oscuro);
@@ -842,6 +840,7 @@ select {
 
 #tituloVentas {
   margin: 0;
+  font-size: 1rem;
   align-items: center;
 }
 
