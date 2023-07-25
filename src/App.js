@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Pacientes/Create";
 import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
-import { useContext} from "react";
+import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
@@ -40,6 +40,8 @@ function App() {
 
     if (storedRole === process.env.REACT_APP_rolAdCon) {
       return children;
+    } else if (storedRole === process.env.REACT_APP_rolRecepcionisCon) {
+      return <Navigate to="/agenda" />;
     } else {
       return <Navigate to="/pacientes" />;
     }
@@ -48,8 +50,8 @@ function App() {
   return (
     <div className="App mainpage">
       <BrowserRouter>
-      <RequireAuth><Navigation /></RequireAuth>
-      <RequireAuth><UpNav /></RequireAuth>
+        <RequireAuth><Navigation /></RequireAuth>
+        <RequireAuth><UpNav /></RequireAuth>
 
         <Routes>
           <Route path="/" element={<Login />} />
@@ -69,14 +71,14 @@ function App() {
           <Route path="/compras" element={<RequireAuth><Gastos /></RequireAuth>} />
           <Route path="/materiales" element={<RequireAuth><Materiales /></RequireAuth>} />
           <Route path="/proveedores" element={<RequireAuth><Proveedores /></RequireAuth>} />
-          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-          <Route path="/informe-ingresos" element={<RequireAuth><InformeIngresos/></RequireAuth>} />
-          <Route path="/informe-ingresos-por-servicio" element={<RequireAuth><InformeIngresosPorServicio/></RequireAuth>} />
-          <Route path="/informe-tratamientos" element={<RequireAuth><InformeTratamientos/></RequireAuth>}/>
-          <Route path="/informe-compras" element={<RequireAuth><InformeCompras/></RequireAuth>}/>
-          <Route path="/comparacion-compras" element={<RequireAuth><ComparacionesAnual/></RequireAuth>}/>
-          <Route path="/comparacion-compras-mensual" element={<RequireAuth><ComparacionMensual/></RequireAuth>}/>
-          <Route path="/resultados" element={<RequireAuth><Resultados/></RequireAuth>}/>
+          <Route path="/dashboard" element={<RequireAuth><RequireAdmin><Dashboard /></RequireAdmin></RequireAuth>} />
+          <Route path="/informe-ingresos" element={<RequireAuth><RequireAdmin><InformeIngresos /></RequireAdmin></RequireAuth>} />
+          <Route path="/informe-ingresos-por-servicio" element={<RequireAuth><RequireAdmin><InformeIngresosPorServicio /></RequireAdmin></RequireAuth>} />
+          <Route path="/informe-tratamientos" element={<RequireAuth><RequireAdmin><InformeTratamientos /></RequireAdmin></RequireAuth>} />
+          <Route path="/informe-compras" element={<RequireAuth><RequireAdmin><InformeCompras /></RequireAdmin></RequireAuth>} />
+          <Route path="/comparacion-compras" element={<RequireAuth><RequireAdmin><ComparacionesAnual /></RequireAdmin></RequireAuth>} />
+          <Route path="/comparacion-compras-mensual" element={<RequireAuth><RequireAdmin><ComparacionMensual /></RequireAdmin></RequireAuth>} />
+          <Route path="/resultados" element={<RequireAuth><RequireAdmin><Resultados /></RequireAdmin></RequireAuth>} />
 
         </Routes>
       </BrowserRouter>

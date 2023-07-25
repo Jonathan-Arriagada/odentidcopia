@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { collection, onSnapshot, query, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
-import {
-  Chart as ChartJS, CategoryScale, LinearScale, PointElement,
-  LineElement, Title, Tooltip, Legend
-} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import moment from "moment";
 import "../../../style/Main.css";
-ChartJS.register(CategoryScale, LinearScale, PointElement,
-  LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Resultados = () => {
   const añoActual = moment().year();
@@ -58,7 +54,7 @@ const Resultados = () => {
 
   //TABLA LOGIC
   useEffect(() => {
-    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
     const obtenerDatos = async () => {
       const tratamientosRef = collection(db, "tratamientos");
@@ -259,7 +255,8 @@ const Resultados = () => {
                             <td id="colIzquierda">{data.descripcion}</td>
                             {meses.map((mes, mesIndex) => (
                               <td key={mesIndex} className={data[mes] < 0 ? 'danger fw-bold' : ''}>
-                                {data[mes]?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "-"}</td>
+                                {data[mes] !== 0 ? data[mes]?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "-" : "-"}
+                              </td>
                             ))}
                             <td className={data.total < 0 ? 'danger fw-bold colDerecha' : 'colDerecha fw-bold'}>{data.total?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                           </tr>

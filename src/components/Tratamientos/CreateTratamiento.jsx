@@ -417,7 +417,7 @@ function CreateTratamiento(props) {
               <div className="col mb-2">
                 <label className="form-label">Fecha*</label>
                 <input
-                  value={hoy}
+                  defaultValue  ={hoy}
                   onChange={(e) => setFecha(e.target.value)}
                   type="date"
                   className="form-control"

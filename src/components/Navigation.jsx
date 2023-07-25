@@ -179,27 +179,30 @@ const Navigation = () => {
                                     <Link to="/compras" className="text-decoration-none link-light"><Nav title="Compras" Icon={FaShoppingCart} isActive={isActive} /> </Link>
                                 </div>
                             </div>
-                            <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
-                                <div className="sidebar-title link-light" onClick={() => handleClick2(setOpen5, open5)}>
-                                    <Nav title="Informes contables" Icon={FaFileAlt} isActive={isActive} />
-                                </div>
-                                <div className="sidebar-content sub-content">
-                                    <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe Ingresos" Icon={FaDonate} isActive={isActive} /> </Link>
-                                    <Link to="/informe-ingresos-por-servicio" className="text-decoration-none link-light"><Nav title="Ingresos Por Servicio" Icon={FaFunnelDollar} isActive={isActive} /> </Link>
-                                    <Link to="/informe-tratamientos" className="text-decoration-none link-light"><Nav title="Informe Tratamientos" Icon={FaNotesMedical} isActive={isActive} /></Link>
-                                    <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe Compras" Icon={FaMoneyCheckAlt} isActive={isActive} /> </Link>
-                                    <Link to="/comparacion-compras-mensual" className="text-decoration-none link-light"><Nav title="Comparacion Mensual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
-                                    <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparaciones Anual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
-                                </div>
-                            </div>
-                            <div className={open7 ? "sidebar-item open" : "sidebar-item"}>
-                                <div className="sidebar-title link-light" onClick={() => handleClick2(setOpen7, open7)}>
-                                    <Nav title="Estados Financieros" Icon={FaChartLine} isActive={isActive} />
-                                </div>
-                                <div className="sidebar-content sub-content">
-                                    <Link to="/resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaPoll} isActive={isActive} /> </Link>
-                                </div>
-                            </div>
+                            {userType === process.env.REACT_APP_rolAdCon ? (
+                                <>
+                                    <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
+                                        <div className="sidebar-title link-light" onClick={() => handleClick2(setOpen5, open5)}>
+                                            <Nav title="Informes contables" Icon={FaFileAlt} isActive={isActive} />
+                                        </div>
+                                        <div className="sidebar-content sub-content">
+                                            <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe Ingresos" Icon={FaDonate} isActive={isActive} /> </Link>
+                                            <Link to="/informe-ingresos-por-servicio" className="text-decoration-none link-light"><Nav title="Ingresos Por Servicio" Icon={FaFunnelDollar} isActive={isActive} /> </Link>
+                                            <Link to="/informe-tratamientos" className="text-decoration-none link-light"><Nav title="Informe Tratamientos" Icon={FaNotesMedical} isActive={isActive} /></Link>
+                                            <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe Compras" Icon={FaMoneyCheckAlt} isActive={isActive} /> </Link>
+                                            <Link to="/comparacion-compras-mensual" className="text-decoration-none link-light"><Nav title="Comparacion Mensual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
+                                            <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparaciones Anual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
+                                        </div>
+                                    </div>
+                                    <div className={open7 ? "sidebar-item open" : "sidebar-item"}>
+                                        <div className="sidebar-title link-light" onClick={() => handleClick2(setOpen7, open7)}>
+                                            <Nav title="Estados Financieros" Icon={FaChartLine} isActive={isActive} />
+                                        </div>
+                                        <div className="sidebar-content sub-content">
+                                            <Link to="/resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaPoll} isActive={isActive} /> </Link>
+                                        </div>
+                                    </div>
+                                </>) : null}
                         </div>
                     </div>
 
