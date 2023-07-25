@@ -122,6 +122,9 @@ const stepSize = maxValue/8;
         color: '#FFF',
       }
     },
+    animation: {
+      duration: 200, 
+    },
     scales: {
       y: {
         min: 0,

@@ -105,6 +105,9 @@ const InformeCompras = () => {
         color: '#FFF',
       }
     },
+    animation: {
+      duration: 100, 
+    },
     scales: {
       y: {
         min: 0,
