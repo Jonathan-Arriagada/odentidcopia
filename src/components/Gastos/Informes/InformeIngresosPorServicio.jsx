@@ -118,7 +118,18 @@ const InformeIngresosPorServicio = () => {
     )
   : 0;
 
-  const colores = ['rgba(0, 197, 193, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)'];
+  const colores = [
+    'rgba(0, 197, 193, 0.5)',
+    'rgba(255, 99, 132, 0.5)',
+    'rgba(54, 162, 235, 0.5)',
+    'rgba(255, 206, 86, 0.5)',
+    'rgba(75, 192, 192, 0.5)',
+    'rgba(145, 61, 136, 0.5)', 
+    'rgba(255, 153, 51, 0.5)',  
+    'rgba(231, 76, 60, 0.5)',   
+    'rgba(46, 204, 113, 0.5)',  
+    'rgba(51, 110, 123, 0.5)'   
+  ];
 
   const datosGrafico = tablaDatos.reduce((data, item) => {
     const servicio = item.servicio;
