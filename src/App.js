@@ -23,7 +23,6 @@ import Navigation from "./components/Navigation"
 import UpNav from "./components/UpNav"
 import InformeIngresos from "./components/Gastos/Informes/InformeIngresos";
 import InformeIngresosPorServicio from "./components/Gastos/Informes/InformeIngresosPorServicio";
-import InformeTratamientos from "./components/Gastos/Informes/InformeTratamientos";
 import InformeCompras from "./components/Gastos/Informes/InformeCompras";
 import ComparacionMensual from "./components/Gastos/Informes/ComparacionMensual";
 import ComparacionesAnual from "./components/Gastos/Informes/ComparacionesAnual";
@@ -74,7 +73,6 @@ function App() {
           <Route path="/dashboard" element={<RequireAuth><RequireAdmin><Dashboard /></RequireAdmin></RequireAuth>} />
           <Route path="/informe-ingresos" element={<RequireAuth><RequireAdmin><InformeIngresos /></RequireAdmin></RequireAuth>} />
           <Route path="/informe-ingresos-por-servicio" element={<RequireAuth><RequireAdmin><InformeIngresosPorServicio /></RequireAdmin></RequireAuth>} />
-          <Route path="/informe-tratamientos" element={<RequireAuth><RequireAdmin><InformeTratamientos /></RequireAdmin></RequireAuth>} />
           <Route path="/informe-compras" element={<RequireAuth><RequireAdmin><InformeCompras /></RequireAdmin></RequireAuth>} />
           <Route path="/comparacion-compras" element={<RequireAuth><RequireAdmin><ComparacionesAnual /></RequireAdmin></RequireAuth>} />
           <Route path="/comparacion-compras-mensual" element={<RequireAuth><RequireAdmin><ComparacionMensual /></RequireAdmin></RequireAuth>} />

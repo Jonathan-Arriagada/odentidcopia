@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
@@ -26,27 +26,31 @@ const InformeIngresosPorServicio = () => {
   const tratamientosCollectiona = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectiona));
 
-  const getOptionsAño = useCallback((snapshot) => {
+  const getOptionsAño = useCallback(async () => {
+    const snapshot = await getDocs(tratamientosCollection.current);
+
     const valoresUnicos = new Set();
 
-    snapshot.docs.forEach((doc) => {
+    snapshot.forEach((doc) => {
       const fechaTratamiento = doc.data().fecha;
-      const fecha = moment(fechaTratamiento, 'YYYY-MM-DD');
+      const fecha = moment(fechaTratamiento, "YYYY-MM-DD");
       const año = fecha.year();
       valoresUnicos.add(año);
     });
 
-    const optionsOrdenadas = Array.from(valoresUnicos).sort((a, b) => b - a);
+    const options = Array.from(valoresUnicos)
+      .sort((a, b) => b - a)
+      .map((año) => (
+        <option key={`año-${año}`} value={año}>
+          {año}
+        </option>
+      ));
 
-    const options = optionsOrdenadas.map((año) => (
-      <option key={`año-${año}`} value={año}>{año}</option>
-    ));
     setOptionsAño(options);
-
   }, []);
 
   useEffect(() => {
-    return onSnapshot(tratamientosCollection.current, getOptionsAño);
+    getOptionsAño();
   }, [getOptionsAño]);
 
 
@@ -56,50 +60,46 @@ const InformeIngresosPorServicio = () => {
 
     const obtenerDatos = async () => {
       const tratamientosRef = collection(db, "tratamientos");
-      const unsubscribe = await onSnapshot(tratamientosRef, (querySnapshot) => {
-        const datosAcumulados = {};
+      const querySnapshot = await getDocs(tratamientosRef);
+      const datosAcumulados = {};
 
-        querySnapshot.forEach((doc) => {
-          const tratamiento = doc.data();
-          const codigo = tratamiento.cta;
-          const servicio = tratamiento.tarifasTratamientos;
-          const cobrosManuales = tratamiento.cobrosManuales;
+      querySnapshot.forEach((doc) => {
+        const tratamiento = doc.data();
+        const codigo = tratamiento.cta;
+        const servicio = tratamiento.tarifasTratamientos;
+        const cobrosManuales = tratamiento.cobrosManuales;
 
-          if (cobrosManuales && cobrosManuales.fechaCobro) {
-            cobrosManuales.fechaCobro.forEach((fechaCobro, index) => {
-              const fecha = moment(fechaCobro, 'YYYY-MM-DD');
-              const año = fecha.year();
-              const mes = fecha.month();
-              const importeAbonado = cobrosManuales.importeAbonado[index] || "";
-              const importe = Number(importeAbonado) || 0;
+        if (cobrosManuales && cobrosManuales.fechaCobro) {
+          cobrosManuales.fechaCobro.forEach((fechaCobro, index) => {
+            const fecha = moment(fechaCobro, 'YYYY-MM-DD');
+            const año = fecha.year();
+            const mes = fecha.month();
+            const importeAbonado = cobrosManuales.importeAbonado[index] || "";
+            const importe = Number(importeAbonado) || 0;
 
-              if (año === añoSeleccionado) {
-                if (!datosAcumulados[servicio]) {
-                  datosAcumulados[servicio] = {
-                    codigo,
-                    servicio,
-                    total: 0,
-                  };
-                  meses.forEach((mes) => {
-                    datosAcumulados[servicio][mes] = 0;
-                  });
-                }
-                datosAcumulados[servicio][meses[mes]] += importe;
-                datosAcumulados[servicio].total += importe;
+            if (año === añoSeleccionado) {
+              if (!datosAcumulados[servicio]) {
+                datosAcumulados[servicio] = {
+                  codigo,
+                  servicio,
+                  total: 0,
+                };
+                meses.forEach((mes) => {
+                  datosAcumulados[servicio][mes] = 0;
+                });
               }
-            });
-          }
-        });
-
-        const datosFinales = Object.values(datosAcumulados);
-        datosFinales.sort((a, b) => a.codigo - b.codigo);
-
-        setTablaDatos(datosFinales);
-        setIsLoading(false);
-
+              datosAcumulados[servicio][meses[mes]] += importe;
+              datosAcumulados[servicio].total += importe;
+            }
+          });
+        }
       });
 
-      return () => { unsubscribe() };
+      const datosFinales = Object.values(datosAcumulados);
+      datosFinales.sort((a, b) => a.codigo - b.codigo);
+
+      setTablaDatos(datosFinales);
+      setIsLoading(false);
     };
     obtenerDatos();
   }, [añoSeleccionado]);

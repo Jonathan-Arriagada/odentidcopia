@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
 import "../../../style/Main.css";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -21,28 +21,32 @@ const ComparacionesAnual = () => {
   const gastosCollectiona = collection(db, "gastos");
   const gastosCollection = useRef(query(gastosCollectiona));
 
-  const getOptionsAño = useCallback((snapshot) => {
+  const getOptionsAño = useCallback(async () => {
+    const snapshot = await getDocs(gastosCollection.current);
+
     const valoresUnicos = new Set();
 
-    snapshot.docs.forEach((doc) => {
+    snapshot.forEach((doc) => {
       const fechaGasto = doc.data().fechaGasto;
-      const fecha = moment(fechaGasto, 'YYYY-MM-DD');
+      const fecha = moment(fechaGasto, "YYYY-MM-DD");
       const año = fecha.year();
       valoresUnicos.add(año);
     });
 
-    const optionsOrdenadas = Array.from(valoresUnicos).sort((a, b) => b - a);
+    const options = Array.from(valoresUnicos)
+      .sort((a, b) => b - a)
+      .map((año) => (
+        <option key={`año-${año}`} value={año}>
+          {año}
+        </option>
+      ));
 
-    const options = optionsOrdenadas.map((año) => (
-      <option key={`año-${año}`} value={año}>{año}</option>
-    ));
     setOptionsAño(options);
     setOptionsAño2(options);
-
   }, []);
 
   useEffect(() => {
-    return onSnapshot(gastosCollection.current, getOptionsAño);
+    getOptionsAño();
   }, [getOptionsAño]);
 
   const toggleView = () => {
@@ -60,45 +64,40 @@ const ComparacionesAnual = () => {
       const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
       const gastosRef = collection(db, "gastos");
-      const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
-        let datos = [];
-        let datos2 = [];
-        querySnapshot.forEach((doc) => {
-          const fechaGastos = doc.data().fechaGasto;
-          const fecha = moment(fechaGastos, 'YYYY-MM-DD');
-          const mes = fecha.month();
-          const año = fecha.year();
-          const subTotalArticulo = doc.data().subTotalArticulo;
+      const querySnapshot = await getDocs(gastosRef);
+      let datos = [];
+      let datos2 = [];
+      querySnapshot.forEach((doc) => {
+        const fechaGastos = doc.data().fechaGasto;
+        const fecha = moment(fechaGastos, 'YYYY-MM-DD');
+        const mes = fecha.month();
+        const año = fecha.year();
+        const subTotalArticulo = doc.data().subTotalArticulo;
 
-          //si se eligió el año1, hace esto
-          if (año === año1) {
-            const index = datos.findIndex((data) => data.año === año1);
-            if (index === -1) {
-              datos.push({ año: año1, [meses[mes]]: subTotalArticulo });
-            } else {
-              datos[index][meses[mes]] = (datos[index][meses[mes]] || 0) + subTotalArticulo;
-            }
+        //si se eligió el año1, hace esto
+        if (año === año1) {
+          const index = datos.findIndex((data) => data.año === año1);
+          if (index === -1) {
+            datos.push({ año: año1, [meses[mes]]: subTotalArticulo });
+          } else {
+            datos[index][meses[mes]] = (datos[index][meses[mes]] || 0) + subTotalArticulo;
           }
+        }
 
-          //y si se eligió el año2, hace esto
-          if (año === año2) {
-            const index = datos2.findIndex((data) => data.año === año2);
-            if (index === -1) {
-              datos2.push({ año: año2, [meses[mes]]: subTotalArticulo });
-            } else {
-              datos2[index][meses[mes]] = (datos2[index][meses[mes]] || 0) + subTotalArticulo;
-            }
+        //y si se eligió el año2, hace esto
+        if (año === año2) {
+          const index = datos2.findIndex((data) => data.año === año2);
+          if (index === -1) {
+            datos2.push({ año: año2, [meses[mes]]: subTotalArticulo });
+          } else {
+            datos2[index][meses[mes]] = (datos2[index][meses[mes]] || 0) + subTotalArticulo;
           }
-        });
-
-        setTablaDatos(datos);
-        setTablaDatos2(datos2);
-        setIsLoading(false);
+        }
       });
 
-      return () => {
-        unsubscribe();
-      };
+      setTablaDatos(datos);
+      setTablaDatos2(datos2);
+      setIsLoading(false);
     };
 
     obtenerDatos();
@@ -139,11 +138,11 @@ const ComparacionesAnual = () => {
     'rgba(54, 162, 235, 0.5)',
     'rgba(255, 206, 86, 0.5)',
     'rgba(75, 192, 192, 0.5)',
-    'rgba(145, 61, 136, 0.5)', 
-    'rgba(255, 153, 51, 0.5)',  
-    'rgba(231, 76, 60, 0.5)',   
-    'rgba(46, 204, 113, 0.5)',  
-    'rgba(51, 110, 123, 0.5)'   
+    'rgba(145, 61, 136, 0.5)',
+    'rgba(255, 153, 51, 0.5)',
+    'rgba(231, 76, 60, 0.5)',
+    'rgba(46, 204, 113, 0.5)',
+    'rgba(51, 110, 123, 0.5)'
   ];
 
   const data = {
@@ -190,7 +189,7 @@ const ComparacionesAnual = () => {
       }
     },
     animation: {
-      duration: 200, 
+      duration: 200,
     },
     scales: {
       y: {

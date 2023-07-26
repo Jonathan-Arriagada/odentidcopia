@@ -1,5 +1,5 @@
 import Nav from "./zNavIcons/Nav";
-import { FaUsers, FaMoon, FaCalendarAlt, FaFileInvoiceDollar, FaMoneyCheckAlt, FaNotesMedical, FaPoll, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaFunnelDollar, FaDollarSign, FaSignOutAlt, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax, FaChartBar, FaFileAlt, FaBox, FaArchive, FaDonate, FaBalanceScale, FaChartLine } from 'react-icons/fa';
+import { FaUsers, FaMoon, FaCalendarAlt, FaFileInvoiceDollar, FaMoneyCheckAlt, FaPoll, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaFunnelDollar, FaDollarSign, FaSignOutAlt, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax, FaChartBar, FaFileAlt, FaBox, FaArchive, FaDonate, FaBalanceScale, FaChartLine } from 'react-icons/fa';
 import { useState, useCallback, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -102,7 +102,7 @@ const Navigation = () => {
                 setOpen5(false)
                 setOpen6(false)
             }
-            if (location.pathname === "/informe-ingresos" || location.pathname === "/informe-ingresos-por-servicio" || location.pathname === "/informe-tratamientos" || location.pathname === "/informe-compras" || location.pathname === "/comparacion-compras" || location.pathname === "/comparacion-compras-mensual" || location.pathname === "/resultados") {
+            if (location.pathname === "/informe-ingresos" || location.pathname === "/informe-ingresos-por-servicio" || location.pathname === "/informe-compras" || location.pathname === "/comparacion-compras" || location.pathname === "/comparacion-compras-mensual" || location.pathname === "/resultados") {
                 setOpen5(true);
                 setOpen(false)
                 setOpen2(true)
@@ -188,10 +188,9 @@ const Navigation = () => {
                                         <div className="sidebar-content sub-content">
                                             <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe Ingresos" Icon={FaDonate} isActive={isActive} /> </Link>
                                             <Link to="/informe-ingresos-por-servicio" className="text-decoration-none link-light"><Nav title="Ingresos Por Servicio" Icon={FaFunnelDollar} isActive={isActive} /> </Link>
-                                            <Link to="/informe-tratamientos" className="text-decoration-none link-light"><Nav title="Informe Tratamientos" Icon={FaNotesMedical} isActive={isActive} /></Link>
                                             <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe Compras" Icon={FaMoneyCheckAlt} isActive={isActive} /> </Link>
                                             <Link to="/comparacion-compras-mensual" className="text-decoration-none link-light"><Nav title="Comparacion Mensual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
-                                            <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparaciones Anual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
+                                            <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparacion Anual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
                                         </div>
                                     </div>
                                     <div className={open7 ? "sidebar-item open" : "sidebar-item"}>

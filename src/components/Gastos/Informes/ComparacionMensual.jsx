@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, query, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
 import "../../../style/Main.css";
 import moment from "moment";
@@ -19,28 +19,32 @@ const ComparacionMensual = () => {
   const gastosCollectiona = collection(db, "gastos");
   const gastosCollection = useRef(query(gastosCollectiona));
 
-  const getOptionsAño = useCallback((snapshot) => {
+  const getOptionsAño = useCallback(async () => {
+    const snapshot = await getDocs(gastosCollection.current);
+
     const valoresUnicos = new Set();
 
-    snapshot.docs.forEach((doc) => {
+    snapshot.forEach((doc) => {
       const fechaGasto = doc.data().fechaGasto;
-      const fecha = moment(fechaGasto, 'YYYY-MM-DD');
+      const fecha = moment(fechaGasto, "YYYY-MM-DD");
       const año = fecha.year();
       valoresUnicos.add(año);
     });
 
-    const optionsOrdenadas = Array.from(valoresUnicos).sort((a, b) => b - a);
+    const options = Array.from(valoresUnicos)
+      .sort((a, b) => b - a)
+      .map((año) => (
+        <option key={`año-${año}`} value={año}>
+          {año}
+        </option>
+      ));
 
-    const options = optionsOrdenadas.map((año) => (
-      <option key={`año-${año}`} value={año}>{año}</option>
-    ));
     setOptionsAño(options);
     setOptionsAño2(options);
-
   }, []);
 
   useEffect(() => {
-    return onSnapshot(gastosCollection.current, getOptionsAño);
+    getOptionsAño();
   }, [getOptionsAño]);
 
 
@@ -51,48 +55,47 @@ const ComparacionMensual = () => {
     const obtenerDatos = async () => {
 
       const gastosRef = collection(db, "gastos");
-      const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
-        let datos = [];
-        let datos2 = [];
+      const querySnapshot = await getDocs(gastosRef);
+      let datos = [];
+      let datos2 = [];
 
-        querySnapshot.forEach((doc) => {
-          const cuenta = doc.data().cuentaArticulo;
-          const descripcion = doc.data().descripArticulo;
-          const cant = doc.data().cantArticulo;
-          const um = doc.data().umArticulo;
-          const fechaGastos = doc.data().fechaGasto;
-          const fecha = moment(fechaGastos, 'YYYY-MM-DD');
-          const mes = fecha.month();
-          const año = fecha.year();
-          const subTotalArticulo = doc.data().subTotalArticulo;
+      querySnapshot.forEach((doc) => {
+        const cuenta = doc.data().cuentaArticulo;
+        const descripcion = doc.data().descripArticulo;
+        const cantidad = Number(doc.data().cantArticulo);
+        const um = doc.data().umArticulo;
+        const fechaGastos = doc.data().fechaGasto;
+        const fecha = moment(fechaGastos, 'YYYY-MM-DD');
+        const mes = fecha.month();
+        const año = fecha.year();
+        const subTotalArticulo = doc.data().subTotalArticulo;
 
-          if (año === año1 && mes === mesElegido1) {
-            const index = datos.findIndex((data) => data.descripcion === descripcion);
-            if (index === -1) {
-              datos.push({ cuenta, descripcion, cant, um, importe: subTotalArticulo });
-            } else {
-              datos[index].importe = (datos[index].importe || 0) + subTotalArticulo;
-            }
+        if (año === año1 && mes === mesElegido1) {
+          const index = datos.findIndex((data) => data.cuenta === cuenta);
+          if (index === -1) {
+            datos.push({ cuenta, descripcion, cant: cantidad, um, importe: subTotalArticulo });
+          } else {
+            datos[index].importe = (datos[index].importe || 0) + subTotalArticulo;
+            datos[index].cant = Number((datos[index].cant || 0)) + Number(cantidad);
           }
+        }
 
-          if (año === año2 && mes === mesElegido2) {
-            const index = datos2.findIndex((data) => data.descripcion === descripcion);
-            if (index === -1) {
-              datos2.push({ cuenta, descripcion, cant, um, importe: subTotalArticulo });
-            } else {
-              datos2[index].importe = (datos2[index].importe || 0) + subTotalArticulo;
-            }
+        if (año === año2 && mes === mesElegido2) {
+          const index = datos2.findIndex((data) => data.descripcion === descripcion);
+          if (index === -1) {
+            datos2.push({ cuenta, descripcion, cant: cantidad, um, importe: subTotalArticulo });
+          } else {
+            datos2[index].importe = (datos2[index].importe || 0) + subTotalArticulo;
+            datos2[index].cant = Number((datos2[index].cant || 0)) + Number(cantidad);
           }
-        });
-
-        setTablaDatos(datos);
-        setTablaDatos2(datos2);
-        setIsLoading(false);
+        }
       });
+      datos.sort((a, b) => b.importe - a.importe);
+      datos2.sort((a, b) => b.importe - a.importe);
 
-      return () => {
-        unsubscribe();
-      };
+      setTablaDatos(datos);
+      setTablaDatos2(datos2);
+      setIsLoading(false);
     };
 
     obtenerDatos();
@@ -119,104 +122,104 @@ const ComparacionMensual = () => {
                   <h1>Reporte Comparación Compras Mensual</h1>
                 </div>
               </div>
-                  <div className="d-flex mt-3 justify-content-evenly">
-                    <div className="table__container m-2 w-50">
-                      <div className="d-flex">
-                        <select
-                          className="form-control-doctor"
-                          multiple={false}
-                          onChange={(e) => setMesElegido1(Number(e.target.value))}
-                          value={mesElegido1}
-                        >
-                          <option value=""></option>
-                          {meses.map((mes, index) => (
-                            <option key={index} value={index}>{mes}</option>
-                          ))}
-                        </select>
-                        <select
-                          className="form-control-doctor"
-                          multiple={false}
-                          onChange={(e) => setAño1(Number(e.target.value))}
-                          value={año1}
-                        >
-                          <option value=""></option>
-                          {optionsAño}
-                        </select>
-                      </div>
-                      <table className="table__body rounded">
-                        <thead>
-                          <tr className="cursor-none">
-                            <th>Cuenta</th>
-                            <th className="text-start">Descripcion</th>
-                            <th>Cant</th>
-                            <th>U.M.</th>
-                            <th>Importe</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tablaDatos.map((data, index) => (
-                            <tr key={index}>
-                              <td>{data.cuenta}</td>
-                              <td>{data.descripcion}</td>
-                              <td>{data.cant}</td>
-                              <td>{data.um}</td>
-                              <td>{data.importe?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div className="table__container m-2 w-50">
-                      <div className="d-flex">
-                        <select
-                          className="form-control-doctor"
-                          multiple={false}
-                          onChange={(e) => setMesElegido2(Number(e.target.value))}
-                          value={mesElegido2}
-                        >
-                          <option value=""></option>
-                          {meses.map((mes, index) => (
-                            <option key={index} value={index}>{mes}</option>
-                          ))}
-                        </select>
-                        <select
-                          className="form-control-doctor"
-                          multiple={false}
-                          onChange={(e) => setAño2(Number(e.target.value))}
-                          value={año2}
-                        >
-                          <option value=""></option>
-                          {optionsAño2}
-                        </select>
-
-                      </div>
-                      
-                      <table className="table__body rounded">
-                        <thead>
-                          <tr className="cursor-none">
-                            <th>Cuenta</th>
-                            <th className="text-start">Descripcion</th>
-                            <th>Cant</th>
-                            <th>U.M.</th>
-                            <th>Importe</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {tablaDatos2.map((data, index) => (
-                            <tr key={index}>
-                              <td>{data.cuenta}</td>
-                              <td>{data.descripcion}</td>
-                              <td>{data.cant}</td>
-                              <td>{data.um}</td>
-                              <td>{data.importe?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+              <div className="d-flex mt-3 justify-content-evenly">
+                <div className="table__container m-2 w-50">
+                  <div className="d-flex">
+                    <select
+                      className="form-control-doctor"
+                      multiple={false}
+                      onChange={(e) => setMesElegido1(Number(e.target.value))}
+                      value={mesElegido1}
+                    >
+                      <option value=""></option>
+                      {meses.map((mes, index) => (
+                        <option key={index} value={index}>{mes}</option>
+                      ))}
+                    </select>
+                    <select
+                      className="form-control-doctor"
+                      multiple={false}
+                      onChange={(e) => setAño1(Number(e.target.value))}
+                      value={año1}
+                    >
+                      <option value=""></option>
+                      {optionsAño}
+                    </select>
                   </div>
+                  <table className="table__body rounded">
+                    <thead>
+                      <tr className="cursor-none">
+                        <th>Cuenta</th>
+                        <th className="text-start">Descripcion</th>
+                        <th>Cant</th>
+                        <th>U.M.</th>
+                        <th>Importe</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tablaDatos.map((data, index) => (
+                        <tr key={index}>
+                          <td>{data.cuenta}</td>
+                          <td>{data.descripcion}</td>
+                          <td>{data.cant}</td>
+                          <td>{data.um}</td>
+                          <td>{data.importe?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="table__container m-2 w-50">
+                  <div className="d-flex">
+                    <select
+                      className="form-control-doctor"
+                      multiple={false}
+                      onChange={(e) => setMesElegido2(Number(e.target.value))}
+                      value={mesElegido2}
+                    >
+                      <option value=""></option>
+                      {meses.map((mes, index) => (
+                        <option key={index} value={index}>{mes}</option>
+                      ))}
+                    </select>
+                    <select
+                      className="form-control-doctor"
+                      multiple={false}
+                      onChange={(e) => setAño2(Number(e.target.value))}
+                      value={año2}
+                    >
+                      <option value=""></option>
+                      {optionsAño2}
+                    </select>
+
+                  </div>
+
+                  <table className="table__body rounded">
+                    <thead>
+                      <tr className="cursor-none">
+                        <th>Cuenta</th>
+                        <th className="text-start">Descripcion</th>
+                        <th>Cant</th>
+                        <th>U.M.</th>
+                        <th>Importe</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {tablaDatos2.map((data, index) => (
+                        <tr key={index}>
+                          <td>{data.cuenta}</td>
+                          <td>{data.descripcion}</td>
+                          <td>{data.cant}</td>
+                          <td>{data.um}</td>
+                          <td>{data.importe?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </>

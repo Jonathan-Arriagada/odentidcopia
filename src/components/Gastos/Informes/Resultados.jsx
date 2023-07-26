@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { collection, onSnapshot, query, getDocs } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
@@ -24,31 +24,36 @@ const Resultados = () => {
   const tratamientosCollectiona = collection(db, "tratamientos");
   const tratamientosCollection = useRef(query(tratamientosCollectiona));
 
-  const getOptionsAño = useCallback((snapshot) => {
+  const gastosCollectiona = collection(db, "gastos");
+  const gastosCollection = useRef(query(gastosCollectiona));
+
+  const getOptionsAño = useCallback(async () => {
+    const snapshot = await getDocs(tratamientosCollection.current);
+
     const valoresUnicos = new Set();
 
-    snapshot.docs.forEach((doc) => {
+    snapshot.forEach((doc) => {
       const fechaTratamiento = doc.data().fecha;
-      const fecha = moment(fechaTratamiento, 'YYYY-MM-DD');
+      const fecha = moment(fechaTratamiento, "YYYY-MM-DD");
       const año = fecha.year();
       valoresUnicos.add(año);
     });
 
-    const optionsOrdenadas = Array.from(valoresUnicos).sort((a, b) => b - a);
+    const options = Array.from(valoresUnicos)
+      .sort((a, b) => b - a)
+      .map((año) => (
+        <option key={`año-${año}`} value={año}>
+          {año}
+        </option>
+      ));
 
-    const options = optionsOrdenadas.map((año) => (
-      <option key={`año-${año}`} value={año}>{año}</option>
-    ));
     setOptionsAño(options);
-
   }, []);
 
   useEffect(() => {
-    return onSnapshot(tratamientosCollection.current, getOptionsAño);
+    getOptionsAño();
   }, [getOptionsAño]);
 
-
-  //GRAFICO LOGIC
 
   const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
@@ -57,12 +62,10 @@ const Resultados = () => {
     const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
     const obtenerDatos = async () => {
-      const tratamientosRef = collection(db, "tratamientos");
-      const gastosRef = collection(db, "gastos");
 
       const [tratamientosSnapshot, gastosSnapshot] = await Promise.all([
-        getDocs(tratamientosRef),
-        getDocs(gastosRef),
+        getDocs(tratamientosCollection.current),
+        getDocs(gastosCollection.current),
       ]);
 
       var datos = {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import React, { useState, useEffect, useRef } from "react";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../../firebaseConfig/firebase";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
@@ -15,6 +15,9 @@ const InformeCompras = () => {
   const [buttonText, setButtonText] = useState("Visual");
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
+  const gastosCollectiona = collection(db, "gastos");
+  const gastosCollection = useRef(query(gastosCollectiona));
+
   const toggleView = () => {
     setShowChart(!showChart);
     setButtonText(showChart ? "Visual" : "Textual");
@@ -22,8 +25,7 @@ const InformeCompras = () => {
 
   useEffect(() => {
     const obtenerDatos = async () => {
-      const gastosRef = collection(db, "gastos");
-      const unsubscribe = await onSnapshot(gastosRef, (querySnapshot) => {
+      const querySnapshot = await getDocs(gastosCollection.current);
         let datos = [];
         querySnapshot.forEach((doc) => {
           const fechaGasto = doc.data().fechaGasto;
@@ -41,11 +43,6 @@ const InformeCompras = () => {
         });
         setTablaDatos(datos);
         setIsLoading(false);
-      });
-  
-      return () => {
-        unsubscribe();
-      };
     };
   
     obtenerDatos();
