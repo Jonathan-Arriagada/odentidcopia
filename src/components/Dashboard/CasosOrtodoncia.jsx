@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
 
 function CasosOrtodoncia(props) {
   const [casosEnCurso, setCasosEnCurso] = useState(0);
@@ -8,30 +6,38 @@ function CasosOrtodoncia(props) {
   const [consultaEnProgreso, setConsultaEnProgreso] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "tratamientos"), where("tarifasTratamientos", "==", "Ortodoncia"), where("estadosTratamientos", "==", "En Curso"));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const resultadosAFiltrar = snapshot.docs.filter((doc) => {
-        const fecha = doc.data().fecha;
-        return fecha >= props.fechaInicio && fecha <= props.fechaFin;
-      });
-
-      const resultadosAFiltrar2 = snapshot.docs.filter((doc) => {
-        const fecha = doc.data().fecha;
-        return fecha >= props.fechaInicioBalance && fecha <= props.fechaFinBalance;
-      });
-
-      const cantidad = resultadosAFiltrar.length || 0;
-      const cantidad2 = resultadosAFiltrar2.length || 0;
-      setCasosEnCurso(cantidad);
-      setCasosEnCursoComparadoPeriodoAnterior(cantidad2 > 0 ? Math.round((cantidad / cantidad2) * 100) : 0);
+    if (!Array.isArray(props.tratamientos) || props.tratamientos.length === 0) {
+      setCasosEnCurso(0);
+      setCasosEnCursoComparadoPeriodoAnterior(0);
       setConsultaEnProgreso(false);
+      return;
+    }
+
+    // Filtrar tratamientos por estado "En Curso" y tarifa "Ortodoncia"
+    const tratamientosEnCursoOrtodoncia = props.tratamientos.filter((tratamiento) => {
+      return tratamiento.tarifasTratamientos === "Ortodoncia" && tratamiento.estadosTratamientos === "En Curso";
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, [props]);
+    // Filtrar por fechas de props.fechaInicio y props.fechaFin
+    const tratamientosFiltrados = tratamientosEnCursoOrtodoncia.filter((item) => {
+      return item.fecha >= props.fechaInicio && item.fecha <= props.fechaFin;
+    });
+
+    // Filtrar por fechas de props.fechaInicioBalance y props.fechaFinBalance
+    const tratamientosFiltradosBalance = tratamientosEnCursoOrtodoncia.filter((item) => {
+      return item.fecha >= props.fechaInicioBalance && item.fecha <= props.fechaFinBalance;
+    });
+
+
+    const cantidadCasosEnCurso = tratamientosFiltrados.length;
+    const cantidadCasosEnCursoComparadoPeriodoAnterior = tratamientosFiltradosBalance.length > 0
+      ? Math.round((cantidadCasosEnCurso / tratamientosFiltradosBalance.length) * 100)
+      : 0;
+
+    setCasosEnCurso(cantidadCasosEnCurso);
+    setCasosEnCursoComparadoPeriodoAnterior(cantidadCasosEnCursoComparadoPeriodoAnterior);
+    setConsultaEnProgreso(false);
+  }, [props.tratamientos, props.fechaInicio, props.fechaFin, props.fechaInicioBalance, props.fechaFinBalance]);
 
   return (
     <div className="d-flex justify-content-between">

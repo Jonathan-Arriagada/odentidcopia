@@ -192,16 +192,16 @@ function TratamientosEspecif(props) {
       if (tratamiento.restoCobro > 0 && tratamiento.estadoPago !== "Cancelado") {
         if (fechaVencimientoBase) {
           const fechaVencimiento = new Date(fechaVencimientoBase);
-          if (fechaVencimiento > hoy) {
+          if (fechaVencimiento > hoy && tratamiento.estadoPago !== "Programado") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Programado",
             });
-          } else if (fechaVencimiento <= hoy) {
+          } else if (fechaVencimiento <= hoy && tratamiento.estadoPago !== "Vencido") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Vencido",
             });
           }
-        } else {
+        } else if (tratamiento.estadoPago !== "Pendiente") {
           await updateDoc(tratamientoRef, {
             estadoPago: "Pendiente",
           });
@@ -476,16 +476,16 @@ function TratamientosEspecif(props) {
       setRestoCobro(resto);
       if (resto > 0) {
         if (tratamientoData.fechaVencimiento) {
-          if (tratamientoData.fechaVencimiento > hoy) {
+          if (tratamientoData.fechaVencimiento > hoy && tratamientoData.estadoPago !== "Programado") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Programado",
             });
-          } else if (tratamientoData.fechaVencimiento <= hoy) {
+          } else if (tratamientoData.fechaVencimiento <= hoy && tratamientoData.estadoPago !== "Vencido") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Vencido",
             });
           }
-        } else {
+        } else if (tratamientoData.estadoPago !== "Pendiente") {
           await updateDoc(tratamientoRef, {
             estadoPago: "Pendiente",
           });
@@ -564,16 +564,16 @@ function TratamientosEspecif(props) {
       setRestoCobro(resto);
       if (resto > 0) {
         if (tratamientoData.fechaVencimiento) {
-          if (tratamientoData.fechaVencimiento > hoy) {
+          if (tratamientoData.fechaVencimiento > hoy && tratamientoData.estadoPago !== "Programado") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Programado",
             });
-          } else if (tratamientoData.fechaVencimiento <= hoy) {
+          } else if (tratamientoData.fechaVencimiento <= hoy && tratamientoData.estadoPago !== "Vencido") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Vencido",
             });
           }
-        } else {
+        } else if (tratamientoData.estadoPago !== "Pendiente") {
           await updateDoc(tratamientoRef, {
             estadoPago: "Pendiente",
           });

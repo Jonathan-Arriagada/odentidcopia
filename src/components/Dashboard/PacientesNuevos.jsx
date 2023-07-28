@@ -1,35 +1,33 @@
 import React, { useEffect, useState, useRef } from "react";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
 
 function PacientesNuevos(props) {
   const [contadorClientes, setContadorClientes] = useState(0);
   const contadorClientesRef = useRef(contadorClientes);
   const [contadorClientesComparadoPeriodoAnterior, setContadorClientesComparadoPeriodoAnterior] = useState(0);
-
   const [consultaEnProgreso, setConsultaEnProgreso] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, "clients"), where("fechaAlta", ">=", props.fechaInicio), where("fechaAlta", "<=", props.fechaFin));
-    const q2 = query(collection(db, "clients"), where("fechaAlta", ">=", props.fechaInicioBalance), where("fechaAlta", "<=", props.fechaFinBalance));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const cantidad = snapshot.size || 0;
-      setContadorClientes(cantidad);
-      contadorClientesRef.current = cantidad;
-    });
-
-    const unsubscribe2 = onSnapshot(q2, (snapshot) => {
-      let cantidad2 = snapshot.size || 0;;
-      setContadorClientesComparadoPeriodoAnterior(cantidad2 > 0 ? Math.round((contadorClientesRef.current / cantidad2) * 100) : 0);
+    if (!Array.isArray(props.clients) || props.clients.length === 0) {
+      setContadorClientes(0);
+      setContadorClientesComparadoPeriodoAnterior(0);
       setConsultaEnProgreso(false);
-    });
+      return;
+    }
 
-    return () => {
-      unsubscribe();
-      unsubscribe2();
-    };
-  }, [props]);
+    const cantClientsFiltrados = props.clients.filter((item) => {
+      return item.fechaAlta >= props.fechaInicio && item.fechaAlta <= props.fechaFin;
+    }).length || 0;
+
+    setContadorClientes(cantClientsFiltrados);
+    contadorClientesRef.current = cantClientsFiltrados;
+
+    const cantClientsFiltradosBalance = props.clients.filter((cliente) => {
+      return cliente.fechaAlta >= props.fechaInicioBalance && cliente.fechaAlta <= props.fechaFinBalance;
+    }).length || 0;
+
+    setContadorClientesComparadoPeriodoAnterior(cantClientsFiltradosBalance > 0 ? Math.round((cantClientsFiltrados / cantClientsFiltradosBalance) * 100) : 0);
+    setConsultaEnProgreso(false);
+  }, [props.clients, props.fechaInicio, props.fechaFin, props.fechaInicioBalance, props.fechaFinBalance]);
 
 
   return (
@@ -38,10 +36,10 @@ function PacientesNuevos(props) {
         <span>...</span>
       ) : (
         <>
-            <span>{contadorClientes}</span>
-            <span className={`fs-6 ms-4 mt-2 ${contadorClientesComparadoPeriodoAnterior > 0 ? 'text-success' : contadorClientesComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
-              {contadorClientesComparadoPeriodoAnterior > 0 && "+"}{contadorClientesComparadoPeriodoAnterior}%
-            </span>
+          <span>{contadorClientes}</span>
+          <span className={`fs-6 ms-4 mt-2 ${contadorClientesComparadoPeriodoAnterior > 0 ? 'text-success' : contadorClientesComparadoPeriodoAnterior < 0 ? 'text-warning' : ''}`}>
+            {contadorClientesComparadoPeriodoAnterior > 0 && "+"}{contadorClientesComparadoPeriodoAnterior}%
+          </span>
         </>
       )}
     </div>

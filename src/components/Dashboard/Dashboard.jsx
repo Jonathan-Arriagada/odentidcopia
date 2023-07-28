@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import "../../style/Main.css";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../firebaseConfig/firebase"
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
@@ -24,19 +24,59 @@ function Dashboard() {
   //valores-fechas-Predeterminados
   const fechaInicio = moment().subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
   const fechaFin = moment().endOf('day').format("YYYY-MM-DD");
+  const [citas, setCitas] = useState([]);
+  const [tratamientos, setTratamientos] = useState([]);
+  const [gastos, setGastos] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [controlEvoluciones, setControlEvoluciones] = useState([]);
+
   const fechaInicioBalance = moment(fechaInicio).subtract(7, 'days').startOf('day').format("YYYY-MM-DD");
   const fechaFinBalance = moment(fechaFin).subtract(7, 'days').endOf('day').format("YYYY-MM-DD");
   const [periodoFechasElegido, setPeriodoFechasElegido] = useState({ fechaInicio, fechaFin, fechaInicioBalance, fechaFinBalance });
   const [tablaDatos, setTablaDatos] = useState([]);
 
+  const citasCollectiona = collection(db, "citas");
+  const citasCollection = useRef(query(citasCollectiona));
+  const tratamientosCollectiona = collection(db, "tratamientos");
+  const tratamientosCollection = useRef(query(tratamientosCollectiona));
+  const gastosCollectiona = collection(db, "gastos");
+  const gastosCollection = useRef(query(gastosCollectiona));
+  const clientsCollectiona = collection(db, "clients");
+  const clientsCollection = useRef(query(clientsCollectiona));
+  const controlEvolucionesCollectiona = collection(db, "controlEvoluciones");
+  const controlEvolucionesCollection = useRef(query(controlEvolucionesCollectiona));
+
+  const getDataDeColeccion = async (collectionRef) => {
+    const querySnapshot = await getDocs(collectionRef);
+    return querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+  };
+
   useEffect(() => {
-    const obtenerDatos = async () => {
-      const tratamientosRef = collection(db, "tratamientos");
-      const unsubscribe = await onSnapshot(tratamientosRef, (querySnapshot) => {
+    Promise.all([
+      getDataDeColeccion(citasCollection.current),
+      getDataDeColeccion(tratamientosCollection.current),
+      getDataDeColeccion(gastosCollection.current),
+      getDataDeColeccion(clientsCollection.current),
+      getDataDeColeccion(controlEvolucionesCollection.current),
+    ]).then(([citasArray, tratamientosArray, gastosArray, clientsArray, controlEvolucionesArray]) => {
+      setCitas(citasArray);
+      setTratamientos(tratamientosArray);
+      setGastos(gastosArray);
+      setClients(clientsArray);
+      setControlEvoluciones(controlEvolucionesArray);
+    });
+
+  }, []);
+
+  useEffect(() => {
+    if (tratamientos.length !== 0) {
+      const obtenerDatos = async () => {
         let datos = [];
 
-        querySnapshot.forEach((doc) => {
-          const tratamiento = doc.data();
+        tratamientos.forEach((tratamiento) => {
           const cobrosManuales = tratamiento.cobrosManuales;
 
           if (cobrosManuales && cobrosManuales.fechaCobro) {
@@ -56,47 +96,44 @@ function Dashboard() {
             });
           }
         });
-      setTablaDatos(datos);
-    });
+        setTablaDatos(datos);
+      };
 
-  return () => {
-    unsubscribe();
-  };
-};
+      obtenerDatos();
+    }
+  }, [tratamientos]);
 
-obtenerDatos();
- }, [tablaDatos]);
-   const colores = [
+  const colores = [
     'rgba(0, 197, 193, 0.5)',
     'rgba(255, 99, 132, 0.5)',
     'rgba(54, 162, 235, 0.5)',
     'rgba(255, 206, 86, 0.5)',
     'rgba(75, 192, 192, 0.5)',
-    'rgba(145, 61, 136, 0.5)', 
-    'rgba(255, 153, 51, 0.5)',  
-    'rgba(231, 76, 60, 0.5)',   
-    'rgba(46, 204, 113, 0.5)',  
-    'rgba(51, 110, 123, 0.5)'   
+    'rgba(145, 61, 136, 0.5)',
+    'rgba(255, 153, 51, 0.5)',
+    'rgba(231, 76, 60, 0.5)',
+    'rgba(46, 204, 113, 0.5)',
+    'rgba(51, 110, 123, 0.5)'
   ];
 
-const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+  const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
-const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
-const datasets = añosInvertidos.map((año, index) => ({
+  const añosInvertidos = [...Array.from(new Set(tablaDatos.map((data) => data.año)))].reverse();
+  const datasets = añosInvertidos.map((año, index) => ({
     label: año.toString(),
     data: meses.map((_, mesIndex) => tablaDatos.find(data => data.año === año)?.[mesIndex] || 0),
     backgroundColor: colores[index % colores.length],
   }));
-const totalPorAnio = añosInvertidos.map((año) => {
-  return meses.reduce((acumulador, mes, index) => {
-    const data = tablaDatos.find((d) => d.año === año);
-    const tratamientos = data ? data[index] || 0 : 0;
-    return acumulador + tratamientos;
-  }, 0);
-});
+  const totalPorAnio = añosInvertidos.map((año) => {
+    return meses.reduce((acumulador, mes, index) => {
+      const data = tablaDatos.find((d) => d.año === año);
+      const tratamientos = data ? data[index] || 0 : 0;
+      return acumulador + tratamientos;
+    }, 0);
+  });
 
-const maxValue = Math.max(...totalPorAnio);
-const stepSize = maxValue/8;
+  const maxValue = Math.max(...totalPorAnio);
+  const stepSize = maxValue / 8;
 
   const data = {
     labels: meses,
@@ -123,7 +160,7 @@ const stepSize = maxValue/8;
       }
     },
     animation: {
-      duration: 200, 
+      duration: 200,
     },
     scales: {
       y: {
@@ -223,6 +260,7 @@ const stepSize = maxValue/8;
                   <PacientesAtendidos
                     fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
                     fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                    citas={citas}
                   />
                 </h3>
               </div>
@@ -236,6 +274,7 @@ const stepSize = maxValue/8;
                 <h3 className="fs-2 ms-4 text-start">
                   <PacientesNuevos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
                     fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                    clients={clients}
                   />
                 </h3>
               </div>
@@ -247,7 +286,9 @@ const stepSize = maxValue/8;
                 <h2 className="fw-bold fs-6 mt-2 ms-2">Casos Ortodoncia</h2>
                 <h3 className="fs-2 ms-4 text-start">
                   <CasosOrtodoncia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-                    fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance} />
+                    fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                    tratamientos={tratamientos}
+                  />
                 </h3>
               </div>
             </div>
@@ -256,7 +297,8 @@ const stepSize = maxValue/8;
           <div className="dashEspecial col-3 ms-2 rounded-4 d-flex align-items-start flex-column shadow border-hover fuente-color-primario dashContenedor">
             <h2 className="fw-bold fs-5 mt-3 ">Productividad Doctores</h2>
             <ProductividadDentistas fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-              fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance} />
+              controlEvoluciones={controlEvoluciones}
+            />
           </div>
         </div>
         <div className="row mt-4 flex-nowrap dashboard-inf fuente-color-primario">
@@ -296,7 +338,7 @@ const stepSize = maxValue/8;
             </div>
             <div className="numbers align-items-center" style={{ fontSize: "0.9rem" }}>
               <Top3Tratamientos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                tratamientos={tratamientos}
               />
             </div>
 
@@ -306,7 +348,7 @@ const stepSize = maxValue/8;
             </div>
             <h3 className="fs-2 text-start">
               <Resultados fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                tratamientos={tratamientos} gastos={gastos}
               />
             </h3>
           </div>
@@ -319,7 +361,7 @@ const stepSize = maxValue/8;
             </div>
             <h3 className="fs-2 text-start">
               <Ingresos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                tratamientos={tratamientos}
               />
             </h3>
 
@@ -329,7 +371,7 @@ const stepSize = maxValue/8;
             </div>
             <h3 className="fs-2 text-start">
               <Gastos fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                gastos={gastos}
               />
             </h3>
           </div>
@@ -342,7 +384,7 @@ const stepSize = maxValue/8;
             </div>
             <h3 className="fs-2 text-start">
               <CitasPorConfirmar fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                citas={citas}
               />
             </h3>
 
@@ -352,7 +394,7 @@ const stepSize = maxValue/8;
             </div>
             <h3 className="fs-2 text-start">
               <Ausencia fechaInicio={periodoFechasElegido.fechaInicio} fechaFin={periodoFechasElegido.fechaFin}
-                fechaInicioBalance={periodoFechasElegido.fechaInicioBalance} fechaFinBalance={periodoFechasElegido.fechaFinBalance}
+                citas={citas}
               />
             </h3>
           </div>

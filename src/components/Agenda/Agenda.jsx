@@ -57,9 +57,7 @@ function Citas() {
   const userCollection = useRef(query(userCollectiona));
 
   const citasCollection = collection(db, "citas");
-  const citasCollectionOrdenados = useRef(
-    query(citasCollection, orderBy("fecha", "desc"))
-  );
+  const citasCollectionOrdenados = useRef(query(citasCollection, orderBy("fecha", "desc")));
 
   const getCitas = useCallback((snapshot) => {
     const citasArray = snapshot.docs.filter((doc) => {
@@ -138,7 +136,7 @@ function Citas() {
   useEffect(() => {
     citas.forEach((cita) => {
       const citaDate = moment(cita.fecha, 'YYYY-MM-DD').startOf('day');
-      if ((citaDate.isSame(mañana) || citaDate.isSame(hoy)) && cita.estado !== "Finalizada" && cita.estado !== "Confirmada" && cita.estado !== "Cancelada") {
+      if ((citaDate.isSame(mañana) || citaDate.isSame(hoy)) && cita.estado !== "Finalizada" && cita.estado !== "Confirmada" && cita.estado !== "Cancelada" && cita.estado !== "Por Confirmar") {
         const citaRef = doc(db, "citas", cita.id);
         updateDoc(citaRef, { estado: "Por Confirmar" })
       } else {
