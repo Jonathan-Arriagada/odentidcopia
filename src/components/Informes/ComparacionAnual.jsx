@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { collection, getDocs, query } from "firebase/firestore";
-import { db } from "../../../firebaseConfig/firebase";
-import "../../../style/Main.css";
+import React, { useState, useEffect } from "react";
+import "../../style/Main.css";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import moment from "moment";
 import { Bar } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ComparacionesAnual = () => {
+const ComparacionAnual = (props) => {
   const [tablaDatos, setTablaDatos] = useState([]);
   const [tablaDatos2, setTablaDatos2] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,46 +13,11 @@ const ComparacionesAnual = () => {
   const [buttonText, setButtonText] = useState("Visual");
   const [año1, setAño1] = useState("");
   const [año2, setAño2] = useState("");
-  const [optionsAño, setOptionsAño] = useState([]);
-  const [optionsAño2, setOptionsAño2] = useState([]);
-
-  const gastosCollectiona = collection(db, "gastos");
-  const gastosCollection = useRef(query(gastosCollectiona));
-
-  const getOptionsAño = useCallback(async () => {
-    const snapshot = await getDocs(gastosCollection.current);
-
-    const valoresUnicos = new Set();
-
-    snapshot.forEach((doc) => {
-      const fechaGasto = doc.data().fechaGasto;
-      const fecha = moment(fechaGasto, "YYYY-MM-DD");
-      const año = fecha.year();
-      valoresUnicos.add(año);
-    });
-
-    const options = Array.from(valoresUnicos)
-      .sort((a, b) => b - a)
-      .map((año) => (
-        <option key={`año-${año}`} value={año}>
-          {año}
-        </option>
-      ));
-
-    setOptionsAño(options);
-    setOptionsAño2(options);
-  }, []);
-
-  useEffect(() => {
-    getOptionsAño();
-  }, [getOptionsAño]);
 
   const toggleView = () => {
     setShowChart(!showChart);
     setButtonText(showChart ? "Visual" : "Textual");
   };
-
-
   //TABLA LOGIC
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
@@ -62,46 +25,38 @@ const ComparacionesAnual = () => {
 
     const obtenerDatos = async () => {
       const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      const agruparPorAñoYMonto = (gastos, año) => {
+        return gastos.reduce((result, gasto) => {
+          const fechaGastos = gasto.fechaGasto;
+          const fecha = moment(fechaGastos, 'YYYY-MM-DD');
+          const mesGasto = fecha.month();
+          const añoGasto = fecha.year();
+          const subTotalArticulo = gasto.subTotalArticulo;
 
-      const gastosRef = collection(db, "gastos");
-      const querySnapshot = await getDocs(gastosRef);
-      let datos = [];
-      let datos2 = [];
-      querySnapshot.forEach((doc) => {
-        const fechaGastos = doc.data().fechaGasto;
-        const fecha = moment(fechaGastos, 'YYYY-MM-DD');
-        const mes = fecha.month();
-        const año = fecha.year();
-        const subTotalArticulo = doc.data().subTotalArticulo;
-
-        //si se eligió el año1, hace esto
-        if (año === año1) {
-          const index = datos.findIndex((data) => data.año === año1);
-          if (index === -1) {
-            datos.push({ año: año1, [meses[mes]]: subTotalArticulo });
-          } else {
-            datos[index][meses[mes]] = (datos[index][meses[mes]] || 0) + subTotalArticulo;
+          if (añoGasto === año) {
+            const index = result.findIndex((data) => data.año === año);
+            if (index === -1) {
+              result.push({ año, [meses[mesGasto]]: subTotalArticulo });
+            } else {
+              result[index][meses[mesGasto]] = (result[index][meses[mesGasto]] || 0) + subTotalArticulo;
+            }
           }
-        }
 
-        //y si se eligió el año2, hace esto
-        if (año === año2) {
-          const index = datos2.findIndex((data) => data.año === año2);
-          if (index === -1) {
-            datos2.push({ año: año2, [meses[mes]]: subTotalArticulo });
-          } else {
-            datos2[index][meses[mes]] = (datos2[index][meses[mes]] || 0) + subTotalArticulo;
-          }
-        }
-      });
+          return result;
+        }, []);
+      };
 
-      setTablaDatos(datos);
-      setTablaDatos2(datos2);
+      const datosTrabajados = agruparPorAñoYMonto(props.gastos, año1);
+      const datosTrabajados2 = agruparPorAñoYMonto(props.gastos, año2);
+
+      setTablaDatos(datosTrabajados);
+      setTablaDatos2(datosTrabajados2);
       setIsLoading(false);
     };
-
-    obtenerDatos();
-  }, [año1, año2]);
+    if (Array.isArray(props.gastos) && props.gastos.length !== 0) {
+      obtenerDatos();
+    }
+  }, [props.gastos, año1, año2]);
 
   const totalPorAnio = tablaDatos.map((data) => {
     const subtotal = meses.reduce((acumulador, mes) => {
@@ -226,7 +181,6 @@ const ComparacionesAnual = () => {
         <>
           <div className="container mw-100">
             <div className="col">
-              <br></br>
               <div className="d-flex justify-content-between">
                 <div
                   style={{ maxHeight: "40px", marginLeft: "10px" }}
@@ -264,7 +218,7 @@ const ComparacionesAnual = () => {
                                 value={año1}
                               >
                                 <option value=""></option>
-                                {optionsAño}
+                                {props.optionsAño}
                               </select>
                             </th>
                           </tr>
@@ -279,7 +233,7 @@ const ComparacionesAnual = () => {
                                 const gastos = data[mes] || "-";
                                 return (
                                   <td
-                                    className={`${colIndex === tablaDatos.length - 1 ? 'colDerecha' : ''}, p-0`}
+                                    className={`${colIndex === tablaDatos.length - 1 ? 'colDerecha' : ''} p-0`}
                                     key={colIndex}
                                   >
                                     {gastos}
@@ -317,7 +271,7 @@ const ComparacionesAnual = () => {
                                 value={año2}
                               >
                                 <option value=""></option>
-                                {optionsAño2}
+                                {props.optionsAño}
                               </select>
                             </th>
                           </tr>
@@ -334,7 +288,7 @@ const ComparacionesAnual = () => {
                                 return (
                                   <td
                                     key={colIndex}
-                                    className={`${colIndex === tablaDatos.length - 1 ? 'colDerecha' : ''}, p-0`}
+                                    className={`${colIndex === tablaDatos.length - 1 ? 'colDerecha' : ''} p-0`}
                                   >
                                     {gastos}
                                   </td>
@@ -369,4 +323,4 @@ const ComparacionesAnual = () => {
   );
 }
 
-export default ComparacionesAnual;
+export default ComparacionAnual;

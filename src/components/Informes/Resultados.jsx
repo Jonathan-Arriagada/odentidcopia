@@ -1,59 +1,22 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { collection, getDocs, query } from "firebase/firestore";
-import { db } from "../../../firebaseConfig/firebase";
+import React, { useState, useEffect } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import moment from "moment";
-import "../../../style/Main.css";
+import "../../style/Main.css";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const Resultados = () => {
+const Resultados = (props) => {
   const añoActual = moment().year();
   const [tablaDatos, setTablaDatos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
   const [añoSeleccionado, setAñoSeleccionado] = useState(añoActual);
-  const [optionsAño, setOptionsAño] = useState([]);
 
   const toggleView = () => {
     setShowChart(!showChart);
     setButtonText(showChart ? "Visual" : "Textual");
   };
-
-  const tratamientosCollectiona = collection(db, "tratamientos");
-  const tratamientosCollection = useRef(query(tratamientosCollectiona));
-
-  const gastosCollectiona = collection(db, "gastos");
-  const gastosCollection = useRef(query(gastosCollectiona));
-
-  const getOptionsAño = useCallback(async () => {
-    const snapshot = await getDocs(tratamientosCollection.current);
-
-    const valoresUnicos = new Set();
-
-    snapshot.forEach((doc) => {
-      const fechaTratamiento = doc.data().fecha;
-      const fecha = moment(fechaTratamiento, "YYYY-MM-DD");
-      const año = fecha.year();
-      valoresUnicos.add(año);
-    });
-
-    const options = Array.from(valoresUnicos)
-      .sort((a, b) => b - a)
-      .map((año) => (
-        <option key={`año-${año}`} value={año}>
-          {año}
-        </option>
-      ));
-
-    setOptionsAño(options);
-  }, []);
-
-  useEffect(() => {
-    getOptionsAño();
-  }, [getOptionsAño]);
-
 
   const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
@@ -62,79 +25,85 @@ const Resultados = () => {
     const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
     const obtenerDatos = async () => {
-
-      const [tratamientosSnapshot, gastosSnapshot] = await Promise.all([
-        getDocs(tratamientosCollection.current),
-        getDocs(gastosCollection.current),
-      ]);
-
-      var datos = {
+      const datos = {
         descripcion: "Ingresos",
         total: 0,
       };
-      var datos2 = {
+      const datos2 = {
         descripcion: "Gastos",
         total: 0,
       };
-      var datos3 = {
+      const datos3 = {
         descripcion: "Resultados",
         total: 0,
       };
 
-      tratamientosSnapshot.forEach((doc) => {
-        const tratamiento = doc.data();
-        const cobrosManuales = tratamiento.cobrosManuales;
-
-        if (cobrosManuales && cobrosManuales.fechaCobro) {
-          cobrosManuales.fechaCobro.forEach((fechaCobro, index) => {
-            const fecha = moment(fechaCobro, 'YYYY-MM-DD');
-            const año = fecha.year();
-            const mes = fecha.month();
-            const importeAbonado = cobrosManuales.importeAbonado[index] || "";
-            const importe = Number(importeAbonado) || 0;
-
-            if (año === añoSeleccionado) {
-              datos[meses[mes]] = (datos[meses[mes]] || 0) + importe;
-              datos.total += importe;
-            }
-          });
+      const tratamientosFiltrados = props.tratamientos.filter((tratamiento) => {
+        const fechaGasto = tratamiento.cobrosManuales?.fechaCobro?.[0];
+        if (fechaGasto) {
+          const fecha = moment(fechaGasto, 'YYYY-MM-DD');
+          const año = fecha.year();
+          return año === añoSeleccionado;
         }
+        return false;
       });
 
-      gastosSnapshot.forEach((doc) => {
-        const gasto = doc.data();
+      const gastosFiltrados = props.gastos.filter((gasto) => {
         const fechaGasto = gasto.fechaGasto;
         const fecha = moment(fechaGasto, 'YYYY-MM-DD');
-        const año = fecha.year();
+        return fecha.year() === añoSeleccionado;
+      });
+
+      const datosCalculados = tratamientosFiltrados.reduce((result, tratamiento) => {
+        const cobrosManuales = tratamiento.cobrosManuales;
+
+        cobrosManuales.fechaCobro.forEach((fechaCobro, index) => {
+          const fecha = moment(fechaCobro, 'YYYY-MM-DD');
+          const mes = fecha.month();
+          const importeAbonado = cobrosManuales.importeAbonado[index] || "";
+          const importe = Number(importeAbonado) || 0;
+
+          result[meses[mes]] = (result[meses[mes]] || 0) + importe;
+          result.total += importe;
+        });
+
+        return result;
+      }, datos);
+
+      const datos2Calculados = gastosFiltrados.reduce((result, gasto) => {
+        const fechaGasto = gasto.fechaGasto;
+        const fecha = moment(fechaGasto, 'YYYY-MM-DD');
         const mes = fecha.month();
         const importe = gasto.subTotalArticulo || 0;
 
-        if (año === añoSeleccionado) {
-          datos2[meses[mes]] = (datos2[meses[mes]] || 0) + importe;
-          datos2.total += importe;
-        }
-      });
+        result[meses[mes]] = (result[meses[mes]] || 0) + importe;
+        result.total += importe;
+
+        return result;
+      }, datos2);
 
       for (const mes of meses) {
-        const ingresoMes = datos[mes] || 0;
-        const gastoMes = datos2[mes] || 0;
+        const ingresoMes = datosCalculados[mes] || 0;
+        const gastoMes = datos2Calculados[mes] || 0;
         datos3[mes] = ingresoMes - gastoMes;
         datos3.total += datos3[mes];
       }
 
-      setTablaDatos([datos, datos2, datos3]);
+      setTablaDatos([datosCalculados, datos2Calculados, datos3]);
       setIsLoading(false);
     };
 
-    obtenerDatos();
-  }, [añoSeleccionado]);
+    if ((Array.isArray(props.tratamientos) && props.tratamientos.length !== 0) && (Array.isArray(props.gastos) && props.gastos.length !== 0)) {
+      obtenerDatos();
+    }
+  }, [props.tratamientos, props.gastos, añoSeleccionado]);
 
 
+  //GRAFICO LOGIC
   const data1Values = tablaDatos.length > 0 ? Object.values(tablaDatos[2]).slice(2) : [];
 
   const minValue = Math.min(...data1Values);
   const maxValue = Math.max(...data1Values);
-
 
   const data = {
     labels: meses,
@@ -201,7 +170,6 @@ const Resultados = () => {
         <div className="container mw-100">
           <div className="row">
             <div className="col">
-              <br></br>
               <div className="d-flex justify-content-between">
                 <div
                   className="d-flex justify-content-center align-items-center"
@@ -237,7 +205,7 @@ const Resultados = () => {
                           defaultValue={añoActual}
                         >
                           <option value=""></option>
-                          {optionsAño}
+                          {props.optionsAño}
                         </select>
                       </div>
                     </div>

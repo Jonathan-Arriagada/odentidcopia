@@ -1,5 +1,5 @@
 import Nav from "./zNavIcons/Nav";
-import { FaUsers, FaMoon, FaCalendarAlt, FaFileInvoiceDollar, FaMoneyCheckAlt, FaPoll, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaFunnelDollar, FaDollarSign, FaSignOutAlt, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax, FaChartBar, FaFileAlt, FaBox, FaArchive, FaDonate, FaBalanceScale, FaChartLine } from 'react-icons/fa';
+import { FaUsers, FaMoon, FaCalendarAlt, FaFileInvoiceDollar, FaAngleLeft, FaUserTie, FaUser, FaBookMedical, FaDollarSign, FaSignOutAlt, FaStethoscope, FaShoppingCart, FaPeopleCarry, FaTruck, FaHeartbeat, FaLaptopMedical, FaTools, FaFax, FaChartBar, FaBox, FaArchive, FaChartLine } from 'react-icons/fa';
 import { useState, useCallback, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -20,9 +20,7 @@ const Navigation = () => {
     const [open2, setOpen2] = useState(false);
     const [open3, setOpen3] = useState(false);
     const [open4, setOpen4] = useState(false);
-    const [open5, setOpen5] = useState(false);
     const [open6, setOpen6] = useState(false);
-    const [open7, setOpen7] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -53,18 +51,14 @@ const Navigation = () => {
         setOpen2(false);
         setOpen3(false);
         setOpen4(false);
-        setOpen5(false);
         setOpen6(false);
-        setOpen7(false);
         stateSetter(!currentState);
     };
     const handleClick2 = (stateSetter, currentState) => {
         setOpen(false);
         setOpen3(false);
         setOpen4(false);
-        setOpen5(false);
         setOpen6(false);
-        setOpen7(false);
         stateSetter(!currentState);
     }
 
@@ -83,7 +77,6 @@ const Navigation = () => {
                 setOpen2(false)
                 setOpen3(false)
                 setOpen4(false)
-                setOpen5(false)
                 setOpen6(false)
             }
             if (location.pathname === "/tarifario") {
@@ -91,7 +84,6 @@ const Navigation = () => {
                 setOpen(false)
                 setOpen3(false)
                 setOpen4(false)
-                setOpen5(false)
                 setOpen6(false)
             }
             if (location.pathname === "/compras" || location.pathname === "/ventas") {
@@ -99,11 +91,9 @@ const Navigation = () => {
                 setOpen(false)
                 setOpen2(true)
                 setOpen3(false)
-                setOpen5(false)
                 setOpen6(false)
             }
-            if (location.pathname === "/informe-ingresos" || location.pathname === "/informe-ingresos-por-servicio" || location.pathname === "/informe-compras" || location.pathname === "/comparacion-compras" || location.pathname === "/comparacion-compras-mensual" || location.pathname === "/resultados") {
-                setOpen5(true);
+            if (location.pathname === "/informes-contables") {
                 setOpen(false)
                 setOpen2(true)
                 setOpen3(false)
@@ -116,16 +106,6 @@ const Navigation = () => {
                 setOpen2(false)
                 setOpen3(false)
                 setOpen4(false)
-                setOpen5(false)
-            }
-            if (location.pathname === "estado-resultados") {
-                setOpen7(true);
-                setOpen(false)
-                setOpen2(true)
-                setOpen3(false)
-                setOpen4(false)
-                setOpen5(false)
-                setOpen6(false)
             }
         }
     }, [location.pathname]);
@@ -180,28 +160,10 @@ const Navigation = () => {
                                 </div>
                             </div>
                             {userType === process.env.REACT_APP_rolAdCon ? (
-                                <>
-                                    <div className={open5 ? "sidebar-item open" : "sidebar-item"}>
-                                        <div className="sidebar-title link-light" onClick={() => handleClick2(setOpen5, open5)}>
-                                            <Nav title="Informes contables" Icon={FaFileAlt} isActive={isActive} />
-                                        </div>
-                                        <div className="sidebar-content sub-content">
-                                            <Link to="/informe-ingresos" className="text-decoration-none link-light"><Nav title="Informe Ingresos" Icon={FaDonate} isActive={isActive} /> </Link>
-                                            <Link to="/informe-ingresos-por-servicio" className="text-decoration-none link-light"><Nav title="Ingresos Por Servicio" Icon={FaFunnelDollar} isActive={isActive} /> </Link>
-                                            <Link to="/informe-compras" className="text-decoration-none link-light"><Nav title="Informe Compras" Icon={FaMoneyCheckAlt} isActive={isActive} /> </Link>
-                                            <Link to="/comparacion-compras-mensual" className="text-decoration-none link-light"><Nav title="Comparacion Mensual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
-                                            <Link to="/comparacion-compras" className="text-decoration-none link-light"><Nav title="Comparacion Anual" Icon={FaBalanceScale} isActive={isActive} /> </Link>
-                                        </div>
-                                    </div>
-                                    <div className={open7 ? "sidebar-item open" : "sidebar-item"}>
-                                        <div className="sidebar-title link-light" onClick={() => handleClick2(setOpen7, open7)}>
-                                            <Nav title="Estados Financieros" Icon={FaChartLine} isActive={isActive} />
-                                        </div>
-                                        <div className="sidebar-content sub-content">
-                                            <Link to="/resultados" className="text-decoration-none link-light"><Nav title="Estado de resultados" Icon={FaPoll} isActive={isActive} /> </Link>
-                                        </div>
-                                    </div>
-                                </>) : null}
+                                <div className="sidebar-title">
+                                    <Link to="/informes-contables" className="text-decoration-none link-light"><Nav title="Informes Contables" Icon={FaChartLine} isActive={isActive} /> </Link>
+                                </div>
+                            ) : null}
                         </div>
                     </div>
 

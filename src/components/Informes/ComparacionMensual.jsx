@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { collection, query, getDocs } from "firebase/firestore";
-import { db } from "../../../firebaseConfig/firebase";
-import "../../../style/Main.css";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
+import "../../style/Main.css";
 
 
-const ComparacionMensual = () => {
+const ComparacionMensual = (props) => {
   const [tablaDatos, setTablaDatos] = useState([]);
   const [tablaDatos2, setTablaDatos2] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,95 +11,51 @@ const ComparacionMensual = () => {
   const [año2, setAño2] = useState("");
   const [mesElegido1, setMesElegido1] = useState("");
   const [mesElegido2, setMesElegido2] = useState("");
-  const [optionsAño, setOptionsAño] = useState([]);
-  const [optionsAño2, setOptionsAño2] = useState([]);
-
-  const gastosCollectiona = collection(db, "gastos");
-  const gastosCollection = useRef(query(gastosCollectiona));
-
-  const getOptionsAño = useCallback(async () => {
-    const snapshot = await getDocs(gastosCollection.current);
-
-    const valoresUnicos = new Set();
-
-    snapshot.forEach((doc) => {
-      const fechaGasto = doc.data().fechaGasto;
-      const fecha = moment(fechaGasto, "YYYY-MM-DD");
-      const año = fecha.year();
-      valoresUnicos.add(año);
-    });
-
-    const options = Array.from(valoresUnicos)
-      .sort((a, b) => b - a)
-      .map((año) => (
-        <option key={`año-${año}`} value={año}>
-          {año}
-        </option>
-      ));
-
-    setOptionsAño(options);
-    setOptionsAño2(options);
-  }, []);
-
-  useEffect(() => {
-    getOptionsAño();
-  }, [getOptionsAño]);
-
 
   //TABLAS LOGIC
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
   useEffect(() => {
-    const obtenerDatos = async () => {
-
-      const gastosRef = collection(db, "gastos");
-      const querySnapshot = await getDocs(gastosRef);
-      let datos = [];
-      let datos2 = [];
-
-      querySnapshot.forEach((doc) => {
-        const cuenta = doc.data().cuentaArticulo;
-        const descripcion = doc.data().descripArticulo;
-        const cantidad = Number(doc.data().cantArticulo);
-        const um = doc.data().umArticulo;
-        const fechaGastos = doc.data().fechaGasto;
-        const fecha = moment(fechaGastos, 'YYYY-MM-DD');
-        const mes = fecha.month();
-        const año = fecha.year();
-        const subTotalArticulo = doc.data().subTotalArticulo;
-
-        if (año === año1 && mes === mesElegido1) {
-          const index = datos.findIndex((data) => data.cuenta === cuenta);
-          if (index === -1) {
-            datos.push({ cuenta, descripcion, cant: cantidad, um, importe: subTotalArticulo });
-          } else {
-            datos[index].importe = (datos[index].importe || 0) + subTotalArticulo;
-            datos[index].cant = Number((datos[index].cant || 0)) + Number(cantidad);
+    const obtenerDatos = () => {
+      const agruparDatos = (gastos, añoElegido, mesElegido) => {
+        return gastos.reduce((result, gasto) => {
+          const fechaGastos = gasto.fechaGasto;
+          const fecha = moment(fechaGastos, 'YYYY-MM-DD');
+          const mes = fecha.month();
+          const año = fecha.year();
+          const subTotalArticulo = gasto.subTotalArticulo;
+    
+          if (año === añoElegido && mes === mesElegido) {
+            const key = año === año1 ? gasto.cuentaArticulo : gasto.descripArticulo;
+            if (!result[key]) {
+              result[key] = {
+                cuenta: gasto.cuentaArticulo,
+                descripcion: gasto.descripArticulo,
+                cant: Number(gasto.cantArticulo),
+                um: gasto.umArticulo,
+                importe: subTotalArticulo,
+              };
+            } else {
+              result[key].importe += subTotalArticulo;
+              result[key].cant += Number(gasto.cantArticulo);
+            }
           }
-        }
-
-        if (año === año2 && mes === mesElegido2) {
-          const index = datos2.findIndex((data) => data.descripcion === descripcion);
-          if (index === -1) {
-            datos2.push({ cuenta, descripcion, cant: cantidad, um, importe: subTotalArticulo });
-          } else {
-            datos2[index].importe = (datos2[index].importe || 0) + subTotalArticulo;
-            datos2[index].cant = Number((datos2[index].cant || 0)) + Number(cantidad);
-          }
-        }
-      });
-      datos.sort((a, b) => b.importe - a.importe);
-      datos2.sort((a, b) => b.importe - a.importe);
-
-      setTablaDatos(datos);
-      setTablaDatos2(datos2);
+    
+          return result;
+        }, {});
+      };
+    
+      const datosTrabajados = Object.values(agruparDatos(props.gastos, año1, mesElegido1)).sort((a, b) => b.importe - a.importe);
+      const datosTrabajados2 = Object.values(agruparDatos(props.gastos, año2, mesElegido2)).sort((a, b) => b.importe - a.importe);
+    
+      setTablaDatos(datosTrabajados);
+      setTablaDatos2(datosTrabajados2);
       setIsLoading(false);
     };
-
-    obtenerDatos();
-  }, [año1, mesElegido1, año2, mesElegido2]);
-
-
+    if (Array.isArray(props.gastos) && props.gastos.length !== 0) {
+      obtenerDatos();
+    }
+  }, [props.gastos, año1, mesElegido1, año2, mesElegido2]);
 
 
   return (
@@ -114,7 +68,6 @@ const ComparacionMensual = () => {
         <>
           <div className="container mw-100">
             <div className="col">
-              <br></br>
               <div className="d-flex justify-content-between">
                 <div
                   style={{ maxHeight: "40px", marginLeft: "10px" }}
@@ -143,7 +96,7 @@ const ComparacionMensual = () => {
                       value={año1}
                     >
                       <option value=""></option>
-                      {optionsAño}
+                      {props.optionsAño}
                     </select>
                   </div>
                   <table className="table__body rounded">
@@ -190,7 +143,7 @@ const ComparacionMensual = () => {
                       value={año2}
                     >
                       <option value=""></option>
-                      {optionsAño2}
+                      {props.optionsAño}
                     </select>
 
                   </div>

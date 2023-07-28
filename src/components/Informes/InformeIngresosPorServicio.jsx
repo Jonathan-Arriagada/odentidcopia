@@ -1,21 +1,18 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { collection, getDocs, query } from "firebase/firestore";
-import { db } from "../../../firebaseConfig/firebase";
+import React, { useState, useEffect } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import moment from "moment";
-import "../../../style/Main.css";
-import iconoDinero from "../../../img/icono-dinero.png";
+import "../../style/Main.css";
+import iconoDinero from "../../img/icono-dinero.png";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const InformeIngresosPorServicio = () => {
+const InformeIngresosPorServicio = (props) => {
   const añoActual = moment().year();
   const [tablaDatos, setTablaDatos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
   const [añoSeleccionado, setAñoSeleccionado] = useState(añoActual);
-  const [optionsAño, setOptionsAño] = useState([]);
   const [totalGeneral, setTotalGeneral] = useState(0);
 
   const toggleView = () => {
@@ -23,77 +20,37 @@ const InformeIngresosPorServicio = () => {
     setButtonText(showChart ? "Visual" : "Textual");
   };
 
-  const tratamientosCollectiona = collection(db, "tratamientos");
-  const tratamientosCollection = useRef(query(tratamientosCollectiona));
-
-  const getOptionsAño = useCallback(async () => {
-    const snapshot = await getDocs(tratamientosCollection.current);
-
-    const valoresUnicos = new Set();
-
-    snapshot.forEach((doc) => {
-      const fechaTratamiento = doc.data().fecha;
-      const fecha = moment(fechaTratamiento, "YYYY-MM-DD");
-      const año = fecha.year();
-      valoresUnicos.add(año);
-    });
-
-    const options = Array.from(valoresUnicos)
-      .sort((a, b) => b - a)
-      .map((año) => (
-        <option key={`año-${año}`} value={año}>
-          {año}
-        </option>
-      ));
-
-    setOptionsAño(options);
-  }, []);
-
-  useEffect(() => {
-    getOptionsAño();
-  }, [getOptionsAño]);
-
-
   //TABLA LOGIC
   useEffect(() => {
     const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
     const obtenerDatos = async () => {
-      const tratamientosRef = collection(db, "tratamientos");
-      const querySnapshot = await getDocs(tratamientosRef);
-      const datosAcumulados = {};
-
-      querySnapshot.forEach((doc) => {
-        const tratamiento = doc.data();
-        const codigo = tratamiento.cta;
-        const servicio = tratamiento.tarifasTratamientos;
-        const cobrosManuales = tratamiento.cobrosManuales;
+      const datosAcumulados = props.tratamientos.reduce((result, tratamiento) => {
+        const { cta: codigo, tarifasTratamientos: servicio, cobrosManuales } = tratamiento;
 
         if (cobrosManuales && cobrosManuales.fechaCobro) {
           cobrosManuales.fechaCobro.forEach((fechaCobro, index) => {
             const fecha = moment(fechaCobro, 'YYYY-MM-DD');
             const año = fecha.year();
             const mes = fecha.month();
-            const importeAbonado = cobrosManuales.importeAbonado[index] || "";
+            const importeAbonado = cobrosManuales.importeAbonado?.[index] || "";
             const importe = Number(importeAbonado) || 0;
 
             if (año === añoSeleccionado) {
-              if (!datosAcumulados[servicio]) {
-                datosAcumulados[servicio] = {
-                  codigo,
-                  servicio,
-                  total: 0,
-                };
-                meses.forEach((mes) => {
-                  datosAcumulados[servicio][mes] = 0;
-                });
-              }
-              datosAcumulados[servicio][meses[mes]] += importe;
-              datosAcumulados[servicio].total += importe;
+              result[servicio] ??= {
+                codigo,
+                servicio,
+                total: 0,
+                ...Object.fromEntries(meses.map((mes) => [mes, 0])),
+              };
+              result[servicio][meses[mes]] += importe;
+              result[servicio].total += importe;
             }
           });
         }
-      });
+
+        return result;
+      }, {});
 
       const datosFinales = Object.values(datosAcumulados);
       datosFinales.sort((a, b) => a.codigo - b.codigo);
@@ -101,8 +58,11 @@ const InformeIngresosPorServicio = () => {
       setTablaDatos(datosFinales);
       setIsLoading(false);
     };
-    obtenerDatos();
-  }, [añoSeleccionado]);
+    if (Array.isArray(props.tratamientos) && props.tratamientos.length !== 0) {
+      obtenerDatos();
+    }
+  }, [props.tratamientos, añoSeleccionado]);
+
 
 
   //GRAFICO LOCIG
@@ -217,7 +177,6 @@ const InformeIngresosPorServicio = () => {
         <div className="container mw-100">
           <div className="row">
             <div className="col">
-              <br></br>
               <div className="d-flex justify-content-between">
                 <div
                   className="d-flex justify-content-start align-items-center"
@@ -237,7 +196,7 @@ const InformeIngresosPorServicio = () => {
                     defaultValue={añoActual}
                   >
                     <option value=""></option>
-                    {optionsAño}
+                    {props.optionsAño2}
                   </select>
                   <button
                     variant="primary"

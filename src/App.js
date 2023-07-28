@@ -21,12 +21,7 @@ import ControlEvolucion from "./components/ControlEvolucion/ControlEvolucion";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Navigation from "./components/Navigation"
 import UpNav from "./components/UpNav"
-import InformeIngresos from "./components/Gastos/Informes/InformeIngresos";
-import InformeIngresosPorServicio from "./components/Gastos/Informes/InformeIngresosPorServicio";
-import InformeCompras from "./components/Gastos/Informes/InformeCompras";
-import ComparacionMensual from "./components/Gastos/Informes/ComparacionMensual";
-import ComparacionesAnual from "./components/Gastos/Informes/ComparacionesAnual";
-import Resultados from "./components/Gastos/Informes/Resultados";
+import InformesGenerales from "./components/Informes/InformesGenerales";
 
 function App() {
   const { currentUser } = useContext(AuthContext)
@@ -71,12 +66,7 @@ function App() {
           <Route path="/materiales" element={<RequireAuth><Materiales /></RequireAuth>} />
           <Route path="/proveedores" element={<RequireAuth><Proveedores /></RequireAuth>} />
           <Route path="/dashboard" element={<RequireAuth><RequireAdmin><Dashboard /></RequireAdmin></RequireAuth>} />
-          <Route path="/informe-ingresos" element={<RequireAuth><RequireAdmin><InformeIngresos /></RequireAdmin></RequireAuth>} />
-          <Route path="/informe-ingresos-por-servicio" element={<RequireAuth><RequireAdmin><InformeIngresosPorServicio /></RequireAdmin></RequireAuth>} />
-          <Route path="/informe-compras" element={<RequireAuth><RequireAdmin><InformeCompras /></RequireAdmin></RequireAuth>} />
-          <Route path="/comparacion-compras" element={<RequireAuth><RequireAdmin><ComparacionesAnual /></RequireAdmin></RequireAuth>} />
-          <Route path="/comparacion-compras-mensual" element={<RequireAuth><RequireAdmin><ComparacionMensual /></RequireAdmin></RequireAuth>} />
-          <Route path="/resultados" element={<RequireAuth><RequireAdmin><Resultados /></RequireAdmin></RequireAuth>} />
+          <Route path="/informes-contables" element={<RequireAuth><RequireAdmin><InformesGenerales /></RequireAdmin></RequireAuth>} />
 
         </Routes>
       </BrowserRouter>

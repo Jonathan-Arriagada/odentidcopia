@@ -1,22 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
-import { collection, getDocs, query } from "firebase/firestore";
-import { db } from "../../../firebaseConfig/firebase";
+import React, { useState, useEffect } from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import moment from "moment";
-import "../../../style/Main.css";
+import "../../style/Main.css";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const InformeIngresos = () => {
+const InformeIngresos = (props) => {
   const [tablaDatos, setTablaDatos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showChart, setShowChart] = useState(false);
   const [buttonText, setButtonText] = useState("Visual");
 
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-  const tratamientosCollectiona = collection(db, "tratamientos");
-  const tratamientosCollection = useRef(query(tratamientosCollectiona));
 
   const toggleView = () => {
     setShowChart(!showChart);
@@ -26,11 +21,7 @@ const InformeIngresos = () => {
 
   useEffect(() => {
     const obtenerDatos = async () => {
-      const querySnapshot = await getDocs(tratamientosCollection.current);
-      let datos = [];
-
-      querySnapshot.forEach((doc) => {
-        const tratamiento = doc.data();
+      const datos = props.tratamientos.reduce((result, tratamiento) => {
         const cobrosManuales = tratamiento.cobrosManuales;
 
         if (cobrosManuales && cobrosManuales.fechaCobro) {
@@ -41,21 +32,25 @@ const InformeIngresos = () => {
             const importeAbonado = cobrosManuales.importeAbonado[index] || "";
             const importe = Number(importeAbonado) || 0;
 
-            const existeData = datos.findIndex((data) => data.año === año);
-            if (existeData === -1) {
-              datos.push({ año, [mes]: importe });
+            const dataAño = result.find((data) => data.año === año);
+            if (!dataAño) {
+              result.push({ año, [mes]: importe });
             } else {
-              datos[existeData][mes] = (datos[existeData][mes] || 0) + importe;
+              dataAño[mes] = (dataAño[mes] || 0) + importe;
             }
           });
         }
-      });
+
+        return result;
+      }, []);
+
       setTablaDatos(datos);
       setIsLoading(false);
     };
-
-    obtenerDatos();
-  }, [tablaDatos]);
+    if (Array.isArray(props.tratamientos) && props.tratamientos.length !== 0) {
+      obtenerDatos();
+    }
+  }, [props.tratamientos]);
 
   const colores = [
     'rgba(0, 197, 193, 0.5)',
@@ -152,7 +147,6 @@ const InformeIngresos = () => {
         <div className="container mw-100">
           <div className="row">
             <div className="col">
-              <br></br>
               <div className="d-flex justify-content-between">
                 <div
                   className="d-flex justify-content-center align-items-center"
@@ -194,7 +188,7 @@ const InformeIngresos = () => {
                             const data = tablaDatos.find((d) => d.año === año);
                             const tratamientos = data?.[index] || "-";
                             return (
-                              <td className={`${colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''}, p-0`} key={año}>
+                              <td className={`${colIndex === añosInvertidos.length - 1 ? 'colDerecha' : ''} p-0`} key={año}>
                                 {tratamientos?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </td>
                             );
