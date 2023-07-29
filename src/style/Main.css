@@ -1320,3 +1320,10 @@ select {
   background-color: var(--color-disabled);
   font-weight: bold;
 }
+
+.button_item {
+  background-color: transparent;
+  backdrop-filter: blur(40px);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.18);
+}
