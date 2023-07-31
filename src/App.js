@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Create from "./components/Pacientes/Create";
 import Edit from "./components/Pacientes/Edit";
 import Login from "./components/Login";
-import { useContext} from "react";
+import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Agenda from "./components/Agenda/Agenda";
 import Tarifario from "./components/Tarifario/Tarifario";
@@ -21,10 +21,7 @@ import ControlEvolucion from "./components/ControlEvolucion/ControlEvolucion";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Navigation from "./components/Navigation"
 import UpNav from "./components/UpNav"
-import InformeIngresos from "./components/Gastos/Informes/InformeIngresos";
-import InformeTratamientos from "./components/Gastos/Informes/InformeTratamientos";
-import InformeCompras from "./components/Gastos/Informes/InformeCompras";
-import Comparaciones from "./components/Gastos/Informes/Comparaciones";
+import InformesGenerales from "./components/Informes/InformesGenerales";
 
 function App() {
   const { currentUser } = useContext(AuthContext)
@@ -37,6 +34,8 @@ function App() {
 
     if (storedRole === process.env.REACT_APP_rolAdCon) {
       return children;
+    } else if (storedRole === process.env.REACT_APP_rolRecepcionisCon) {
+      return <Navigate to="/agenda" />;
     } else {
       return <Navigate to="/pacientes" />;
     }
@@ -45,8 +44,8 @@ function App() {
   return (
     <div className="App mainpage">
       <BrowserRouter>
-      <RequireAuth><Navigation /></RequireAuth>
-      <RequireAuth><UpNav /></RequireAuth>
+        <RequireAuth><Navigation /></RequireAuth>
+        <RequireAuth><UpNav /></RequireAuth>
 
         <Routes>
           <Route path="/" element={<Login />} />
@@ -66,11 +65,9 @@ function App() {
           <Route path="/compras" element={<RequireAuth><Gastos /></RequireAuth>} />
           <Route path="/materiales" element={<RequireAuth><Materiales /></RequireAuth>} />
           <Route path="/proveedores" element={<RequireAuth><Proveedores /></RequireAuth>} />
-          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-          <Route path="/informe-ingresos" element={<RequireAuth><InformeIngresos/></RequireAuth>} />
-          <Route path="/informe-ingresos-tratamiento" element={<RequireAuth><InformeTratamientos/></RequireAuth>}/>
-          <Route path="/informe-compras" element={<RequireAuth><InformeCompras/></RequireAuth>}/>
-          <Route path="/comparacion-gastos" element={<RequireAuth><Comparaciones/></RequireAuth>}/>
+          <Route path="/dashboard" element={<RequireAuth><RequireAdmin><Dashboard /></RequireAdmin></RequireAuth>} />
+          <Route path="/informes-contables" element={<RequireAuth><RequireAdmin><InformesGenerales /></RequireAdmin></RequireAuth>} />
+
         </Routes>
       </BrowserRouter>
     </div>

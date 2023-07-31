@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot, where } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
 
 function CitasPorConfirmar(props) {
   const [cantCitas, setCantCitas] = useState(0);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "citas"),
-      where("fecha", ">=", props.fechaInicio),
-      where("fecha", "<=", props.fechaFin)
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      let citas = snapshot.docs.filter((doc) => doc.data().estado === "Por Confirmar").length || 0;
-
-      setCantCitas(citas);
+    const citasFiltradas = props.citas.filter((item) => {
+      return item.fecha >= props.fechaInicio && item.fecha <= props.fechaFin;
     });
+    let citasPorConfirmar = citasFiltradas.filter((item) => item.estado === "Por Confirmar").length || 0;
 
-    return () => {
-      unsubscribe();
-    };
-  }, [props]);
+    setCantCitas(citasPorConfirmar);
+
+  }, [props.citas, props.fechaInicio, props.fechaFin]);
 
   return (
     <div>

@@ -159,7 +159,7 @@ function Odontograma(props) {
                     <div className="col">
                       <br></br>
                       <div className="d-flex justify-content-between">
-                        <h3>Odontograma</h3>
+                        <h3>Odontograma -EN PLANIFICACION-</h3>
 
                       </div>
 

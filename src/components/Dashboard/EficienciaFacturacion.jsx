@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot, where } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
 
 function EficienciaFacturacion(props) {
   const [, setTotalPagos] = useState(0);
@@ -8,32 +6,23 @@ function EficienciaFacturacion(props) {
   const [porcentajePagados, setPorcentajePagados] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(db, "tratamientos"),
-      where("fecha", ">=", props.fechaInicio),
-      where("fecha", "<=", props.fechaFin)
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      let total = 0;
-      let pagados = 0;
+    if (!Array.isArray(props.tratamientos) || props.tratamientos.length === 0) {
+      setPorcentajePagados(0);
+      return;
+    }
 
-      snapshot.forEach((doc) => {
-        const tratamiento = doc.data();
-        total++;
-
-        if (tratamiento.estadoPago === "Cancelado") {
-          pagados++;
-        }
-      });
-
-      setTotalPagos(total);
-      setPagados(pagados);
-      calcularPorcentaje(pagados, total);
+    const tratamientosFiltrados = props.tratamientos.filter((item) => {
+      return item.fecha >= props.fechaInicio && item.fecha <= props.fechaFin;
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, [props]);
+    let total = tratamientosFiltrados.length || 0;
+    let pagados = tratamientosFiltrados.filter((item) => item.estadoPago === "Cancelado").length || 0;
+
+    setTotalPagos(total);
+    setPagados(pagados);
+    calcularPorcentaje(pagados, total);
+
+  }, [props.tratamientos, props.fechaInicio, props.fechaFin]);
 
   const calcularPorcentaje = (pagados, total) => {
     if (total > 0) {

@@ -190,16 +190,16 @@ function Tratamientos() {
       if (tratamiento.restoCobro > 0 && tratamiento.estadoPago !== "Cancelado") {
         if (fechaVencimientoBase) {
           const fechaVencimiento = new Date(fechaVencimientoBase);
-          if (fechaVencimiento > hoy) {
+          if (fechaVencimiento > hoy && tratamiento.estadoPago !== "Programado") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Programado",
             });
-          } else if (fechaVencimiento <= hoy) {
+          } else if (fechaVencimiento <= hoy && tratamiento.estadoPago !== "Vencido") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Vencido",
             });
           }
-        } else {
+        } else if (tratamiento.estadoPago !== "Pendiente") {
           await updateDoc(tratamientoRef, {
             estadoPago: "Pendiente",
           });
@@ -394,7 +394,6 @@ function Tratamientos() {
   const clearFieldsEditarCobro = () => {
     setMostrarModalEditarCobro([false, "", "", ""]);
     setIndexParaEditcobro("");
-    setIdParaCobro("");
     setFechaEditCobro("");
     setNroComprobanteEditCobro("");
     setImporteEditCobro("");
@@ -450,6 +449,7 @@ function Tratamientos() {
       actualizarDatosConRestoCobro(id, resto)
       setMostrarModalAgregarCobro([false, ""]);
     } catch (e) {
+      console.log(e)
       Swal.fire({
         title: '¡Error!',
         text: 'Hubo inconvenientes al tratar de Agregar su cobro. Recargue la página y vuelva a intentar!.',
@@ -494,16 +494,16 @@ function Tratamientos() {
       setRestoCobro(resto);
       if (resto > 0) {
         if (tratamientoData.fechaVencimiento) {
-          if (tratamientoData.fechaVencimiento > hoy) {
+          if (tratamientoData.fechaVencimiento > hoy && tratamientoData.estadoPago !== "Programado") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Programado",
             });
-          } else if (tratamientoData.fechaVencimiento <= hoy) {
+          } else if (tratamientoData.fechaVencimiento <= hoy && tratamientoData.estadoPago !== "Vencido") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Vencido",
             });
           }
-        } else {
+        } else if (tratamientoData.estadoPago !== "Pendiente") {
           await updateDoc(tratamientoRef, {
             estadoPago: "Pendiente",
           });
@@ -512,6 +512,7 @@ function Tratamientos() {
       actualizarDatosConRestoCobro(idParaEditcobro, resto);
       clearFieldsEditarCobro();
     } catch (e) {
+      console.log(e)
       Swal.fire({
         title: '¡Error!',
         text: 'Hubo inconvenientes al tratar de Editar su cobro. Recargue la página y vuelva a intentar!.',
@@ -582,16 +583,16 @@ function Tratamientos() {
       setRestoCobro(resto);
       if (resto > 0) {
         if (tratamientoData.fechaVencimiento) {
-          if (tratamientoData.fechaVencimiento > hoy) {
+          if (tratamientoData.fechaVencimiento > hoy && tratamientoData.estadoPago !== "Programado") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Programado",
             });
-          } else if (tratamientoData.fechaVencimiento <= hoy) {
+          } else if (tratamientoData.fechaVencimiento <= hoy && tratamientoData.estadoPago !== "Vencido") {
             await updateDoc(tratamientoRef, {
               estadoPago: "Vencido",
             });
           }
-        } else {
+        } else if (tratamientoData.estadoPago !== "Pendiente") {
           await updateDoc(tratamientoRef, {
             estadoPago: "Pendiente",
           });
@@ -599,6 +600,7 @@ function Tratamientos() {
       }
       actualizarDatosConRestoCobro(id, resto)
     } catch (e) {
+      console.log(e)
       Swal.fire({
         title: '¡Error!',
         text: 'Hubo inconvenientes al tratar de Eliminar su cobro. Recargue la página y vuelva a intentar!.',

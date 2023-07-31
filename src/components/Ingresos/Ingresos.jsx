@@ -14,6 +14,7 @@ const Ingresos = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [totalIngresos, setTotalIngresos] = useState(0);
   //const [cantIngresos, setCantIngresos] = useState(0);
+  const [userType, setUserType] = useState("");
 
   const [modalSeleccionFechaShow, setModalSeleccionFechaShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -57,6 +58,9 @@ const Ingresos = () => {
   }, []);
 
   useEffect(() => {
+    const type = localStorage.getItem("rol");
+    setUserType(type);
+
     const unsubscribe = onSnapshot(
       tratamientosCollection.current,
       getCobros
@@ -133,14 +137,14 @@ const Ingresos = () => {
     let total = 0;
     //let cantidad = 0;
 
-    resultsPaginados.forEach((cobro) => {
+    results.forEach((cobro) => {
       total += Number(cobro.importeAbonado);
       //cantidad++;
     });
 
     setTotalIngresos(total);
     //setCantIngresos(cantidad);
-  }, [resultsPaginados]);
+  }, [results]);
 
   const sorting = (col) => {
     if (order === "ASC") {
@@ -185,7 +189,7 @@ const Ingresos = () => {
 
   return (
     <>
-       {isLoading ? (
+      {isLoading ? (
         <div className="w-100">
           <span className="loader position-absolute start-50 top-50 mt-3"></span>
         </div>
@@ -293,12 +297,13 @@ const Ingresos = () => {
                         </div>
                       )}
                     </div>
-                    <div className="col d-flex justify-content-end align-items-center">
-                      <div className="d-flex form-control-dash">
-                        <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
-                        <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalIngresos}</span></h5>
-                      </div>
-                    </div>
+                    {userType === process.env.REACT_APP_rolAdCon ? (
+                      <div className="col d-flex justify-content-end align-items-center">
+                        <div className="d-flex form-control-dash">
+                          <img src={iconoDinero} className="profile-dinero" alt="iconoDinero"></img>
+                          <h5 id="tituloVentas">Total Ventas: <span style={{ fontWeight: 'bold' }}>{totalIngresos?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></h5>
+                        </div>
+                      </div>) : null}
 
                   </div>
                 </div>
@@ -390,7 +395,7 @@ const Ingresos = () => {
                         <td style={{ textAlign: "left" }}> {cobro.pacienteCobro} </td>
                         <td style={{ textAlign: "left" }}> {cobro.tratamientoCobro} </td>
                         <td> {cobro.nroComprobanteCobro} </td>
-                        <td className="colDerecha"> {cobro.importeAbonado} </td>
+                        <td className="colDerecha"> {Number(cobro.importeAbonado)?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </td>
                       </tr>
                     ))}
                   </tbody>

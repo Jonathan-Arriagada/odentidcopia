@@ -1,57 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot, where } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
 
 function Resultados(props) {
-    const [ingresosTotales, setIngresosTotales] = useState(null);
-    const [gastosTotales, setGastosTotales] = useState(null);
+    const [ingresosTotales, setIngresosTotales] = useState(0);
+    const [gastosTotales, setGastosTotales] = useState(0);
 
     useEffect(() => {
-        const q = query(collection(db, "gastos"),
-            where("fechaGasto", ">=", props.fechaInicio),
-            where("fechaGasto", "<=", props.fechaFin)
-        );
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            let total1 = 0;
-            snapshot.forEach((doc) => {
-                const subTotal = doc.data().subTotalArticulo;
-                total1 += subTotal;
+        if (!Array.isArray(props.gastos) || props.gastos.length === 0) {
+            setGastosTotales(0);
+        } else {
+            const gastosFiltrados = props.gastos.filter((gasto) => {
+                return gasto.fechaGasto >= props.fechaInicio && gasto.fechaGasto <= props.fechaFin;
             });
-            setGastosTotales(total1);
-        });
+            const totalGastos = gastosFiltrados.reduce((total, gasto) => total + (gasto.subTotalArticulo || 0), 0);
+            setGastosTotales(totalGastos);
+        }
 
-        const q2 = query(collection(db, "tratamientos"));
-        const unsubscribeCobros = onSnapshot(q2, (snapshot) => {
-            let total2 = 0;
-            snapshot.docs.forEach((doc) => {
-                const tratamiento = doc.data();
+        if (!Array.isArray(props.tratamientos) || props.tratamientos.length === 0) {
+            setIngresosTotales(0);
+        } else {
+            const totalIngresos = props.tratamientos.reduce((total, tratamiento) => {
                 const cobrosManuales = tratamiento.cobrosManuales;
-
                 if (cobrosManuales && cobrosManuales.fechaCobro) {
                     cobrosManuales.fechaCobro.forEach((fecha, index) => {
                         if (fecha >= props.fechaInicio && fecha <= props.fechaFin) {
                             const importeAbonado = cobrosManuales.importeAbonado[index] || "";
                             const importe = Number(importeAbonado) || 0;
-                            total2 += importe;
+                            total += importe;
                         }
                     });
                 }
-            });
-            setIngresosTotales(total2);
-        });
+                return total;
+            }, 0);
+            setIngresosTotales(totalIngresos);
+        }
 
-
-        return () => {
-            unsubscribe(); unsubscribeCobros();
-        };
-    }, [props]);
+    }, [props.gastos, props.tratamientos, props.fechaInicio, props.fechaFin]);
 
 
     return (
         <div>
             <span>
                 {ingresosTotales !== null && gastosTotales !== null ? (
-                    ((ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales).toFixed(0))
+                    ((ingresosTotales - gastosTotales >= 0 ? "+" : "") + (ingresosTotales - gastosTotales)?.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
                 ) : (
                     "0"
                 )}

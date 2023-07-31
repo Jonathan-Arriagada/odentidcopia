@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { collection, query, onSnapshot, where } from "firebase/firestore";
-import { db } from "../../firebaseConfig/firebase";
 
 function Top3Tratamientos(props) {
   const [top1, setTop1] = useState("");
@@ -8,35 +6,37 @@ function Top3Tratamientos(props) {
   const [top3, setTop3] = useState("");
 
   useEffect(() => {
-    const q = query(collection(db, "tratamientos"),
-      where("fecha", ">=", props.fechaInicio),
-      where("fecha", "<=", props.fechaFin)
-    );
+    if (!Array.isArray(props.tratamientos) || props.tratamientos.length === 0) {
+      setTop1("");
+      setTop2("");
+      setTop3("");
+      return;
+    }
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const tratamientosCount = {};
-      snapshot.forEach((doc) => {
-        const tratamiento = doc.data().tarifasTratamientos;
-        if (tratamiento in tratamientosCount) {
-          tratamientosCount[tratamiento] += 1;
-        } else {
-          tratamientosCount[tratamiento] = 1;
-        }
-      });
-
-      const sortedTratamientos = Object.keys(tratamientosCount).sort(
-        (a, b) => tratamientosCount[b] - tratamientosCount[a]
-      );
-
-      setTop1(sortedTratamientos[0] || "");
-      setTop2(sortedTratamientos[1] || "");
-      setTop3(sortedTratamientos[2] || "");
+    const tratamientosFiltrados = props.tratamientos.filter((item) => {
+      return item.fecha >= props.fechaInicio && item.fecha <= props.fechaFin;
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, [props]);
+    const tratamientosCount = {};
+    tratamientosFiltrados.forEach((tratamiento) => {
+      const tarifaTratamiento = tratamiento.tarifasTratamientos;
+      if (tarifaTratamiento in tratamientosCount) {
+        tratamientosCount[tarifaTratamiento] += 1;
+      } else {
+        tratamientosCount[tarifaTratamiento] = 1;
+      }
+    });
+
+    const sortedTratamientos = Object.keys(tratamientosCount).sort(
+      (a, b) => tratamientosCount[b] - tratamientosCount[a]
+    );
+
+    setTop1(sortedTratamientos[0] || "");
+    setTop2(sortedTratamientos[1] || "");
+    setTop3(sortedTratamientos[2] || "");
+
+
+  }, [props.tratamientos, props.fechaInicio, props.fechaFin]);
 
   return (
     <p className="text-start">

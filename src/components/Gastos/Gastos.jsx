@@ -456,7 +456,7 @@ const Gastos = () => {
                                         <tbody>
                                             {resultsPaginados.map((gasto) => (
                                                 <tr key={gasto.id}>
-                                                    <td id="colIzquierda">{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
+                                                    <td id="colIzquierda" style={{ padding: '6px' }}>{moment(gasto.fechaGasto).format("DD-MM-YY")}</td>
                                                     <td> {gasto.ruc} </td>
                                                     <td className="text-wrap" style={{ maxWidth: '18vh' }}> {gasto.proveedor} </td>
                                                     <td> {gasto.tipoGasto} </td>
@@ -465,8 +465,8 @@ const Gastos = () => {
                                                     <td> {gasto.umArticulo} </td>
                                                     <td> {gasto.cuentaArticulo} </td>
                                                     <td className="text-wrap" style={{ maxWidth: '20vh' }}> {gasto.descripArticulo} </td>
-                                                    <td> {gasto.precioUniArticulo} </td>
-                                                    <td> {gasto.subTotalArticulo} </td>
+                                                    <td> {gasto.precioUniArticulo.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </td>
+                                                    <td> {gasto.subTotalArticulo.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} </td>
                                                     <td id="columnaAccion" className="colDerecha">
                                                         <Dropdown>
                                                             <Dropdown.Toggle
